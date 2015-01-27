@@ -15,6 +15,18 @@
 @end
 
 //CREATE A PROPERTY OF PFUSER AND PASS IN THE CURRENT USER... SO YOU DONT HAVE TO DO SO MANY CURRENTUSER CALLS.
+//Add to make sure camera is available.
+//if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+//
+//UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Error"
+//                                                      message:@"Device has no camera"
+//                                                     delegate:nil
+//                                            cancelButtonTitle:@"OK"
+//                                            otherButtonTitles: nil];
+//
+//[myAlertView show];
+//
+//}
 
 @implementation ProfileVC
 
@@ -55,11 +67,70 @@
     
     self.numberFollowingLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowing.count];
     
+    
+    //Setup Twitter and Instagram to Link to Profiles
+    self.twitterLabel.userInteractionEnabled = YES;
+    self.twitterLabel.tag = 1;
+    UITapGestureRecognizer *twitterTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
+    
+    [self.twitterLabel addGestureRecognizer:twitterTapGesture];
+    
+    self.instagramLabel.userInteractionEnabled = YES;
+    self.instagramLabel.tag = 2;
+    UITapGestureRecognizer *instagramTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
+    
+    [self.instagramLabel addGestureRecognizer:instagramTapGesture];
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+//Responds to the selection of a social media link and switches to the native app or web view.
+- (void)socialMediaTap:(UITapGestureRecognizer *)tapgr {
+    UILabel *tappedLabel = (UILabel *)tapgr.view;
+    NSInteger tag = tappedLabel.tag;
+    
+    switch (tag) {
+        case 1: {
+            NSLog(@"Twitter");
+            
+            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", self.twitterLabel.text];
+            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", self.twitterLabel.text];
+            
+            if(![[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterNativeURLString]])
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterWebURLString]];
+            }
+            break;
+        }
+        case 2: {
+            NSLog(@"Instagram");
+            
+            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", self.instagramLabel.text];
+            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", self.instagramLabel.text];
+            
+            if (![[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramNativeURLString]])
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramWebURLString]];
+            }
+            
+            break;
+        }
+        default: {
+            NSLog(@"Default - no social media case");
+            break;
+        }
+    }
+    
+    
+
+    
+
+    
 }
 
 
@@ -75,12 +146,38 @@
 */
 
 - (IBAction)takePicture:(id)sender {
-    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-    imagePicker.delegate = self;
-    imagePicker.allowsEditing = YES;
-    imagePicker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
     
-    [self presentViewController:imagePicker animated:YES completion:nil];
+    
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }];
+    
+    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    [pictureOptionsMenu addAction:takePhoto];
+    [pictureOptionsMenu addAction:choosePhoto];
+    [pictureOptionsMenu addAction:cancelAction];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
+    
+    
     
 }
 

@@ -8,6 +8,7 @@
 
 #import "SettingsVC.h"
 #import "SWRevealViewController.h"
+#import <Parse/Parse.h>
 
 @interface SettingsVC ()
 
@@ -43,5 +44,15 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (IBAction)logOut:(id)sender {
+    
+    [PFUser logOut];
+    
+    [self performSegueWithIdentifier:@"logOutToMain" sender:self];
+    
+    
+}
+
 
 @end
