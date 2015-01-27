@@ -1,32 +1,26 @@
 //
-//  HomeScreenVC.m
+//  NavigationVC.m
 //  EVNTR
 //
 //  Created by Alex Ryan on 1/26/15.
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "HomeScreenVC.h"
-#import <Parse/Parse.h>
+#import "NavigationVC.h"
 #import "SWRevealViewController.h"
 
-@interface HomeScreenVC ()
+@interface NavigationVC ()
 
 @end
 
-@implementation HomeScreenVC
+@implementation NavigationVC {
+    NSArray *menuItems;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    SWRevealViewController *revealViewController = self.revealViewController;
-    
-    if (revealViewController) {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector(revealToggle:)];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
+    menuItems = @[@"title", @"home", @"profile", @"settings"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,7 +28,20 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return menuItems.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *cellIdentifier = [menuItems objectAtIndex:indexPath.row];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    return cell;
+}
 
 /*
 #pragma mark - Navigation

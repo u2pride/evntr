@@ -1,5 +1,5 @@
 //
-//  HomeScreenVC.h
+//  ProfileVC.h
 //  EVNTR
 //
 //  Created by Alex Ryan on 1/26/15.
@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HomeScreenVC : UITableViewController
+@interface ProfileVC : UIViewController
 
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *sidebarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
+
 
 @end

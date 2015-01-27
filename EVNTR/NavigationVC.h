@@ -1,5 +1,5 @@
 //
-//  HomeScreenVC.h
+//  NavigationVC.h
 //  EVNTR
 //
 //  Created by Alex Ryan on 1/26/15.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HomeScreenVC : UITableViewController
-
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *sidebarButton;
+@interface NavigationVC : UITableViewController
 
 @end

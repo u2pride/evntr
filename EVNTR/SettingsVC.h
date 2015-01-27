@@ -1,5 +1,5 @@
 //
-//  HomeScreenVC.h
+//  SettingsVC.h
 //  EVNTR
 //
 //  Created by Alex Ryan on 1/26/15.
@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HomeScreenVC : UITableViewController
+@interface SettingsVC : UIViewController
 
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *sidebarButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
 @end

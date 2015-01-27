@@ -1,20 +1,19 @@
 //
-//  HomeScreenVC.m
+//  SettingsVC.m
 //  EVNTR
 //
 //  Created by Alex Ryan on 1/26/15.
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "HomeScreenVC.h"
-#import <Parse/Parse.h>
+#import "SettingsVC.h"
 #import "SWRevealViewController.h"
 
-@interface HomeScreenVC ()
+@interface SettingsVC ()
 
 @end
 
-@implementation HomeScreenVC
+@implementation SettingsVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -23,18 +22,17 @@
     SWRevealViewController *revealViewController = self.revealViewController;
     
     if (revealViewController) {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector(revealToggle:)];
+        [self.sidebarButton setTarget:self.revealViewController];
+        [self.sidebarButton setAction: @selector(revealToggle: )];
         [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
     }
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-
 
 /*
 #pragma mark - Navigation

@@ -29,6 +29,11 @@
 		A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415633B1A768B9700565BB6 /* HomeScreenVC.m */; };
 		A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415633E1A769FDE00565BB6 /* SignUpVC.m */; };
 		A41563421A76ACC000565BB6 /* LogInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563411A76ACC000565BB6 /* LogInVC.m */; };
+		A41563451A76E15100565BB6 /* EventAddVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563441A76E15100565BB6 /* EventAddVC.m */; };
+		A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563471A76EB8E00565BB6 /* SWRevealViewController.m */; };
+		A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634B1A76EF3A00565BB6 /* ProfileVC.m */; };
+		A415634F1A76F35D00565BB6 /* NavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634E1A76F35D00565BB6 /* NavigationVC.m */; };
+		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +77,16 @@
 		A415633E1A769FDE00565BB6 /* SignUpVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpVC.m; sourceTree = "<group>"; };
 		A41563401A76ACC000565BB6 /* LogInVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogInVC.h; sourceTree = "<group>"; };
 		A41563411A76ACC000565BB6 /* LogInVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogInVC.m; sourceTree = "<group>"; };
+		A41563431A76E15100565BB6 /* EventAddVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventAddVC.h; sourceTree = "<group>"; };
+		A41563441A76E15100565BB6 /* EventAddVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAddVC.m; sourceTree = "<group>"; };
+		A41563461A76EB8E00565BB6 /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
+		A41563471A76EB8E00565BB6 /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		A415634A1A76EF3A00565BB6 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
+		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
+		A415634D1A76F35D00565BB6 /* NavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationVC.h; sourceTree = "<group>"; };
+		A415634E1A76F35D00565BB6 /* NavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationVC.m; sourceTree = "<group>"; };
+		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
+		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,13 +144,22 @@
 			children = (
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
+				A41562CE1A767D3A00565BB6 /* Main.storyboard */,
+				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
+				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
+				A415634D1A76F35D00565BB6 /* NavigationVC.h */,
+				A415634E1A76F35D00565BB6 /* NavigationVC.m */,
+				A415634A1A76EF3A00565BB6 /* ProfileVC.h */,
+				A415634B1A76EF3A00565BB6 /* ProfileVC.m */,
 				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
 				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
-				A41562CE1A767D3A00565BB6 /* Main.storyboard */,
 				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
 				A415633E1A769FDE00565BB6 /* SignUpVC.m */,
 				A41563401A76ACC000565BB6 /* LogInVC.h */,
 				A41563411A76ACC000565BB6 /* LogInVC.m */,
+				A41563431A76E15100565BB6 /* EventAddVC.h */,
+				A41563441A76E15100565BB6 /* EventAddVC.m */,
+				A41563491A76EB9800565BB6 /* SWRevealVC */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
@@ -188,6 +212,15 @@
 			);
 			name = Frameworks;
 			path = EVNTR;
+			sourceTree = "<group>";
+		};
+		A41563491A76EB9800565BB6 /* SWRevealVC */ = {
+			isa = PBXGroup;
+			children = (
+				A41563461A76EB8E00565BB6 /* SWRevealViewController.h */,
+				A41563471A76EB8E00565BB6 /* SWRevealViewController.m */,
+			);
+			name = SWRevealVC;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -290,11 +323,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
+				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
+				A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
+				A41563451A76E15100565BB6 /* EventAddVC.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A41562C71A767D3A00565BB6 /* main.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
+				A415634F1A76F35D00565BB6 /* NavigationVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
