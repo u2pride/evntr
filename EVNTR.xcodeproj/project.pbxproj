@@ -24,9 +24,17 @@
 		A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563471A76EB8E00565BB6 /* SWRevealViewController.m */; };
 		A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634B1A76EF3A00565BB6 /* ProfileVC.m */; };
 		A415634F1A76F35D00565BB6 /* NavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634E1A76F35D00565BB6 /* NavigationVC.m */; };
+		A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563231A7688BB00565BB6 /* AudioToolbox.framework */; };
+		A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563291A7688D300565BB6 /* CoreLocation.framework */; };
+		A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563271A7688CC00565BB6 /* CoreGraphics.framework */; };
+		A44BB8991A78332800735C93 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563251A7688C300565BB6 /* CFNetwork.framework */; };
+		A44BB89A1A78332F00735C93 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632B1A7688DB00565BB6 /* MobileCoreServices.framework */; };
+		A44BB89B1A78333400735C93 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632D1A7688E200565BB6 /* QuartzCore.framework */; };
+		A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632F1A7688E900565BB6 /* Security.framework */; };
+		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
+		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
 		A4594B1E1A77C0D600270ECE /* TabBarVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4594B1D1A77C0D600270ECE /* TabBarVC.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
-		B967E3E0BCFFC29F3ADF2E25 /* libPods-EVNTR.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03201FC6C3ADFB4B5DF4DC9C /* libPods-EVNTR.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,8 +48,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		03201FC6C3ADFB4B5DF4DC9C /* libPods-EVNTR.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EVNTR.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		7849B0C69BB41BF71F684B9A /* Pods-EVNTR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVNTR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EVNTR/Pods-EVNTR.debug.xcconfig"; sourceTree = "<group>"; };
 		A41562C11A767D3A00565BB6 /* EVNTR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVNTR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A41562C51A767D3A00565BB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A41562C61A767D3A00565BB6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -84,7 +90,6 @@
 		A4594B1D1A77C0D600270ECE /* TabBarVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarVC.m; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
-		B254BB2D53C04CCE8AB5A6A5 /* Pods-EVNTR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EVNTR.release.xcconfig"; path = "Pods/Target Support Files/Pods-EVNTR/Pods-EVNTR.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,11 +97,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */,
+				A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */,
+				A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */,
+				A44BB89B1A78333400735C93 /* QuartzCore.framework in Frameworks */,
+				A44BB89A1A78332F00735C93 /* MobileCoreServices.framework in Frameworks */,
+				A44BB8991A78332800735C93 /* CFNetwork.framework in Frameworks */,
+				A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */,
+				A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */,
+				A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */,
 				A41563381A76890E00565BB6 /* libsqlite3.dylib in Frameworks */,
 				A41563361A76890200565BB6 /* libz.dylib in Frameworks */,
 				A41563221A76885500565BB6 /* Parse.framework in Frameworks */,
 				A41563211A76885400565BB6 /* Bolts.framework in Frameworks */,
-				B967E3E0BCFFC29F3ADF2E25 /* libPods-EVNTR.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,7 +130,6 @@
 				A41562DD1A767D3A00565BB6 /* EVNTRTests */,
 				A41562C21A767D3A00565BB6 /* Products */,
 				A41563391A768AC700565BB6 /* Frameworks */,
-				BE83D09BF3E3905B16F38E01 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -202,7 +214,6 @@
 				A41563231A7688BB00565BB6 /* AudioToolbox.framework */,
 				A415631F1A76885400565BB6 /* Bolts.framework */,
 				A41563201A76885400565BB6 /* Parse.framework */,
-				03201FC6C3ADFB4B5DF4DC9C /* libPods-EVNTR.a */,
 			);
 			name = Frameworks;
 			path = EVNTR;
@@ -217,15 +228,6 @@
 			name = SWRevealVC;
 			sourceTree = "<group>";
 		};
-		BE83D09BF3E3905B16F38E01 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7849B0C69BB41BF71F684B9A /* Pods-EVNTR.debug.xcconfig */,
-				B254BB2D53C04CCE8AB5A6A5 /* Pods-EVNTR.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -233,11 +235,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A41562E41A767D3A00565BB6 /* Build configuration list for PBXNativeTarget "EVNTR" */;
 			buildPhases = (
-				ACFC06F36BE0DCC2F1C7608E /* Check Pods Manifest.lock */,
 				A41562BD1A767D3A00565BB6 /* Sources */,
 				A41562BE1A767D3A00565BB6 /* Frameworks */,
 				A41562BF1A767D3A00565BB6 /* Resources */,
-				39694B61F77E0C56C4211285 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -322,39 +322,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		39694B61F77E0C56C4211285 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EVNTR/Pods-EVNTR-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		ACFC06F36BE0DCC2F1C7608E /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A41562BD1A767D3A00565BB6 /* Sources */ = {
@@ -491,7 +458,6 @@
 		};
 		A41562E51A767D3A00565BB6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7849B0C69BB41BF71F684B9A /* Pods-EVNTR.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -500,53 +466,13 @@
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-l\"Pods-EVNTR-Bolts\"",
-					"-l\"Pods-EVNTR-Facebook-iOS-SDK\"",
-					"-l\"Pods-EVNTR-Parse\"",
-					"-l\"Pods-EVNTR-ParseFacebookUtils\"",
-					"-l\"Pods-EVNTR-ParseUI\"",
-					"-l\"sqlite3\"",
-					"-l\"z\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"Parse\"",
-					"-framework",
-					"\"ParseFacebookUtils\"",
-					"-framework",
-					"\"StoreKit\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-					"-framework",
-					"\"UIKit\"",
-					"-weak_framework",
-					"\"Accounts\"",
-					"-weak_framework",
-					"\"AudioToolbox\"",
-					"-weak_framework",
-					"\"CoreGraphics\"",
-					"-weak_framework",
-					"\"CoreLocation\"",
-					"-weak_framework",
-					"\"Foundation\"",
-					"-weak_framework",
-					"\"QuartzCore\"",
-					"-weak_framework",
-					"\"Security\"",
-					"-weak_framework",
-					"\"Social\"",
-					"-weak_framework",
-					"$(inherited)",
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
 		A41562E61A767D3A00565BB6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B254BB2D53C04CCE8AB5A6A5 /* Pods-EVNTR.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -555,46 +481,7 @@
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-l\"Pods-EVNTR-Bolts\"",
-					"-l\"Pods-EVNTR-Facebook-iOS-SDK\"",
-					"-l\"Pods-EVNTR-Parse\"",
-					"-l\"Pods-EVNTR-ParseFacebookUtils\"",
-					"-l\"Pods-EVNTR-ParseUI\"",
-					"-l\"sqlite3\"",
-					"-l\"z\"",
-					"-framework",
-					"\"MobileCoreServices\"",
-					"-framework",
-					"\"Parse\"",
-					"-framework",
-					"\"ParseFacebookUtils\"",
-					"-framework",
-					"\"StoreKit\"",
-					"-framework",
-					"\"SystemConfiguration\"",
-					"-framework",
-					"\"UIKit\"",
-					"-weak_framework",
-					"\"Accounts\"",
-					"-weak_framework",
-					"\"AudioToolbox\"",
-					"-weak_framework",
-					"\"CoreGraphics\"",
-					"-weak_framework",
-					"\"CoreLocation\"",
-					"-weak_framework",
-					"\"Foundation\"",
-					"-weak_framework",
-					"\"QuartzCore\"",
-					"-weak_framework",
-					"\"Security\"",
-					"-weak_framework",
-					"\"Social\"",
-					"-weak_framework",
-					"$(inherited)",
-				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
