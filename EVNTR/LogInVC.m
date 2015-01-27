@@ -31,6 +31,12 @@
     
     [PFUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         if (user) {
+            
+            user[@"Twitter"] = @"@U2Pride14";
+            user[@"Instagram"] = @"@u2pride";
+            user[@"Events_Attended"] = @14;
+            
+            
             self.resultTextLabel.text = [NSString stringWithFormat:@"Success: %@", user.email];
             
             [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];

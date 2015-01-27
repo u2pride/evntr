@@ -33,6 +33,7 @@
 		A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563471A76EB8E00565BB6 /* SWRevealViewController.m */; };
 		A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634B1A76EF3A00565BB6 /* ProfileVC.m */; };
 		A415634F1A76F35D00565BB6 /* NavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634E1A76F35D00565BB6 /* NavigationVC.m */; };
+		A4594B1E1A77C0D600270ECE /* TabBarVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4594B1D1A77C0D600270ECE /* TabBarVC.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
 /* End PBXBuildFile section */
 
@@ -85,6 +86,8 @@
 		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
 		A415634D1A76F35D00565BB6 /* NavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationVC.h; sourceTree = "<group>"; };
 		A415634E1A76F35D00565BB6 /* NavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationVC.m; sourceTree = "<group>"; };
+		A4594B1C1A77C0D600270ECE /* TabBarVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarVC.h; sourceTree = "<group>"; };
+		A4594B1D1A77C0D600270ECE /* TabBarVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarVC.m; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -145,6 +148,8 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A41562CE1A767D3A00565BB6 /* Main.storyboard */,
+				A4594B1C1A77C0D600270ECE /* TabBarVC.h */,
+				A4594B1D1A77C0D600270ECE /* TabBarVC.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
 				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
 				A415634D1A76F35D00565BB6 /* NavigationVC.h */,
@@ -324,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
+				A4594B1E1A77C0D600270ECE /* TabBarVC.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
 				A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
