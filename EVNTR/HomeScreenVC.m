@@ -11,12 +11,17 @@
 #import "SWRevealViewController.h"
 #import <ParseUI/ParseUI.h>
 #import "EventTableCell.h"
+#import "EventDetailVC.h"
 
 @interface HomeScreenVC ()
+
+@property (nonatomic, strong) PFObject *selectedEvent;
 
 @end
 
 @implementation HomeScreenVC
+
+@synthesize userForEventsQuery, typeOfEventTableView, selectedEvent;
 
 - (id) initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -26,6 +31,8 @@
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
         self.textKey = @"text";
+        self.typeOfEventTableView = 1;
+        self.userForEventsQuery = [PFUser currentUser];
     }
     return self;
 }
@@ -34,6 +41,17 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    if (self.typeOfEventTableView == 2 || self.typeOfEventTableView == 3) {
+        self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.leftBarButtonItem = nil;
+        
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
+            
+        
+        self.navigationItem.rightBarButtonItem = cancelButton;
+    }
+
+
     SWRevealViewController *revealViewController = self.revealViewController;
     
     if (revealViewController) {
@@ -49,12 +67,21 @@
 }
 
 
+- (void)returnToProfile {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+
 #pragma mark - PFTableView Data & Custom Cells
 
 - (PFQuery *)queryForTable {
     
+    NSLog(@"THIS IS THE USER:  %@", userForEventsQuery);
+    
     PFQuery *allEvents = [PFQuery queryWithClassName:@"Events"];
-    [allEvents whereKey:@"parent" equalTo:[PFUser currentUser]];
+    [allEvents whereKey:@"parent" equalTo:userForEventsQuery];
     [allEvents orderByAscending:@"Title"];
     
     return allEvents;
@@ -74,22 +101,41 @@
     cell.eventTitle.text = [object objectForKey:@"Title"];
     cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"Attenders"]];
     
-    NSLog(@"%@", object);
     
     return cell;
     
 }
 
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    
+    selectedEvent = [self objectAtIndexPath:indexPath];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    
+    [self performSegueWithIdentifier:@"" sender:nil];
 
-/*
+    
+}
+
+
+// TODO:  Reset typeOfEventTableView on dismissal of the view
+
+
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    EventDetailVC *eventDetailVC = (EventDetailVC *)[segue destinationViewController];
+    eventDetailVC.eventObject = selectedEvent;
+    
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
-*/
+
 
 @end

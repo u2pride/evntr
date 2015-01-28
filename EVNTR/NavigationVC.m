@@ -8,6 +8,8 @@
 
 #import "NavigationVC.h"
 #import "SWRevealViewController.h"
+#import <Parse/Parse.h>
+#import "ProfileVC.h"
 
 @interface NavigationVC ()
 
@@ -43,14 +45,26 @@
     return cell;
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    if ([[segue identifier] isEqualToString:@"ViewMyProfileFromNavigation"]) {
+        UINavigationController *navigationControllerForProfileView = (UINavigationController *)[segue destinationViewController];
+        
+        ProfileVC *profileViewController = (ProfileVC *)[[navigationControllerForProfileView childViewControllers] firstObject];
+        profileViewController.userNameForProfileView = [PFUser currentUser][@"username"];
+    } else if ([[segue identifier] isEqualToString:@"HomeViewFromNavigation"]) {
+        
+    }
+    
+    
+    
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
-*/
+
 
 @end

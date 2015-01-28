@@ -24,7 +24,10 @@
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
 
 
+@property (strong, nonatomic) NSString *userNameForProfileView;
+
 
 - (IBAction)takePicture:(id)sender;
+- (IBAction)viewMyEvents:(id)sender;
 
 @end

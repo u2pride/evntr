@@ -83,13 +83,13 @@
     
     
     PFObject *newEvent = [PFObject objectWithClassName:@"Events"];
-    newEvent[@"Title"] = self.eventTitleField.text;
-    newEvent[@"Description"] = self.eventDescriptionField.text;
+    newEvent[@"title"] = self.eventTitleField.text;
+    newEvent[@"description"] = self.eventDescriptionField.text;
 
     NSNumberFormatter *numfromString = [[NSNumberFormatter alloc] init];
     NSNumber *attenders = [numfromString numberFromString:self.eventAttendersField.text];
     
-    newEvent[@"Attenders"] = attenders;
+    newEvent[@"attenders"] = attenders;
     newEvent[@"parent"] = [PFUser currentUser];
     
     NSData *eventCoverPhotoData = UIImageJPEGRepresentation(self.imageChosenAsCover, 0.5);

@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Parse/Parse.h"
+#import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 
 @interface HomeScreenVC : PFQueryTableViewController
 
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *sidebarButton;
+
+// 1 - for public  2 - for current user 3 - for different username
+@property (nonatomic, assign) int typeOfEventTableView;
+@property (nonatomic, strong) PFUser *userForEventsQuery;
 
 @end

@@ -8,9 +8,12 @@
 
 #import "ProfileVC.h"
 #import "SWRevealViewController.h"
+#import "HomeScreenVC.h"
 @import UIKit;
 
 @interface ProfileVC ()
+
+@property (nonatomic, strong) PFUser *userForProfileView;
 
 @end
 
@@ -30,7 +33,7 @@
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -46,22 +49,67 @@
     
     
     
+    
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    //TODO : Update for Allowing Viewing the Profile of Other Users.... pass in username of user to display?
+    
+    PFQuery *usernameQuery = [PFUser query];
+    [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
+    
+    NSLog(@"Username: %@  Query Results: %@", userNameForProfileView, [usernameQuery findObjects]);
+    userForProfileView = [[usernameQuery findObjects] firstObject];
+    
+    int profileType = 2;
+
+    if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+        profileType = 1;
+    } else {
+        profileType = 2;
+    }
+    
+    
+    // 1 - current user --- 2 - username of another user.
+    switch (profileType) {
+        case 1: {
+            NSLog(@"Type 1");
+            break;
+        }
+        case 2: {
+            NSLog(@"Type 2");
+            self.navigationItem.leftItemsSupplementBackButton = YES;
+            //self.navigationController.navigationBar
+            break;
+        }
+        case 3: {
+            //Add for sponsored profiles.
+            break;
+        }
+        default:
+            break;
+    }
+    
+    
+    
     //Populate Profile Page with Details from Parse
-    PFFile *profilePictureFromParse = [PFUser currentUser][@"profilePicture"];
+    PFFile *profilePictureFromParse = userForProfileView[@"profilePicture"];
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
             self.profileImageView.image = [UIImage imageWithData:data];
         }
     }];
     
-    self.nameLabel.text = [PFUser currentUser][@"username"];
+    self.nameLabel.text = userForProfileView[@"username"];
     
-    self.twitterLabel.text = [PFUser currentUser][@"Twitter"];
+    self.twitterLabel.text = userForProfileView[@"Twitter"];
     self.instagramLabel.text = [PFUser currentUser][@"Instagram"];
     
-    self.numberEventsLabel.text = [PFUser currentUser][@"Events_Created"];
-    NSArray *numberOfFollowers = (NSArray *)[PFUser currentUser][@"Followers"];
-    NSArray *numberOfFollowing = (NSArray *)[PFUser currentUser][@"Following"];
+    self.numberEventsLabel.text = userForProfileView[@"Events_Created"];
+    NSArray *numberOfFollowers = (NSArray *)userForProfileView[@"Followers"];
+    NSArray *numberOfFollowing = (NSArray *)userForProfileView[@"Following"];
     
     self.numberFollowersLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowers.count];
     
@@ -82,6 +130,8 @@
     [self.instagramLabel addGestureRecognizer:instagramTapGesture];
     
 }
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -181,8 +231,33 @@
     
 }
 
+- (IBAction)viewMyEvents:(id)sender {
+    HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
+    
+    // 1 - normal event view - 2 - user events
+    eventVC.typeOfEventTableView = 2;
+    
+    if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+        eventVC.typeOfEventTableView = 3;
+        eventVC.userForEventsQuery = [PFUser currentUser];
+    } else {
+        eventVC.typeOfEventTableView = 2;
+        eventVC.userForEventsQuery = userForProfileView;
+    }
+    
+    UINavigationController *navigationController = [[UINavigationController alloc] init];
+    [navigationController addChildViewController:eventVC];
+    
+    [self presentViewController:navigationController animated:YES completion:nil];
+}
 
-///Delegate Methods for UIImagePickerController
+
+- (void) returnToProfile {
+    
+}
+
+
+#pragma mark - Delegate Methods for UIImagePickerController
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     

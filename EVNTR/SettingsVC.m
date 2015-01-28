@@ -9,6 +9,7 @@
 #import "SettingsVC.h"
 #import "SWRevealViewController.h"
 #import <Parse/Parse.h>
+#import "ProfileVC.h"
 
 @interface SettingsVC ()
 
@@ -50,6 +51,19 @@
     [PFUser logOut];
     
     [self performSegueWithIdentifier:@"logOutToMain" sender:self];
+    
+    
+}
+
+- (IBAction)envtr2Profile:(id)sender {
+    
+    //create profile vc
+    //pop onto stack
+    
+    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    newUserProfileVC.userNameForProfileView = @"EVNTR2";
+    
+    [self.navigationController pushViewController:newUserProfileVC animated:YES];
     
     
 }
