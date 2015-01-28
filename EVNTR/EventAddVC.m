@@ -11,11 +11,13 @@
 
 @interface EventAddVC ()
 
+@property (strong, nonatomic) UIImage *imageChosenAsCover;
+
 @end
 
 @implementation EventAddVC
 
-@synthesize eventTitleField, eventDescriptionField, eventAttendersField;
+@synthesize eventTitleField, eventDescriptionField, eventAttendersField, imageChosenAsCover;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,7 +35,52 @@
     
 }
 
+- (IBAction)selectCoverPhoto:(id)sender {
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+        
+    }];
+    
+    
+    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+        
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    [pictureOptionsMenu addAction:takePhoto];
+    [pictureOptionsMenu addAction:choosePhoto];
+    [pictureOptionsMenu addAction:cancelAction];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
+    
+}
+
+- (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    self.imageChosenAsCover = info[UIImagePickerControllerEditedImage];
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
 - (void)createEvent:(id)sender {
+    
     
     PFObject *newEvent = [PFObject objectWithClassName:@"Events"];
     newEvent[@"Title"] = self.eventTitleField.text;
@@ -43,30 +90,47 @@
     NSNumber *attenders = [numfromString numberFromString:self.eventAttendersField.text];
     
     newEvent[@"Attenders"] = attenders;
+    newEvent[@"parent"] = [PFUser currentUser];
     
-    [newEvent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error){
-       
-        if (error) {
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"ERROR!" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-            
-            [errorAlert show];
-        }
-        
+    NSData *eventCoverPhotoData = UIImageJPEGRepresentation(self.imageChosenAsCover, 0.5);
+    PFFile *eventCoverPhotoFile = [PFFile fileWithName:@"coverphoto.jpg" data:eventCoverPhotoData];
+    
+    //Save Cover Photo then Add to the New Event then Save the Event to Parse
+    [eventCoverPhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
-            UIAlertView *saveAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"Saved!" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
             
-            [saveAlert show];
+            newEvent[@"coverPhoto"] = eventCoverPhotoFile;
             
-            [self dismissViewControllerAnimated:YES completion:nil];
+            [newEvent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error){
+                
+                if (error) {
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"ERROR!" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
+                }
+                
+                if (succeeded) {
+                    UIAlertView *saveAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"Saved!" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    
+                    [saveAlert show];
+                    
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                    
+                } else {
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"NO SUCCESS" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
+                    
+                }
+                
+            }];
             
-        } else {
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"NO SUCCESS" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-            
-            [errorAlert show];
             
         }
         
     }];
+    
+
 
     
 }

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EventAddVC : UIViewController
+@interface EventAddVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UITextField *eventTitleField;
 @property (nonatomic, strong) IBOutlet UITextField *eventDescriptionField;
@@ -16,5 +16,6 @@
 
 - (IBAction)createEvent:(id)sender;
 - (IBAction)cancel:(id)sender;
+- (IBAction)selectCoverPhoto:(id)sender;
 
 @end

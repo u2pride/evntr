@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Parse/Parse.h"
+#import <ParseUI/ParseUI.h>
 
-
-@interface HomeScreenVC : UITableViewController
+@interface HomeScreenVC : PFQueryTableViewController
 
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *sidebarButton;
 

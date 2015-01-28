@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A4035FD51A78534400DB67E4 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4035FD41A78534400DB67E4 /* ParseUI.framework */; };
+		A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4035FD71A786ACF00DB67E4 /* EventTableCell.m */; };
 		A41562C71A767D3A00565BB6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C61A767D3A00565BB6 /* main.m */; };
 		A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C91A767D3A00565BB6 /* AppDelegate.m */; };
 		A41562D01A767D3A00565BB6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A41562CE1A767D3A00565BB6 /* Main.storyboard */; };
@@ -48,6 +50,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A4035FD41A78534400DB67E4 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
+		A4035FD61A786ACF00DB67E4 /* EventTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTableCell.h; sourceTree = "<group>"; };
+		A4035FD71A786ACF00DB67E4 /* EventTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventTableCell.m; sourceTree = "<group>"; };
 		A41562C11A767D3A00565BB6 /* EVNTR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVNTR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A41562C51A767D3A00565BB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A41562C61A767D3A00565BB6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -99,6 +104,7 @@
 			files = (
 				A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */,
 				A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */,
+				A4035FD51A78534400DB67E4 /* ParseUI.framework in Frameworks */,
 				A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */,
 				A44BB89B1A78333400735C93 /* QuartzCore.framework in Frameworks */,
 				A44BB89A1A78332F00735C93 /* MobileCoreServices.framework in Frameworks */,
@@ -150,6 +156,8 @@
 				A41562CE1A767D3A00565BB6 /* Main.storyboard */,
 				A4594B1C1A77C0D600270ECE /* TabBarVC.h */,
 				A4594B1D1A77C0D600270ECE /* TabBarVC.m */,
+				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
+				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
 				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
 				A415634D1A76F35D00565BB6 /* NavigationVC.h */,
@@ -201,6 +209,7 @@
 		A41563391A768AC700565BB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4035FD41A78534400DB67E4 /* ParseUI.framework */,
 				A41563371A76890E00565BB6 /* libsqlite3.dylib */,
 				A41563351A76890200565BB6 /* libz.dylib */,
 				A41563331A7688F800565BB6 /* SystemConfiguration.framework */,
@@ -277,6 +286,7 @@
 				TargetAttributes = {
 					A41562C01A767D3A00565BB6 = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = 2EMK38AANW;
 					};
 					A41562D91A767D3A00565BB6 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -329,6 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
+				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
 				A4594B1E1A77C0D600270ECE /* TabBarVC.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
 				A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */,
@@ -460,6 +471,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
@@ -468,6 +481,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -475,6 +489,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
@@ -483,6 +499,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

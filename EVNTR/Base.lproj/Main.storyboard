@@ -89,7 +89,7 @@
                                     <action selector="login:" destination="5DD-Kt-92r" eventType="touchUpInside" id="gw1-b3-QXR"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oaP-f5-UpO">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="EVNTR" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oaP-f5-UpO">
                                 <rect key="frame" x="144" y="74" width="135" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="135" id="QBB-Tc-eO3"/>
@@ -97,7 +97,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GhJ-Je-H5h">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="eventkey" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GhJ-Je-H5h">
                                 <rect key="frame" x="144" y="138" width="135" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -522,16 +522,42 @@
         <scene sceneID="JJw-L2-SBe">
             <objects>
                 <tableViewController id="YfE-AM-GKt" customClass="HomeScreenVC" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="hYe-MP-1yh">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="22" sectionFooterHeight="22" id="hYe-MP-1yh">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="c1U-3B-Z7m">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="eventCell" rowHeight="100" id="c1U-3B-Z7m" customClass="EventTableCell">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="c1U-3B-Z7m" id="ZJd-dL-B6l">
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="C4D-OY-88D" customClass="PFImageView">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="99"/>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Event Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZWd-hD-D0r">
+                                            <rect key="frame" x="23" y="30" width="234" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Attendees" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WJc-ge-n8Z">
+                                            <rect key="frame" x="229" y="73" width="78" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ZWd-hD-D0r" firstAttribute="top" secondItem="ZJd-dL-B6l" secondAttribute="topMargin" constant="22" id="lKA-9G-xB8"/>
+                                        <constraint firstItem="ZWd-hD-D0r" firstAttribute="leading" secondItem="ZJd-dL-B6l" secondAttribute="leadingMargin" constant="15" id="xmg-Zr-SUq"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="eventCoverImage" destination="C4D-OY-88D" id="mXk-Bg-cLO"/>
+                                    <outlet property="eventTitle" destination="ZWd-hD-D0r" id="pFg-Lj-9SR"/>
+                                    <outlet property="numberOfAttenders" destination="WJc-ge-n8Z" id="mRr-Gg-GBH"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -553,9 +579,9 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v2U-9A-0p2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1994" y="-555"/>
+            <point key="canvasLocation" x="1994" y="-556"/>
         </scene>
-        <!--Item-->
+        <!--Table View Controller-->
         <scene sceneID="CkW-7S-fSb">
             <objects>
                 <tableViewController id="qwF-5m-JJ8" sceneMemberID="viewController">
@@ -583,7 +609,7 @@
                             <outlet property="delegate" destination="qwF-5m-JJ8" id="nj8-bP-T2C"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Item" id="WJA-lg-CwX"/>
+                    <tabBarItem key="tabBarItem" systemItem="contacts" id="WJA-lg-CwX"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vIr-Ma-VDS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -668,6 +694,15 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r7H-33-WHe">
+                                <rect key="frame" x="101" y="269" width="119" height="30"/>
+                                <state key="normal" title="Add Cover Photo">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="selectCoverPhoto:" destination="V8p-hm-ZWW" eventType="touchUpInside" id="JKw-5A-bIf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -684,11 +719,11 @@
             </objects>
             <point key="canvasLocation" x="2472" y="-555"/>
         </scene>
-        <!--Item-->
+        <!--Navigation Controller-->
         <scene sceneID="A01-jT-bCk">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="iIJ-u3-p6g" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="Zho-o6-F1N"/>
+                    <tabBarItem key="tabBarItem" systemItem="mostRecent" id="Zho-o6-F1N"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="lct-cv-Pdr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
