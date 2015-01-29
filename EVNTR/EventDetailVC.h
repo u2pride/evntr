@@ -18,7 +18,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
 @property (weak, nonatomic) IBOutlet UILabel *eventDescription;
 
-@property (weak, nonatomic) IBOutlet UIVisualEffectView *locationBlurView;
 
 @property (nonatomic, strong) PFUser *eventUser;
 

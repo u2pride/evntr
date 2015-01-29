@@ -23,7 +23,9 @@
     // Do any additional setup after loading the view.
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
+    
+    NSLog(@"Event: %@ and User: %@", eventObject, eventUser);
     
     eventUser = (PFUser *)eventObject[@"parent"];
     

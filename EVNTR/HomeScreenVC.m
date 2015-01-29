@@ -41,15 +41,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    if (self.typeOfEventTableView == 2 || self.typeOfEventTableView == 3) {
-        self.navigationItem.rightBarButtonItem = nil;
-        self.navigationItem.leftBarButtonItem = nil;
-        
-        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
-            
-        
-        self.navigationItem.rightBarButtonItem = cancelButton;
-    }
+
 
 
     SWRevealViewController *revealViewController = self.revealViewController;
@@ -66,6 +58,22 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    // TODO - THIS IS NOT GETTING CALLED WHEN USING THE NAVIGATION, but otherwise is getting called.
+    // Nevermind it is getting called, just after the queryForTable function... hmmm.
+    NSLog(@"ViewWillAppear");
+    if (self.typeOfEventTableView == 2 || self.typeOfEventTableView == 3) {
+        NSLog(@"Inside");
+        self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.leftBarButtonItem = nil;
+        
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
+        
+        
+        self.navigationItem.rightBarButtonItem = cancelButton;
+    }
+}
+
 
 - (void)returnToProfile {
     
@@ -79,6 +87,10 @@
 - (PFQuery *)queryForTable {
     
     NSLog(@"THIS IS THE USER:  %@", userForEventsQuery);
+    
+    if (!userForEventsQuery) {
+        self.userForEventsQuery = [PFUser currentUser];
+    }
     
     PFQuery *allEvents = [PFQuery queryWithClassName:@"Events"];
     [allEvents whereKey:@"parent" equalTo:userForEventsQuery];
@@ -98,8 +110,8 @@
     cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
     cell.eventCoverImage.file = (PFFile *)[object objectForKey:@"coverPhoto"];
     [cell.eventCoverImage loadInBackground];
-    cell.eventTitle.text = [object objectForKey:@"Title"];
-    cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"Attenders"]];
+    cell.eventTitle.text = [object objectForKey:@"title"];
+    cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"attenders"]];
     
     
     return cell;
@@ -109,16 +121,23 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    selectedEvent = [self objectAtIndexPath:indexPath];
+    if (indexPath.row < self.objects.count) {
+        PFObject *event = [self.objects objectAtIndex:indexPath.row];
+        selectedEvent = event;
+    } else if (self.paginationEnabled) {
+        [self loadNextPage];
+    }
     
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    //[super tableView:tableView didSelectRowAtIndexPath:indexPath];
     
-    [self performSegueWithIdentifier:@"" sender:nil];
-
+    NSLog(@"Selected Event: %@", selectedEvent);
+    
+    [self performSegueWithIdentifier:@"PushEventDetails" sender:self];
     
 }
+ 
 
 
 // TODO:  Reset typeOfEventTableView on dismissal of the view
@@ -130,8 +149,20 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    EventDetailVC *eventDetailVC = (EventDetailVC *)[segue destinationViewController];
-    eventDetailVC.eventObject = selectedEvent;
+    NSLog(@"PrepareforSegue");
+    
+    if ([[segue identifier] isEqualToString:@"AddNewEvent"]) {
+        NSLog(@"AddNewEventSegue");
+
+    } else if ([[segue identifier] isEqualToString:@"PushEventDetails"]) {
+        NSLog(@"DetailEventViewSegue");
+        NSLog(@"selected event: %@", selectedEvent);
+        EventDetailVC *eventDetailVC = (EventDetailVC *)[segue destinationViewController];
+        eventDetailVC.eventObject = selectedEvent;
+        
+    }
+    
+    
     
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.

@@ -569,7 +569,6 @@
                                     <outlet property="eventCoverImage" destination="C4D-OY-88D" id="mXk-Bg-cLO"/>
                                     <outlet property="eventTitle" destination="ZWd-hD-D0r" id="pFg-Lj-9SR"/>
                                     <outlet property="numberOfAttenders" destination="WJc-ge-n8Z" id="mRr-Gg-GBH"/>
-                                    <segue destination="9xw-Ai-RPd" kind="presentation" id="SzG-sy-bnh"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -582,12 +581,13 @@
                         <barButtonItem key="leftBarButtonItem" systemItem="organize" id="7ly-Ih-jMh"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xwe-X8-wbj">
                             <connections>
-                                <segue destination="V8p-hm-ZWW" kind="presentation" id="T8k-0Z-tLk"/>
+                                <segue destination="V8p-hm-ZWW" kind="presentation" identifier="AddNewEvent" id="T8k-0Z-tLk"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="sidebarButton" destination="7ly-Ih-jMh" id="pBM-j5-YjK"/>
+                        <segue destination="9xw-Ai-RPd" kind="show" identifier="PushEventDetails" id="ufQ-Gp-TtJ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v2U-9A-0p2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -607,55 +607,41 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bda-Oz-hMR" customClass="PFImageView">
-                                <rect key="frame" x="0.0" y="-8" width="320" height="149"/>
+                                <rect key="frame" x="0.0" y="19" width="320" height="149"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="429-cp-IMw" customClass="PFImageView">
-                                <rect key="frame" x="16" y="154" width="101" height="102"/>
+                                <rect key="frame" x="16" y="185" width="101" height="102"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="EVNTR's Event" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CeH-mV-5d8">
-                                <rect key="frame" x="138" y="154" width="154" height="37"/>
+                                <rect key="frame" x="139" y="176" width="154" height="37"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Event Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WEQ-g4-QdZ">
-                                <rect key="frame" x="78" y="41" width="165" height="52"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Event Location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2OV-TK-qk5">
-                                <rect key="frame" x="103" y="290" width="115" height="21"/>
+                                <rect key="frame" x="103" y="307" width="115" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iMi-rE-H3w">
-                                <rect key="frame" x="32" y="319" width="256" height="71"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="7eH-lr-aeq">
-                                    <rect key="frame" x="0.0" y="0.0" width="256" height="71"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                </view>
-                                <blurEffect style="light"/>
-                            </visualEffectView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Description" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lu-8u-jfO">
-                                <rect key="frame" x="139" y="199" width="144" height="57"/>
+                                <rect key="frame" x="139" y="221" width="144" height="57"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="People Attending" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tew-G9-OSb">
-                                <rect key="frame" x="94" y="398" width="133" height="21"/>
+                                <rect key="frame" x="94" y="336" width="133" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6GS-Yf-IYb">
-                                <rect key="frame" x="40" y="427" width="240" height="128"/>
-                                <connections>
-                                    <segue destination="a4Q-BJ-RrX" kind="embed" id="NPp-H9-nra"/>
-                                </connections>
-                            </containerView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Event Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WEQ-g4-QdZ">
+                                <rect key="frame" x="78" y="72" width="165" height="52"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="27"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -666,8 +652,6 @@
                         <outlet property="eventCoverPhoto" destination="bda-Oz-hMR" id="opx-VD-GDD"/>
                         <outlet property="eventDescription" destination="8lu-8u-jfO" id="l2Y-4b-mfq"/>
                         <outlet property="eventTitle" destination="WEQ-g4-QdZ" id="66p-53-51R"/>
-                        <outlet property="locationBlurView" destination="iMi-rE-H3w" id="SCR-3g-Qu3"/>
-                        <outlet property="visualBlurView" destination="iMi-rE-H3w" id="UOb-nP-d4S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OjH-ZA-Wlw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -830,25 +814,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7eL-Zt-C29" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1544" y="-555"/>
-        </scene>
-        <!--Collection View Controller-->
-        <scene sceneID="9dX-td-wVb">
-            <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="a4Q-BJ-RrX" customClass="UICollectionViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="wAE-hm-vym"/>
-                        <viewControllerLayoutGuide type="bottom" id="9px-4j-Xox"/>
-                    </layoutGuides>
-                    <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="5nR-ki-Ui0">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <toolbarItems/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="An8-Y7-qcy" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2829" y="-257"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
