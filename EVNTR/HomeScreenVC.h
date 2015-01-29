@@ -14,6 +14,7 @@
 
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *sidebarButton;
 
+//Type Of Event Table View
 // 1 - for public  2 - for current user 3 - for different username
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) PFUser *userForEventsQuery;

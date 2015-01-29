@@ -10,6 +10,7 @@
 #import "SWRevealViewController.h"
 #import <Parse/Parse.h>
 #import "ProfileVC.h"
+#import "HomeScreenVC.h"
 
 @interface NavigationVC ()
 
@@ -48,22 +49,32 @@
 
 #pragma mark - Navigation
 
+//TODO - THIS DOESN"T FEEL LIKE THE BEST WAY TO DO THIS NAVIGATION
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     if ([[segue identifier] isEqualToString:@"ViewMyProfileFromNavigation"]) {
         UINavigationController *navigationControllerForProfileView = (UINavigationController *)[segue destinationViewController];
         
-        ProfileVC *profileViewController = (ProfileVC *)[[navigationControllerForProfileView childViewControllers] firstObject];
-        profileViewController.userNameForProfileView = [PFUser currentUser][@"username"];
+        ProfileVC *profileViewController = (ProfileVC *)[navigationControllerForProfileView topViewController];
+        profileViewController.userNameForProfileView = @"navigation";
+        
+        
     } else if ([[segue identifier] isEqualToString:@"HomeViewFromNavigation"]) {
+        
+        UITabBarController *tabBarController = segue.destinationViewController;
+        [tabBarController setSelectedIndex:0];
+        UINavigationController *navController = [tabBarController.viewControllers objectAtIndex:0];
+        HomeScreenVC *homeScreenVC = [navController.viewControllers objectAtIndex:0];
+        
+        homeScreenVC.typeOfEventTableView = 1;
+        homeScreenVC.userForEventsQuery = [PFUser currentUser];
+        
+        //not sure if I need this.
+        //[homeScreenVC viewWillAppear:YES];
         
     }
     
-    
-    
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
 }
 
 

@@ -34,11 +34,17 @@
     newUser.password = self.passwordField.text;
     newUser.email = self.emailField.text;
     
+    NSString *randomTwitterHandle = [NSString stringWithFormat:@"twitter%d", (arc4random_uniform(90) + 1)];
+    NSString *randomInstagramHandle = [NSString stringWithFormat:@"instagram%d", (arc4random_uniform(90) + 1)];
+    
     NSArray *followers = @[@"12", @"14", @"18"];
-    NSArray *following = @[@"11", @"14", @"19"];
+    NSArray *following = @[@"11", @"14", @"19", @"15"];
 
-    newUser[@"Followers"] = followers;
-    newUser[@"Following"] = following;
+    newUser[@"followers"] = followers;
+    newUser[@"following"] = following;
+    
+    newUser[@"twitterHandle"] = randomTwitterHandle;
+    newUser[@"instagramHandle"] = randomInstagramHandle;
     
     [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {

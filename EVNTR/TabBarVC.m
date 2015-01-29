@@ -32,6 +32,7 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
+    //Todo - Change this up and test it.
     HomeScreenVC *allEventsView = (HomeScreenVC *)[segue destinationViewController];
     allEventsView.typeOfEventTableView = 1;
     allEventsView.userForEventsQuery = [PFUser currentUser];

@@ -12,7 +12,6 @@
 
 @property (nonatomic, strong) IBOutlet UITextField *usernameField;
 @property (nonatomic, strong) IBOutlet UITextField *passwordField;
-@property (nonatomic, strong) IBOutlet UILabel *resultTextLabel;
 
 - (IBAction)login:(id)sender;
 

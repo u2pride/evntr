@@ -17,53 +17,49 @@
 
 @end
 
-//CREATE A PROPERTY OF PFUSER AND PASS IN THE CURRENT USER... SO YOU DONT HAVE TO DO SO MANY CURRENTUSER CALLS.
-//Add to make sure camera is available.
-//if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-//
-//UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Error"
-//                                                      message:@"Device has no camera"
-//                                                     delegate:nil
-//                                            cancelButtonTitle:@"OK"
-//                                            otherButtonTitles: nil];
-//
-//[myAlertView show];
-//
-//}
-
 @implementation ProfileVC
 
 @synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    SWRevealViewController *revealViewController = self.revealViewController;
-    
-    if (revealViewController) {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector(revealToggle:)];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
-    
-    
-    
-    
     
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    //TODO : Update for Allowing Viewing the Profile of Other Users.... pass in username of user to display?
+    //TODO - Change this.  Navigation Menu will set username to navigation
+    //BUG - Click on my events in the profile.  Hamburger Menu Icon disappears.
+    //Determine whether to show the Navigation Hamburger Menu Icon
+    if ([userNameForProfileView isEqualToString:@"navigation"]) {
+        
+        SWRevealViewController *revealViewController = self.revealViewController;
+        
+        if (revealViewController) {
+            [self.sidebarButton setTarget: self.revealViewController];
+            [self.sidebarButton setAction: @selector(revealToggle:)];
+            [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+        }
+        
+        userNameForProfileView = [PFUser currentUser][@"username"];
+        
+    } else {
+        NSLog(@"Nil out the sidebarbutton");
+        self.sidebarButton = nil;
+        self.navigationItem.leftBarButtonItems = nil;
+    }
     
+    
+    //Query Parse for the User.
     PFQuery *usernameQuery = [PFUser query];
     [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
+    userForProfileView = (PFUser *)[usernameQuery getFirstObject];
     
-    NSLog(@"Username: %@  Query Results: %@", userNameForProfileView, [usernameQuery findObjects]);
-    userForProfileView = [[usernameQuery findObjects] firstObject];
-    
-    int profileType = 2;
+    //Profile Types:
+    //1 - Current User
+    //2 - Another User
+    //3 - Sponsored or VIP User
+    int profileType;
 
     if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
         profileType = 1;
@@ -71,8 +67,6 @@
         profileType = 2;
     }
     
-    
-    // 1 - current user --- 2 - username of another user.
     switch (profileType) {
         case 1: {
             NSLog(@"Type 1");
@@ -80,18 +74,14 @@
         }
         case 2: {
             NSLog(@"Type 2");
-            self.navigationItem.leftItemsSupplementBackButton = YES;
-            //self.navigationController.navigationBar
             break;
         }
         case 3: {
-            //Add for sponsored profiles.
             break;
         }
         default:
             break;
     }
-    
     
     
     //Populate Profile Page with Details from Parse
@@ -103,16 +93,14 @@
     }];
     
     self.nameLabel.text = userForProfileView[@"username"];
+    self.twitterLabel.text = userForProfileView[@"twitterHandle"];
+    self.instagramLabel.text = [PFUser currentUser][@"instagramHandle"];
     
-    self.twitterLabel.text = userForProfileView[@"Twitter"];
-    self.instagramLabel.text = [PFUser currentUser][@"Instagram"];
-    
-    self.numberEventsLabel.text = userForProfileView[@"Events_Created"];
-    NSArray *numberOfFollowers = (NSArray *)userForProfileView[@"Followers"];
-    NSArray *numberOfFollowing = (NSArray *)userForProfileView[@"Following"];
+    //TODO - self.numberEventsLabel.text = userForProfileView[@"Events_Created"];
+    NSArray *numberOfFollowers = (NSArray *)userForProfileView[@"followers"];
+    NSArray *numberOfFollowing = (NSArray *)userForProfileView[@"following"];
     
     self.numberFollowersLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowers.count];
-    
     self.numberFollowingLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowing.count];
     
     
@@ -132,73 +120,21 @@
 }
 
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
 
-//Responds to the selection of a social media link and switches to the native app or web view.
-- (void)socialMediaTap:(UITapGestureRecognizer *)tapgr {
-    UILabel *tappedLabel = (UILabel *)tapgr.view;
-    NSInteger tag = tappedLabel.tag;
-    
-    switch (tag) {
-        case 1: {
-            NSLog(@"Twitter");
-            
-            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", self.twitterLabel.text];
-            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", self.twitterLabel.text];
-            
-            if(![[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterNativeURLString]])
-            {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterWebURLString]];
-            }
-            break;
-        }
-        case 2: {
-            NSLog(@"Instagram");
-            
-            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", self.instagramLabel.text];
-            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", self.instagramLabel.text];
-            
-            if (![[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramNativeURLString]])
-            {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramWebURLString]];
-            }
-            
-            break;
-        }
-        default: {
-            NSLog(@"Default - no social media case");
-            break;
-        }
-    }
-    
-    
-
-    
-
-    
-}
 
 
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+#pragma mark - ProfileActions  
+//Taking a New Profile Picture - Accessing Events - Accessing Followers/Following
 
 - (IBAction)takePicture:(id)sender {
     
-    
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
@@ -221,7 +157,10 @@
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     
-    [pictureOptionsMenu addAction:takePhoto];
+    //Check to see if device has a camera
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [pictureOptionsMenu addAction:takePhoto];
+    }
     [pictureOptionsMenu addAction:choosePhoto];
     [pictureOptionsMenu addAction:cancelAction];
     
@@ -234,15 +173,20 @@
 - (IBAction)viewMyEvents:(id)sender {
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
-    // 1 - normal event view - 2 - user events
+    // 1 - normal event view - 2 - user events 3 - top user profile (keep navigation)
+    //do i need to distinguish between my profile and another user's profile?
     eventVC.typeOfEventTableView = 2;
     
     if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
-        eventVC.typeOfEventTableView = 3;
+        eventVC.typeOfEventTableView = 2;
         eventVC.userForEventsQuery = [PFUser currentUser];
     } else {
         eventVC.typeOfEventTableView = 2;
         eventVC.userForEventsQuery = userForProfileView;
+    }
+    
+    if (self.sidebarButton) {
+        eventVC.typeOfEventTableView = 3;
     }
     
     UINavigationController *navigationController = [[UINavigationController alloc] init];
@@ -253,6 +197,41 @@
 
 
 - (void) returnToProfile {
+    
+}
+
+//Responds to the selection of a social media link and switches to the native app or web view.
+- (void)socialMediaTap:(UITapGestureRecognizer *)tapgr {
+    UILabel *tappedLabel = (UILabel *)tapgr.view;
+    NSInteger tag = tappedLabel.tag;
+    
+    switch (tag) {
+        case 1: {
+            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", self.twitterLabel.text];
+            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", self.twitterLabel.text];
+            
+            if(![[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterNativeURLString]])
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterWebURLString]];
+            }
+            break;
+        }
+        case 2: {
+            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", self.instagramLabel.text];
+            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", self.instagramLabel.text];
+            
+            if (![[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramNativeURLString]])
+            {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramWebURLString]];
+            }
+            
+            break;
+        }
+        default: {
+            
+            break;
+        }
+    }
     
 }
 
@@ -283,6 +262,18 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
+
+
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 
 

@@ -11,17 +11,16 @@
 #import "SWRevealViewController.h"
 #import <ParseUI/ParseUI.h>
 #import "EventTableCell.h"
+#import "ProfileVC.h"
 #import "EventDetailVC.h"
 
 @interface HomeScreenVC ()
-
-@property (nonatomic, strong) PFObject *selectedEvent;
 
 @end
 
 @implementation HomeScreenVC
 
-@synthesize userForEventsQuery, typeOfEventTableView, selectedEvent;
+@synthesize userForEventsQuery, typeOfEventTableView;
 
 - (id) initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
@@ -33,6 +32,7 @@
         self.textKey = @"text";
         self.typeOfEventTableView = 1;
         self.userForEventsQuery = [PFUser currentUser];
+        self.tabBarController.hidesBottomBarWhenPushed = YES;
     }
     return self;
 }
@@ -41,9 +41,6 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-
-
-
     SWRevealViewController *revealViewController = self.revealViewController;
     
     if (revealViewController) {
@@ -59,9 +56,15 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+
+}
+
+- (void)objectsWillLoad {
     // TODO - THIS IS NOT GETTING CALLED WHEN USING THE NAVIGATION, but otherwise is getting called.
+    // Switched from viewwillappear to objectswillload
     // Nevermind it is getting called, just after the queryForTable function... hmmm.
-    NSLog(@"ViewWillAppear");
+    NSLog(@"ObjectsWillLoad");
+    
     if (self.typeOfEventTableView == 2 || self.typeOfEventTableView == 3) {
         NSLog(@"Inside");
         self.navigationItem.rightBarButtonItem = nil;
@@ -86,15 +89,42 @@
 
 - (PFQuery *)queryForTable {
     
-    NSLog(@"THIS IS THE USER:  %@", userForEventsQuery);
+    //Return All Events for the Basic All Events View
+    //Return a Specific Username's events when you are viewing someone's events.
+    //TODO - not the best way to do this
     
     if (!userForEventsQuery) {
         self.userForEventsQuery = [PFUser currentUser];
     }
     
-    PFQuery *allEvents = [PFQuery queryWithClassName:@"Events"];
-    [allEvents whereKey:@"parent" equalTo:userForEventsQuery];
-    [allEvents orderByAscending:@"Title"];
+    PFQuery *allEvents;
+    
+    switch (typeOfEventTableView) {
+        case 1: {
+            allEvents = [PFQuery queryWithClassName:@"Events"];
+            [allEvents orderByAscending:@"Title"];
+            
+            break;
+        }
+        case 2: {
+            
+            allEvents = [PFQuery queryWithClassName:@"Events"];
+            [allEvents whereKey:@"parent" equalTo:userForEventsQuery];
+            [allEvents orderByAscending:@"Title"];
+            
+            break;
+        }
+        case 3: {
+            allEvents = [PFQuery queryWithClassName:@"Events"];
+            [allEvents whereKey:@"parent" equalTo:userForEventsQuery];
+            [allEvents orderByAscending:@"Title"];
+            
+            break;
+        }
+            
+        default:
+            break;
+    }
     
     return allEvents;
 }
@@ -119,53 +149,26 @@
 }
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    if (indexPath.row < self.objects.count) {
-        PFObject *event = [self.objects objectAtIndex:indexPath.row];
-        selectedEvent = event;
-    } else if (self.paginationEnabled) {
-        [self loadNextPage];
-    }
-    
-    //[super tableView:tableView didSelectRowAtIndexPath:indexPath];
-    
-    NSLog(@"Selected Event: %@", selectedEvent);
-    
-    [self performSegueWithIdentifier:@"PushEventDetails" sender:self];
-    
-}
- 
-
-
-// TODO:  Reset typeOfEventTableView on dismissal of the view
-
-
-
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    NSLog(@"PrepareforSegue");
     
-    if ([[segue identifier] isEqualToString:@"AddNewEvent"]) {
-        NSLog(@"AddNewEventSegue");
-
-    } else if ([[segue identifier] isEqualToString:@"PushEventDetails"]) {
-        NSLog(@"DetailEventViewSegue");
-        NSLog(@"selected event: %@", selectedEvent);
-        EventDetailVC *eventDetailVC = (EventDetailVC *)[segue destinationViewController];
-        eventDetailVC.eventObject = selectedEvent;
+    if ([[segue identifier] isEqualToString:@"pushEventDetails"]) {
         
+        NSIndexPath *indexPathOfSelectedItem = [self.tableView indexPathForSelectedRow];
+        EventDetailVC *eventDetailVC = segue.destinationViewController;
+        
+        PFObject *event = [self.objects objectAtIndex:indexPathOfSelectedItem.row];
+        eventDetailVC.eventObject = event;
+        
+    } else if ([[segue identifier] isEqualToString:@"AddNewEvent"]) {
+    
     }
     
     
-    
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+
 }
 
 

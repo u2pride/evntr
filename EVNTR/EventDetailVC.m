@@ -21,24 +21,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
+    eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+
+    eventUser = (PFUser *)eventObject[@"parent"];
+    [eventUser fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
+        creatorName.text = user[@"username"];
+        creatorPhoto.file = (PFFile *)user[@"profilePicture"];
+        [creatorPhoto loadInBackground];
+    }];
     
     NSLog(@"Event: %@ and User: %@", eventObject, eventUser);
-    
-    eventUser = (PFUser *)eventObject[@"parent"];
-    
+
     eventTitle.text = eventObject[@"title"];
     eventDescription.text = eventObject[@"description"];
-    eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
     eventCoverPhoto.file = (PFFile *)eventObject[@"coverPhoto"];
     [eventCoverPhoto loadInBackground];
     
-    creatorName.text = eventUser[@"username"];
-    creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
-    creatorPhoto.file = (PFFile *)eventUser[@"profilePicture"];
-    [creatorPhoto loadInBackground];
     
     
 }

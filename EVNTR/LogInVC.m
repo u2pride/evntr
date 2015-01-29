@@ -15,7 +15,7 @@
 
 @implementation LogInVC
 
-@synthesize usernameField, passwordField, resultTextLabel;
+@synthesize usernameField, passwordField;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -32,17 +32,21 @@
     [PFUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         if (user) {
             
-            user[@"Twitter"] = @"@U2Pride14";
-            user[@"Instagram"] = @"@u2pride";
-            user[@"Events_Attended"] = @14;
-            
-            
-            self.resultTextLabel.text = [NSString stringWithFormat:@"Success: %@", user.email];
+            //Testing - Use to Change User Details
+            //user[@"twitterHandle"] = @"@U2Pride14";
+            //user[@"instagamHandle"] = @"@u2pride";
+            //NSArray *followers = @[@"12", @"14", @"18"];
+            //NSArray *following = @[@"11", @"14", @"19"];
+            //user[@"followers"] = followers;
+            //user[@"following"] = following;
             
             [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
             
         } else {
-            self.resultTextLabel.text = @"Failure";
+            //Failed
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to Login" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            
+            [errorAlert show];
         }
     }];
     

@@ -38,6 +38,8 @@
 		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
+		A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */; };
+		A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B11A7ABDF400614412 /* PersonCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +100,10 @@
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
+		A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleVC.h; sourceTree = "<group>"; };
+		A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleVC.m; sourceTree = "<group>"; };
+		A4F2E9B01A7ABDF400614412 /* PersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonCell.h; sourceTree = "<group>"; };
+		A4F2E9B11A7ABDF400614412 /* PersonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PersonCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,22 +163,13 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
-				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
-				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
-				A4F2E9A51A7A805800614412 /* Custom Table Cells */,
-				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
-				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
+				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A415634A1A76EF3A00565BB6 /* ProfileVC.h */,
 				A415634B1A76EF3A00565BB6 /* ProfileVC.m */,
-				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
-				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
-				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
+				A4F2E9AC1A7AB4E200614412 /* Home View */,
+				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
+				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
 				A4F2E9A61A7A806A00614412 /* Navigation Controllers */,
-				A415633E1A769FDE00565BB6 /* SignUpVC.m */,
-				A41563401A76ACC000565BB6 /* LogInVC.h */,
-				A41563411A76ACC000565BB6 /* LogInVC.m */,
-				A41563431A76E15100565BB6 /* EventAddVC.h */,
-				A41563441A76E15100565BB6 /* EventAddVC.m */,
 				A41563491A76EB9800565BB6 /* SWRevealVC */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
@@ -256,6 +253,43 @@
 				A415634E1A76F35D00565BB6 /* NavigationVC.m */,
 			);
 			name = "Navigation Controllers";
+			sourceTree = "<group>";
+		};
+		A4F2E9A71A7A811C00614412 /* Login Flow */ = {
+			isa = PBXGroup;
+			children = (
+				A41563401A76ACC000565BB6 /* LogInVC.h */,
+				A41563411A76ACC000565BB6 /* LogInVC.m */,
+				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
+				A415633E1A769FDE00565BB6 /* SignUpVC.m */,
+			);
+			name = "Login Flow";
+			sourceTree = "<group>";
+		};
+		A4F2E9A81A7A813600614412 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
+				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
+				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
+				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
+				A41563431A76E15100565BB6 /* EventAddVC.h */,
+				A41563441A76E15100565BB6 /* EventAddVC.m */,
+				A4F2E9A51A7A805800614412 /* Custom Table Cells */,
+			);
+			name = Events;
+			sourceTree = "<group>";
+		};
+		A4F2E9AC1A7AB4E200614412 /* Home View */ = {
+			isa = PBXGroup;
+			children = (
+				A4F2E9A81A7A813600614412 /* Events */,
+				A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */,
+				A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */,
+				A4F2E9B01A7ABDF400614412 /* PersonCell.h */,
+				A4F2E9B11A7ABDF400614412 /* PersonCell.m */,
+			);
+			name = "Home View";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,11 +393,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
 				A4594B1E1A77C0D600270ECE /* TabBarVC.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
 				A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */,
+				A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
 				A41563451A76E15100565BB6 /* EventAddVC.m in Sources */,
 				A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */,

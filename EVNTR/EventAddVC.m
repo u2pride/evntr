@@ -35,6 +35,8 @@
     
 }
 
+#pragma mark - Adding a Cover Photo
+
 - (IBAction)selectCoverPhoto:(id)sender {
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
@@ -71,6 +73,8 @@
     
 }
 
+#pragma mark - Delegate Methods for ImagePicker
+
 - (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     self.imageChosenAsCover = info[UIImagePickerControllerEditedImage];
@@ -78,6 +82,14 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
     
 }
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+
+#pragma mark - Creating an Event in Parse
 
 - (void)createEvent:(id)sender {
     

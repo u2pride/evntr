@@ -19,14 +19,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
-    // [Optional] Power your app with Local Datastore. For more info, go to
-    //Parse enableLocalDatastore];
-    // [Optional] Track statistics around application opens.
-    
+    //Connecting App to Parse and Enabling Analytics
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
-    
-
     
     return YES;
 }
