@@ -540,10 +540,10 @@
             </objects>
             <point key="canvasLocation" x="-129" y="-457"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Home Tabs Controller-->
         <scene sceneID="nxH-LO-rSf">
             <objects>
-                <tabBarController id="IYi-Mt-r7R" sceneMemberID="viewController">
+                <tabBarController id="IYi-Mt-r7R" customClass="HomeTabsController" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="lUU-XL-BIU">
@@ -553,7 +553,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="iIJ-u3-p6g" kind="relationship" relationship="viewControllers" id="Juw-c4-YR6"/>
-                        <segue destination="nYp-Rm-lnp" kind="relationship" relationship="viewControllers" id="M2b-vv-HOv"/>
+                        <segue destination="1YE-KT-t1H" kind="relationship" relationship="viewControllers" id="M2b-vv-HOv"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cxH-FX-RZW" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -686,14 +686,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OjH-ZA-Wlw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2443" y="-257"/>
+            <point key="canvasLocation" x="2975" y="-257"/>
         </scene>
         <!--PeopleVC-->
         <scene sceneID="aBq-cW-q7e">
             <objects>
                 <collectionViewController storyboardIdentifier="viewUsersCollection" id="nYp-Rm-lnp" customClass="PeopleVC" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="f4j-4Z-VmU">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="yZL-7q-vZa">
@@ -734,12 +734,12 @@
                         </connections>
                     </collectionView>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <tabBarItem key="tabBarItem" systemItem="contacts" id="fvr-x9-Po7"/>
+                    <navigationItem key="navigationItem" id="uB9-qp-WMQ"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r06-GL-svP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1544" y="67"/>
+            <point key="canvasLocation" x="2076" y="67"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="P3Z-kh-4tK">
@@ -864,6 +864,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7eL-Zt-C29" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1544" y="-555"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="j1z-T5-op0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="1YE-KT-t1H" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" systemItem="contacts" id="fvr-x9-Po7"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="iNj-xH-D2m">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="nYp-Rm-lnp" kind="relationship" relationship="rootViewController" id="awe-oA-GyH"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FyZ-rl-Kbd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1544" y="67"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

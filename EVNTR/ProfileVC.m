@@ -83,8 +83,6 @@
         profileType = 2;
     }
     
-    
-    
     switch (profileType) {
         case CURRENT_USER_PROFILE: {
             //hide follow and set picture button
@@ -281,15 +279,16 @@
         
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
         
+        newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
         newFollowActivity[@"from"] = [PFUser currentUser];
         newFollowActivity[@"to"] = userForProfileView;
-        newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
         
         [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            followButton.titleLabel.text = @"Following";
-            
+
             if (succeeded) {
                 NSLog(@"Saved");
+                [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+
 
             } else {
                 NSLog(@"Error in Saved");
@@ -307,13 +306,19 @@
         PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
         
         [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-        [findFollowActivity whereKey:@"from" equalTo:userForProfileView];
+        [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+        [findFollowActivity whereKey:@"to" equalTo:userForProfileView];
         
         [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
+            NSLog(@"Objects Found: %@", objects);
+            
             PFObject *previousFollowActivity = [objects firstObject];
             [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                NSLog(@"Inside the delete part");
                 
+                [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+
                 UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"DELETED" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                     
                     [errorAlert show];

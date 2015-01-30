@@ -39,6 +39,8 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     [self findUsersOnParse];
+    //[self.collectionView reloadData];
+    NSLog(@"ViewWillAppear on People VC");
 }
 
 - (void)findUsersOnParse {

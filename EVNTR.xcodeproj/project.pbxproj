@@ -34,7 +34,6 @@
 		A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632F1A7688E900565BB6 /* Security.framework */; };
 		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
-		A4594B1E1A77C0D600270ECE /* TabBarVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4594B1D1A77C0D600270ECE /* TabBarVC.m */; };
 		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
@@ -42,6 +41,7 @@
 		A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B11A7ABDF400614412 /* PersonCell.m */; };
 		A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */; };
 		A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B71A7AF65800614412 /* EVNConstants.m */; };
+		A4F2E9BB1A7C0BA000614412 /* HomeTabsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,8 +95,6 @@
 		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
 		A415634D1A76F35D00565BB6 /* NavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationVC.h; sourceTree = "<group>"; };
 		A415634E1A76F35D00565BB6 /* NavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationVC.m; sourceTree = "<group>"; };
-		A4594B1C1A77C0D600270ECE /* TabBarVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarVC.h; sourceTree = "<group>"; };
-		A4594B1D1A77C0D600270ECE /* TabBarVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarVC.m; sourceTree = "<group>"; };
 		A48EEFEC1A797B82007145E3 /* EventDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailVC.h; sourceTree = "<group>"; };
 		A48EEFED1A797B82007145E3 /* EventDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailVC.m; sourceTree = "<group>"; };
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -110,6 +108,8 @@
 		A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNUtility.m; sourceTree = "<group>"; };
 		A4F2E9B61A7AF65800614412 /* EVNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNConstants.h; sourceTree = "<group>"; };
 		A4F2E9B71A7AF65800614412 /* EVNConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNConstants.m; sourceTree = "<group>"; };
+		A4F2E9B91A7C0BA000614412 /* HomeTabsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTabsController.h; sourceTree = "<group>"; };
+		A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTabsController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,8 +257,8 @@
 		A4F2E9A61A7A806A00614412 /* Navigation Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				A4594B1C1A77C0D600270ECE /* TabBarVC.h */,
-				A4594B1D1A77C0D600270ECE /* TabBarVC.m */,
+				A4F2E9B91A7C0BA000614412 /* HomeTabsController.h */,
+				A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */,
 				A415634D1A76F35D00565BB6 /* NavigationVC.h */,
 				A415634E1A76F35D00565BB6 /* NavigationVC.m */,
 			);
@@ -403,10 +403,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4F2E9BB1A7C0BA000614412 /* HomeTabsController.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
-				A4594B1E1A77C0D600270ECE /* TabBarVC.m in Sources */,
 				A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
 				A41563481A76EB8E00565BB6 /* SWRevealViewController.m in Sources */,
