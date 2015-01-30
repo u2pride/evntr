@@ -9,7 +9,8 @@
 #import "ProfileVC.h"
 #import "SWRevealViewController.h"
 #import "HomeScreenVC.h"
-@import UIKit;
+#import "PeopleVC.h"
+#import "EVNConstants.h"
 
 @interface ProfileVC ()
 
@@ -19,11 +20,15 @@
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //Some Minor UI Adjustments
+    self.navigationController.view.backgroundColor = [UIColor whiteColor];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -31,6 +36,9 @@
     //TODO - Change this.  Navigation Menu will set username to navigation
     //BUG - Click on my events in the profile.  Hamburger Menu Icon disappears.
     //Determine whether to show the Navigation Hamburger Menu Icon
+    
+
+    
     if ([userNameForProfileView isEqualToString:@"navigation"]) {
         
         SWRevealViewController *revealViewController = self.revealViewController;
@@ -53,30 +61,67 @@
     //Query Parse for the User.
     PFQuery *usernameQuery = [PFUser query];
     [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
-    userForProfileView = (PFUser *)[usernameQuery getFirstObject];
+    [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        userForProfileView = (PFUser *)object;
+        [self updateUIWithUser];
+
+    }];
+    
+   }
+
+- (void)updateUIWithUser {
     
     //Profile Types:
     //1 - Current User
     //2 - Another User
     //3 - Sponsored or VIP User
     int profileType;
-
+    
     if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
         profileType = 1;
     } else {
         profileType = 2;
     }
     
+    
+    
     switch (profileType) {
-        case 1: {
-            NSLog(@"Type 1");
+        case CURRENT_USER_PROFILE: {
+            //hide follow and set picture button
+            followButton.hidden = YES;
+            setPictureButton.hidden = NO;
+            
             break;
         }
-        case 2: {
-            NSLog(@"Type 2");
+        case OTHER_USER_PROFILE: {
+            //setup follow state and set picture button
+            followButton.hidden = NO;
+            setPictureButton.hidden = YES;
+            
+            NSLog(@"Other user profile");
+            
+            //determine whether the current user is following this other user
+            PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
+            [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+            [followActivity whereKey:@"to" equalTo:userForProfileView];
+            [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                //TODO - Does this make sense?
+                
+                if (!objects || !objects.count) {
+                    //followButton.titleLabel.text = @"Follow";
+                    [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+                    NSLog(@"Changing String to Follow because objects: %@", objects);
+                } else {
+                    //followButton.titleLabel.text = @"Following";
+                    [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+                    NSLog(@"Changing String to Following because objects: %@", objects);
+                }
+            }];
+            
             break;
         }
-        case 3: {
+        case SPONSORED_PROFILE: {
             break;
         }
         default:
@@ -97,11 +142,11 @@
     self.instagramLabel.text = [PFUser currentUser][@"instagramHandle"];
     
     //TODO - self.numberEventsLabel.text = userForProfileView[@"Events_Created"];
-    NSArray *numberOfFollowers = (NSArray *)userForProfileView[@"followers"];
-    NSArray *numberOfFollowing = (NSArray *)userForProfileView[@"following"];
+    //NSArray *numberOfFollowers = (NSArray *)userForProfileView[@"followers"];
+    //NSArray *numberOfFollowing = (NSArray *)userForProfileView[@"following"];
     
-    self.numberFollowersLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowers.count];
-    self.numberFollowingLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowing.count];
+    //self.numberFollowersLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowers.count];
+    //self.numberFollowingLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowing.count];
     
     
     //Setup Twitter and Instagram to Link to Profiles
@@ -116,6 +161,8 @@
     UITapGestureRecognizer *instagramTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
     
     [self.instagramLabel addGestureRecognizer:instagramTapGesture];
+    
+
     
 }
 
@@ -195,8 +242,95 @@
     [self presentViewController:navigationController animated:YES completion:nil];
 }
 
+- (IBAction)viewFollowers:(id)sender {
+    
+    PeopleVC *viewFollowersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
+    
+    viewFollowersVC.typeOfUsers = VIEW_FOLLOWERS;
+    viewFollowersVC.profileUsername = userForProfileView;
+    
+    NSLog(@"Heading over to View this Profile's Followers:  %d and %@", viewFollowersVC.typeOfUsers, viewFollowersVC.profileUsername);
+    
+    [self.navigationController pushViewController:viewFollowersVC animated:YES];
+    
+    //[self presentViewController:viewFollowersVC animated:YES completion:nil];
+    
+}
+
+- (IBAction)viewFollowing:(id)sender {
+    
+    PeopleVC *viewFollowingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
+    
+    viewFollowingVC.typeOfUsers = VIEW_FOLLOWING;
+    viewFollowingVC.profileUsername = userForProfileView;
+    
+    [self.navigationController pushViewController:viewFollowingVC animated:YES];
+
+    //[self presentViewController:viewFollowingVC animated:YES completion:nil];
+    
+    
+}
+
+- (IBAction)followUser:(id)sender {
+    
+    NSLog(@"Clicked Follow User");
+    
+    if ([followButton.titleLabel.text isEqualToString:@"Follow"]) {
+        
+        NSLog(@"Follow the User");
+        
+        PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
+        
+        newFollowActivity[@"from"] = [PFUser currentUser];
+        newFollowActivity[@"to"] = userForProfileView;
+        newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
+        
+        [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            followButton.titleLabel.text = @"Following";
+            
+            if (succeeded) {
+                NSLog(@"Saved");
+
+            } else {
+                NSLog(@"Error in Saved");
+
+            }
+
+        }];
+        
+
+        
+    } else if ([followButton.titleLabel.text isEqualToString:@"Following"]) {
+        
+        NSLog(@"Unfollow the User");
+        
+        PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
+        
+        [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+        [findFollowActivity whereKey:@"from" equalTo:userForProfileView];
+        
+        [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            
+            PFObject *previousFollowActivity = [objects firstObject];
+            [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"DELETED" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
+            }];
+            
+        }];
+        
+        
+        
+    }
+         
+    
+}
+
 
 - (void) returnToProfile {
+
     
 }
 
@@ -241,10 +375,10 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
-    self.profileImageView.image = chosenPicture;
     
     [picker dismissViewControllerAnimated:YES completion:nil];
-    
+    self.profileImageView.image = chosenPicture;
+
     NSData *profilePictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
     PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:profilePictureData];
     

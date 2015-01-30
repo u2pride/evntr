@@ -21,6 +21,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    //Minor UI Adjustments
+    self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    
+    
     SWRevealViewController *revealViewController = self.revealViewController;
     
     if (revealViewController) {
@@ -55,16 +59,40 @@
     
 }
 
-- (IBAction)envtr2Profile:(id)sender {
+- (IBAction)evntr1Profile:(id)sender {
     
-    //create profile vc
-    //pop onto stack
+    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    newUserProfileVC.userNameForProfileView = @"EVNTR";
+    
+    [self.navigationController pushViewController:newUserProfileVC animated:YES];
+    
+}
+
+- (IBAction)envtr2Profile:(id)sender {
     
     ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
     newUserProfileVC.userNameForProfileView = @"EVNTR2";
     
     [self.navigationController pushViewController:newUserProfileVC animated:YES];
     
+    
+}
+
+- (IBAction)evntr3Profile:(id)sender {
+    
+    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    newUserProfileVC.userNameForProfileView = @"EVNTR3";
+    
+    [self.navigationController pushViewController:newUserProfileVC animated:YES];
+    
+}
+
+- (IBAction)evntr4Profile:(id)sender {
+    
+    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    newUserProfileVC.userNameForProfileView = @"EVNTR4";
+    
+    [self.navigationController pushViewController:newUserProfileVC animated:YES];
     
 }
 

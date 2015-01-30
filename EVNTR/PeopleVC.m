@@ -9,9 +9,14 @@
 #import "PeopleVC.h"
 #import <Parse/Parse.h>
 #import "PersonCell.h"
+#import <CoreGraphics/CoreGraphics.h>
+#import "EVNUtility.h"
+#import "EVNConstants.h"
+#import "ProfileVC.h"
 
 @implementation PeopleVC
 
+@synthesize typeOfUsers, profileUsername;
 
 #pragma mark -
 #pragma mark Init
@@ -19,19 +24,30 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
     //Maybe this is the part of the problem.
-    [self findUsersOnParse];
+    //self.typeOfUsers = VIEW_ALL_PEOPLE;
+    //self.profileUsername = nil;
+    //[self findUsersOnParse];
+    
+    //Minor UI Adjustments
+    self.navigationController.view.backgroundColor = [UIColor whiteColor];
+
 }
 
 - (void) didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    [self findUsersOnParse];
+}
+
 - (void)findUsersOnParse {
     
-    int typeOfUsers = 1;
+    usersArray = [[NSArray alloc] init];
+    usersMutableArray = [[NSMutableArray alloc] init];
     
     switch (typeOfUsers) {
-        case 1: {
+        case VIEW_ALL_PEOPLE: {
             
             PFQuery *query = [PFUser query];
             [query orderByAscending:@"username"];
@@ -39,6 +55,53 @@
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
                 usersArray = [[NSArray alloc] initWithArray:usersFound];
+                [self.collectionView reloadData];
+            }];
+            
+            break;
+        }
+        case VIEW_FOLLOWERS: {
+            
+            PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+            [query whereKey:@"to" equalTo:profileUsername];
+            [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+            [query orderByAscending:@"createdAt"];
+            [query selectKeys:@[@"from"]];
+            
+            [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+                
+                NSLog(@"RESULTS OF VIEW_FOLLOWERS QUERY: %@", usersFound);
+                
+                for (PFObject *object in usersFound) {
+                    [usersMutableArray addObject:object[@"from"]];
+                }
+                usersArray = usersMutableArray;
+                
+                NSLog(@"Results Given to UICollectionView: %@", usersArray);
+
+                
+                [self.collectionView reloadData];
+            }];
+            
+            break;
+        }
+        case VIEW_FOLLOWING: {
+            
+            PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+            [query whereKey:@"from" equalTo:profileUsername];
+            [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+            [query orderByAscending:@"createdAt"];
+            
+            [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+                
+                for (PFObject *object in usersFound) {
+                    [usersMutableArray addObject:object[@"to"]];
+                }
+                
+                usersArray = usersMutableArray;
+                
+                NSLog(@"Results Given to UICollectionView: %@", usersArray);
+                
                 [self.collectionView reloadData];
             }];
             
@@ -71,17 +134,35 @@
     
     NSLog(@"Current User: %@", currentUser);
     
+    [currentUser fetchIfNeeded];
+    
     cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
     cell.profileImage.file = (PFFile *)currentUser[@"profilePicture"];
     cell.personTitle.text = currentUser[@"username"];
-    [cell.profileImage loadInBackground];
+    [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+        NSLog(@"MaskedImage");
+        cell.profileImage.image = [UIImage imageNamed:@"EventDefault"];
+        cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+    }];
     
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
+    PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
+    
+    ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
+    
+    [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+    
+    
 }
+
+
+
+
 
 @end
 
