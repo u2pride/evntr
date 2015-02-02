@@ -20,6 +20,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.usernameField.text = nil;
+    self.usernameField.placeholder = @"username";
+    
+    self.passwordField.text = nil;
+    self.passwordField.placeholder = @"password";
+    
+    self.emailField.text = nil;
+    self.emailField.placeholder = @"email";
+    self.emailField.keyboardType = UIKeyboardTypeEmailAddress;
 }
 
 - (void)didReceiveMemoryWarning {

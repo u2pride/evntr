@@ -19,8 +19,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *eventDescription;
 
 
-@property (nonatomic, strong) PFUser *eventUser;
-
 @property (nonatomic, strong) PFObject *eventObject;
 
 

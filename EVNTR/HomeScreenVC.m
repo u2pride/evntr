@@ -6,13 +6,14 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "HomeScreenVC.h"
-#import <Parse/Parse.h>
-#import "SWRevealViewController.h"
-#import <ParseUI/ParseUI.h>
-#import "EventTableCell.h"
-#import "ProfileVC.h"
 #import "EventDetailVC.h"
+#import "EventTableCell.h"
+#import "HomeScreenVC.h"
+#import "ProfileVC.h"
+#import "SWRevealViewController.h"
+#import <Parse/Parse.h>
+#import <ParseUI/ParseUI.h>
+#import "EVNConstants.h"
 
 @interface HomeScreenVC ()
 
@@ -20,34 +21,47 @@
 
 @implementation HomeScreenVC
 
-@synthesize userForEventsQuery, typeOfEventTableView;
+@synthesize userForEventsQuery, typeOfEventTableView, isComingFromNavigation;
 
 - (id) initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:style];
     if (self) {
-        self.title = @"Main View";
+        self.title = @"EVENTS";
         self.parseClassName = @"Events";
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
-        self.textKey = @"text";
-        self.typeOfEventTableView = 1;
+        self.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         self.userForEventsQuery = [PFUser currentUser];
         self.tabBarController.hidesBottomBarWhenPushed = YES;
+        self.isComingFromNavigation = NO;
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
-    SWRevealViewController *revealViewController = self.revealViewController;
-    
-    if (revealViewController) {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector(revealToggle:)];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    if (self.isComingFromNavigation) {
+        
+        SWRevealViewController *revealViewController = self.revealViewController;
+        
+        if (revealViewController) {
+            [self.sidebarButton setTarget: self.revealViewController];
+            [self.sidebarButton setAction: @selector(revealToggle:)];
+            [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+        }
+        
+    } else {
+        //setup view when viewing events from profiles
+        
+        self.navigationItem.rightBarButtonItems = nil;
+        self.navigationItem.leftBarButtonItems = nil;
+        
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
+        
+        self.navigationItem.rightBarButtonItem = cancelButton;
     }
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,26 +69,10 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-
-}
 
 - (void)objectsWillLoad {
     // TODO - THIS IS NOT GETTING CALLED WHEN USING THE NAVIGATION, but otherwise is getting called.
-    // Switched from viewwillappear to objectswillload
     // Nevermind it is getting called, just after the queryForTable function... hmmm.
-    NSLog(@"ObjectsWillLoad");
-    
-    if (self.typeOfEventTableView == 2 || self.typeOfEventTableView == 3) {
-        NSLog(@"Inside");
-        self.navigationItem.rightBarButtonItem = nil;
-        self.navigationItem.leftBarButtonItem = nil;
-        
-        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
-        
-        
-        self.navigationItem.rightBarButtonItem = cancelButton;
-    }
 }
 
 
@@ -91,33 +89,28 @@
     
     //Return All Events for the Basic All Events View
     //Return a Specific Username's events when you are viewing someone's events.
-    //TODO - not the best way to do this
     
-    if (!userForEventsQuery) {
-        self.userForEventsQuery = [PFUser currentUser];
-    }
-    
-    PFQuery *allEvents;
+    PFQuery *eventsQuery;
     
     switch (typeOfEventTableView) {
-        case 1: {
-            allEvents = [PFQuery queryWithClassName:@"Events"];
-            [allEvents orderByAscending:@"Title"];
+        case ALL_PUBLIC_EVENTS: {
+            eventsQuery = [PFQuery queryWithClassName:@"Events"];
+            [eventsQuery orderByAscending:@"Title"];
             
             break;
         }
-        case 2: {
+        case CURRENT_USER_EVENTS: {
             
-            allEvents = [PFQuery queryWithClassName:@"Events"];
-            [allEvents whereKey:@"parent" equalTo:userForEventsQuery];
-            [allEvents orderByAscending:@"Title"];
+            eventsQuery = [PFQuery queryWithClassName:@"Events"];
+            [eventsQuery whereKey:@"parent" equalTo:userForEventsQuery];
+            [eventsQuery orderByAscending:@"Title"];
             
             break;
         }
-        case 3: {
-            allEvents = [PFQuery queryWithClassName:@"Events"];
-            [allEvents whereKey:@"parent" equalTo:userForEventsQuery];
-            [allEvents orderByAscending:@"Title"];
+        case OTHER_USER_EVENTS: {
+            eventsQuery = [PFQuery queryWithClassName:@"Events"];
+            [eventsQuery whereKey:@"parent" equalTo:userForEventsQuery];
+            [eventsQuery orderByAscending:@"Title"];
             
             break;
         }
@@ -126,22 +119,22 @@
             break;
     }
     
-    return allEvents;
+    return eventsQuery;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
     
-    EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:@"eventCell"];
+    static NSString *cellIdentifier = @"eventCell";
     
-    if (cell == nil) {
-         cell = [[EventTableCell alloc] init];
+    EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    if (cell) {
+        cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
+        cell.eventCoverImage.file = (PFFile *)[object objectForKey:@"coverPhoto"];
+        [cell.eventCoverImage loadInBackground];
+        cell.eventTitle.text = [object objectForKey:@"title"];
+        cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"attenders"]];
     }
-    
-    cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
-    cell.eventCoverImage.file = (PFFile *)[object objectForKey:@"coverPhoto"];
-    [cell.eventCoverImage loadInBackground];
-    cell.eventTitle.text = [object objectForKey:@"title"];
-    cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"attenders"]];
     
     
     return cell;
@@ -154,7 +147,7 @@
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    
+    //open view with the event details
     if ([[segue identifier] isEqualToString:@"pushEventDetails"]) {
         
         NSIndexPath *indexPathOfSelectedItem = [self.tableView indexPathForSelectedRow];
@@ -164,11 +157,10 @@
         eventDetailVC.eventObject = event;
         
     } else if ([[segue identifier] isEqualToString:@"AddNewEvent"]) {
-    
+        //nothing needed yet
+        
     }
     
-    
-
 }
 
 

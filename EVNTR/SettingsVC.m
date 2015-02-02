@@ -24,7 +24,6 @@
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     
-    
     SWRevealViewController *revealViewController = self.revealViewController;
     
     if (revealViewController) {

@@ -13,6 +13,7 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
+//User Information
 @property (strong, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
@@ -25,9 +26,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowersLabel;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
 
-
-// Tells the Profile VC what User Profile to display
+// Username of the Profile Page
 @property (strong, nonatomic) NSString *userNameForProfileView;
+
+//Navigation
+@property BOOL isComingFromNavigation;
 
 
 - (IBAction)takePicture:(id)sender;
@@ -35,6 +38,8 @@
 - (IBAction)viewFollowers:(id)sender;
 - (IBAction)viewFollowing:(id)sender;
 
+
 - (IBAction)followUser:(id)sender;
+
 
 @end

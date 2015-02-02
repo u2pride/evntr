@@ -11,6 +11,7 @@
 #import <Parse/Parse.h>
 #import "ProfileVC.h"
 #import "HomeScreenVC.h"
+#import "EVNConstants.h"
 
 @interface NavigationVC ()
 
@@ -57,7 +58,8 @@
         UINavigationController *navigationControllerForProfileView = (UINavigationController *)[segue destinationViewController];
         
         ProfileVC *profileViewController = (ProfileVC *)[navigationControllerForProfileView topViewController];
-        profileViewController.userNameForProfileView = @"navigation";
+        profileViewController.userNameForProfileView = [[PFUser currentUser] objectForKey:@"username"];
+        profileViewController.isComingFromNavigation = YES;
         
         
     } else if ([[segue identifier] isEqualToString:@"HomeViewFromNavigation"]) {
@@ -67,8 +69,10 @@
         UINavigationController *navController = [tabBarController.viewControllers objectAtIndex:0];
         HomeScreenVC *homeScreenVC = [navController.viewControllers objectAtIndex:0];
         
-        homeScreenVC.typeOfEventTableView = 1;
+        homeScreenVC.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         homeScreenVC.userForEventsQuery = [PFUser currentUser];
+        homeScreenVC.isComingFromNavigation = YES;
+        
         
         //not sure if I need this.
         //[homeScreenVC viewWillAppear:YES];

@@ -93,7 +93,6 @@
 
 - (void)createEvent:(id)sender {
     
-    
     PFObject *newEvent = [PFObject objectWithClassName:@"Events"];
     newEvent[@"title"] = self.eventTitleField.text;
     newEvent[@"description"] = self.eventDescriptionField.text;

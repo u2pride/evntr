@@ -19,7 +19,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    //Setup the username and password text fields.
+    self.usernameField.text = @"EVNTR";
+    self.usernameField.placeholder = @"username";
+    
+    self.passwordField.text = @"eventkey";
+    self.passwordField.placeholder = @"password";
+    self.passwordField.secureTextEntry = YES;
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -44,7 +52,7 @@
             
         } else {
             //Failed
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to Login" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Username or Password Does Not Exist" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
             
             [errorAlert show];
         }

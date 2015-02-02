@@ -11,6 +11,8 @@
 
 @interface EventDetailVC ()
 
+@property (nonatomic, strong) PFUser *eventUser;
+
 @end
 
 @implementation EventDetailVC
@@ -27,6 +29,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 
+    [super viewDidAppear:animated];
+    
     eventUser = (PFUser *)eventObject[@"parent"];
     [eventUser fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         creatorName.text = user[@"username"];
@@ -40,8 +44,6 @@
     eventDescription.text = eventObject[@"description"];
     eventCoverPhoto.file = (PFFile *)eventObject[@"coverPhoto"];
     [eventCoverPhoto loadInBackground];
-    
-    
     
 }
 

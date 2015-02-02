@@ -30,6 +30,9 @@
     
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    
+    //Start Looking for Users
+    [self findUsersOnParse];
 
 }
 
@@ -37,11 +40,6 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    [self findUsersOnParse];
-    //[self.collectionView reloadData];
-    NSLog(@"ViewWillAppear on People VC");
-}
 
 - (void)findUsersOnParse {
     
@@ -58,6 +56,7 @@
                 
                 usersArray = [[NSArray alloc] initWithArray:usersFound];
                 [self.collectionView reloadData];
+                
             }];
             
             break;
@@ -136,16 +135,20 @@
     
     NSLog(@"Current User: %@", currentUser);
     
-    [currentUser fetchIfNeeded];
-    
+    //Default Profile Pic Until User Information is Fetched in Background
     cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
-    cell.profileImage.file = (PFFile *)currentUser[@"profilePicture"];
-    cell.personTitle.text = currentUser[@"username"];
-    [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-        NSLog(@"MaskedImage");
-        cell.profileImage.image = [UIImage imageNamed:@"EventDefault"];
-        cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+    
+    [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+        cell.personTitle.text = object[@"username"];
+        [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+            NSLog(@"MaskedImage");
+            cell.profileImage.image = [UIImage imageNamed:@"EventDefault"];
+            cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+        }];
     }];
+    
+
     
     return cell;
 }
@@ -158,7 +161,6 @@
     viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
     
     [self.navigationController pushViewController:viewUserProfileVC animated:YES];
-    
     
 }
 

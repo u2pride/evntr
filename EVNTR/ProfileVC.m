@@ -6,11 +6,12 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNConstants.h"
+#import "HomeScreenVC.h"
+#import "LogInVC.h"
+#import "PeopleVC.h"
 #import "ProfileVC.h"
 #import "SWRevealViewController.h"
-#import "HomeScreenVC.h"
-#import "PeopleVC.h"
-#import "EVNConstants.h"
 
 @interface ProfileVC ()
 
@@ -20,7 +21,19 @@
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton, isComingFromNavigation;
+
+
+- (id)initWithCoder:(NSCoder*)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+    {
+        self.isComingFromNavigation = NO;
+    }
+    
+    return self;
+}
 
 
 - (void)viewDidLoad {
@@ -28,19 +41,9 @@
     
     //Some Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
-
-}
-
-- (void)viewWillAppear:(BOOL)animated {
     
-    //TODO - Change this.  Navigation Menu will set username to navigation
-    //BUG - Click on my events in the profile.  Hamburger Menu Icon disappears.
-    //Determine whether to show the Navigation Hamburger Menu Icon
-    
-
-    
-    if ([userNameForProfileView isEqualToString:@"navigation"]) {
-        
+    //When presented from Navigation - Keep the Side Reveal Menu Icon in the Top Left
+    if (self.isComingFromNavigation) {
         SWRevealViewController *revealViewController = self.revealViewController;
         
         if (revealViewController) {
@@ -48,15 +51,23 @@
             [self.sidebarButton setAction: @selector(revealToggle:)];
             [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
         }
-        
-        userNameForProfileView = [PFUser currentUser][@"username"];
-        
     } else {
-        NSLog(@"Nil out the sidebarbutton");
         self.sidebarButton = nil;
         self.navigationItem.leftBarButtonItems = nil;
     }
     
+    //Setup the View
+    self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
+    self.twitterLabel.text = nil;
+    self.instagramLabel.text = nil;
+    
+
+}
+
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
     
     //Query Parse for the User.
     PFQuery *usernameQuery = [PFUser query];
@@ -64,23 +75,20 @@
     [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         userForProfileView = (PFUser *)object;
         [self updateUIWithUser];
-
+        
     }];
     
-   }
+}
 
+//After User is Fetched From Parse - Update the UI
 - (void)updateUIWithUser {
-    
-    //Profile Types:
-    //1 - Current User
-    //2 - Another User
-    //3 - Sponsored or VIP User
+
     int profileType;
     
     if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
-        profileType = 1;
+        profileType = CURRENT_USER_PROFILE;
     } else {
-        profileType = 2;
+        profileType = OTHER_USER_PROFILE;
     }
     
     switch (profileType) {
@@ -96,9 +104,7 @@
             followButton.hidden = NO;
             setPictureButton.hidden = YES;
             
-            NSLog(@"Other user profile");
-            
-            //determine whether the current user is following this other user
+            //Determine whether the current user is following this user
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
             [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
             [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
@@ -135,9 +141,37 @@
         }
     }];
     
+    
     self.nameLabel.text = userForProfileView[@"username"];
-    self.twitterLabel.text = userForProfileView[@"twitterHandle"];
-    self.instagramLabel.text = [PFUser currentUser][@"instagramHandle"];
+
+    //If Social Media Handles Exist, Setup with Handles and Tap Gestures
+    if (userForProfileView[@"twitterHandle"]) {
+        self.twitterLabel.text = userForProfileView[@"twitterHandle"];
+        
+        self.twitterLabel.userInteractionEnabled = YES;
+        self.twitterLabel.tag = 1;
+        UITapGestureRecognizer *twitterTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
+        
+        [self.twitterLabel addGestureRecognizer:twitterTapGesture];
+    } else {
+        self.twitterLabel.text = @"Not Connected";
+    }
+    
+    if (userForProfileView[@"instagramHandle"]) {
+        self.instagramLabel.text = userForProfileView[@"instagramHandle"];
+        
+        self.instagramLabel.userInteractionEnabled = YES;
+        self.instagramLabel.tag = 2;
+        UITapGestureRecognizer *instagramTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
+        
+        [self.instagramLabel addGestureRecognizer:instagramTapGesture];
+        
+    } else {
+        self.instagramLabel.text = @"Not Connected";
+    }
+
+    
+    //Query the Activity Table.
     
     //TODO - self.numberEventsLabel.text = userForProfileView[@"Events_Created"];
     //NSArray *numberOfFollowers = (NSArray *)userForProfileView[@"followers"];
@@ -145,21 +179,6 @@
     
     //self.numberFollowersLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowers.count];
     //self.numberFollowingLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowing.count];
-    
-    
-    //Setup Twitter and Instagram to Link to Profiles
-    self.twitterLabel.userInteractionEnabled = YES;
-    self.twitterLabel.tag = 1;
-    UITapGestureRecognizer *twitterTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
-    
-    [self.twitterLabel addGestureRecognizer:twitterTapGesture];
-    
-    self.instagramLabel.userInteractionEnabled = YES;
-    self.instagramLabel.tag = 2;
-    UITapGestureRecognizer *instagramTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
-    
-    [self.instagramLabel addGestureRecognizer:instagramTapGesture];
-    
 
     
 }
@@ -223,7 +242,7 @@
     eventVC.typeOfEventTableView = 2;
     
     if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
-        eventVC.typeOfEventTableView = 2;
+        eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
         eventVC.userForEventsQuery = [PFUser currentUser];
     } else {
         eventVC.typeOfEventTableView = 2;
@@ -379,9 +398,10 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
+    [picker dismissViewControllerAnimated:YES completion:nil];
+
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
-    [picker dismissViewControllerAnimated:YES completion:nil];
     self.profileImageView.image = chosenPicture;
 
     NSData *profilePictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
@@ -397,6 +417,7 @@
     
     
 }
+
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
