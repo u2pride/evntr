@@ -9,6 +9,8 @@
 #import "EventAddVC.h"
 #import <Parse/Parse.h>
 #import <MapKit/MapKit.h>
+#import "PeopleVC.h"
+#import "EVNConstants.h"
 
 @interface EventAddVC ()
 
@@ -17,12 +19,13 @@
 @property (nonatomic, strong) PFGeoPoint *eventGeoPoint;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) NSArray *peopleToInvite;
 
 @end
 
 @implementation EventAddVC
 
-@synthesize eventTitleField, eventDescriptionField, eventAttendersField, imageChosenAsCover, eventLocationText, eventGeoPoint, eventDatePicker, selectedDate;
+@synthesize eventTitleField, eventDescriptionField, eventAttendersField, imageChosenAsCover, eventLocationText, eventGeoPoint, eventDatePicker, selectedDate, peopleToInvite;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
@@ -36,7 +39,6 @@
         self.dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
 
         self.eventDatePicker.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
-        
     }
     
     return self;
@@ -155,6 +157,23 @@
     NSLog(@"Selected Date: %@ and Other: %@", self.selectedDate, stringDate);
 }
 
+- (IBAction)invitePeopleToEvent:(id)sender {
+    
+    [self.eventAttendersField resignFirstResponder];
+    
+    NSLog(@"Pressed");
+    
+    PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
+    invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
+    invitePeopleVC.profileUsername = [PFUser currentUser];
+    invitePeopleVC.delegate = self;
+    
+    [self presentViewController:invitePeopleVC animated:YES completion:nil];
+    
+    //[self.navigationController pushViewController:invitePeopleVC animated:YES];
+    
+}
+
 
 
 #pragma mark - Delegate Methods for ImagePicker
@@ -214,6 +233,37 @@
                     
                     [saveAlert show];
                     
+                    
+                    //now invite people
+                    
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        for (PFUser *user in self.peopleToInvite) {
+                            
+                            NSLog(@"People to Invite: %@", self.peopleToInvite);
+                            PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
+                            
+                            newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
+                            newInvitationActivity[@"from"] = [PFUser currentUser];
+                            newInvitationActivity[@"to"] = user;
+                            newInvitationActivity[@"activityContent"] = newEvent;
+                            
+                            NSLog(@"New Invitations: %@ with event: %@", newInvitationActivity, newEvent);
+                            
+                            //save the invitation activities
+                            [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                                
+                                if (succeeded) {
+                                    NSLog(@"Saved");
+                                } else {
+                                    NSLog(@"Error in Saved");
+                                }
+                            }];
+                        }
+                    
+                    });
+                    
+
+
                     [self dismissViewControllerAnimated:YES completion:nil];
                     
                 } else {
@@ -232,6 +282,21 @@
     
 
 
+    
+}
+
+#pragma mark -
+#pragma mark - PeopleVC Delegate Methods
+
+//Used when selecting people to invite to event
+
+- (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
+    
+    self.peopleToInvite = selectedPeople;
+    
+    //selectedPeople is an array of PFUsers... what to do with them??
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
     
 }
 

@@ -8,13 +8,24 @@
 
 #import <ParseUI/ParseUI.h>
 
+@protocol PeopleVCDelegate;
+@class EventAddVC;
+
 @interface PeopleVC : UICollectionViewController
 {
     NSArray *usersArray;
     NSMutableArray *usersMutableArray;
 }
 
+@property (nonatomic, weak) id<PeopleVCDelegate> delegate;
 @property (nonatomic, assign) int typeOfUsers;
 @property (nonatomic, strong) PFUser *profileUsername;
 
 @end
+
+@protocol PeopleVCDelegate <NSObject>
+- (void)finishedSelectingInvitations:(NSArray *)selectedPeople;
+@end
+
+
+

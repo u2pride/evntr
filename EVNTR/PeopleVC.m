@@ -14,6 +14,12 @@
 #import "EVNConstants.h"
 #import "ProfileVC.h"
 
+@interface PeopleVC ()
+
+@property (nonatomic, strong) NSArray *selectedPeople;
+
+@end
+
 @implementation PeopleVC
 
 @synthesize typeOfUsers, profileUsername;
@@ -30,6 +36,16 @@
     
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    
+    if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
+        UIButton *doneSelectingInvitationsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [doneSelectingInvitationsButton addTarget:self action:@selector(doneSelectingPeopleToInvite) forControlEvents:UIControlEventTouchUpInside];
+        [doneSelectingInvitationsButton setTitle:@"DONE" forState:UIControlStateNormal];
+        doneSelectingInvitationsButton.frame = CGRectMake(0, 200, 100, 50);
+        [self.view addSubview:doneSelectingInvitationsButton];
+        
+        self.collectionView.allowsMultipleSelection = YES;
+    }
     
     //Start Looking for Users
     [self findUsersOnParse];
@@ -108,6 +124,29 @@
             
             break;
         }
+            
+        case VIEW_FOLLOWING_TO_INVITE: {
+            
+            PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+            [query whereKey:@"from" equalTo:profileUsername];
+            [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+            [query orderByAscending:@"createdAt"];
+            
+            [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+                
+                for (PFObject *object in usersFound) {
+                    [usersMutableArray addObject:object[@"to"]];
+                }
+                
+                usersArray = usersMutableArray;
+                
+                NSLog(@"Results Given to UICollectionView: %@", usersArray);
+                
+                [self.collectionView reloadData];
+            }];
+
+            break;
+        }
         default:
             break;
     }
@@ -142,9 +181,8 @@
         cell.profileImage.file = (PFFile *)object[@"profilePicture"];
         cell.personTitle.text = object[@"username"];
         [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-            NSLog(@"MaskedImage");
-            cell.profileImage.image = [UIImage imageNamed:@"EventDefault"];
             cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+            
         }];
     }];
     
@@ -155,17 +193,64 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
-    
-    ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
-    
-    [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+    if (VIEW_FOLLOWING_TO_INVITE) {
+
+        PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        cell.profileImage.image = [EVNUtility maskImage:cell.profileImage.image withMask:[UIImage imageNamed:@"MaskImageSelected"]];
+        
+    } else {
+        
+        PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
+        
+        ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+        viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
+        
+        [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+    }
     
 }
 
 
+#pragma mark -
+#pragma mark - EventAddVCDelegate Methods
 
+- (void)doneSelectingPeopleToInvite {
+    
+    NSMutableArray *selectedPeople = [[NSMutableArray alloc] init];
+    NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
+    
+    for (int i = 0; i < indexPaths.count; i++) {
+        NSIndexPath *currentIndex = indexPaths[i];
+        PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:currentIndex.row];
+        [selectedPeople addObject:selectedUser];
+    }
+    
+    id<PeopleVCDelegate> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(finishedSelectingInvitations:)]) {
+        [strongDelegate finishedSelectingInvitations:selectedPeople];
+    }
+    
+}
+
+/*
+- (NSArray *)finishedSelectingInvitations {
+    
+    NSMutableArray *selectedPeople = [[NSMutableArray alloc] init];
+    NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
+    
+    for (int i = 0; i < indexPaths.count; i++) {
+        NSIndexPath *currentIndex = indexPaths[i];
+        PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:currentIndex.row];
+        [selectedPeople addObject:selectedUser];
+    }
+    
+    return selectedPeople;
+    
+    
+}
+
+*/
 
 
 @end

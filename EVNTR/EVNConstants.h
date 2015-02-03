@@ -22,6 +22,7 @@ extern NSString *const kAppName;
 #define VIEW_ALL_PEOPLE 1
 #define VIEW_FOLLOWERS 2
 #define VIEW_FOLLOWING 3
+#define VIEW_FOLLOWING_TO_INVITE 4
 
 #pragma mark - Profiles
 
@@ -32,10 +33,9 @@ extern NSString *const kAppName;
 #pragma mark - Activity Types
 
 #define FOLLOW_ACTIVITY 1
-#define UNFOLLOW_ACTIVITY
-#define INVITE_ACTIVITY
-#define REQUEST_ACCESS_ACTIVITY 2
-#define ATTENDING_ACTIVITY 3
+#define INVITE_ACTIVITY 2
+#define REQUEST_ACCESS_ACTIVITY 3
+#define ATTENDING_ACTIVITY 4
 
 
 // Time Type From To Content
