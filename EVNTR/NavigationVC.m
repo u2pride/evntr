@@ -24,7 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    menuItems = @[@"title", @"home", @"profile", @"settings"];
+    menuItems = @[@"title", @"home", @"profile", @"activity", @"settings"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -74,6 +74,8 @@
         
         //not sure if I need this.
         //[homeScreenVC viewWillAppear:YES];
+        
+    } else {
         
     }
     

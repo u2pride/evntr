@@ -195,13 +195,12 @@
     }];
     
 
-    
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (VIEW_FOLLOWING_TO_INVITE) {
+    if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
 
         PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
         cell.profileImage.image = [EVNUtility maskImage:cell.profileImage.image withMask:[UIImage imageNamed:@"MaskImageSelected"]];

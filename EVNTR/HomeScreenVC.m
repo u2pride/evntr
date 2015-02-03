@@ -23,10 +23,12 @@
 
 @synthesize userForEventsQuery, typeOfEventTableView, isComingFromNavigation;
 
-- (id) initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    
+    self = [super initWithCoder:aDecoder];
     if (self) {
-        self.title = @"EVENTS";
+        self.title = @"Events";
         self.parseClassName = @"Events";
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
@@ -36,6 +38,7 @@
         self.isComingFromNavigation = NO;
     }
     return self;
+    
 }
 
 - (void)viewDidLoad {
