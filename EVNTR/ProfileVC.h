@@ -32,6 +32,9 @@
 //Navigation
 @property BOOL isComingFromNavigation;
 
+//Loading Spinner
+@property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
+
 
 - (IBAction)takePicture:(id)sender;
 - (IBAction)viewMyEvents:(id)sender;

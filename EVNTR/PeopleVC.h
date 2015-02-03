@@ -20,6 +20,7 @@
 @property (nonatomic, weak) id<PeopleVCDelegate> delegate;
 @property (nonatomic, assign) int typeOfUsers;
 @property (nonatomic, strong) PFUser *profileUsername;
+@property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
 
 @end
 

@@ -17,11 +17,21 @@
 
 @implementation EventDetailVC
 
-@synthesize eventTitle, eventCoverPhoto, creatorName, creatorPhoto, eventDescription, eventObject, eventUser, dateOfEventLabel;
+@synthesize eventTitle, eventCoverPhoto, creatorName, creatorPhoto, eventDescription, eventObject, eventUser, dateOfEventLabel, loadingSpinner;
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.loadingSpinner.hidesWhenStopped = YES;
+    self.loadingSpinner.center = self.view.center;
+    [self.view addSubview:self.loadingSpinner];
+    [self.loadingSpinner startAnimating];
+    
+    //[self startLoadingAnimationAndBlur];
+    
+    
     // Do any additional setup after loading the view.
     creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
     eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
@@ -52,11 +62,42 @@
     eventCoverPhoto.file = (PFFile *)eventObject[@"coverPhoto"];
     [eventCoverPhoto loadInBackground];
     
+    [self.loadingSpinner stopAnimating];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark -
+#pragma mark - Loading View
+- (void)startLoadingAnimationAndBlur {
+    NSLog(@"Blur");
+    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    NSLog(@"Frame W: %f", visualEffectView.frame.size.width);
+    NSLog(@"Frame H: %f", visualEffectView.frame.size.height);
+    NSLog(@"Frame X: %f", visualEffectView.frame.origin.x);
+    NSLog(@"Frame Y: %f", visualEffectView.frame.origin.y);
+
+    [visualEffectView setFrame:self.view.bounds];
+    
+    NSLog(@"Frame W: %f", visualEffectView.frame.size.width);
+    NSLog(@"Frame H: %f", visualEffectView.frame.size.height);
+    NSLog(@"Frame X: %f", visualEffectView.frame.origin.x);
+    NSLog(@"Frame Y: %f", visualEffectView.frame.origin.y);
+    
+    
+    [self.view addSubview:visualEffectView];
+    
+}
+
+- (void)stopLoadingAnimationAndBlur {
+    
 }
 
 /*

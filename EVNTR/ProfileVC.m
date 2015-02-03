@@ -42,6 +42,12 @@
     //Some Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     
+    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.loadingSpinner.hidesWhenStopped = YES;
+    self.loadingSpinner.center = self.view.center;
+    [self.view addSubview:self.loadingSpinner];
+    [self.loadingSpinner startAnimating];
+    
     //When presented from Navigation - Keep the Side Reveal Menu Icon in the Top Left
     if (self.isComingFromNavigation) {
         SWRevealViewController *revealViewController = self.revealViewController;
@@ -169,6 +175,8 @@
     } else {
         self.instagramLabel.text = @"Not Connected";
     }
+    
+    [self.loadingSpinner stopAnimating];
 
     
     //Query the Activity Table.

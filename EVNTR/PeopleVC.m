@@ -22,7 +22,7 @@
 
 @implementation PeopleVC
 
-@synthesize typeOfUsers, profileUsername;
+@synthesize typeOfUsers, profileUsername, loadingSpinner;
 
 #pragma mark -
 #pragma mark Init
@@ -36,6 +36,12 @@
     
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    
+    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.loadingSpinner.hidesWhenStopped = YES;
+    self.loadingSpinner.center = self.view.center;
+    [self.view addSubview:self.loadingSpinner];
+    [self.loadingSpinner startAnimating];
     
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
         UIButton *doneSelectingInvitationsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -150,6 +156,8 @@
         default:
             break;
     }
+    
+    [self.loadingSpinner stopAnimating];
 }
 
 #pragma mark -
