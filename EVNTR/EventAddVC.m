@@ -8,20 +8,48 @@
 
 #import "EventAddVC.h"
 #import <Parse/Parse.h>
+#import <MapKit/MapKit.h>
 
 @interface EventAddVC ()
 
-@property (strong, nonatomic) UIImage *imageChosenAsCover;
+@property (nonatomic, retain) CLLocationManager *locationManager;
+@property (nonatomic, strong) UIImage *imageChosenAsCover;
+@property (nonatomic, strong) PFGeoPoint *eventGeoPoint;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, strong) NSDate *selectedDate;
 
 @end
 
 @implementation EventAddVC
 
-@synthesize eventTitleField, eventDescriptionField, eventAttendersField, imageChosenAsCover;
+@synthesize eventTitleField, eventDescriptionField, eventAttendersField, imageChosenAsCover, eventLocationText, eventGeoPoint, eventDatePicker, selectedDate;
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.delegate = self;
+        self.eventGeoPoint = nil;
+        self.dateFormatter.timeStyle = NSDateFormatterShortStyle;
+        self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+        self.dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
+
+        self.eventDatePicker.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
+        
+    }
+    
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
+    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self.locationManager requestWhenInUseAuthorization];
+    }    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -32,6 +60,25 @@
 - (void)cancel:(id)sender {
     
     [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+
+#pragma mark - CLLocationManagerDelegate Methods
+
+- (void)locationManagerDidPauseLocationUpdates:(CLLocationManager *)manager {
+    
+}
+
+- (void)locationManagerDidResumeLocationUpdates:(CLLocationManager *)manager {
+    
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    
+    NSLog(@"New locations");
+    CLLocation *newLocation = [locations lastObject];
+    eventLocationText.text = [NSString stringWithFormat:@"Lat: %f", newLocation.coordinate.latitude];
     
 }
 
@@ -73,6 +120,43 @@
     
 }
 
+- (IBAction)setEventLocation:(id)sender {
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    self.locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
+    [self.locationManager startUpdatingLocation];
+    
+    NSLog(@"Start Updating");
+    //Now Call geopointforcurrentlocation
+    [PFGeoPoint geoPointForCurrentLocationInBackground:^(PFGeoPoint *geoPoint, NSError *error) {
+        NSLog(@"GeoPoint: %@", geoPoint);
+        if (!error) {
+            self.eventGeoPoint = geoPoint;
+        } else {
+            self.eventGeoPoint = nil;
+            NSLog(@"Error");
+        }
+    }];
+    
+}
+
+- (IBAction)datePickerValueChanged:(id)sender {
+    
+    //Todo - Clean this code.
+    
+    UIDatePicker *datePickerCurrent = (UIDatePicker *)sender;
+    self.selectedDate = datePickerCurrent.date;
+    
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    [self.dateFormatter setDateFormat:@"cccc, MMM d, hh:mm aa"];
+    NSString *stringDate = [self.dateFormatter stringFromDate:self.selectedDate];
+    
+    self.selectedDate = [self.dateFormatter dateFromString:stringDate];
+    
+    NSLog(@"Selected Date: %@ and Other: %@", self.selectedDate, stringDate);
+}
+
+
+
 #pragma mark - Delegate Methods for ImagePicker
 
 - (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -102,7 +186,12 @@
     
     newEvent[@"attenders"] = attenders;
     newEvent[@"parent"] = [PFUser currentUser];
+    newEvent[@"locationOfEvent"] = self.eventGeoPoint;
     
+    //Date Formatting and Saving
+    NSLog(@"date: %@", self.selectedDate);
+    newEvent[@"dateOfEvent"] = self.selectedDate;
+
     NSData *eventCoverPhotoData = UIImageJPEGRepresentation(self.imageChosenAsCover, 0.5);
     PFFile *eventCoverPhotoFile = [PFFile fileWithName:@"coverphoto.jpg" data:eventCoverPhotoData];
     

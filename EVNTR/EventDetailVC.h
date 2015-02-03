@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
 @property (weak, nonatomic) IBOutlet UILabel *eventDescription;
+@property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
 
 
 @property (nonatomic, strong) PFObject *eventObject;

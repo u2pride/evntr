@@ -50,7 +50,6 @@
 
 #pragma mark - Navigation
 
-//TODO - THIS DOESN"T FEEL LIKE THE BEST WAY TO DO THIS NAVIGATION
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
@@ -72,7 +71,6 @@
         homeScreenVC.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         homeScreenVC.userForEventsQuery = [PFUser currentUser];
         homeScreenVC.isComingFromNavigation = YES;
-        
         
         //not sure if I need this.
         //[homeScreenVC viewWillAppear:YES];

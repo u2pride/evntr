@@ -17,7 +17,7 @@
 
 @implementation EventDetailVC
 
-@synthesize eventTitle, eventCoverPhoto, creatorName, creatorPhoto, eventDescription, eventObject, eventUser;
+@synthesize eventTitle, eventCoverPhoto, creatorName, creatorPhoto, eventDescription, eventObject, eventUser, dateOfEventLabel;
 
 
 - (void)viewDidLoad {
@@ -40,7 +40,14 @@
     
     NSLog(@"Event: %@ and User: %@", eventObject, eventUser);
 
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"cccc, MMM d, hh:mm aa"];
+    NSDate *dateFromParse = (NSDate *)eventObject[@"dateOfEvent"];
+    
+    NSString *stringDate = [dateFormatter stringFromDate:dateFromParse];
+
     eventTitle.text = eventObject[@"title"];
+    dateOfEventLabel.text = stringDate;
     eventDescription.text = eventObject[@"description"];
     eventCoverPhoto.file = (PFFile *)eventObject[@"coverPhoto"];
     [eventCoverPhoto loadInBackground];
