@@ -20,7 +20,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
 
 @property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
-
 @property (nonatomic, strong) PFObject *eventObject;
 
 

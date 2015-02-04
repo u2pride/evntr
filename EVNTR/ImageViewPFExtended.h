@@ -11,6 +11,6 @@
 
 @interface ImageViewPFExtended : UIImageView
 
-@property (nonatomic, strong) PFUser *userForImageView;
+@property (nonatomic, strong) PFObject *objectForImageView;
 
 @end

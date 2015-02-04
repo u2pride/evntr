@@ -12,8 +12,10 @@
 #import "ProfileVC.h"
 #import "HomeScreenVC.h"
 #import "EVNConstants.h"
+#import "CellWithBadge.h"
 
 @interface NavigationVC ()
+@property (weak, nonatomic) IBOutlet CellWithBadge *activityCellWithBadge;
 
 @end
 
@@ -21,10 +23,23 @@
     NSArray *menuItems;
 }
 
+@synthesize activityCellWithBadge;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     menuItems = @[@"title", @"home", @"profile", @"activity", @"settings"];
+    
+    //Update the Badge for Number of Invitations
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];
+        [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInteger:INVITE_ACTIVITY]];
+        [queryForInvites whereKey:@"to" equalTo:[PFUser currentUser]];
+        activityCellWithBadge.badgeLabel.text = [NSString stringWithFormat:@"%ld", (long)[queryForInvites countObjects]];
+        
+        
+    });
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -32,6 +47,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+/*
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -46,7 +62,7 @@
     
     return cell;
 }
-
+*/
 
 #pragma mark - Navigation
 
