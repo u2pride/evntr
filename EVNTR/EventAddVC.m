@@ -11,13 +11,13 @@
 #import <MapKit/MapKit.h>
 #import "PeopleVC.h"
 #import "EVNConstants.h"
+#import "EVNUtility.h"
 
 @interface EventAddVC ()
 
 @property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, strong) UIImage *imageChosenAsCover;
 @property (nonatomic, strong) PFGeoPoint *eventGeoPoint;
-@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSArray *peopleToInvite;
 
@@ -34,11 +34,7 @@
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
         self.eventGeoPoint = nil;
-        self.dateFormatter.timeStyle = NSDateFormatterShortStyle;
-        self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
-        self.dateFormatter.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
-
-        self.eventDatePicker.timeZone = [NSTimeZone timeZoneWithName:@"America/New_York"];
+        self.eventDatePicker.timeZone = [NSTimeZone systemTimeZone];
     }
     
     return self;
@@ -143,18 +139,27 @@
 
 - (IBAction)datePickerValueChanged:(id)sender {
     
-    //Todo - Clean this code.
-    
+    //Update the selectedDate with the Current Date from the Date Picker
     UIDatePicker *datePickerCurrent = (UIDatePicker *)sender;
     self.selectedDate = datePickerCurrent.date;
     
-    self.dateFormatter = [[NSDateFormatter alloc] init];
-    [self.dateFormatter setDateFormat:@"cccc, MMM d, hh:mm aa"];
-    NSString *stringDate = [self.dateFormatter stringFromDate:self.selectedDate];
+    /* Reference on Conversions of Date
+    NSDate* ts_utc = datePickerCurrent.date;
     
-    self.selectedDate = [self.dateFormatter dateFromString:stringDate];
+    NSDateFormatter* df_utc = [[NSDateFormatter alloc] init];
+    [df_utc setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
+    [df_utc setDateFormat:@"yyyy.MM.dd G 'at' HH:mm:ss zzz"];
     
-    NSLog(@"Selected Date: %@ and Other: %@", self.selectedDate, stringDate);
+    NSDateFormatter* df_local = [[NSDateFormatter alloc] init];
+    [df_local setTimeZone:[NSTimeZone timeZoneWithName:@"EST"]];
+    [df_local setDateFormat:@"yyyy.MM.dd G 'at' HH:mm:ss zzz"];
+    
+    NSString* ts_utc_string = [df_utc stringFromDate:ts_utc];
+    NSString* ts_local_string = [df_local stringFromDate:ts_utc];
+    
+    NSLog(@"Selected Date: %@ and UTC: %@ and Local: %@", self.selectedDate, ts_utc_string, ts_local_string);
+     */
+
 }
 
 - (IBAction)invitePeopleToEvent:(id)sender {
@@ -208,7 +213,6 @@
     newEvent[@"locationOfEvent"] = self.eventGeoPoint;
     
     //Date Formatting and Saving
-    NSLog(@"date: %@", self.selectedDate);
     newEvent[@"dateOfEvent"] = self.selectedDate;
 
     NSData *eventCoverPhotoData = UIImageJPEGRepresentation(self.imageChosenAsCover, 0.5);

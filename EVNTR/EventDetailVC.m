@@ -50,14 +50,16 @@
     
     NSLog(@"Event: %@ and User: %@", eventObject, eventUser);
 
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"cccc, MMM d, hh:mm aa"];
     NSDate *dateFromParse = (NSDate *)eventObject[@"dateOfEvent"];
     
-    NSString *stringDate = [dateFormatter stringFromDate:dateFromParse];
+    NSDateFormatter *df_local = [[NSDateFormatter alloc] init];
+    [df_local setTimeZone:[NSTimeZone systemTimeZone]];
+    [df_local setDateFormat:@"MM/dd 'at' hh:mm a"];
+    
+    NSString *localDateString = [df_local stringFromDate:dateFromParse];
 
     eventTitle.text = eventObject[@"title"];
-    dateOfEventLabel.text = stringDate;
+    dateOfEventLabel.text = localDateString;
     eventDescription.text = eventObject[@"description"];
     eventCoverPhoto.file = (PFFile *)eventObject[@"coverPhoto"];
     [eventCoverPhoto loadInBackground];

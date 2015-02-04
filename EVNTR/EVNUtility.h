@@ -12,6 +12,7 @@
 @interface EVNUtility : NSObject
 
 + (UIImage *) maskImage:(UIImage *)image withMask:(UIImage *)maskImage;
++ (NSString *)getUTCFormateDate:(NSDate *)localDate;
 
 
 @end

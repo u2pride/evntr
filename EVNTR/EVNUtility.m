@@ -29,4 +29,30 @@
 }
 
 
++ (NSString *)getUTCFormateDate:(NSDate *)localDate
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *dateString = [dateFormatter stringFromDate:localDate];
+    return dateString;
+}
+
+/*
++ (NSDate *)getUTCDateFromString:(NSString *)utcDateString {
+    
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    fmt.dateFormat = @"LLL d, yyyy - HH:mm:ss zzz";
+    NSDate *utc = [fmt dateFromString:@"June 14, 2012 - 01:00:00 UTC"];
+    fmt.timeZone = [NSTimeZone systemTimeZone];
+    NSString *local = [fmt stringFromDate:utc];
+    NSLog(@"%@", local);
+    
+    
+}
+ */
+
+
+
 @end
