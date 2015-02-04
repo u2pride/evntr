@@ -34,6 +34,8 @@
     //self.profileUsername = nil;
     //[self findUsersOnParse];
     
+    self.title = @"People";
+    
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     

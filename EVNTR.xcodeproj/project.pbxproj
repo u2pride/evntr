@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A4035FD51A78534400DB67E4 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4035FD41A78534400DB67E4 /* ParseUI.framework */; };
 		A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4035FD71A786ACF00DB67E4 /* EventTableCell.m */; };
+		A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A41352541A81B80200034222 /* ImageViewPFExtended.m */; };
 		A41562C71A767D3A00565BB6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C61A767D3A00565BB6 /* main.m */; };
 		A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C91A767D3A00565BB6 /* AppDelegate.m */; };
 		A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A41562D11A767D3A00565BB6 /* Images.xcassets */; };
@@ -61,6 +62,8 @@
 		A4035FD41A78534400DB67E4 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
 		A4035FD61A786ACF00DB67E4 /* EventTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTableCell.h; sourceTree = "<group>"; };
 		A4035FD71A786ACF00DB67E4 /* EventTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventTableCell.m; sourceTree = "<group>"; };
+		A41352531A81B80200034222 /* ImageViewPFExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewPFExtended.h; sourceTree = "<group>"; };
+		A41352541A81B80200034222 /* ImageViewPFExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewPFExtended.m; sourceTree = "<group>"; };
 		A41562C11A767D3A00565BB6 /* EVNTR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVNTR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A41562C51A767D3A00565BB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A41562C61A767D3A00565BB6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -297,6 +300,8 @@
 				A47430661A81556C00CF3B8F /* ActivityVC.m */,
 				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
 				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
+				A41352531A81B80200034222 /* ImageViewPFExtended.h */,
+				A41352541A81B80200034222 /* ImageViewPFExtended.m */,
 			);
 			name = Activities;
 			sourceTree = "<group>";
@@ -450,6 +455,7 @@
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A41562C71A767D3A00565BB6 /* main.m in Sources */,
+				A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
 				A415634F1A76F35D00565BB6 /* NavigationVC.m in Sources */,
 			);

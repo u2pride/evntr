@@ -7,10 +7,11 @@
 //
 
 #import <ParseUI/ParseUI.h>
+#import "ImageViewPFExtended.h"
 
 @interface ActivityTableCell : PFTableViewCell
-@property (weak, nonatomic) IBOutlet UIImageView *leftSideImageView;
-@property (weak, nonatomic) IBOutlet UIImageView *rightSideImageView;
+@property (weak, nonatomic) IBOutlet ImageViewPFExtended *leftSideImageView;
+@property (weak, nonatomic) IBOutlet ImageViewPFExtended *rightSideImageView;
 @property (weak, nonatomic) IBOutlet UILabel *activityContentTextLabel;
 
 @end

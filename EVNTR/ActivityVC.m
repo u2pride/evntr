@@ -10,6 +10,7 @@
 #import "ActivityTableCell.h"
 #import "EVNConstants.h"
 #import "SWRevealViewController.h"
+#import "ProfileVC.h"
 
 @implementation ActivityVC
 
@@ -43,6 +44,7 @@
     }
 }
 
+
 - (PFQuery *)queryForTable {
     
     PFQuery *queryForActivities = [PFQuery queryWithClassName:@"Activities"];
@@ -68,13 +70,23 @@
             
             //Update the Cell
             activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
+            
 
             PFUser *userWhoFollowedCurrentProfile = object[@"from"];
             
             [userWhoFollowedCurrentProfile fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
                 
+                PFUser *userWhoFollowed = (PFUser *)user;
+                
                 //Create Content for the Cell
                 NSString *username = user[@"username"];
+                //Using the AccessibilityHint property to carry the username for taps.
+                //activityCell.leftSideImageView.accessibilityHint = user[@"username"];
+                activityCell.leftSideImageView.userInteractionEnabled = YES;
+                activityCell.leftSideImageView.userForImageView = userWhoFollowed;
+                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewFollowerProfile:)];
+                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                
                 NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", username];
                 activityCell.activityContentTextLabel.text = textForActivityCell;
                 
@@ -95,12 +107,20 @@
                     //TODO - Does this make sense?
                     
                     if (!objects || !objects.count) {
-                        activityCell.leftSideImageView.image = [UIImage imageNamed:@"FollowIcon"];
+                        activityCell.rightSideImageView.image = [UIImage imageNamed:@"FollowIcon"];
+                        //activityCell.rightSideImageView.accessibilityHint = user[@"username"];
+                        activityCell.rightSideImageView.userInteractionEnabled = YES;
+                        activityCell.rightSideImageView.userForImageView = userWhoFollowed;
+                        UITapGestureRecognizer *tapFollow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(followUser:)];
+                        [activityCell.rightSideImageView addGestureRecognizer:tapFollow];
                     } else {
                         activityCell.rightSideImageView.image = [UIImage imageNamed:@"UnfollowIcon"];
+                        activityCell.rightSideImageView.userInteractionEnabled = YES;
+                        activityCell.rightSideImageView.userForImageView = userWhoFollowed;
+                        UITapGestureRecognizer *tapUnFollow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(unFollowUser:)];
+                        [activityCell.rightSideImageView addGestureRecognizer:tapUnFollow];
                     }
                 }];
-                
                 
                 
             }];
@@ -118,6 +138,81 @@
     }
     
     return activityCell;
+    
+}
+
+
+#pragma mark - 
+#pragma mark - Target-Action Method Implementations
+- (void)viewFollowerProfile:(UITapGestureRecognizer *)tapgr {
+    
+    ImageViewPFExtended *tappedImage = (ImageViewPFExtended *)tapgr.view;
+    NSLog(@"Username: %@", tappedImage.userForImageView);
+    NSString *username = [tappedImage.userForImageView objectForKey:@"username"];
+    
+    ProfileVC *followerProfileVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    followerProfileVC.userNameForProfileView = username;
+    
+    [self.navigationController pushViewController:followerProfileVC animated:YES];
+}
+
+- (void)followUser:(UITapGestureRecognizer *)tapgr {
+    
+    ImageViewPFExtended *tappedIconView = (ImageViewPFExtended *)tapgr.view;
+    tappedIconView.image = [UIImage imageNamed:@"UnfollowIcon"];
+    
+    NSLog(@"Username Follow: %@", tappedIconView.userForImageView.username);
+    
+    PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
+    newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
+    newFollowActivity[@"from"] = [PFUser currentUser];
+    newFollowActivity[@"to"] = tappedIconView.userForImageView;
+    [newFollowActivity saveInBackground];
+    
+    //Remove old tap gesture recognizers
+    for (UIGestureRecognizer *gr in tappedIconView.gestureRecognizers) {
+        [tappedIconView removeGestureRecognizer:gr];
+    }
+    
+    //Add back a gesture recognizer for unfollow user
+    UITapGestureRecognizer *tapUnFollow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(unFollowUser:)];
+    [tappedIconView addGestureRecognizer:tapUnFollow];
+    
+}
+
+- (void)unFollowUser:(UITapGestureRecognizer *)tapgr {
+    
+    NSLog(@"tapgr -- %@", tapgr);
+    
+    ImageViewPFExtended *tappedIconView = (ImageViewPFExtended *)tapgr.view;
+    tappedIconView.image = [UIImage imageNamed:@"FollowIcon"];
+    
+    NSLog(@"Username Unfollow: %@", tappedIconView.userForImageView.username);
+    
+    //Find and Delete Old Follow Activity
+    PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
+    
+    [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+    [findFollowActivity whereKey:@"to" equalTo:tappedIconView.userForImageView];
+    
+    [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        
+        NSLog(@"Objects Found: %@", objects);
+        
+        PFObject *previousFollowActivity = [objects firstObject];
+        [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            NSLog(@"Inside the delete part");
+            
+            //Update the Button....
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"DELETED" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            
+            [errorAlert show];
+        }];
+        
+    }];
+
     
 }
 

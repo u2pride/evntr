@@ -12,6 +12,7 @@
 #import "PeopleVC.h"
 #import "ProfileVC.h"
 #import "SWRevealViewController.h"
+#import "EVNUtility.h"
 
 @interface ProfileVC ()
 
@@ -103,12 +104,16 @@
             followButton.hidden = YES;
             setPictureButton.hidden = NO;
             
+            self.title = @"My Profile";
+            
             break;
         }
         case OTHER_USER_PROFILE: {
             //setup follow state and set picture button
             followButton.hidden = NO;
             setPictureButton.hidden = YES;
+            
+            self.title = userForProfileView[@"username"];
             
             //Determine whether the current user is following this user
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
@@ -143,7 +148,7 @@
     PFFile *profilePictureFromParse = userForProfileView[@"profilePicture"];
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
-            self.profileImageView.image = [UIImage imageWithData:data];
+            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
         }
     }];
     
@@ -188,6 +193,28 @@
     //self.numberFollowersLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowers.count];
     //self.numberFollowingLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)numberOfFollowing.count];
 
+    
+    PFQuery *countEventsQuery = [PFQuery queryWithClassName:@"Events"];
+    [countEventsQuery whereKey:@"parent" equalTo:userForProfileView];
+    [countEventsQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", number];
+    }];
+    
+    PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
+    [countFollowersQuery whereKey:@"to" equalTo:userForProfileView];
+    [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
+    }];
+    
+    PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
+    [countFollowingQuery whereKey:@"from" equalTo:userForProfileView];
+    [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
+    }];
+    
+    
     
 }
 
