@@ -22,7 +22,7 @@
 
 @implementation PeopleVC
 
-@synthesize typeOfUsers, profileUsername, loadingSpinner;
+@synthesize typeOfUsers, profileUsername, loadingSpinner, eventToViewAttenders;
 
 #pragma mark -
 #pragma mark Init
@@ -33,9 +33,7 @@
     //self.typeOfUsers = VIEW_ALL_PEOPLE;
     //self.profileUsername = nil;
     //[self findUsersOnParse];
-    
-    self.title = @"People";
-    
+        
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     
@@ -45,14 +43,53 @@
     [self.view addSubview:self.loadingSpinner];
     [self.loadingSpinner startAnimating];
     
-    if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
-        UIButton *doneSelectingInvitationsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [doneSelectingInvitationsButton addTarget:self action:@selector(doneSelectingPeopleToInvite) forControlEvents:UIControlEventTouchUpInside];
-        [doneSelectingInvitationsButton setTitle:@"DONE" forState:UIControlStateNormal];
-        doneSelectingInvitationsButton.frame = CGRectMake(0, 200, 100, 50);
-        [self.view addSubview:doneSelectingInvitationsButton];
-        
-        self.collectionView.allowsMultipleSelection = YES;
+    
+    switch (self.typeOfUsers) {
+        case VIEW_ALL_PEOPLE: {
+            
+            [self.navigationItem setTitle:@"All People"];
+            self.collectionView.allowsMultipleSelection = NO;
+            
+            break;
+        }
+        case VIEW_FOLLOWERS: {
+            
+            [self.navigationItem setTitle:@"Followers"];
+            self.collectionView.allowsMultipleSelection = NO;
+            
+            break;
+        }
+        case VIEW_FOLLOWING: {
+            
+            [self.navigationItem setTitle:@"Following"];
+            self.collectionView.allowsMultipleSelection = NO;
+            
+            break;
+        }
+        case VIEW_FOLLOWING_TO_INVITE: {
+            
+            [self.navigationItem setTitle:@"Invite"];
+            
+            UIButton *doneSelectingInvitationsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [doneSelectingInvitationsButton addTarget:self action:@selector(doneSelectingPeopleToInvite) forControlEvents:UIControlEventTouchUpInside];
+            [doneSelectingInvitationsButton setTitle:@"DONE" forState:UIControlStateNormal];
+            doneSelectingInvitationsButton.frame = CGRectMake(0, 400, 100, 50);
+            [self.view addSubview:doneSelectingInvitationsButton];
+            
+            self.collectionView.allowsMultipleSelection = YES;
+            
+            break;
+        }
+        case VIEW_EVENT_ATTENDERS: {
+            
+            [self.navigationItem setTitle:@"Attendees"];
+            self.collectionView.allowsMultipleSelection = NO;
+            
+            break;
+        }
+        default: {
+            break;
+        }
     }
     
     //Start Looking for Users
@@ -155,6 +192,21 @@
 
             break;
         }
+        
+        case VIEW_EVENT_ATTENDERS: {
+            
+            PFRelation *attendingRelation = [self.eventToViewAttenders relationForKey:@"attenders"];
+            PFQuery *queryForAttenders = [attendingRelation query];
+            [queryForAttenders findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                
+                usersArray = objects;
+                [self.collectionView reloadData];
+                
+            }];
+            
+            
+            break;
+        }
         default:
             break;
     }
@@ -213,6 +265,7 @@
         
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
         viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
+        viewUserProfileVC.hidesBottomBarWhenPushed = YES;
         
         [self.navigationController pushViewController:viewUserProfileVC animated:YES];
     }
@@ -241,6 +294,8 @@
     }
     
 }
+
+
 
 /*
 - (NSArray *)finishedSelectingInvitations {

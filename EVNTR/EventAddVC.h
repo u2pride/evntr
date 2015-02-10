@@ -14,7 +14,6 @@
 
 @property (nonatomic, strong) IBOutlet UITextField *eventTitleField;
 @property (nonatomic, strong) IBOutlet UITextField *eventDescriptionField;
-@property (nonatomic, strong) IBOutlet UITextField *eventAttendersField;
 @property (weak, nonatomic) IBOutlet UILabel *eventLocationText;
 @property (weak, nonatomic) IBOutlet UIDatePicker *eventDatePicker;
 

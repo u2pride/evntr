@@ -13,8 +13,10 @@
 #import "HomeScreenVC.h"
 #import "EVNConstants.h"
 #import "CellWithBadge.h"
+#import "EVNConstants.h"
 
 @interface NavigationVC ()
+
 @property (weak, nonatomic) IBOutlet CellWithBadge *activityCellWithBadge;
 
 @end
@@ -31,20 +33,46 @@
     menuItems = @[@"title", @"home", @"profile", @"activity", @"settings"];
     
     //Update the Badge for Number of Invitations
+    /*
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];
-        [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInteger:INVITE_ACTIVITY]];
+        [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
         [queryForInvites whereKey:@"to" equalTo:[PFUser currentUser]];
         activityCellWithBadge.badgeLabel.text = [NSString stringWithFormat:@"%ld", (long)[queryForInvites countObjects]];
         
         
     });
+    */
     
+    //Register for Notifications so you can update the badge on the navigation menu - necessary?
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name: UIApplicationWillEnterForegroundNotification object:nil];
+    
+
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self updateNavigationMenu];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+- (void)refresh:(id)sender {
+    [self updateNavigationMenu];
+}
+
+
+- (void)updateNavigationMenu {
+    
+    NSLog(@"keyfornotificationcount = %@", kNumberOfNotifications);
+    
+    //New code
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    NSNumber *numNotifications = [standardDefaults objectForKey:kNumberOfNotifications];
+    activityCellWithBadge.badgeLabel.text = [NSString stringWithFormat:@"%ld", (long)numNotifications.integerValue];
 }
 
 /*

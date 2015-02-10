@@ -45,6 +45,16 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    NSNumber *noNewActivities = 0;
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setObject:noNewActivities forKey:kNumberOfNotifications];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+
+}
+
 
 - (PFQuery *)queryForTable {
     

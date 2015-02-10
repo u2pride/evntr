@@ -392,6 +392,11 @@
 					A41562C01A767D3A00565BB6 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 2EMK38AANW;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					A41562D91A767D3A00565BB6 = {
 						CreatedOnToolsVersion = 6.1.1;

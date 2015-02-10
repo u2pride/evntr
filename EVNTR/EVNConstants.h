@@ -11,11 +11,13 @@
 extern NSString *const kAppName;
 
 
-#pragma mark - Events
+#pragma mark - Events Pull and Details
 
 #define ALL_PUBLIC_EVENTS 1
 #define CURRENT_USER_EVENTS 2
 #define OTHER_USER_EVENTS 3
+extern NSString *const kAttendingEvent;
+extern NSString *const kNotAttendingEvent;
 
 #pragma mark - People
 
@@ -23,6 +25,7 @@ extern NSString *const kAppName;
 #define VIEW_FOLLOWERS 2
 #define VIEW_FOLLOWING 3
 #define VIEW_FOLLOWING_TO_INVITE 4
+#define VIEW_EVENT_ATTENDERS 5
 
 #pragma mark - Profiles
 
@@ -36,6 +39,15 @@ extern NSString *const kAppName;
 #define INVITE_ACTIVITY 2
 #define REQUEST_ACCESS_ACTIVITY 3
 #define ATTENDING_ACTIVITY 4
+
+#pragma mark - Event Types
+
+#define PUBLIC_EVENT_TYPE 1
+#define PRIVATE_EVENT_TYPE 2
+
+#pragma mark - Notifications
+extern NSString *const kNumberOfNotifications;
+extern NSString *const kLastBackgroundFetchTimeStamp;
 
 
 // Time Type From To Content

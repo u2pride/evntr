@@ -23,7 +23,7 @@
 
 @synthesize userForEventsQuery, typeOfEventTableView, isComingFromNavigation;
 
-
+//Question:  What's best to do in initWithCoder v. ViewDidLoad?
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
@@ -55,14 +55,41 @@
         }
         
     } else {
-        //setup view when viewing events from profiles
+        //setup view when viewing events from profiles - Probably don't need this.
         
+        //Remove Navigation Menu and Other Bar Button Items so Back Button Appears.
         self.navigationItem.rightBarButtonItems = nil;
         self.navigationItem.leftBarButtonItems = nil;
-        
+        /*
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
         
         self.navigationItem.rightBarButtonItem = cancelButton;
+         */
+    }
+    
+    
+    NSLog(@"type: %d", self.typeOfEventTableView);
+    
+    switch (self.typeOfEventTableView) {
+        case ALL_PUBLIC_EVENTS: {
+            [self.navigationItem setTitle:@"Public Events"];
+            
+            break;
+        }
+        case CURRENT_USER_EVENTS: {
+            NSLog(@"EventsView - My Events");
+            [self.navigationItem setTitle:@"My Events"];
+            
+            break;
+        }
+        case OTHER_USER_EVENTS: {
+            NSLog(@"EventsView - User Events");
+            [self.navigationItem setTitle:@"User Events"];
+            
+            break;
+        }
+        default:
+            break;
     }
     
 }
@@ -79,11 +106,11 @@
 }
 
 
-- (void)returnToProfile {
+//- (void)returnToProfile {
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self dismissViewControllerAnimated:YES completion:nil];
     
-}
+//}
 
 
 #pragma mark - PFTableView Data & Custom Cells
@@ -98,7 +125,8 @@
     switch (typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
             eventsQuery = [PFQuery queryWithClassName:@"Events"];
-            [eventsQuery orderByAscending:@"Title"];
+            [eventsQuery orderByDescending:@"createdAt"];
+            [eventsQuery whereKey:@"typeOfEvent" equalTo:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE]];
             
             break;
         }
@@ -136,7 +164,7 @@
         cell.eventCoverImage.file = (PFFile *)[object objectForKey:@"coverPhoto"];
         [cell.eventCoverImage loadInBackground];
         cell.eventTitle.text = [object objectForKey:@"title"];
-        cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"attenders"]];
+        //cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"attenders"]];
     }
     
     

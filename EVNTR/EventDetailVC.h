@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
 @property (weak, nonatomic) IBOutlet UILabel *eventDescription;
 @property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
+@property (weak, nonatomic) IBOutlet UILabel *eventLocationLabel;
 
 @property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
 @property (nonatomic, strong) PFObject *eventObject;

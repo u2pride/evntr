@@ -26,6 +26,7 @@
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
+    //TODO - revisit. why am I doing this?
     NSLog(@"View Controller Selected: %@", viewController);
     
     if (self.viewControllers.firstObject == viewController) {

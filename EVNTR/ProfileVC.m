@@ -274,24 +274,29 @@
     
     // 1 - normal event view - 2 - user events 3 - top user profile (keep navigation)
     //do i need to distinguish between my profile and another user's profile?
-    eventVC.typeOfEventTableView = 2;
+    //eventVC.typeOfEventTableView = 2;
     
     if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+        NSLog(@"Current user events from profile page");
         eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
         eventVC.userForEventsQuery = [PFUser currentUser];
     } else {
-        eventVC.typeOfEventTableView = 2;
+        NSLog(@"Other user events from profile page");
+        eventVC.typeOfEventTableView = OTHER_USER_EVENTS;
         eventVC.userForEventsQuery = userForProfileView;
     }
     
-    if (self.sidebarButton) {
-        eventVC.typeOfEventTableView = 3;
-    }
+    //What is this for? - need to set userNameForProfileView in navigation controller.
+    //if (self.sidebarButton) {
+    //    eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
+    //}
     
-    UINavigationController *navigationController = [[UINavigationController alloc] init];
-    [navigationController addChildViewController:eventVC];
+    [self.navigationController pushViewController:eventVC animated:YES];
     
-    [self presentViewController:navigationController animated:YES completion:nil];
+    //UINavigationController *navigationController = [[UINavigationController alloc] init];
+    //[navigationController addChildViewController:eventVC];
+    
+    //[self presentViewController:navigationController animated:YES completion:nil];
 }
 
 - (IBAction)viewFollowers:(id)sender {

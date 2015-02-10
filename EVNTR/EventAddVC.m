@@ -20,12 +20,13 @@
 @property (nonatomic, strong) PFGeoPoint *eventGeoPoint;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSArray *peopleToInvite;
+@property (weak, nonatomic) IBOutlet UISwitch *publicPrivateSwitch;
 
 @end
 
 @implementation EventAddVC
 
-@synthesize eventTitleField, eventDescriptionField, eventAttendersField, imageChosenAsCover, eventLocationText, eventGeoPoint, eventDatePicker, selectedDate, peopleToInvite;
+@synthesize eventTitleField, eventDescriptionField, imageChosenAsCover, eventLocationText, eventGeoPoint, eventDatePicker, selectedDate, peopleToInvite, publicPrivateSwitch;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
@@ -33,7 +34,7 @@
     if (self) {
         self.locationManager = [[CLLocationManager alloc] init];
         self.locationManager.delegate = self;
-        self.eventGeoPoint = nil;
+        self.eventGeoPoint = [[PFGeoPoint alloc] init];
         self.eventDatePicker.timeZone = [NSTimeZone systemTimeZone];
     }
     
@@ -42,7 +43,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
     if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
@@ -118,6 +118,8 @@
     
 }
 
+#pragma mark - Setting Event Location
+
 - (IBAction)setEventLocation:(id)sender {
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
@@ -130,12 +132,16 @@
         if (!error) {
             self.eventGeoPoint = geoPoint;
         } else {
-            self.eventGeoPoint = nil;
+            self.eventGeoPoint.latitude = 43.000;
+            self.eventGeoPoint.longitude = 32.000;
             NSLog(@"Error");
+            NSLog(@"GeoPoint2: %@", geoPoint);
         }
     }];
     
 }
+
+#pragma mark - Setting Event Date
 
 - (IBAction)datePickerValueChanged:(id)sender {
     
@@ -162,9 +168,12 @@
 
 }
 
+
+#pragma mark - Inviting People to Event
+
 - (IBAction)invitePeopleToEvent:(id)sender {
     
-    [self.eventAttendersField resignFirstResponder];
+    [self.eventDescriptionField resignFirstResponder];
     
     NSLog(@"Pressed");
     
@@ -204,16 +213,20 @@
     PFObject *newEvent = [PFObject objectWithClassName:@"Events"];
     newEvent[@"title"] = self.eventTitleField.text;
     newEvent[@"description"] = self.eventDescriptionField.text;
-
-    NSNumberFormatter *numfromString = [[NSNumberFormatter alloc] init];
-    NSNumber *attenders = [numfromString numberFromString:self.eventAttendersField.text];
     
-    newEvent[@"attenders"] = attenders;
     newEvent[@"parent"] = [PFUser currentUser];
     newEvent[@"locationOfEvent"] = self.eventGeoPoint;
     
     //Date Formatting and Saving
     newEvent[@"dateOfEvent"] = self.selectedDate;
+    
+    //Set Type of Event - Default is Public For Now
+    if (publicPrivateSwitch.on) {
+        newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:PUBLIC_EVENT_TYPE];
+    } else {
+        NSLog(@"Private Event");
+        newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:PRIVATE_EVENT_TYPE];
+    }
 
     NSData *eventCoverPhotoData = UIImageJPEGRepresentation(self.imageChosenAsCover, 0.5);
     PFFile *eventCoverPhotoFile = [PFFile fileWithName:@"coverphoto.jpg" data:eventCoverPhotoData];
@@ -227,7 +240,7 @@
             [newEvent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error){
                 
                 if (error) {
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"ERROR!" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"Error Creating Event" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                     
                     [errorAlert show];
                 }
@@ -241,7 +254,15 @@
                     //now invite people
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        
+                        PFRelation *invitedRelation = [newEvent relationForKey:@"invitedUsers"];
+
                         for (PFUser *user in self.peopleToInvite) {
+                            
+                            //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
+                            //if (publicPrivateSwitch.on) {
+                            [invitedRelation addObject:user];
+                            //}
                             
                             NSLog(@"People to Invite: %@", self.peopleToInvite);
                             PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
@@ -263,6 +284,9 @@
                                 }
                             }];
                         }
+                        
+                        //save the new invitedUsers relations for the Event - best to use saveEventually or saveInBackground? well we are already background so save]
+                        [newEvent save];
                     
                     });
                     
@@ -271,7 +295,7 @@
                     [self dismissViewControllerAnimated:YES completion:nil];
                     
                 } else {
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"NO SUCCESS" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"Error Creating Event2" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                     
                     [errorAlert show];
                     
