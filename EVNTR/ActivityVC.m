@@ -60,6 +60,7 @@
     
     PFQuery *queryForActivities = [PFQuery queryWithClassName:@"Activities"];
     [queryForActivities whereKey:@"to" equalTo:[PFUser currentUser]];
+    [queryForActivities orderByDescending:@"updatedAt"];
     
     return queryForActivities;
     

@@ -387,7 +387,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="xCR-Wy-afg">
-                        <barButtonItem key="leftBarButtonItem" systemItem="organize" id="Da2-k0-6Jl"/>
+                        <barButtonItem key="leftBarButtonItem" image="NavIcon" id="Da2-k0-6Jl"/>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -491,7 +491,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="Kak-5n-fUZ">
-                        <barButtonItem key="leftBarButtonItem" systemItem="organize" id="wyH-Ci-Wqa"/>
+                        <barButtonItem key="leftBarButtonItem" image="NavIcon" id="wyH-Ci-Wqa"/>
                     </navigationItem>
                     <connections>
                         <outlet property="sidebarButton" destination="wyH-Ci-Wqa" id="jsX-3Y-HeW"/>
@@ -643,7 +643,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="7VE-ia-yHI">
-                        <barButtonItem key="leftBarButtonItem" systemItem="organize" id="7ly-Ih-jMh"/>
+                        <barButtonItem key="leftBarButtonItem" image="NavIcon" id="7ly-Ih-jMh"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xwe-X8-wbj">
                             <connections>
                                 <segue destination="V8p-hm-ZWW" kind="presentation" identifier="AddNewEvent" id="T8k-0Z-tLk"/>
@@ -837,7 +837,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Activity" id="HoN-bb-fAN">
-                        <barButtonItem key="leftBarButtonItem" systemItem="organize" id="XkM-vB-6gP"/>
+                        <barButtonItem key="leftBarButtonItem" image="NavIcon" id="XkM-vB-6gP"/>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -992,11 +992,11 @@
             </objects>
             <point key="canvasLocation" x="2443" y="-951"/>
         </scene>
-        <!--Events-->
+        <!--Navigation Controller-->
         <scene sceneID="A01-jT-bCk">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="iIJ-u3-p6g" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Events" id="Zho-o6-F1N"/>
+                    <tabBarItem key="tabBarItem" title="" image="EventsTabIcon" id="Zho-o6-F1N"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="lct-cv-Pdr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1011,11 +1011,11 @@
             </objects>
             <point key="canvasLocation" x="1544" y="-555"/>
         </scene>
-        <!--People-->
+        <!--Navigation Controller-->
         <scene sceneID="j1z-T5-op0">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="1YE-KT-t1H" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="People" id="fvr-x9-Po7"/>
+                    <tabBarItem key="tabBarItem" title="" image="PeopleTabIcon" id="fvr-x9-Po7"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="iNj-xH-D2m">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1050,6 +1050,11 @@
             <point key="canvasLocation" x="1544" y="1388"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="EventsTabIcon" width="32" height="32"/>
+        <image name="NavIcon" width="32" height="32"/>
+        <image name="PeopleTabIcon" width="32" height="32"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Ji6-Ar-IPU"/>
         <segue reference="YY8-L4-hNl"/>
