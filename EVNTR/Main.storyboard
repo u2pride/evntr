@@ -1051,9 +1051,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="EventsTabIcon" width="32" height="32"/>
-        <image name="NavIcon" width="32" height="32"/>
-        <image name="PeopleTabIcon" width="32" height="32"/>
+        <image name="EventsTabIcon" width="50" height="50"/>
+        <image name="NavIcon" width="50" height="50"/>
+        <image name="PeopleTabIcon" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Ji6-Ar-IPU"/>

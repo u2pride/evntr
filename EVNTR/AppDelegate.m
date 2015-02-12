@@ -40,12 +40,24 @@
     //use to determine your current privileges granted by user.  gracefully degrade if not allowed anymore.
 }
 
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    NSLog(@"NOTIFICATION Recieved");
+        UIApplicationState applicationState = application.applicationState;
+        if (applicationState == UIApplicationStateBackground) {
+            [application presentLocalNotificationNow:notification];
+        }
+}
+
+
+//Background Fetch - Currently just looks for new invites from the activity table and alerts the user to how many are new.
+///////////////////////////NOTES////////////////////////////////
+//NOTE: Add a last fetch date to the user property?  How does the nsuserdefaults work for multiple users?  Will objects/keys be overwritten if a new user signs in???  Maybe I should add all these properties to the user and saveInBackgroundEventually?
+//Append username to kLastBackgroundFetchDate?
+//wonder what this does when no user is logged in? what does [pfuser currentuser] return?
+///////////////////////////NOTES////////////////////////////////
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    
-    //NOTE: Add a last fetch date to the user property?  How does the nsuserdefaults work for multiple users?  Will objects/keys be overwritten if a new user signs in???  Maybe I should add all these properties to the user and saveInBackgroundEventually?
-    //Append username to kLastBackgroundFetchDate?
-    //wonder what this does when no user is logged in? what does [pfuser currentuser] return?
     
     //Background Fetch for New Invites - Storing Fetch Timestamp
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -55,62 +67,79 @@
         lastFetchTime = [NSDate date];
     }
     
-    NSLog(@"User: %@", [PFUser currentUser]);
+    //Perform Fetch Only if User is Logged In
+    if ([PFUser currentUser]) {
     
-    PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];
-    [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
-    [queryForInvites whereKey:@"to" equalTo:[PFUser currentUser]];
-    [queryForInvites whereKey:@"createdAt" greaterThanOrEqualTo:lastFetchTime];
-    [queryForInvites findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (error) {
-            completionHandler(UIBackgroundFetchResultFailed);
-        } else {
-            NSLog(@"Invites: %@", objects);
-            NSNumber *numberOfNewInvites = [NSNumber numberWithInt:objects.count];
-            NSLog(@"num of invites: %@", numberOfNewInvites);
-            
-            if (numberOfNewInvites.integerValue == 1) {
-                PFObject *newInviteActivity = [objects firstObject];
-                PFUser *userWhoInvited = newInviteActivity[@"from"];
-                [userWhoInvited fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];
+        [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
+        [queryForInvites whereKey:@"to" equalTo:[PFUser currentUser]];
+        [queryForInvites whereKey:@"createdAt" greaterThanOrEqualTo:lastFetchTime];
+        [queryForInvites findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (error) {
+                completionHandler(UIBackgroundFetchResultFailed);
+            } else {
+                NSUInteger numberOfNewInvites = objects.count;
+                
+                if (numberOfNewInvites == 1) {
+                    PFObject *newInviteActivity = [objects firstObject];
+                    PFUser *userWhoInvited = newInviteActivity[@"from"];
+                    
+                    [userWhoInvited fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                        
+                        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+                        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
+                        localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!", userWhoInvited[@"username"]];
+                        localNotification.alertAction = @"Ready for some fun?";
+                        localNotification.timeZone = [NSTimeZone defaultTimeZone];
+                        localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+                        
+                        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+                        
+                        //Update User Defaults
+                        [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
+                        lastFetchTime = [NSDate date];
+                        [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
+                        
+                        completionHandler(UIBackgroundFetchResultNewData);
+                    }];
+                    
+                    
+                } else if (numberOfNewInvites > 1) {
                     // Schedule the notification
                     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-                    localNotification.fireDate = [NSDate date];
-                    localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!",userWhoInvited[@"username"]];
-                    localNotification.alertAction = @"Ready for some fun?";
+                    localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:30];
+                    localNotification.alertBody = @"You've been invited to more than one event. You're popular.";
+                    localNotification.alertAction = @"See Events!";
                     localNotification.timeZone = [NSTimeZone defaultTimeZone];
-                    localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+                    localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + numberOfNewInvites;
                     
-                    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+                    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
                     
-                }];
-                
-
-            } else if (numberOfNewInvites.integerValue > 1) {
-                // Schedule the notification
-                UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-                localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:30];
-                localNotification.alertBody = @"You've been invited to more than one event. You're popular.";
-                localNotification.alertAction = @"See Events!";
-                localNotification.timeZone = [NSTimeZone defaultTimeZone];
-                localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + numberOfNewInvites.integerValue;
-                
-                [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-                
-            } else if (numberOfNewInvites.integerValue == 0) {
-                //reset badge count
-                [UIApplication sharedApplication].applicationIconBadgeNumber = numberOfNewInvites.integerValue;
-                
+                    //Update User Defaults
+                    [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
+                    lastFetchTime = [NSDate date];
+                    [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
+                    
+                    completionHandler(UIBackgroundFetchResultNewData);
+                    
+                } else {
+                    //reset badge count
+                    [UIApplication sharedApplication].applicationIconBadgeNumber = numberOfNewInvites;
+                    
+                    
+                    //Update User Defaults
+                    [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
+                    lastFetchTime = [NSDate date];
+                    [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
+                    
+                    completionHandler(UIBackgroundFetchResultNewData);
+                }
             }
-            
-            [standardDefaults setObject:numberOfNewInvites forKey:kNumberOfNotifications];
-            
-            //set new fetchtime
-            lastFetchTime = [NSDate date];
-            [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
-            completionHandler(UIBackgroundFetchResultNewData);
-        }
-    }];
+        }];
+        
+    } else {
+        completionHandler(UIBackgroundFetchResultFailed);
+    }
     
 }
 
