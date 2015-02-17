@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import "EditProfileVC.h"
 
-@interface ProfileVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface ProfileVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ProfileEditDelegate>
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 

@@ -46,22 +46,16 @@
     NSString *randomTwitterHandle = [NSString stringWithFormat:@"twitter%d", (arc4random_uniform(90) + 1)];
     NSString *randomInstagramHandle = [NSString stringWithFormat:@"instagram%d", (arc4random_uniform(90) + 1)];
     
-    NSArray *followers = @[@"12", @"14", @"18"];
-    NSArray *following = @[@"11", @"14", @"19", @"15"];
-
-    newUser[@"followers"] = followers;
-    newUser[@"following"] = following;
-    
     newUser[@"twitterHandle"] = randomTwitterHandle;
     newUser[@"instagramHandle"] = randomInstagramHandle;
     
     [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
-            UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"Success!" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle:@"Signed Up" message:@"Welcome to EVNTR." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
             
             [successAlert show];
             
-            [self performSegueWithIdentifier:@"SignupToHomeView" sender:self];
+            [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
 
             
         } else {

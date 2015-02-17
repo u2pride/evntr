@@ -10,12 +10,16 @@
 #import <Parse/Parse.h>
 
 @interface LogInVC ()
+- (IBAction)resetUserPassword:(id)sender;
+@property (weak, nonatomic) IBOutlet UITextField *emailForReset;
+@property (weak, nonatomic) IBOutlet UIWebView *backgroundVideo;
+@property (weak, nonatomic) IBOutlet UIView *filterView;
 
 @end
 
 @implementation LogInVC
 
-@synthesize usernameField, passwordField;
+@synthesize usernameField, passwordField, emailForReset, backgroundVideo, filterView;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -27,6 +31,20 @@
     self.passwordField.text = @"eventkey";
     self.passwordField.placeholder = @"password";
     self.passwordField.secureTextEntry = YES;
+    
+    
+    //background video
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"railway" ofType:@"gif"];
+    NSData *gif = [NSData dataWithContentsOfFile:filePath];
+    
+    backgroundVideo.frame = self.view.frame;
+    [backgroundVideo loadData:gif MIMEType:@"image/gif" textEncodingName:nil baseURL:nil];
+    backgroundVideo.userInteractionEnabled = NO;
+    
+    filterView.frame = self.view.frame;
+    filterView.backgroundColor = [UIColor blackColor];
+    filterView.alpha = 0.05;
+    [self.view addSubview:filterView];
     
 }
 
@@ -71,4 +89,20 @@
 }
 */
 
+//Reset User Password - Parse
+- (IBAction)resetUserPassword:(id)sender {
+    
+    [PFUser requestPasswordResetForEmailInBackground:self.emailForReset.text block:^(BOOL succeeded, NSError *error) {
+       
+        if (succeeded && !error) {
+                UIAlertView *successPopup = [[UIAlertView alloc] initWithTitle:@"Reset Success" message:@"Click on the link in your email to reset your password" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            [successPopup show];
+        } else {
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Reset Error" message:@"Not able to reset your password.  Try restarting the app." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
+            [errorAlert show];
+        }
+        
+    }];
+    
+}
 @end

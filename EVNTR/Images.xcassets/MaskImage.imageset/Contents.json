@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "mask-2.png"
+      "filename" : "MaskImage2.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "mask-1.png"
+      "filename" : "MaskImage2-1.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "mask.png"
+      "filename" : "MaskImage2-2.png"
     }
   ],
   "info" : {

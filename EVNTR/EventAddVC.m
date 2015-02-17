@@ -12,6 +12,7 @@
 #import "PeopleVC.h"
 #import "EVNConstants.h"
 #import "EVNUtility.h"
+#import <AddressBookUI/AddressBookUI.h>
 
 @interface EventAddVC ()
 
@@ -76,8 +77,39 @@
     
     NSLog(@"New locations");
     CLLocation *newLocation = [locations lastObject];
-    eventLocationText.text = [NSString stringWithFormat:@"Lat: %f", newLocation.coordinate.latitude];
-    
+    [self reverseGeocode:newLocation];
+    self.eventGeoPoint = [PFGeoPoint geoPointWithLocation:newLocation];
+
+}
+
+//Note:  Interesting.  Can use the appDelegate to set the user location. And then retrieve from the app delegate. Is this better than storing in NSUserDefaults?
+//Note:  Source of code: http://stackoverflow.com/questions/26111631/ios-8-parse-com-update-and-pf-geopoint-current-location
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    switch (status) {
+        case kCLAuthorizationStatusDenied: {
+            NSLog(@"kCLAuthorizationStatusDenied");
+        
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Location Services Not Enabled" message:@"The app can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            [alertView show];
+            break;
+        }
+        case kCLAuthorizationStatusAuthorizedWhenInUse: {
+            //[self setEventLocation:self];
+            
+            break;
+        }
+        case kCLAuthorizationStatusAuthorizedAlways: {
+            //[self setEventLocation:self];
+
+            break;
+        }
+        case kCLAuthorizationStatusNotDetermined:
+            NSLog(@"kCLAuthorizationStatusNotDetermined");
+            break;
+        case kCLAuthorizationStatusRestricted:
+            NSLog(@"kCLAuthorizationStatusRestricted");
+            break;
+    }
 }
 
 #pragma mark - Adding a Cover Photo
@@ -124,7 +156,8 @@
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
     [self.locationManager startUpdatingLocation];
-    
+   
+    /*  Removed code.  Was using two CLLocationManagers.
     NSLog(@"Start Updating");
     //Now Call geopointforcurrentlocation
     [PFGeoPoint geoPointForCurrentLocationInBackground:^(PFGeoPoint *geoPoint, NSError *error) {
@@ -138,6 +171,8 @@
             NSLog(@"GeoPoint2: %@", geoPoint);
         }
     }];
+     
+     */
     
 }
 
@@ -166,6 +201,23 @@
     NSLog(@"Selected Date: %@ and UTC: %@ and Local: %@", self.selectedDate, ts_utc_string, ts_local_string);
      */
 
+}
+
+#pragma mark - Reverse Geo-Coding Location
+
+- (void)reverseGeocode:(CLLocation *)location {
+    
+    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+    [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+        if (error) {
+            NSLog(@"Error with Location");
+        } else {
+            CLPlacemark *placemark = [placemarks lastObject];
+            self.eventLocationText.text = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO)];
+
+        }
+        
+    }];
 }
 
 

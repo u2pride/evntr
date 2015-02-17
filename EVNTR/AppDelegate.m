@@ -16,10 +16,38 @@
 
 @implementation AppDelegate
 
+@synthesize locationManager;
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-
+    
+    //User's Location for Queries of Local Events.
+    if (!self.locationManager) {
+        self.locationManager = [[CLLocationManager alloc] init];
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        self.locationManager.distanceFilter = 100;
+        self.locationManager.delegate = self;
+        
+        // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
+        //IS THIS FOR ASKING FOR LOCATION?? IF SO, ADD TO ONBBOARDING.
+        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [self.locationManager requestWhenInUseAuthorization];
+        }
+        
+        //Check to see if locationServices is enabled.
+        //TODO: if not enabled, then alert the user.
+        if([CLLocationManager locationServicesEnabled]){
+            NSLog(@"Begun Monintoring Locations");
+            [self.locationManager startUpdatingLocation];
+        }
+    }
+    
+    //Enabling Local Notifications.
+    UIUserNotificationType notificationTypes = UIUserNotificationTypeBadge | UIUserNotificationTypeAlert;
+    UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
+    
     //Connecting App to Parse and Enabling Analytics
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
@@ -27,19 +55,16 @@
     //Background Fetching for Server Updates
     [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
     
-    //User Notifications - Local (currently just for invites)
-    UIUserNotificationType notificationTypes = UIUserNotificationTypeBadge | UIUserNotificationTypeAlert;
-    UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
     
     return YES;
 }
 
+//TODO: use to determine your current privileges granted by user.  gracefully degrade if not allowed anymore.
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
     UIUserNotificationType allowedTypes = [notificationSettings types];
-    //use to determine your current privileges granted by user.  gracefully degrade if not allowed anymore.
 }
 
+//TODO: what needs to be accomplished here?
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
     NSLog(@"NOTIFICATION Recieved");
@@ -48,6 +73,73 @@
             [application presentLocalNotificationNow:notification];
         }
 }
+
+
+
+#pragma mark -- CLLocationManager Delegate
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    
+    NSLog(@"New locations");
+    CLLocation *newLocation = [locations lastObject];
+
+    //Check the most recent location update and make sure it's not cached and recent.
+    NSDate *lastLocationDate = newLocation.timestamp;
+    NSTimeInterval timeSinceLastLocation = [lastLocationDate timeIntervalSinceNow];
+    NSLog(@"Time since Last Location: %f", timeSinceLastLocation);
+    if (abs(timeSinceLastLocation) < 60) {
+        //self.currentLocation = newLocation;
+        
+        NSNumber *latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
+        NSNumber *longitude = [NSNumber numberWithDouble:newLocation.coordinate.longitude];
+        NSDictionary *userLocationDictionary = [NSDictionary dictionaryWithObjectsAndKeys:latitude, @"latitude", longitude, @"longitude", nil];
+        
+        //Doing Both UserDefaults and Notifications for Now - Pick one Later
+        
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults setObject:userLocationDictionary forKey:@"userLocation"];
+        [userDefaults synchronize];
+        
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"newLocationNotif" object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];
+        
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
+    NSLog(@"LM Failed with Error");
+}
+
+- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    switch (status) {
+        case kCLAuthorizationStatusDenied: {
+            NSLog(@"kCLAuthorizationStatusDenied");
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Location Services Not Enabled" message:@"The app can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            [alertView show];
+            break;
+        }
+        case kCLAuthorizationStatusAuthorizedWhenInUse: {
+            //[self setEventLocation:self];
+            
+            break;
+        }
+        case kCLAuthorizationStatusAuthorizedAlways: {
+            //[self setEventLocation:self];
+            
+            break;
+        }
+        case kCLAuthorizationStatusNotDetermined:
+            NSLog(@"kCLAuthorizationStatusNotDetermined");
+            break;
+        case kCLAuthorizationStatusRestricted:
+            NSLog(@"kCLAuthorizationStatusRestricted");
+            break;
+    }
+}
+
+//Note:  Interesting.  Can use the appDelegate to set the user location. And then retrieve from the app delegate. Is this better than storing in NSUserDefaults?
+//Note:  Source of code: http://stackoverflow.com/questions/26111631/ios-8-parse-com-update-and-pf-geopoint-current-location
+
 
 
 //Background Fetch - Currently just looks for new invites from the activity table and alerts the user to how many are new.
@@ -150,11 +242,15 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+    
+    [self.locationManager stopUpdatingLocation];
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    
+    [self.locationManager startUpdatingLocation];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 

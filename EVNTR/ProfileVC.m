@@ -7,12 +7,13 @@
 //
 
 #import "EVNConstants.h"
+#import "EVNUtility.h"
+#import "EditProfileVC.h"
 #import "HomeScreenVC.h"
 #import "LogInVC.h"
 #import "PeopleVC.h"
 #import "ProfileVC.h"
 #import "SWRevealViewController.h"
-#import "EVNUtility.h"
 
 @interface ProfileVC ()
 
@@ -31,6 +32,19 @@
     if (self)
     {
         self.isComingFromNavigation = NO;
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.backgroundColor = [UIColor clearColor];
+        label.font = [UIFont boldSystemFontOfSize:20.0];
+        label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
+        label.textAlignment = NSTextAlignmentCenter;
+        // ^-Use UITextAlignmentCenter for older SDKs.
+        label.textColor = [UIColor whiteColor]; // change this color
+        self.navigationItem.titleView = label;
+        label.text = @"Profile";
+        [label sizeToFit];
+        
+
     }
     
     return self;
@@ -41,7 +55,7 @@
     [super viewDidLoad];
     
     //Some Minor UI Adjustments
-    self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    //self.navigationController.view.backgroundColor = [UIColor whiteColor];
     
     self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.loadingSpinner.hidesWhenStopped = YES;
@@ -68,6 +82,10 @@
     self.twitterLabel.text = nil;
     self.instagramLabel.text = nil;
     
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 
 }
 
@@ -148,7 +166,7 @@
     PFFile *profilePictureFromParse = userForProfileView[@"profilePicture"];
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
-            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
+            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"]];
         }
     }];
     
@@ -465,15 +483,49 @@
 
 
 
-/*
+
+#pragma mark - ProfileEditDelegate Methods
+
+- (void)canceledEditingProfile {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)saveProfileEdits:(PFUser *)updatedUser {
+    
+    [updatedUser saveInBackground];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    //Update Profile View with New Data
+    nameLabel.text = updatedUser[@"username"];
+    
+    
+}
+
+
+
  #pragma mark - Navigation
  
  // In a storyboard-based application, you will often want to do a little preparation before navigation
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
  // Get the new view controller using [segue destinationViewController].
  // Pass the selected object to the new view controller.
+     
+     if ([[segue identifier] isEqualToString:@"profileToEditProfile"]) {
+     
+         UINavigationController *navController = (UINavigationController *)[segue destinationViewController];
+         EditProfileVC *editProfileView = (EditProfileVC *)[[navController childViewControllers] lastObject];
+         
+         editProfileView.nameTextField.text = userForProfileView[@"username"];
+         editProfileView.profileImageView.image = self.profileImageView.image;
+         editProfileView.hometownTextField.text = @"Freehome, GA";
+         editProfileView.delegate = self;
+         
+     }
+     
  }
- */
+
 
 
 

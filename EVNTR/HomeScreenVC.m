@@ -14,8 +14,11 @@
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 #import "EVNConstants.h"
+#import "AppDelegate.h"
 
-@interface HomeScreenVC ()
+@interface HomeScreenVC () {
+    PFGeoPoint *currentLocation;
+}
 
 @end
 
@@ -55,18 +58,25 @@
         }
         
     } else {
-        //setup view when viewing events from profiles - Probably don't need this.
         
         //Remove Navigation Menu and Other Bar Button Items so Back Button Appears.
         self.navigationItem.rightBarButtonItems = nil;
         self.navigationItem.leftBarButtonItems = nil;
-        /*
-        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
-        
-        self.navigationItem.rightBarButtonItem = cancelButton;
-         */
+
     }
     
+    //Subscribe to Location Updates
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedLocation:) name:@"newLocationNotif" object:nil];
+    
+    
+    /*
+    [PFGeoPoint geoPointForCurrentLocationInBackground:^(PFGeoPoint *geoPoint, NSError *error) {
+        currentLocation = geoPoint;
+        NSLog(@"GeoPoint: %f and %f", geoPoint.longitude, geoPoint.latitude);
+        
+        [self loadObjects];
+    }];
+    */
     
     NSLog(@"type: %d", self.typeOfEventTableView);
     
@@ -92,6 +102,16 @@
             break;
     }
     
+    
+    
+
+    
+    
+    
+    //if (userLocation) {
+    //    currentLocation = [PFGeoPoint geoPointWithLocation:userLocation];
+    //}
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -99,47 +119,98 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-- (void)objectsWillLoad {
-    // TODO - THIS IS NOT GETTING CALLED WHEN USING THE NAVIGATION, but otherwise is getting called.
-    // Nevermind it is getting called, just after the queryForTable function... hmmm.
+- (void) updatedLocation:(NSNotification *)notification {
+    if (!currentLocation) {
+        CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
+        currentLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
+        [self loadObjects];
+        
+    } else {
+        CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
+        currentLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
+    }
 }
 
 
-//- (void)returnToProfile {
+- (void)objectsWillLoad {
+    [super objectsWillLoad];
     
-//    [self dismissViewControllerAnimated:YES completion:nil];
+    AppDelegate *appDelegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
+    CLLocation *currentLocationFromAppDelegate=appDelegate.locationManager.location;
+
+    NSLog(@"current location: %@", currentLocationFromAppDelegate);
     
-//}
+}
+
+
+
+
+- (void)objectsDidLoad:(NSError *)error {
+    [super objectsDidLoad:error];
+    
+    NSLog(@"---------------------------------------------------------");
+    NSLog(@"currentLocation lat and long %f and %f:", currentLocation.latitude, currentLocation.longitude);
+    
+    for (PFObject *newEvent in self.objects) {
+        PFGeoPoint *location = [newEvent objectForKey:@"locationOfEvent"];
+        NSLog(@"eventLocation lat and long %f and %f:", location.latitude, location.longitude);
+    }
+
+}
+
+
 
 
 #pragma mark - PFTableView Data & Custom Cells
 
 - (PFQuery *)queryForTable {
     
+    
     //Return All Events for the Basic All Events View
     //Return a Specific Username's events when you are viewing someone's events.
     
-    PFQuery *eventsQuery;
+    PFQuery *eventsQuery = [PFQuery queryWithClassName:@"Events"];
     
     switch (typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
-            eventsQuery = [PFQuery queryWithClassName:@"Events"];
-            [eventsQuery orderByDescending:@"createdAt"];
+
+            NSLog(@"before everything");
+            //One Way to Do It
+            AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            currentLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManager.location];
+            
+            NSLog(@"after app delegate method");
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSDictionary *userLocationDictionary = [userDefaults objectForKey:@"userLocation"];
+            
+            NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
+            NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
+            NSLog(@"after userDefaults method");
+
+            if (userLocationDictionary) {
+                NSLog(@"Got the User Location from UserDefaults");
+                currentLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+            }
+            
+            if (!currentLocation) {
+                NSLog(@"Returning nil");
+                return nil;
+            }
+
             [eventsQuery whereKey:@"typeOfEvent" equalTo:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE]];
+            [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:currentLocation];
             
             break;
         }
         case CURRENT_USER_EVENTS: {
             
-            eventsQuery = [PFQuery queryWithClassName:@"Events"];
             [eventsQuery whereKey:@"parent" equalTo:userForEventsQuery];
             [eventsQuery orderByAscending:@"Title"];
             
             break;
         }
         case OTHER_USER_EVENTS: {
-            eventsQuery = [PFQuery queryWithClassName:@"Events"];
+
             [eventsQuery whereKey:@"parent" equalTo:userForEventsQuery];
             [eventsQuery orderByAscending:@"Title"];
             
@@ -152,6 +223,13 @@
     
     return eventsQuery;
 }
+
+//- (void)lookForLocationNow {
+    
+//    AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
+//    currentLocation = [PFGeoPoint geoPointWithLocation:appDelegate.currentLocation];
+//    [self loadObjects];
+//}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
     
@@ -193,6 +271,61 @@
     }
     
 }
+
+
+//- (void)returnToProfile {
+
+//    [self dismissViewControllerAnimated:YES completion:nil];
+
+//}
+
+//using app delegate for location updates... need to pair with pfgeopointinbackground
+/*
+ NSLog(@"before the if then check");
+ 
+ //Make sure location services are enabled before requesting the location
+ if([CLLocationManager locationServicesEnabled]){
+ 
+ NSLog(@"inside the if then check");
+ 
+ 
+ AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
+ CLLocation *currentLocationFromAppDelegate = appDelegate.currentLocation;
+ 
+ currentLocation = [PFGeoPoint geoPointWithLocation:currentLocationFromAppDelegate];
+ 
+ NSLog(@"Current Location: %@", currentLocation);
+ 
+ if (currentLocation.latitude == 0 || currentLocation.longitude == 0) {
+ UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"No Location From App Delegate - Maybe start a timer to ask for location in a couple of secs?" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+ 
+ [errorAlert show];
+ }
+ 
+ }
+ 
+ UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
+ 
+ self.navigationItem.rightBarButtonItem = cancelButton;
+ */
+
+// TODO - THIS IS NOT GETTING CALLED WHEN USING THE NAVIGATION, but otherwise is getting called.
+// Nevermind it is getting called, just after the queryForTable function... hmmm.  queryForTable is to determine the query. not where I should be checking locaiton.
+
+//Fail safe for when we don't have a current location.
+/*
+ if (currentLocation.latitude == 0 || currentLocation.longitude == 0) {
+ NSLog(@"QueryForTableView... no currentLocation");
+ 
+ [NSTimer timerWithTimeInterval:5 target:self selector:@selector(lookForLocationNow) userInfo:nil repeats:NO];
+ 
+ return;
+ }
+ 
+ //Add the location to the query.
+ [self.queryForTable whereKey:@"locationOfEvent" nearGeoPoint:currentLocation];
+ 
+ */
 
 
 @end

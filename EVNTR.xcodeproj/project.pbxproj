@@ -42,11 +42,14 @@
 		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
+		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
 		A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */; };
 		A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B11A7ABDF400614412 /* PersonCell.m */; };
 		A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */; };
 		A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B71A7AF65800614412 /* EVNConstants.m */; };
 		A4F2E9BB1A7C0BA000614412 /* HomeTabsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */; };
+		A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */; };
+		A4F615421A8D4E5C005E2F26 /* railway.gif in Resources */ = {isa = PBXBuildFile; fileRef = A4F615411A8D4E5C005E2F26 /* railway.gif */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +117,8 @@
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
+		A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileVC.h; sourceTree = "<group>"; };
+		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileVC.m; sourceTree = "<group>"; };
 		A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleVC.h; sourceTree = "<group>"; };
 		A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleVC.m; sourceTree = "<group>"; };
 		A4F2E9B01A7ABDF400614412 /* PersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonCell.h; sourceTree = "<group>"; };
@@ -124,6 +129,8 @@
 		A4F2E9B71A7AF65800614412 /* EVNConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNConstants.m; sourceTree = "<group>"; };
 		A4F2E9B91A7C0BA000614412 /* HomeTabsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTabsController.h; sourceTree = "<group>"; };
 		A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTabsController.m; sourceTree = "<group>"; };
+		A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		A4F615411A8D4E5C005E2F26 /* railway.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = railway.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,6 +138,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */,
 				A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */,
 				A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */,
 				A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */,
@@ -184,6 +192,8 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
+				A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */,
+				A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */,
 				A474306E1A81563400CF3B8F /* Activities */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A474306B1A8155C700CF3B8F /* Events */,
@@ -192,6 +202,7 @@
 				A4F2E9A61A7A806A00614412 /* Navigation Controllers */,
 				A41563491A76EB9800565BB6 /* SWRevealVC */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
+				A4F615411A8D4E5C005E2F26 /* railway.gif */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
 			);
@@ -227,6 +238,7 @@
 		A41563391A768AC700565BB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */,
 				A488B35B1A801FE800738B4F /* MapKit.framework */,
 				A4035FD41A78534400DB67E4 /* ParseUI.framework */,
 				A41563371A76890E00565BB6 /* libsqlite3.dylib */,
@@ -428,6 +440,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4F615421A8D4E5C005E2F26 /* railway.gif in Resources */,
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
@@ -462,6 +475,7 @@
 				A47430671A81556C00CF3B8F /* ActivityVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
 				A41563451A76E15100565BB6 /* EventAddVC.m in Sources */,
+				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
 				A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
