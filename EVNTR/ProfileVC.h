@@ -10,7 +10,8 @@
 #import <Parse/Parse.h>
 #import "EditProfileVC.h"
 
-@interface ProfileVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, ProfileEditDelegate>
+@interface ProfileVC : UIViewController <UINavigationControllerDelegate, ProfileEditDelegate>
+
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
@@ -32,6 +33,7 @@
 
 //Navigation
 @property BOOL isComingFromNavigation;
+@property BOOL isComingFromEditProfile;
 
 //Loading Spinner
 @property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;

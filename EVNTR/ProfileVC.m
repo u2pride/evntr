@@ -16,6 +16,10 @@
 #import "SWRevealViewController.h"
 
 @interface ProfileVC ()
+{
+    
+    NSData *userPictureData;
+}
 
 @property (nonatomic, strong) PFUser *userForProfileView;
 
@@ -23,7 +27,7 @@
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton, isComingFromNavigation;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton, isComingFromNavigation, isComingFromEditProfile;
 
 
 - (id)initWithCoder:(NSCoder*)aDecoder
@@ -44,6 +48,7 @@
         label.text = @"Profile";
         [label sizeToFit];
         
+        self.isComingFromEditProfile = NO;        
 
     }
     
@@ -82,10 +87,10 @@
     self.twitterLabel.text = nil;
     self.instagramLabel.text = nil;
     
-    
-    self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
-    self.navigationController.navigationBar.translucent = NO;
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+    //Update Nav Bar
+    //self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
+    //self.navigationController.navigationBar.translucent = NO;
+    //self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 
 }
 
@@ -94,14 +99,20 @@
     
     [super viewDidAppear:animated];
     
-    //Query Parse for the User.
-    PFQuery *usernameQuery = [PFUser query];
-    [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
-    [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        userForProfileView = (PFUser *)object;
-        [self updateUIWithUser];
+    NSLog(@"Inside Profile VC - passed username: %@ and current user: %@", self.userNameForProfileView, [[PFUser currentUser] objectForKey:@"username"]);
+    
+    if (!isComingFromEditProfile) {
         
-    }];
+        //Query Parse for the User.
+        PFQuery *usernameQuery = [PFUser query];
+        [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
+        [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            userForProfileView = (PFUser *)object;
+            [self updateUIWithUser];
+            
+        }];
+        
+    }
     
 }
 
@@ -166,6 +177,7 @@
     PFFile *profilePictureFromParse = userForProfileView[@"profilePicture"];
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
+            userPictureData = data;
             self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"]];
         }
     }];
@@ -278,6 +290,7 @@
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [pictureOptionsMenu addAction:takePhoto];
     }
+    
     [pictureOptionsMenu addAction:choosePhoto];
     [pictureOptionsMenu addAction:cancelAction];
     
@@ -462,8 +475,8 @@
     
     self.profileImageView.image = chosenPicture;
 
-    NSData *profilePictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
-    PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:profilePictureData];
+    userPictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
+    PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:userPictureData];
     
     [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded){
@@ -491,15 +504,23 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)saveProfileEdits:(PFUser *)updatedUser {
+
+-(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData {
+
     
-    [updatedUser saveInBackground];
+    NSString *username = [stringDictionary objectForKey:@"username"];
+    //NSString *realName = [stringDictionary objectForKey:@"realName"];
+    //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
+    //NSString *bio = [stringDictionary objectForKey:@"bio"];
+    
+    self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"]];
+    self.nameLabel.text = username;
+
+    self.isComingFromEditProfile = YES;
+    self.userNameForProfileView = username;
+    self.userForProfileView = [PFUser currentUser];
     
     [self dismissViewControllerAnimated:YES completion:nil];
-    
-    //Update Profile View with New Data
-    nameLabel.text = updatedUser[@"username"];
-    
     
 }
 
@@ -508,6 +529,7 @@
  #pragma mark - Navigation
  
  // In a storyboard-based application, you will often want to do a little preparation before navigation
+// Remember that at this point the view hasn't loaded.... so you can't set UI element properties.
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
  // Get the new view controller using [segue destinationViewController].
  // Pass the selected object to the new view controller.
@@ -517,9 +539,14 @@
          UINavigationController *navController = (UINavigationController *)[segue destinationViewController];
          EditProfileVC *editProfileView = (EditProfileVC *)[[navController childViewControllers] lastObject];
          
-         editProfileView.nameTextField.text = userForProfileView[@"username"];
-         editProfileView.profileImageView.image = self.profileImageView.image;
-         editProfileView.hometownTextField.text = @"Freehome, GA";
+         PFUser *currentUser = [PFUser currentUser];
+         NSLog(@"PFUSER on PROFILE SIDE: %@", currentUser);
+
+         editProfileView.username = currentUser[@"username"];
+         editProfileView.realName = currentUser[@"realName"];
+         editProfileView.hometown = currentUser[@"hometown"];
+         editProfileView.bio = currentUser[@"bio"];
+         editProfileView.pictureData = userPictureData;
          editProfileView.delegate = self;
          
      }

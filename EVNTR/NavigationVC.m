@@ -101,6 +101,7 @@
         UINavigationController *navigationControllerForProfileView = (UINavigationController *)[segue destinationViewController];
         
         ProfileVC *profileViewController = (ProfileVC *)[navigationControllerForProfileView topViewController];
+        NSLog(@"Passing this username from Navigation: %@", [[PFUser currentUser] objectForKey:@"username"]);
         profileViewController.userNameForProfileView = [[PFUser currentUser] objectForKey:@"username"];
         profileViewController.isComingFromNavigation = YES;
         

@@ -10,23 +10,24 @@
 #import <Parse/Parse.h>
 
 @protocol ProfileEditDelegate;
-@class ProfileVC;
+//@class ProfileVC;
 
-@interface EditProfileVC : UITableViewController
-
-//TODO: move inside implmentation?
-@property (weak, nonatomic) IBOutlet UITextField *nameTextField;
-@property (weak, nonatomic) IBOutlet UITextField *hometownTextField;
-@property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+@interface EditProfileVC : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, weak) id<ProfileEditDelegate> delegate;
 
+//User Information From Profile Screen
+@property (nonatomic, strong) NSString *username;
+@property (nonatomic, strong) NSString *realName;
+@property (nonatomic, strong) NSString *hometown;
+@property (nonatomic, strong) NSString *bio;
+@property (nonatomic, strong) NSData *pictureData;
 
 @end
 
 @protocol ProfileEditDelegate <NSObject>
 
 -(void)canceledEditingProfile;
--(void)saveProfileEdits:(PFUser *)updatedUser;
+-(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData;
 
 @end

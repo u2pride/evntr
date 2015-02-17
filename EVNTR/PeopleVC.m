@@ -264,6 +264,7 @@
         PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
         
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+        NSLog(@"username of current user %@ but passing this username from peoplevc %@", [[PFUser currentUser] objectForKey:@"username"], selectedUser[@"username"]);
         viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
         viewUserProfileVC.hidesBottomBarWhenPushed = YES;
         
