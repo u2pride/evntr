@@ -13,7 +13,6 @@
 #import "LogInVC.h"
 #import "PeopleVC.h"
 #import "ProfileVC.h"
-#import "SWRevealViewController.h"
 
 @interface ProfileVC ()
 {
@@ -48,6 +47,9 @@
         label.text = @"Profile";
         [label sizeToFit];
         
+        self.userForProfileView = [PFUser currentUser];
+        self.userNameForProfileView = [PFUser currentUser][@"username"];
+        
         self.isComingFromEditProfile = NO;        
 
     }
@@ -70,13 +72,8 @@
     
     //When presented from Navigation - Keep the Side Reveal Menu Icon in the Top Left
     if (self.isComingFromNavigation) {
-        SWRevealViewController *revealViewController = self.revealViewController;
+
         
-        if (revealViewController) {
-            [self.sidebarButton setTarget: self.revealViewController];
-            [self.sidebarButton setAction: @selector(revealToggle:)];
-            [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-        }
     } else {
         self.sidebarButton = nil;
         self.navigationItem.leftBarButtonItems = nil;

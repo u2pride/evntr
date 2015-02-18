@@ -7,7 +7,6 @@
 //
 
 #import "SettingsVC.h"
-#import "SWRevealViewController.h"
 #import <Parse/Parse.h>
 #import "ProfileVC.h"
 
@@ -23,14 +22,6 @@
     
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
-    
-    SWRevealViewController *revealViewController = self.revealViewController;
-    
-    if (revealViewController) {
-        [self.sidebarButton setTarget:self.revealViewController];
-        [self.sidebarButton setAction: @selector(revealToggle: )];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
     
 }
 

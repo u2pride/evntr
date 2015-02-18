@@ -10,7 +10,6 @@
 #import "EventTableCell.h"
 #import "HomeScreenVC.h"
 #import "ProfileVC.h"
-#import "SWRevealViewController.h"
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 #import "EVNConstants.h"
@@ -47,15 +46,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //TODO
     if (self.isComingFromNavigation) {
         
-        SWRevealViewController *revealViewController = self.revealViewController;
-        
-        if (revealViewController) {
-            [self.sidebarButton setTarget: self.revealViewController];
-            [self.sidebarButton setAction: @selector(revealToggle:)];
-            [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-        }
         
     } else {
         
@@ -111,6 +104,18 @@
     //if (userLocation) {
     //    currentLocation = [PFGeoPoint geoPointWithLocation:userLocation];
     //}
+    
+}
+
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    int randomNumberOfNotifications = arc4random_uniform(30);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:randomNumberOfNotifications] forKey:@"numberOfNotifications"]];
+    
     
 }
 

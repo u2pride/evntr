@@ -7,17 +7,13 @@
 //
 
 #import "NavigationVC.h"
-#import "SWRevealViewController.h"
 #import <Parse/Parse.h>
 #import "ProfileVC.h"
 #import "HomeScreenVC.h"
 #import "EVNConstants.h"
-#import "CellWithBadge.h"
 #import "EVNConstants.h"
 
 @interface NavigationVC ()
-
-@property (weak, nonatomic) IBOutlet CellWithBadge *activityCellWithBadge;
 
 @end
 
@@ -25,7 +21,6 @@
     NSArray *menuItems;
 }
 
-@synthesize activityCellWithBadge;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -72,7 +67,7 @@
     //New code
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     NSNumber *numNotifications = [standardDefaults objectForKey:kNumberOfNotifications];
-    activityCellWithBadge.badgeLabel.text = [NSString stringWithFormat:@"%ld", (long)numNotifications.integerValue];
+    //NO LONGER THERE activityCellWithBadge.badgeLabel.text = [NSString stringWithFormat:@"%ld", (long)numNotifications.integerValue];
 }
 
 /*

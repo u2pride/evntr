@@ -9,7 +9,6 @@
 #import "ActivityVC.h"
 #import "ActivityTableCell.h"
 #import "EVNConstants.h"
-#import "SWRevealViewController.h"
 #import "ProfileVC.h"
 #import "EventDetailVC.h"
 
@@ -35,14 +34,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //Setup Navigation
-    SWRevealViewController *revealViewController = self.revealViewController;
-    
-    if (revealViewController) {
-        [self.sidebarButton setTarget: self.revealViewController];
-        [self.sidebarButton setAction: @selector(revealToggle:)];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {

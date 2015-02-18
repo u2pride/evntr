@@ -22,6 +22,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    
     //User's Location for Queries of Local Events.
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
@@ -102,6 +103,8 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"newLocationNotif" object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];
         
+
+        
     }
 }
 
@@ -154,6 +157,7 @@
     //Background Fetch for New Invites - Storing Fetch Timestamp
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
 
+
     __block NSDate *lastFetchTime = [standardDefaults objectForKey:kLastBackgroundFetchTimeStamp];
     if (!lastFetchTime) {
         lastFetchTime = [NSDate date];
@@ -187,10 +191,12 @@
                         
                         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
                         
-                        //Update User Defaults
+                        //Update User Defaults and Notification - TODO: Pick one
                         [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
                         lastFetchTime = [NSDate date];
                         [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
+                        
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
                         
                         completionHandler(UIBackgroundFetchResultNewData);
                     }];
@@ -212,6 +218,8 @@
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
                     
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
+                    
                     completionHandler(UIBackgroundFetchResultNewData);
                     
                 } else {
@@ -223,6 +231,8 @@
                     [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
+                    
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
                     
                     completionHandler(UIBackgroundFetchResultNewData);
                 }
