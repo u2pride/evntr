@@ -74,40 +74,52 @@
     newUser[@"twitterHandle"] = randomTwitterHandle;
     newUser[@"instagramHandle"] = randomInstagramHandle;
     
-    [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle:@"Signed Up" message:@"Welcome to EVNTR." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-            
-            [successAlert show];
-            
-            //Create user then save profile picture and other information.
-            PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
-            
-            [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded){
-                    newUser[@"profilePicture"] = profilePictureFile;
-                    [newUser saveInBackground];
-                }
-            }];
-            
-            
-            [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
-
-            
-        } else {
-            
-            NSString *errorString = [error userInfo][@"error"];
-            
-            UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:errorString delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-            
-            [failureAlert show];
-            
-            
-            
-            
-        }
+    
+    //Validate that the user has submitted a user name and password
+    if (self.usernameField.text.length > 3 && self.passwordField.text.length > 3 && self.emailField.text.length > 0) {
         
-    }];
+        [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (!error) {
+                UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle:@"Signed Up" message:@"Welcome to EVNTR." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                
+                [successAlert show];
+                
+                //Create user then save profile picture and other information.
+                PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
+                
+                [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (succeeded){
+                        newUser[@"profilePicture"] = profilePictureFile;
+                        [newUser saveInBackground];
+                    }
+                }];
+                
+                
+                [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
+                
+                
+            } else {
+                
+                NSString *errorString = [error userInfo][@"error"];
+                
+                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:errorString delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                
+                [failureAlert show];
+                
+            }
+            
+        }];
+
+        
+        
+    } else {
+        
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Information" message:@"Make sure to fill in all fields and that your username and password are greater than three characters." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+        
+        [errorAlert show];
+    }
+    
+    
     
     
 
