@@ -8,22 +8,30 @@
 
 #import "LogInVC.h"
 #import <Parse/Parse.h>
+#import "ResetPasswordModalVC.h"
+#import "IDTransitioningDelegate.h"
 
 @interface LogInVC ()
+
 - (IBAction)resetUserPassword:(id)sender;
-@property (weak, nonatomic) IBOutlet UITextField *emailForReset;
-@property (weak, nonatomic) IBOutlet UIWebView *backgroundVideo;
-@property (weak, nonatomic) IBOutlet UIView *filterView;
+
+@property (weak, nonatomic) IBOutlet UITextField *forgotPasswordEmailField;
+@property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegateForModal;
+
 
 @end
 
 @implementation LogInVC
 
-@synthesize usernameField, passwordField, emailForReset, backgroundVideo, filterView;
+@synthesize usernameField, passwordField, forgotPasswordEmailField;
+
+@synthesize transitioningDelegateForModal;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.transitioningDelegateForModal = [[IDTransitioningDelegate alloc] init];
+    
     //Setup the username and password text fields.
     self.usernameField.text = @"EVNTR";
     self.usernameField.placeholder = @"username";
@@ -34,9 +42,10 @@
     
     
     //background video
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"railway" ofType:@"gif"];
-    NSData *gif = [NSData dataWithContentsOfFile:filePath];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Polygon" ofType:@"gif"];
+    //NSData *gif = [NSData dataWithContentsOfFile:filePath];
     
+    /*
     backgroundVideo.frame = self.view.frame;
     [backgroundVideo loadData:gif MIMEType:@"image/gif" textEncodingName:nil baseURL:nil];
     backgroundVideo.userInteractionEnabled = NO;
@@ -45,6 +54,7 @@
     filterView.backgroundColor = [UIColor blackColor];
     filterView.alpha = 0.05;
     [self.view addSubview:filterView];
+     */
     
 }
 
@@ -57,14 +67,6 @@
     
     [PFUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         if (user) {
-            
-            //Testing - Use to Change User Details
-            //user[@"twitterHandle"] = @"@U2Pride14";
-            //user[@"instagamHandle"] = @"@u2pride";
-            //NSArray *followers = @[@"12", @"14", @"18"];
-            //NSArray *following = @[@"11", @"14", @"19"];
-            //user[@"followers"] = followers;
-            //user[@"following"] = following;
             
             [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
             
@@ -89,20 +91,49 @@
 }
 */
 
-//Reset User Password - Parse
+
+//Present Modal View for Resetting Password
 - (IBAction)resetUserPassword:(id)sender {
     
-    [PFUser requestPasswordResetForEmailInBackground:self.emailForReset.text block:^(BOOL succeeded, NSError *error) {
-       
-        if (succeeded && !error) {
-                UIAlertView *successPopup = [[UIAlertView alloc] initWithTitle:@"Reset Success" message:@"Click on the link in your email to reset your password" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-            [successPopup show];
-        } else {
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Reset Error" message:@"Not able to reset your password.  Try restarting the app." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
-            [errorAlert show];
-        }
-        
-    }];
+    
+    
+    ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
+    resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
+    //Will need to add a delegate to tell login that the password has been reset or action has been cancelled.
+    resetPasswordModal.delegate = self;
+    
+    [self presentViewController:resetPasswordModal animated:YES completion:nil];
     
 }
+
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    
+    return YES;
+}
+
+
+- (void) resetPasswordSuccess {
+    
+    NSLog(@"Success");
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+- (void) resetPasswordFailed {
+    
+    NSLog(@"Failed Reset");
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+- (void) resetPasswordCanceled {
+    NSLog(@"Canceled Reset");
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+
+}
+
 @end

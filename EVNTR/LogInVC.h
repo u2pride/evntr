@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ResetPasswordModalVC.h"
 
-@interface LogInVC : UIViewController
+@interface LogInVC : UIViewController <ResetPasswordDelegate>
 
 @property (nonatomic, strong) IBOutlet UITextField *usernameField;
 @property (nonatomic, strong) IBOutlet UITextField *passwordField;
 
 - (IBAction)login:(id)sender;
+
+
 
 @end

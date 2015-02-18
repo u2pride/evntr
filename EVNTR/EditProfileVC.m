@@ -205,9 +205,6 @@
     //Store Current User Inputs From Each Text Field
     self.userInputtedValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
     
-    NSLog(@"Saved Values: %@", self.userInputtedValues);
-    
-    
     [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
     
 }
@@ -234,8 +231,6 @@
         }
     }];
     
-    NSLog(@"Saved Values: %@", self.userInputtedValues);
-
     
     //Restore Values That the User Has Inputted
     NSString *usernameStored = [self.userInputtedValues objectForKey:@"username"];
@@ -315,11 +310,6 @@
         
         
     }];
-    
-    
-    
-    
-
     
     
 }

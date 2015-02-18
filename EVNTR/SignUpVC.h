@@ -8,11 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SignUpVC : UIViewController
+@interface SignUpVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) IBOutlet UITextField *usernameField;
-@property (nonatomic, strong) IBOutlet UITextField *passwordField;
-@property (nonatomic, strong) IBOutlet UITextField *emailField;
 
 - (IBAction)signUp:(id)sender;
 

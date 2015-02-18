@@ -92,16 +92,11 @@
     //self.navigationController.navigationBar.translucent = NO;
     //self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
 
-}
-
-
-- (void)viewDidAppear:(BOOL)animated {
+    //ideally we pass in the user for this view, however some views will not have access to the full user... just the name.  For example, an attributed text label.
+    //instagram doesn't update the view if already in stack,
     
-    [super viewDidAppear:animated];
-    
-    NSLog(@"Inside Profile VC - passed username: %@ and current user: %@", self.userNameForProfileView, [[PFUser currentUser] objectForKey:@"username"]);
-    
-    if (!isComingFromEditProfile) {
+    //Updates From Edit Screen are Already Populated
+    //if (!isComingFromEditProfile) {
         
         //Query Parse for the User.
         PFQuery *usernameQuery = [PFUser query];
@@ -112,9 +107,10 @@
             
         }];
         
-    }
-    
+    //}
 }
+
+
 
 //After User is Fetched From Parse - Update the UI
 - (void)updateUIWithUser {
@@ -257,48 +253,7 @@
 
 
 
-#pragma mark - ProfileActions  
-//Taking a New Profile Picture - Accessing Events - Accessing Followers/Following
-
-- (IBAction)takePicture:(id)sender {
-    
-    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    
-    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        
-        [self presentViewController:imagePicker animated:YES completion:nil];
-    }];
-    
-    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        
-        [self presentViewController:imagePicker animated:YES completion:nil];
-
-    }];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    
-    //Check to see if device has a camera
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [pictureOptionsMenu addAction:takePhoto];
-    }
-    
-    [pictureOptionsMenu addAction:choosePhoto];
-    [pictureOptionsMenu addAction:cancelAction];
-    
-    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
-    
-    
-    
-}
+#pragma mark - ProfileActions
 
 - (IBAction)viewMyEvents:(id)sender {
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
@@ -465,34 +420,6 @@
 }
 
 
-#pragma mark - Delegate Methods for UIImagePickerController
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
-    [picker dismissViewControllerAnimated:YES completion:nil];
-
-    UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
-    
-    self.profileImageView.image = chosenPicture;
-
-    userPictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
-    PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:userPictureData];
-    
-    [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded){
-            [PFUser currentUser][@"profilePicture"] = profilePictureFile;
-            [[PFUser currentUser] saveInBackground];
-        }
-    }];
-    
-    
-    
-}
-
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
 
 
 

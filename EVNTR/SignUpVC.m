@@ -8,14 +8,29 @@
 
 #import "SignUpVC.h"
 #import <Parse/Parse.h>
+#import "EVNUtility.h"
 
 @interface SignUpVC ()
+
+//User Entered Info
+@property (nonatomic, strong) IBOutlet UITextField *usernameField;
+@property (nonatomic, strong) IBOutlet UITextField *passwordField;
+@property (nonatomic, strong) IBOutlet UITextField *emailField;
+
+//Background View - ImageView
+@property (weak, nonatomic) IBOutlet UIView *backgroundView;
+@property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+
+//UserData
+@property (nonatomic, strong) NSData *pictureData;
 
 @end
 
 @implementation SignUpVC
 
 @synthesize usernameField, passwordField, emailField;
+
+@synthesize backgroundView, profileImageView, pictureData;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -29,6 +44,16 @@
     self.emailField.text = nil;
     self.emailField.placeholder = @"email";
     self.emailField.keyboardType = UIKeyboardTypeEmailAddress;
+    
+    self.backgroundView.layer.cornerRadius = 30;
+    
+    self.profileImageView.image = [EVNUtility maskImage:[UIImage imageNamed:@"PersonDefault"] withMask:[UIImage imageNamed:@"MaskImage"]];
+    
+    UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
+    tapToAddPhoto.delegate = self;
+    [self.backgroundView addGestureRecognizer:tapToAddPhoto];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,6 +80,17 @@
             
             [successAlert show];
             
+            //Create user then save profile picture and other information.
+            PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
+            
+            [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded){
+                    newUser[@"profilePicture"] = profilePictureFile;
+                    [newUser saveInBackground];
+                }
+            }];
+            
+            
             [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
 
             
@@ -78,15 +114,82 @@
 }
 
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    if (textField == self.emailField) {
-        [textField resignFirstResponder];
+- (void) presentProfileImageActions {
+
+    NSLog(@"Is this getting called?");
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }];
+    
+    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+        
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    //Check to see if device has a camera
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [pictureOptionsMenu addAction:takePhoto];
     }
     
-    return YES;
+    [pictureOptionsMenu addAction:choosePhoto];
+    [pictureOptionsMenu addAction:cancelAction];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
     
 }
 
+
+
+#pragma mark - Delegate Methods for UIImagePickerController
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
+    
+    self.profileImageView.image = [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"]];
+    
+    pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
+    
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    
+    return YES;
+}
+
+
+
+- (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    
+    CGPoint touchSpot = [touch locationInView:self.backgroundView];
+    return CGRectContainsPoint(self.profileImageView.frame, touchSpot);
+    
+}
 
 
 /*
