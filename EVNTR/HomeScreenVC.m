@@ -14,6 +14,8 @@
 #import <ParseUI/ParseUI.h>
 #import "EVNConstants.h"
 #import "AppDelegate.h"
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <FacebookSDK/FacebookSDK.h>
 
 @interface HomeScreenVC () {
     PFGeoPoint *currentLocation;
@@ -46,7 +48,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-
     //Subscribe to Location Updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedLocation:) name:@"newLocationNotif" object:nil];
     
@@ -88,6 +89,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 - (void) updatedLocation:(NSNotification *)notification {
     if (!currentLocation) {

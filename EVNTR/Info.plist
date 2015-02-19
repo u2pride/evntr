@@ -2,28 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb999971676698645</string>
-			</array>
-		</dict>
-	</array>
-	<key>FacebookDisplayName</key>
-	<string>EVNTR</string>
-	<key>FacebookAppID</key>
-	<string>999971676698645</string>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Lato-Bold.ttf</string>
-		<string>Lato-Light.ttf</string>
-		<string>Lato-Regular.ttf</string>
-		<string>Lato-Thin.ttf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -40,12 +18,32 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb999971676698645</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FacebookAppID</key>
+	<string>999971676698645</string>
+	<key>FacebookDisplayName</key>
+	<string>EVNTR</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow EVNTR to Use Your Current Location</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Lato-Bold.ttf</string>
+		<string>Lato-Light.ttf</string>
+		<string>Lato-Regular.ttf</string>
+		<string>Lato-Thin.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -62,5 +60,7 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>

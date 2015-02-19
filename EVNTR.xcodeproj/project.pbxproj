@@ -34,13 +34,14 @@
 		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
 		A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */ = {isa = PBXBuildFile; fileRef = A456C10D1A93F0D5009426AB /* Polygon.gif */; };
+		A46472C91A9688E200D93401 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A46472C81A9688E200D93401 /* FacebookSDK.framework */; };
+		A46472CB1A9688EA00D93401 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A46472CA1A9688EA00D93401 /* ParseFacebookUtils.framework */; };
 		A47430671A81556C00CF3B8F /* ActivityVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A47430661A81556C00CF3B8F /* ActivityVC.m */; };
 		A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A47430691A8155AD00CF3B8F /* ActivityTableCell.m */; };
 		A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A488B35B1A801FE800738B4F /* MapKit.framework */; };
 		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
-		A4BB74EF1A964504005E9CCA /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB74EE1A964504005E9CCA /* FacebookSDK.framework */; };
 		A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */; };
 		A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC21A94E85D000BC3AD /* IDTransitionController.m */; };
 		A4C4EDC61A94E85D000BC3AD /* IDTransitioningDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC41A94E85D000BC3AD /* IDTransitioningDelegate.m */; };
@@ -110,6 +111,8 @@
 		A415634A1A76EF3A00565BB6 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
 		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
 		A456C10D1A93F0D5009426AB /* Polygon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Polygon.gif; sourceTree = "<group>"; };
+		A46472C81A9688E200D93401 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
+		A46472CA1A9688EA00D93401 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		A47430651A81556C00CF3B8F /* ActivityVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityVC.h; sourceTree = "<group>"; };
 		A47430661A81556C00CF3B8F /* ActivityVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityVC.m; sourceTree = "<group>"; };
 		A47430681A8155AD00CF3B8F /* ActivityTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityTableCell.h; sourceTree = "<group>"; };
@@ -120,7 +123,6 @@
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
-		A4BB74EE1A964504005E9CCA /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = "../../../APIs & Libaries/FacebookSDK/FacebookSDK.framework"; sourceTree = "<group>"; };
 		A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+EVNColors.h"; path = "../UIColor+EVNColors.h"; sourceTree = "<group>"; };
 		A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+EVNColors.m"; path = "../UIColor+EVNColors.m"; sourceTree = "<group>"; };
 		A4C4EDC11A94E85D000BC3AD /* IDTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitionController.h; sourceTree = "<group>"; };
@@ -158,13 +160,14 @@
 			files = (
 				A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */,
 				A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */,
+				A46472CB1A9688EA00D93401 /* ParseFacebookUtils.framework in Frameworks */,
 				A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */,
 				A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */,
 				A4035FD51A78534400DB67E4 /* ParseUI.framework in Frameworks */,
 				A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */,
 				A44BB89B1A78333400735C93 /* QuartzCore.framework in Frameworks */,
 				A44BB89A1A78332F00735C93 /* MobileCoreServices.framework in Frameworks */,
-				A4BB74EF1A964504005E9CCA /* FacebookSDK.framework in Frameworks */,
+				A46472C91A9688E200D93401 /* FacebookSDK.framework in Frameworks */,
 				A44BB8991A78332800735C93 /* CFNetwork.framework in Frameworks */,
 				A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */,
 				A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */,
@@ -255,7 +258,8 @@
 		A41563391A768AC700565BB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A4BB74EE1A964504005E9CCA /* FacebookSDK.framework */,
+				A46472CA1A9688EA00D93401 /* ParseFacebookUtils.framework */,
+				A46472C81A9688E200D93401 /* FacebookSDK.framework */,
 				A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */,
 				A488B35B1A801FE800738B4F /* MapKit.framework */,
 				A4035FD41A78534400DB67E4 /* ParseUI.framework */,
@@ -657,6 +661,16 @@
 					Development/APIs,
 					"&",
 					Libaries/FacebookSDK,
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
+					"&",
+					"Libaries/parse-library-1.6.2",
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
+					"&",
+					"Libaries/parse-library-1.6.2",
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -679,6 +693,16 @@
 					Development/APIs,
 					"&",
 					Libaries/FacebookSDK,
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
+					"&",
+					"Libaries/parse-library-1.6.2",
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
+					"&",
+					"Libaries/parse-library-1.6.2",
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -9,6 +9,7 @@
 #import "EditProfileVC.h"
 #import <Parse/Parse.h>
 #import "EVNUtility.h"
+#import <Accounts/Accounts.h>
 
 @interface EditProfileVC ()
 
@@ -36,6 +37,7 @@
 //For TextField Persistnce
 @property (nonatomic, strong) NSDictionary *userInputtedValues;
 
+- (IBAction)connectWithTwitter:(id)sender;
 
 @end
 
@@ -326,4 +328,37 @@
  }
  */
 
+//Assumes only one twitter account for the user.
+- (IBAction)connectWithTwitter:(id)sender {
+    
+    
+    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
+    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    
+    
+    //TODO: Remove - this is only because I have already given access to my Twitter Account.
+    NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
+    
+    if ([accountsArray count] > 0) {
+        ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
+        [PFUser currentUser][@"twitterHandle"] = twitterAccount.username;
+        [[PFUser currentUser] saveInBackground];
+    }
+    
+    [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error) {
+        if(granted) {
+            NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
+            
+            if ([accountsArray count] > 0) {
+                ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
+                NSLog(@"%@",twitterAccount.username);
+                NSLog(@"%@",twitterAccount.accountType);
+                
+                [PFUser currentUser][@"twitterHandle"] = twitterAccount.username;
+                [[PFUser currentUser] saveInBackground];
+                
+            }
+        }
+    }];
+}
 @end

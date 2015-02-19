@@ -29,6 +29,8 @@
     self.loginButton.backgroundColor = [UIColor orangeThemeColor];
     self.registerButton.backgroundColor = [UIColor orangeThemeColor];
     
+    NSLog(@"Bundle ID: %@",[[NSBundle mainBundle] bundleIdentifier]);
+    
 }
 
 - (void)didReceiveMemoryWarning {
