@@ -23,9 +23,6 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
-    
-    
     
     //User's Location for Queries of Local Events.
     if (!self.locationManager) {
@@ -60,14 +57,18 @@
     //Background Fetching for Server Updates
     [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
     
+    //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
     
     return YES;
 }
 
+
+#pragma mark - Notifications
+
 //TODO: use to determine your current privileges granted by user.  gracefully degrade if not allowed anymore.
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    UIUserNotificationType allowedTypes = [notificationSettings types];
+    //UIUserNotificationType allowedTypes = [notificationSettings types];
 }
 
 //TODO: what needs to be accomplished here?
@@ -83,6 +84,8 @@
 
 
 #pragma mark -- CLLocationManager Delegate
+
+//CLLocation Manager updates the rest of the app with changes in user location.
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
     NSLog(@"New locations");
@@ -93,28 +96,48 @@
     NSTimeInterval timeSinceLastLocation = [lastLocationDate timeIntervalSinceNow];
     NSLog(@"Time since Last Location: %f", timeSinceLastLocation);
     if (abs(timeSinceLastLocation) < 60) {
-        //self.currentLocation = newLocation;
         
         NSNumber *latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
         NSNumber *longitude = [NSNumber numberWithDouble:newLocation.coordinate.longitude];
         NSDictionary *userLocationDictionary = [NSDictionary dictionaryWithObjectsAndKeys:latitude, @"latitude", longitude, @"longitude", nil];
         
-        //Doing Both UserDefaults and Notifications for Now - Pick one Later
-        
+        //TOODO: Doing Both UserDefaults and Notifications for Now - Pick one Later - Maybe Do Both Since NSUserDefaults is A Cache of Sorts
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults setObject:userLocationDictionary forKey:@"userLocation"];
         [userDefaults synchronize];
         
-        
+        //Send out a notification that the user location has been updated
         [[NSNotificationCenter defaultCenter] postNotificationName:@"newLocationNotif" object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];
-        
-
         
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
-    NSLog(@"LM Failed with Error");
+    
+    switch ([error code]) {
+        case kCLErrorDenied: {
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates Disabled" message:@"Please enable location updates for EVNTR.  Location updates are essential for finding events near you." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            break;
+        }
+        case kCLErrorNetwork: {
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Network Error" message:@"Please check your network connection." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            break;
+        }
+        case kCLErrorLocationUnknown: {
+            NSLog(@"Location Unknown - Rechecking location.");
+            
+            break;
+        }
+        default: {
+            NSLog(@"Location Manager failed with unknown error");
+            break;
+        }
+    }
+    
 }
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
@@ -122,18 +145,14 @@
         case kCLAuthorizationStatusDenied: {
             NSLog(@"kCLAuthorizationStatusDenied");
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Location Services Not Enabled" message:@"The app can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Location Services Not Enabled" message:@"The app can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Got It", nil];
             [alertView show];
             break;
         }
         case kCLAuthorizationStatusAuthorizedWhenInUse: {
-            //[self setEventLocation:self];
-            
             break;
         }
         case kCLAuthorizationStatusAuthorizedAlways: {
-            //[self setEventLocation:self];
-            
             break;
         }
         case kCLAuthorizationStatusNotDetermined:
@@ -150,18 +169,19 @@
 
 
 
+
+
+#pragma mark - Background Fetch
+
 //Background Fetch - Currently just looks for new invites from the activity table and alerts the user to how many are new.
-///////////////////////////NOTES////////////////////////////////
-//NOTE: Add a last fetch date to the user property?  How does the nsuserdefaults work for multiple users?  Will objects/keys be overwritten if a new user signs in???  Maybe I should add all these properties to the user and saveInBackgroundEventually?
-//Append username to kLastBackgroundFetchDate?
+//Add a last fetch date to the user property?  How does the nsuserdefaults work for multiple users?  Will objects/keys be overwritten if a new user signs in???  Maybe I should add all these properties to the user and saveInBackgroundEventually?
+//Append username to kLastBackgroundFetchDate? - http://stackoverflow.com/questions/19023544/best-approach-to-persist-preferences-of-several-user-nsuserdefaults-xml-file
 //wonder what this does when no user is logged in? what does [pfuser currentuser] return?
-///////////////////////////NOTES////////////////////////////////
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
-    //Background Fetch for New Invites - Storing Fetch Timestamp
+    //Storing Fetch Timestamp in NSUserDefaults
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-
 
     __block NSDate *lastFetchTime = [standardDefaults objectForKey:kLastBackgroundFetchTimeStamp];
     if (!lastFetchTime) {
@@ -171,6 +191,7 @@
     //Perform Fetch Only if User is Logged In
     if ([PFUser currentUser]) {
     
+        //Querying for Invite Activities that Are New
         PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];
         [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
         [queryForInvites whereKey:@"to" equalTo:[PFUser currentUser]];
@@ -187,6 +208,7 @@
                     
                     [userWhoInvited fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                         
+                        //Scheduling Local Notification
                         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
                         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
                         localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!", userWhoInvited[@"username"]];
@@ -196,7 +218,7 @@
                         
                         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
                         
-                        //Update User Defaults and Notification - TODO: Pick one
+                        //Updating User Defaults - Sending Out Notification to Update Badge
                         [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
                         lastFetchTime = [NSDate date];
                         [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
@@ -208,17 +230,18 @@
                     
                     
                 } else if (numberOfNewInvites > 1) {
-                    // Schedule the notification
+                    
+                    // Schedule a Local Notification
                     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
                     localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:30];
                     localNotification.alertBody = @"You've been invited to more than one event. You're popular.";
-                    localNotification.alertAction = @"See Events!";
+                    localNotification.alertAction = @"See the Events!";
                     localNotification.timeZone = [NSTimeZone defaultTimeZone];
                     localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + numberOfNewInvites;
                     
                     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
                     
-                    //Update User Defaults
+                    //Update User Defaults and Send Out Notification for Tab Bar Update
                     [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
@@ -229,8 +252,6 @@
                     
                 } else {
                     //reset badge count
-                    [UIApplication sharedApplication].applicationIconBadgeNumber = numberOfNewInvites;
-                    
                     
                     //Update User Defaults
                     [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
@@ -251,13 +272,6 @@
 }
 
 #pragma mark - Facebook Integration - Callback for Login
-//- (BOOL)application:(UIApplication *)application
-//            openURL:(NSURL *)url
-//  sourceApplication:(NSString *)sourceApplication
-//         annotation:(id)annotation {
-    // attempt to extract a token from the url
-//    return [FBAppCall handleOpenURL:url sourceApplication:sourceApplication];
-//}
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
@@ -285,7 +299,13 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
+    //Restart Location Manager
     [self.locationManager startUpdatingLocation];
+    
+    //Reset the Application Badge Count - Not sure if this is exactly the right place
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+
+    
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
