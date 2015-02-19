@@ -57,6 +57,18 @@
     
 }
 
+- (void) objectsDidLoad:(NSError *)error {
+    
+    [super objectsDidLoad:error];
+    
+    //Reset App Badge and Tab Bar Badge
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
+    
+    
+    
+}
+
 - (PFTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
     
     NSLog(@"Object for Activity Table View Controller: %@", object);

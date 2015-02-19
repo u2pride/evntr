@@ -26,16 +26,15 @@
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton, isComingFromNavigation, isComingFromEditProfile;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton, isComingFromEditProfile;
 
 
 - (id)initWithCoder:(NSCoder*)aDecoder
 {
     self = [super initWithCoder:aDecoder];
     if (self)
-    {
-        self.isComingFromNavigation = NO;
-        
+    {        
+        /*
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
         label.backgroundColor = [UIColor clearColor];
         label.font = [UIFont boldSystemFontOfSize:20.0];
@@ -46,7 +45,10 @@
         self.navigationItem.titleView = label;
         label.text = @"Profile";
         [label sizeToFit];
+        */
         
+        
+        //initial values
         self.userForProfileView = [PFUser currentUser];
         self.userNameForProfileView = [PFUser currentUser][@"username"];
         
@@ -70,14 +72,8 @@
     [self.view addSubview:self.loadingSpinner];
     [self.loadingSpinner startAnimating];
     
-    //When presented from Navigation - Keep the Side Reveal Menu Icon in the Top Left
-    if (self.isComingFromNavigation) {
-
-        
-    } else {
-        self.sidebarButton = nil;
-        self.navigationItem.leftBarButtonItems = nil;
-    }
+    //self.sidebarButton = nil;
+    //self.navigationItem.leftBarButtonItems = nil;
     
     //Setup the View
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];

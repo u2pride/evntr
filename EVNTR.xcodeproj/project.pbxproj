@@ -24,7 +24,6 @@
 		A41563421A76ACC000565BB6 /* LogInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563411A76ACC000565BB6 /* LogInVC.m */; };
 		A41563451A76E15100565BB6 /* EventAddVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563441A76E15100565BB6 /* EventAddVC.m */; };
 		A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634B1A76EF3A00565BB6 /* ProfileVC.m */; };
-		A415634F1A76F35D00565BB6 /* NavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634E1A76F35D00565BB6 /* NavigationVC.m */; };
 		A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563231A7688BB00565BB6 /* AudioToolbox.framework */; };
 		A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563291A7688D300565BB6 /* CoreLocation.framework */; };
 		A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563271A7688CC00565BB6 /* CoreGraphics.framework */; };
@@ -55,7 +54,6 @@
 		A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B11A7ABDF400614412 /* PersonCell.m */; };
 		A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */; };
 		A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B71A7AF65800614412 /* EVNConstants.m */; };
-		A4F2E9BB1A7C0BA000614412 /* HomeTabsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */; };
 		A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */; };
 		A4F615421A8D4E5C005E2F26 /* railway.gif in Resources */ = {isa = PBXBuildFile; fileRef = A4F615411A8D4E5C005E2F26 /* railway.gif */; };
 /* End PBXBuildFile section */
@@ -109,8 +107,6 @@
 		A41563441A76E15100565BB6 /* EventAddVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAddVC.m; sourceTree = "<group>"; };
 		A415634A1A76EF3A00565BB6 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
 		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
-		A415634D1A76F35D00565BB6 /* NavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationVC.h; sourceTree = "<group>"; };
-		A415634E1A76F35D00565BB6 /* NavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NavigationVC.m; sourceTree = "<group>"; };
 		A456C10D1A93F0D5009426AB /* Polygon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Polygon.gif; sourceTree = "<group>"; };
 		A47430651A81556C00CF3B8F /* ActivityVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityVC.h; sourceTree = "<group>"; };
 		A47430661A81556C00CF3B8F /* ActivityVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityVC.m; sourceTree = "<group>"; };
@@ -146,8 +142,6 @@
 		A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNUtility.m; sourceTree = "<group>"; };
 		A4F2E9B61A7AF65800614412 /* EVNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNConstants.h; sourceTree = "<group>"; };
 		A4F2E9B71A7AF65800614412 /* EVNConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNConstants.m; sourceTree = "<group>"; };
-		A4F2E9B91A7C0BA000614412 /* HomeTabsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeTabsController.h; sourceTree = "<group>"; };
-		A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeTabsController.m; sourceTree = "<group>"; };
 		A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		A4F615411A8D4E5C005E2F26 /* railway.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = railway.gif; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,10 +205,6 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
-				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
-				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
-				A4C4EDD41A95186A000BC3AD /* InitialScreenVC.h */,
-				A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */,
 				A474306E1A81563400CF3B8F /* Activities */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A474306B1A8155C700CF3B8F /* Events */,
@@ -379,10 +369,8 @@
 		A4F2E9A61A7A806A00614412 /* Navigation Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				A4F2E9B91A7C0BA000614412 /* HomeTabsController.h */,
-				A4F2E9BA1A7C0BA000614412 /* HomeTabsController.m */,
-				A415634D1A76F35D00565BB6 /* NavigationVC.h */,
-				A415634E1A76F35D00565BB6 /* NavigationVC.m */,
+				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
+				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
 			);
 			name = "Navigation Controllers";
 			sourceTree = "<group>";
@@ -390,6 +378,8 @@
 		A4F2E9A71A7A811C00614412 /* Login Flow */ = {
 			isa = PBXGroup;
 			children = (
+				A4C4EDD41A95186A000BC3AD /* InitialScreenVC.h */,
+				A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */,
 				A41563401A76ACC000565BB6 /* LogInVC.h */,
 				A41563411A76ACC000565BB6 /* LogInVC.m */,
 				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
@@ -512,7 +502,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4F2E9BB1A7C0BA000614412 /* HomeTabsController.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
@@ -536,7 +525,6 @@
 				A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */,
 				A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
-				A415634F1A76F35D00565BB6 /* NavigationVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

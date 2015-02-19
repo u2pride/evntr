@@ -32,14 +32,12 @@
 @property (strong, nonatomic) NSString *userNameForProfileView;
 
 //Navigation
-@property BOOL isComingFromNavigation;
 @property BOOL isComingFromEditProfile;
 
 //Loading Spinner
 @property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
 
 
-- (IBAction)takePicture:(id)sender;
 - (IBAction)viewMyEvents:(id)sender;
 - (IBAction)viewFollowers:(id)sender;
 - (IBAction)viewFollowing:(id)sender;

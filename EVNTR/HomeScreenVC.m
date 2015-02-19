@@ -46,30 +46,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //TODO
-    if (self.isComingFromNavigation) {
-        
-        
-    } else {
-        
-        //Remove Navigation Menu and Other Bar Button Items so Back Button Appears.
-        self.navigationItem.rightBarButtonItems = nil;
-        self.navigationItem.leftBarButtonItems = nil;
 
-    }
-    
     //Subscribe to Location Updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedLocation:) name:@"newLocationNotif" object:nil];
     
-    
-    /*
-    [PFGeoPoint geoPointForCurrentLocationInBackground:^(PFGeoPoint *geoPoint, NSError *error) {
-        currentLocation = geoPoint;
-        NSLog(@"GeoPoint: %f and %f", geoPoint.longitude, geoPoint.latitude);
-        
-        [self loadObjects];
-    }];
-    */
     
     NSLog(@"type: %d", self.typeOfEventTableView);
     
@@ -96,27 +76,12 @@
     }
     
     
-    
-
-    
-    
-    
-    //if (userLocation) {
-    //    currentLocation = [PFGeoPoint geoPointWithLocation:userLocation];
-    //}
-    
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    
-    int randomNumberOfNotifications = arc4random_uniform(30);
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:randomNumberOfNotifications] forKey:@"numberOfNotifications"]];
-    
-    
 }
 
 - (void)didReceiveMemoryWarning {
