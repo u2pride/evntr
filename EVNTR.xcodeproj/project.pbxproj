@@ -40,6 +40,8 @@
 		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
+		A4BB74EF1A964504005E9CCA /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4BB74EE1A964504005E9CCA /* FacebookSDK.framework */; };
+		A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */; };
 		A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC21A94E85D000BC3AD /* IDTransitionController.m */; };
 		A4C4EDC61A94E85D000BC3AD /* IDTransitioningDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC41A94E85D000BC3AD /* IDTransitioningDelegate.m */; };
 		A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC91A94EB0E000BC3AD /* ResetPasswordModalVC.m */; };
@@ -118,6 +120,9 @@
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
+		A4BB74EE1A964504005E9CCA /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = "../../../APIs & Libaries/FacebookSDK/FacebookSDK.framework"; sourceTree = "<group>"; };
+		A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+EVNColors.h"; path = "../UIColor+EVNColors.h"; sourceTree = "<group>"; };
+		A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+EVNColors.m"; path = "../UIColor+EVNColors.m"; sourceTree = "<group>"; };
 		A4C4EDC11A94E85D000BC3AD /* IDTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitionController.h; sourceTree = "<group>"; };
 		A4C4EDC21A94E85D000BC3AD /* IDTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDTransitionController.m; sourceTree = "<group>"; };
 		A4C4EDC31A94E85D000BC3AD /* IDTransitioningDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitioningDelegate.h; sourceTree = "<group>"; };
@@ -159,6 +164,7 @@
 				A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */,
 				A44BB89B1A78333400735C93 /* QuartzCore.framework in Frameworks */,
 				A44BB89A1A78332F00735C93 /* MobileCoreServices.framework in Frameworks */,
+				A4BB74EF1A964504005E9CCA /* FacebookSDK.framework in Frameworks */,
 				A44BB8991A78332800735C93 /* CFNetwork.framework in Frameworks */,
 				A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */,
 				A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */,
@@ -249,6 +255,7 @@
 		A41563391A768AC700565BB6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4BB74EE1A964504005E9CCA /* FacebookSDK.framework */,
 				A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */,
 				A488B35B1A801FE800738B4F /* MapKit.framework */,
 				A4035FD41A78534400DB67E4 /* ParseUI.framework */,
@@ -310,6 +317,8 @@
 		A474306D1A81562100CF3B8F /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
+				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
 				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
 				A4F2E9B31A7AF5CF00614412 /* EVNUtility.h */,
@@ -511,6 +520,7 @@
 				A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */,
 				A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */,
 				A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */,
+				A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */,
 				A47430671A81556C00CF3B8F /* ActivityVC.m in Sources */,
 				A4C4EDC61A94E85D000BC3AD /* IDTransitioningDelegate.m in Sources */,
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
@@ -643,6 +653,10 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
+					"&",
+					Libaries/FacebookSDK,
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -661,6 +675,10 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
+					/Users/U2Pride/Documents/iOS,
+					Development/APIs,
+					"&",
+					Libaries/FacebookSDK,
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

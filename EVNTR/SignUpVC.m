@@ -9,6 +9,8 @@
 #import "SignUpVC.h"
 #import <Parse/Parse.h>
 #import "EVNUtility.h"
+#import "UIColor+EVNColors.h"
+
 
 @interface SignUpVC ()
 

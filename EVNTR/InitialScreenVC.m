@@ -7,18 +7,28 @@
 //
 
 #import "InitialScreenVC.h"
+#import "UIColor+EVNColors.h"
+
 
 @interface InitialScreenVC ()
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
+@property (weak, nonatomic) IBOutlet UIButton *registerButton;
 
 @end
 
 @implementation InitialScreenVC
+
+@synthesize loginButton, registerButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 
+    //Setting Colors
+    self.loginButton.backgroundColor = [UIColor orangeThemeColor];
+    self.registerButton.backgroundColor = [UIColor orangeThemeColor];
+    
 }
 
 - (void)didReceiveMemoryWarning {

@@ -32,8 +32,8 @@
     
     UIView* inView = [transitionContext containerView];
     
-    UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    //UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    //UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
     UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     UIView *fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
@@ -50,7 +50,7 @@
     toView.center = centerOffScreen;
 
     
-    [UIView animateWithDuration:1.2f delay:0.0f usingSpringWithDamping:0.4f initialSpringVelocity:6.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+    [UIView animateWithDuration:1.0f delay:0.0f usingSpringWithDamping:0.8f initialSpringVelocity:6.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
         
         //toViewController.view.center = inView.center;
         //fromViewController.view.alpha = 0.6;
@@ -77,8 +77,8 @@
     
     UIView* inView = [transitionContext containerView];
     
-    UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-    UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    //UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    //UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
     
     UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
@@ -103,7 +103,6 @@
             center.y += 50;
             //fromViewController.view.center = center;
             fromView.center = center;
-
         }];
         
         [UIView addKeyframeWithRelativeStartTime:0.5 relativeDuration:0.5 animations:^{
@@ -122,6 +121,7 @@
         [[UIApplication sharedApplication].keyWindow addSubview: toView];
 
         [transitionContext completeTransition:YES];
+        
         
         toView.userInteractionEnabled = YES;
         

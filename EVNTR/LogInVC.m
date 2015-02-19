@@ -10,22 +10,33 @@
 #import <Parse/Parse.h>
 #import "ResetPasswordModalVC.h"
 #import "IDTransitioningDelegate.h"
+#import <FacebookSDK/FacebookSDK.h>
+#import <QuartzCore/QuartzCore.h>
+#import "UIColor+EVNColors.h"
+
 
 @interface LogInVC ()
 
 - (IBAction)resetUserPassword:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UITextField *forgotPasswordEmailField;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegateForModal;
+
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
+@property (nonatomic, strong) FBLoginView *fbLoginButton;
+@property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
+@property (weak, nonatomic) IBOutlet UILabel *textSeparator;
+
 
 
 @end
 
 @implementation LogInVC
 
-@synthesize usernameField, passwordField, forgotPasswordEmailField;
+@synthesize usernameField, passwordField, loginButton, fbLoginButton;
 
 @synthesize transitioningDelegateForModal;
+
+@synthesize forgotPasswordButton, textSeparator;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,6 +52,17 @@
     self.passwordField.secureTextEntry = YES;
     
     
+    //Set Colors and Borders
+    self.usernameField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+    self.passwordField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+    self.usernameField.layer.borderWidth = 1.0f;
+    self.passwordField.layer.borderWidth = 1.0f;
+    
+    self.loginButton.backgroundColor = [UIColor orangeThemeColor];
+    
+    self.usernameField.delegate = self;
+    self.passwordField.delegate = self;
+    
     //background video
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Polygon" ofType:@"gif"];
     //NSData *gif = [NSData dataWithContentsOfFile:filePath];
@@ -50,13 +72,22 @@
     [backgroundVideo loadData:gif MIMEType:@"image/gif" textEncodingName:nil baseURL:nil];
     backgroundVideo.userInteractionEnabled = NO;
     
+     // MAKE SURE THIS VIEW IS UNDER ANY VIEW THAT NEEDS USER INTERACTION.
     filterView.frame = self.view.frame;
     filterView.backgroundColor = [UIColor blackColor];
     filterView.alpha = 0.05;
     [self.view addSubview:filterView];
      */
+
+    //[self registerForKeyboardNotifications];
+
+    
+    fbLoginButton = [[FBLoginView alloc] init];
+    fbLoginButton.center = self.view.center;
+    [self.view addSubview:fbLoginButton];
     
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -95,8 +126,6 @@
 //Present Modal View for Resetting Password
 - (IBAction)resetUserPassword:(id)sender {
     
-    
-    
     ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
     resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
@@ -111,10 +140,86 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
+
     
     return YES;
 }
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    [self moveLoginFieldsWithKeyboard:YES];
+    
+    return YES;
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    
+    [self moveLoginFieldsWithKeyboard:NO];
+    
+    return YES;
+}
+
+- (void) moveLoginFieldsWithKeyboard:(BOOL)up {
+    
+    int movement = (up ? -180 : 180);
+    
+    
+    [UIView beginAnimations: @"animateTextField" context: nil];
+    [UIView setAnimationBeginsFromCurrentState: YES];
+    [UIView setAnimationDuration: 0.3f];
+    self.view.frame = CGRectOffset(self.view.frame, 0, movement);
+    self.fbLoginButton.alpha = (up ? 0 : 1);
+    self.forgotPasswordButton.alpha = (up ? 0 : 1);
+    self.textSeparator.alpha = (up ? 0 : 1);
+    self.loginButton.alpha = (up ? 0 : 1);
+    [UIView commitAnimations];
+    
+
+}
+
+
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self.usernameField resignFirstResponder];
+    [self.passwordField resignFirstResponder];
+
+}
+
+
+/*
+// Call this method somewhere in your view controller setup code.
+- (void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillBeHidden:)
+                                                 name:UIKeyboardWillHideNotification object:nil];
+}
+
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    //self.scrollViewForKeyboard.contentInset = contentInsets;
+    //self.scrollViewForKeyboard.scrollIndicatorInsets = contentInsets;
+
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+- (void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    //self.scrollViewForKeyboard.contentInset = contentInsets;
+   //self.scrollViewForKeyboard.scrollIndicatorInsets = contentInsets;
+}
+ */
+
+
+#pragma mark - Delegate Methods from Reset Password Modal
 
 - (void) resetPasswordSuccess {
     
