@@ -50,7 +50,7 @@
     toView.center = centerOffScreen;
 
     
-    [UIView animateWithDuration:1.0f delay:0.0f usingSpringWithDamping:0.8f initialSpringVelocity:6.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
+    [UIView animateWithDuration:1.0f delay:0.0f usingSpringWithDamping:0.95f initialSpringVelocity:6.0f options:UIViewAnimationOptionCurveEaseIn animations:^{
         
         //toViewController.view.center = inView.center;
         //fromViewController.view.alpha = 0.6;

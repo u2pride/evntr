@@ -19,24 +19,27 @@
 @property (nonatomic, strong) IBOutlet UITextField *passwordField;
 @property (nonatomic, strong) IBOutlet UITextField *emailField;
 
-//Background View - ImageView
+//Background View for Fake Table Appearance - ImageView
 @property (weak, nonatomic) IBOutlet UIView *backgroundView;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 
-//UserData
+//Users Picture Data
 @property (nonatomic, strong) NSData *pictureData;
 
 @end
 
+
+
 @implementation SignUpVC
 
 @synthesize usernameField, passwordField, emailField;
-
 @synthesize backgroundView, profileImageView, pictureData;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    //Setting Up TextFields and Other Elements
     self.usernameField.text = nil;
     self.usernameField.placeholder = @"username";
     
@@ -51,17 +54,21 @@
     
     self.profileImageView.image = [EVNUtility maskImage:[UIImage imageNamed:@"PersonDefault"] withMask:[UIImage imageNamed:@"MaskImage"]];
     
+    //Allow the User to Tap the Image View to Update their Photo
     UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
     tapToAddPhoto.delegate = self;
     [self.backgroundView addGestureRecognizer:tapToAddPhoto];
     
-    
 }
 
 - (void)didReceiveMemoryWarning {
+    
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
+
+
+#pragma mark - Sign Up New User
 
 - (void)signUp:(id)sender {
     
@@ -69,13 +76,6 @@
     newUser.username = self.usernameField.text;
     newUser.password = self.passwordField.text;
     newUser.email = self.emailField.text;
-    
-    NSString *randomTwitterHandle = [NSString stringWithFormat:@"twitter%d", (arc4random_uniform(90) + 1)];
-    NSString *randomInstagramHandle = [NSString stringWithFormat:@"instagram%d", (arc4random_uniform(90) + 1)];
-    
-    newUser[@"twitterHandle"] = randomTwitterHandle;
-    newUser[@"instagramHandle"] = randomInstagramHandle;
-    
     
     //Validate that the user has submitted a user name and password
     if (self.usernameField.text.length > 3 && self.passwordField.text.length > 3 && self.emailField.text.length > 0) {
@@ -96,23 +96,17 @@
                     }
                 }];
                 
-                
                 [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
-                
                 
             } else {
                 
-                NSString *errorString = [error userInfo][@"error"];
-                
-                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:errorString delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                //TODO : Incoporate Error Checking to Give User Better Idea of Problem Signing Up
+                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Already Taken" message:@"Please choose another username" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                 
                 [failureAlert show];
                 
             }
-            
         }];
-
-        
         
     } else {
         
@@ -120,17 +114,14 @@
         
         [errorAlert show];
     }
-    
-    
-    
-    
 
 }
 
 
+#pragma mark - Upload Image Sheet
+
 - (void) presentProfileImageActions {
 
-    NSLog(@"Is this getting called?");
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -177,17 +168,19 @@
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
     self.profileImageView.image = [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"]];
-    
-    pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
+    self.pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
     
 }
 
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 
+
+#pragma mark - UITextFieldDelegate Methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
@@ -197,23 +190,13 @@
 }
 
 
-
+//Ensure that the ProfileImageView Receives Touch Events
 - (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
     
     CGPoint touchSpot = [touch locationInView:self.backgroundView];
     return CGRectContainsPoint(self.profileImageView.frame, touchSpot);
-    
 }
 
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller. - for ex passing a user to a new userprofileVC
-}
-*/
 
 @end

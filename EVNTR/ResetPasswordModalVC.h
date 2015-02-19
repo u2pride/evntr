@@ -11,7 +11,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ResetPasswordModalVC : UIViewController
+@interface ResetPasswordModalVC : UIViewController <UITextFieldDelegate>
 
 @property (nonatomic, weak) id<ResetPasswordDelegate> delegate;
 

@@ -10,7 +10,6 @@
 
 @interface SignUpVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
-
 - (IBAction)signUp:(id)sender;
 
 @end

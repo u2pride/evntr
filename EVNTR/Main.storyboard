@@ -6,6 +6,9 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <customFonts key="customFonts">
+        <mutableArray key="Lato-Bold.ttf">
+            <string>Lato-Bold</string>
+        </mutableArray>
         <mutableArray key="Lato-Light.ttf">
             <string>Lato-Light</string>
             <string>Lato-Light</string>
@@ -140,32 +143,36 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W6o-tK-09L">
                                 <rect key="frame" x="175" y="175" width="250" height="250"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hHI-gy-L0w">
+                                        <rect key="frame" x="61" y="160" width="129" height="30"/>
+                                        <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
+                                        <state key="normal" title="Reset Password">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="resetPasswordButton:" destination="Z46-uO-6oI" eventType="touchUpInside" id="cia-dP-f1U"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="250" id="7Cb-NI-FEC"/>
                                     <constraint firstAttribute="width" constant="250" id="qTZ-zd-xun"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hHI-gy-L0w">
-                                <rect key="frame" x="248" y="335" width="105" height="30"/>
-                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="15"/>
-                                <state key="normal" title="Reset Password">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="resetPasswordButton:" destination="Z46-uO-6oI" eventType="touchUpInside" id="cia-dP-f1U"/>
-                                </connections>
-                            </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="enter your email address" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KBD-4U-6Cy">
-                                <rect key="frame" x="174" y="285" width="251" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="enter your email address" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KBD-4U-6Cy">
+                                <rect key="frame" x="174" y="280" width="251" height="40"/>
+                                <color key="backgroundColor" red="0.97831075174825177" green="0.51880814626534366" blue="0.0020484020544775249" alpha="0.080000000000000002" colorSpace="calibratedRGB"/>
                                 <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Ujr-E9-0f3"/>
                                     <constraint firstAttribute="width" constant="251" id="xUH-cF-Ne0"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Lato-Thin" family="Lato" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="Lato-Thin" family="Lato" pointSize="15"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter your email below" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ks-k0-nGy">
-                                <rect key="frame" x="212" y="231" width="175" height="21"/>
+                                <rect key="frame" x="212" y="226" width="175" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="175" id="FaK-6J-c51"/>
                                 </constraints>
@@ -173,11 +180,11 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ig-kv-IBA">
-                                <rect key="frame" x="267" y="365" width="67" height="30"/>
+                                <rect key="frame" x="267" y="364" width="67" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="67" id="oHO-Zt-gkY"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="15"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="16"/>
                                 <state key="normal" title="Cancel">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -188,15 +195,11 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="hHI-gy-L0w" firstAttribute="centerY" secondItem="W6o-tK-09L" secondAttribute="centerY" id="4OV-e8-K6L"/>
                             <constraint firstAttribute="centerX" secondItem="2ks-k0-nGy" secondAttribute="centerX" id="7QO-2M-puc"/>
                             <constraint firstAttribute="centerX" secondItem="KBD-4U-6Cy" secondAttribute="centerX" id="Eam-6N-01W"/>
-                            <constraint firstItem="hHI-gy-L0w" firstAttribute="top" secondItem="2ks-k0-nGy" secondAttribute="bottom" constant="33" id="Mdp-Hn-CC3"/>
                             <constraint firstAttribute="centerX" secondItem="W6o-tK-09L" secondAttribute="centerX" id="NWk-K0-vH2"/>
-                            <constraint firstItem="hHI-gy-L0w" firstAttribute="centerX" secondItem="W6o-tK-09L" secondAttribute="centerX" id="Pzw-MI-5of"/>
                             <constraint firstAttribute="centerX" secondItem="1ig-kv-IBA" secondAttribute="centerX" id="YuV-dm-0Ov"/>
                             <constraint firstItem="KBD-4U-6Cy" firstAttribute="top" secondItem="2ks-k0-nGy" secondAttribute="bottom" constant="33" id="bCw-Ij-fGM"/>
-                            <constraint firstAttribute="centerY" secondItem="hHI-gy-L0w" secondAttribute="centerY" constant="-50" id="d3T-IP-ukN"/>
                             <constraint firstAttribute="centerY" secondItem="W6o-tK-09L" secondAttribute="centerY" id="d8B-Zg-Nbr"/>
                             <constraint firstAttribute="centerY" secondItem="KBD-4U-6Cy" secondAttribute="centerY" id="ewU-3O-Oys"/>
                             <constraint firstAttribute="centerY" secondItem="1ig-kv-IBA" secondAttribute="centerY" constant="-80" id="oNI-fy-C0I"/>
@@ -204,8 +207,6 @@
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="4OV-e8-K6L"/>
-                                <exclude reference="Mdp-Hn-CC3"/>
                                 <exclude reference="r9G-WH-R44"/>
                             </mask>
                         </variation>
@@ -302,7 +303,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OSt-mn-S5x">
-                                <rect key="frame" x="150" y="322" width="20" height="21"/>
+                                <rect key="frame" x="150" y="331" width="20" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="dvA-cS-RId"/>
                                 </constraints>
@@ -333,7 +334,7 @@
                                 </connections>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="oaP-f5-UpO">
-                                <rect key="frame" x="26" y="351" width="268" height="40"/>
+                                <rect key="frame" x="26" y="360" width="268" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="7dj-aW-bao"/>
@@ -354,6 +355,7 @@
                                         <exclude reference="Kjs-xr-bxG"/>
                                         <exclude reference="QBB-Tc-eO3"/>
                                         <exclude reference="dQZ-e5-yYe"/>
+                                        <exclude reference="qha-n8-y1q"/>
                                         <exclude reference="rzF-nc-JW9"/>
                                     </mask>
                                 </variation>
@@ -362,12 +364,12 @@
                                 </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cgt-eH-Zge">
-                                <rect key="frame" x="56" y="265" width="208" height="37"/>
+                                <rect key="frame" x="56" y="274" width="208" height="37"/>
                                 <color key="backgroundColor" red="0.23137254901960785" green="0.34901960784313724" blue="0.59607843137254901" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="37" id="wfY-ud-S4X"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="17"/>
                                 <state key="normal" title="Log in with Facebook">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -408,7 +410,7 @@
                             <constraint firstItem="cap-rb-8gk" firstAttribute="leading" secondItem="CtE-Aw-shP" secondAttribute="leadingMargin" constant="84" id="r0q-6W-haz"/>
                             <constraint firstAttribute="centerX" secondItem="OSt-mn-S5x" secondAttribute="centerX" id="rLz-2E-8Mz"/>
                             <constraint firstItem="t4y-2O-HVQ" firstAttribute="top" secondItem="cap-rb-8gk" secondAttribute="bottom" constant="73" id="sII-8t-D71"/>
-                            <constraint firstItem="GhJ-Je-H5h" firstAttribute="top" secondItem="oaP-f5-UpO" secondAttribute="bottom" constant="8" id="zYx-ES-snv"/>
+                            <constraint firstItem="GhJ-Je-H5h" firstAttribute="top" secondItem="oaP-f5-UpO" secondAttribute="bottom" constant="-1" id="zYx-ES-snv"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">

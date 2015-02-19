@@ -15,7 +15,7 @@
 @property (nonatomic, strong) IBOutlet UITextField *passwordField;
 
 - (IBAction)login:(id)sender;
-
+- (IBAction)loginWithFacebook:(id)sender;
 
 
 @end

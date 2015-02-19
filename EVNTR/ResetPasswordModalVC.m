@@ -12,79 +12,81 @@
 
 @interface ResetPasswordModalVC ()
 
-//@property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegate;
-
+@property (weak, nonatomic) IBOutlet UITextField *emailTextField;
 @property (weak, nonatomic) IBOutlet UIView *backgroundForModalPopup;
+
 - (IBAction)resetPasswordButton:(id)sender;
 - (IBAction)cancelReset:(id)sender;
 
-@property (weak, nonatomic) IBOutlet UITextField *emailTextField;
-
 @end
+
+
 
 @implementation ResetPasswordModalVC
 
 @synthesize backgroundForModalPopup, emailTextField;
-//@synthesize transitioningDelegate;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    //self.transitioningDelegate = [[IDTransitioningDelegate alloc] init];
+
     self.backgroundForModalPopup.layer.cornerRadius = 30;
+    self.emailTextField.delegate = self;
     
+
     
 }
 
 - (void)didReceiveMemoryWarning {
+    
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
+#pragma mark - Allow the User to Reset Their Password
 - (IBAction)resetPasswordButton:(id)sender {
     
-    
-    [PFUser requestPasswordResetForEmailInBackground:self.emailTextField.text block:^(BOOL succeeded, NSError *error) {
+    //Check to see that the user has entered a password
+    if (self.emailTextField.text.length > 0) {
         
-        if (succeeded && !error) {
-            //UIAlertView *successPopup = [[UIAlertView alloc] initWithTitle:@"Reset Success" message:@"Click on the link in your email to reset your password" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-            //[successPopup show];
+        //TODO : Add Support for Errors - Codes
+        [PFUser requestPasswordResetForEmailInBackground:self.emailTextField.text block:^(BOOL succeeded, NSError *error) {
             
-            id<ResetPasswordDelegate> strongDelegate = self.delegate;
+            if (succeeded && !error) {
+                
+                id<ResetPasswordDelegate> strongDelegate = self.delegate;
+                
+                if ([strongDelegate respondsToSelector:@selector(resetPasswordSuccess)]) {
+                    
+                    [strongDelegate resetPasswordSuccess];
+                }
+                
+            } else {
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Wrong Email" message:@"Check to make sure you entered the right email" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                
+                [errorAlert show];
+                
+                id<ResetPasswordDelegate> strongDelegate = self.delegate;
+                
+                if ([strongDelegate respondsToSelector:@selector(resetPasswordFailed)]) {
+                    
+                    [strongDelegate resetPasswordFailed];
+                    
+                }
+            }
+        }];
 
-            if ([strongDelegate respondsToSelector:@selector(resetPasswordSuccess)]) {
-                
-                [strongDelegate resetPasswordSuccess];
-            }
-            
-        } else {
-            //UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Reset Error" message:@"Not able to reset your password.  Try restarting the app." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
-            //[errorAlert show];
-            
-            id<ResetPasswordDelegate> strongDelegate = self.delegate;
-            
-            if ([strongDelegate respondsToSelector:@selector(resetPasswordFailed)]) {
-                
-                [strongDelegate resetPasswordFailed];
-                
-            }
-            
-        }
+    } else {
         
-    }];
-    
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Email Address" message:@"Please enter an email." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+        
+        [errorAlert show];
+    }
     
 }
+
+#pragma mark - Cancel PW Reset
 
 - (IBAction)cancelReset:(id)sender {
     
@@ -95,6 +97,9 @@
         [strongDelegate resetPasswordCanceled];
     }
 }
+
+
+#pragma mark - UITextFieldDelegate Methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
