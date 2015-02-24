@@ -13,13 +13,10 @@
 @interface ProfileVC : UIViewController <UINavigationControllerDelegate, ProfileEditDelegate>
 
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
-
 //User Information
 @property (strong, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIButton *followButton;
-@property (weak, nonatomic) IBOutlet UIButton *setPictureButton;
 
 @property (strong, nonatomic) IBOutlet UILabel *twitterLabel;
 @property (strong, nonatomic) IBOutlet UILabel *instagramLabel;

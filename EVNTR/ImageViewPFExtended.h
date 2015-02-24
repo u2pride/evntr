@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 
+//TODO:  should this be PFIMAGEVIEW?
 @interface ImageViewPFExtended : UIImageView
 
 @property (nonatomic, strong) PFObject *objectForImageView;
+@property (nonatomic, strong, setter= setImage:) UIImage *image;
 
 @end

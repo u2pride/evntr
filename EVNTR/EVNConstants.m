@@ -16,3 +16,8 @@ NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
 
 NSString *const kAttendingEvent = @"You're going!";
 NSString *const kNotAttendingEvent = @"Not Attending";
+
+
+NSString *const kNotificationNewFollow = @"NotificationNewFollow";
+NSString *const kNotificationRemovedFollow = @"NotificationRemovedFollow";
+NSString *const kFollowActivity = @"FollowActivity";

@@ -92,7 +92,36 @@
     
     [PFUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         if (user) {
-            [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+            
+            //Animation For Logging In
+            UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+            UIVisualEffectView *blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+            blurOutLogInScreen.alpha = 0;
+            blurOutLogInScreen.frame = self.view.bounds;
+            [self.view addSubview:blurOutLogInScreen];
+            //[self.view bringSubviewToFront:blurOutLogInScreen];
+            
+            UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+            loginInTextLabel.alpha = 0;
+            loginInTextLabel.text = @"Logging you in...";
+            loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+            loginInTextLabel.textAlignment = NSTextAlignmentCenter;
+            loginInTextLabel.textColor = [UIColor whiteColor];
+            loginInTextLabel.center = self.view.center;
+            [self.view addSubview:loginInTextLabel];
+            
+            
+            [UIView animateWithDuration:2.0 animations:^{
+                blurOutLogInScreen.alpha = 1;
+                loginInTextLabel.alpha = 1;
+            } completion:^(BOOL finished) {
+                
+                NSLog(@"Finished");
+                [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+
+            }];
+            
+            
         } else {
             
             //Failed to Login
@@ -143,11 +172,45 @@
                 NSLog(@"User with facebook logged in!");
             }
             
-            [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+            UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
+            loginInTextLabel.alpha = 0;
+            loginInTextLabel.text = @"WELCOME to EVNTR";
+            loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:26];
+            loginInTextLabel.textAlignment = NSTextAlignmentCenter;
+            loginInTextLabel.textColor = [UIColor whiteColor];
+            loginInTextLabel.center = self.view.center;
+            [self.view addSubview:loginInTextLabel];
+            
+            
+            [UIView animateWithDuration:1.0 animations:^{
+                loginInTextLabel.alpha = 1;
+            } completion:^(BOOL finished) {
+                
+                NSLog(@"Finished");
+                [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+                
+            }];
+            
         }
     }];
     
     // TODO: Start Activity Indicator
+    
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    UIVisualEffectView *blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    blurOutLogInScreen.alpha = 0;
+    blurOutLogInScreen.frame = self.view.bounds;
+    [self.view addSubview:blurOutLogInScreen];
+    //[self.view bringSubviewToFront:blurOutLogInScreen];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        blurOutLogInScreen.alpha = 1;
+    } completion:^(BOOL finished) {
+        
+        NSLog(@"Finished");
+        
+    }];
+    
     
 }
 

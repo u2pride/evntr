@@ -12,7 +12,7 @@
 
 + (UIColor *) orangeThemeColor {
     
-    return [UIColor colorWithRed:0.85 green:0.42 blue:0.00 alpha:1.0];
+    return [UIColor colorWithRed:0.996 green:0.439 blue:0.251 alpha:1]; /*#fe7040*/
 }
 
 @end

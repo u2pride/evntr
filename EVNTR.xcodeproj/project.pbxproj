@@ -24,6 +24,8 @@
 		A41563421A76ACC000565BB6 /* LogInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563411A76ACC000565BB6 /* LogInVC.m */; };
 		A41563451A76E15100565BB6 /* EventAddVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563441A76E15100565BB6 /* EventAddVC.m */; };
 		A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634B1A76EF3A00565BB6 /* ProfileVC.m */; };
+		A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */; };
+		A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */; };
 		A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563231A7688BB00565BB6 /* AudioToolbox.framework */; };
 		A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563291A7688D300565BB6 /* CoreLocation.framework */; };
 		A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563271A7688CC00565BB6 /* CoreGraphics.framework */; };
@@ -110,6 +112,10 @@
 		A41563441A76E15100565BB6 /* EventAddVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAddVC.m; sourceTree = "<group>"; };
 		A415634A1A76EF3A00565BB6 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
 		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
+		A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
+		A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
+		A423F7EC1A9BC46600DF9ABE /* UIButtonPFExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonPFExtended.h; sourceTree = "<group>"; };
+		A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonPFExtended.m; sourceTree = "<group>"; };
 		A456C10D1A93F0D5009426AB /* Polygon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Polygon.gif; sourceTree = "<group>"; };
 		A46472C81A9688E200D93401 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		A46472CA1A9688EA00D93401 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
@@ -281,6 +287,26 @@
 			path = EVNTR;
 			sourceTree = "<group>";
 		};
+		A423F7E81A9B860900DF9ABE /* Custom Table Cells */ = {
+			isa = PBXGroup;
+			children = (
+				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
+				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
+			);
+			name = "Custom Table Cells";
+			sourceTree = "<group>";
+		};
+		A423F7EF1A9BC4D800DF9ABE /* Custom ImageView and Button */ = {
+			isa = PBXGroup;
+			children = (
+				A41352531A81B80200034222 /* ImageViewPFExtended.h */,
+				A41352541A81B80200034222 /* ImageViewPFExtended.m */,
+				A423F7EC1A9BC46600DF9ABE /* UIButtonPFExtended.h */,
+				A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */,
+			);
+			name = "Custom ImageView and Button";
+			sourceTree = "<group>";
+		};
 		A456C10C1A93E6B3009426AB /* Custom Table Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -321,6 +347,8 @@
 		A474306D1A81562100CF3B8F /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */,
+				A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */,
 				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
 				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
@@ -338,10 +366,8 @@
 			children = (
 				A47430651A81556C00CF3B8F /* ActivityVC.h */,
 				A47430661A81556C00CF3B8F /* ActivityVC.m */,
-				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
-				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
-				A41352531A81B80200034222 /* ImageViewPFExtended.h */,
-				A41352541A81B80200034222 /* ImageViewPFExtended.m */,
+				A423F7E81A9B860900DF9ABE /* Custom Table Cells */,
+				A423F7EF1A9BC4D800DF9ABE /* Custom ImageView and Button */,
 			);
 			name = Activities;
 			sourceTree = "<group>";
@@ -515,6 +541,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
@@ -527,6 +554,7 @@
 				A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */,
 				A47430671A81556C00CF3B8F /* ActivityVC.m in Sources */,
 				A4C4EDC61A94E85D000BC3AD /* IDTransitioningDelegate.m in Sources */,
+				A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */,
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
 				A41563451A76E15100565BB6 /* EventAddVC.m in Sources */,

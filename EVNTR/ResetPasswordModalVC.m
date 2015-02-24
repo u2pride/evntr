@@ -32,8 +32,6 @@
     self.backgroundForModalPopup.layer.cornerRadius = 30;
     self.emailTextField.delegate = self;
     
-
-    
 }
 
 - (void)didReceiveMemoryWarning {

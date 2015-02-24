@@ -11,6 +11,8 @@
 #import "EVNConstants.h"
 #import "ProfileVC.h"
 #import "EventDetailVC.h"
+#import "NSDate+NVTimeAgo.h"
+#import "UIColor+EVNColors.h"
 
 @implementation ActivityVC
 
@@ -33,6 +35,38 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
+
+
+    
+}
+
+
+- (void)newFollowActivity:(NSNotification *)notification {
+    
+    if ([notification.object isEqual:self]) {
+        NSLog(@"Notification is sent from myself - ignore");
+    } else {
+        [self loadObjects];
+        NSLog(@"Re-loading Objects in tableview");
+        
+        //TODO : just update objects of type follow
+        /*
+        for (PFObject *activity in self.objects) {
+            
+            NSNumber *type = [activity objectForKey:@"type"];
+            int value = [type integerValue];
+            
+            if (value == 1) {
+                NSLog(@"Found a cell with follow type - try to reload it");
+                //call cell for row at indexpath
+            }
+        }
+         */
+    }
+    
+
     
 }
 
@@ -69,24 +103,26 @@
     
 }
 
+
+
 - (PFTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
-    
-    NSLog(@"Object for Activity Table View Controller: %@", object);
-    
+        
     static NSString *cellIdentifier = @"activityCell";
 
     ActivityTableCell *activityCell = (ActivityTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+
     
     int activityType = (int)[[object objectForKey:@"type"] integerValue];
     
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
-            NSLog(@"Follow %@", object);
             
             //Update the Cell
             activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
+            NSDate *createdAtDate = object.createdAt;
+            activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
             
-
             PFUser *userWhoFollowedCurrentProfile = object[@"from"];
             
             [userWhoFollowedCurrentProfile fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
@@ -105,6 +141,17 @@
                 NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", username];
                 activityCell.activityContentTextLabel.text = textForActivityCell;
                 
+                
+                //configure view button on right side
+                UIButtonPFExtended *followButton = activityCell.actionButton;
+                followButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+                activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+                activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+                activityCell.actionButton.backgroundColor = [UIColor clearColor];
+                
+
+                
+                
                 //Grab the profile pic of the user and set it to the left image
                 PFFile *profilePictureFromParse = user[@"profilePicture"];
                 [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
@@ -117,24 +164,20 @@
                 PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
                 [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
                 [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-                [followActivity whereKey:@"to" equalTo:userWhoFollowedCurrentProfile];
+                [followActivity whereKey:@"to" equalTo:userWhoFollowed];
                 [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                     //TODO - Does this make sense?
                     
                     if (!objects || !objects.count) {
-                        activityCell.rightSideImageView.image = [UIImage imageNamed:@"FollowIcon"];
-                        //activityCell.rightSideImageView.accessibilityHint = user[@"username"];
-                        activityCell.rightSideImageView.userInteractionEnabled = YES;
-                        activityCell.rightSideImageView.objectForImageView = userWhoFollowed;
-                        UITapGestureRecognizer *tapFollow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(followUser:)];
-                        [activityCell.rightSideImageView addGestureRecognizer:tapFollow];
+                        [activityCell.actionButton setTitle:@"Follow" forState:UIControlStateNormal];
+                        activityCell.actionButton.personToFollow = userWhoFollowed;
                     } else {
-                        activityCell.rightSideImageView.image = [UIImage imageNamed:@"UnfollowIcon"];
-                        activityCell.rightSideImageView.userInteractionEnabled = YES;
-                        activityCell.rightSideImageView.objectForImageView = userWhoFollowed;
-                        UITapGestureRecognizer *tapUnFollow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(unFollowUser:)];
-                        [activityCell.rightSideImageView addGestureRecognizer:tapUnFollow];
+                        [activityCell.actionButton setTitle:@"Unfollow" forState:UIControlStateNormal];
+                        activityCell.actionButton.personToFollow = userWhoFollowed;
                     }
+                    
+                    [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
+                    
                 }];
                 
             }];
@@ -142,10 +185,11 @@
             break;
         }
         case INVITE_ACTIVITY: {
-            NSLog(@"Invite %@", object);
             
+            //Update Cell UI
             activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
-            activityCell.rightSideImageView.image = [UIImage imageNamed:@"EventDefault"];
+            NSDate *createdAtDate = object.createdAt;
+            activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
 
             PFUser *userWhoInvitedCurrentProfile = object[@"from"];
             
@@ -162,6 +206,15 @@
                 UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
                 [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
                 
+                //configure view button on right side
+                [activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
+                activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+                activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+                activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+                activityCell.actionButton.backgroundColor = [UIColor clearColor];
+                [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                
+                
                 //Grab the profile pic of the user and set it to the left image
                 PFFile *profilePictureFromParse = userWhoInvited[@"profilePicture"];
                 [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
@@ -173,10 +226,11 @@
                 PFObject *eventInvitedTo = object[@"activityContent"];
                 [eventInvitedTo fetchIfNeededInBackgroundWithBlock:^(PFObject *event, NSError *error) {
                    
+                    
                     PFFile *eventCoverPhoto = event[@"coverPhoto"];
                     [eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                         if (!error) {
-                            activityCell.rightSideImageView.image = [UIImage imageWithData:data];
+                            //activityCell.rightSideImageView.image = [UIImage imageWithData:data];
                          
                             NSString *eventName = event[@"title"];
                             NSString *textForActivityCell = [NSString stringWithFormat:@"%@ invited you to %@", username, eventName];
@@ -184,12 +238,16 @@
                         }
                     }];
                     
-                    activityCell.rightSideImageView.userInteractionEnabled = YES;
-                    activityCell.rightSideImageView.objectForImageView = event;
-                    UITapGestureRecognizer *viewEventGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvent:)];
-                    [activityCell.rightSideImageView addGestureRecognizer:viewEventGR];
-   
+                    //attach the event to the cell
+                    activityCell.actionButton.eventToView = event;
 
+                    
+                    //activityCell.rightSideImageView.userInteractionEnabled = YES;
+                    //activityCell.rightSideImageView.objectForImageView = event;
+                    //UITapGestureRecognizer *viewEventGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvent:)];
+                    //[activityCell.rightSideImageView addGestureRecognizer:viewEventGR];
+   
+                    
 
                 }];
                 
@@ -202,6 +260,7 @@
             break;
     }
     
+
     return activityCell;
     
 }
@@ -209,6 +268,8 @@
 
 #pragma mark - 
 #pragma mark - Target-Action Method Implementations
+
+//View User Profile When Profile Image on Left Side is Selected
 - (void)viewProfile:(UITapGestureRecognizer *)tapgr {
     
     ImageViewPFExtended *tappedImage = (ImageViewPFExtended *)tapgr.view;
@@ -220,89 +281,82 @@
     [self.navigationController pushViewController:followerProfileVC animated:YES];
 }
 
-- (void)viewEvent:(UITapGestureRecognizer *)tapgr {
-    ImageViewPFExtended *tappedImageView = (ImageViewPFExtended *)tapgr.view;
-    NSLog(@"Event: %@", tappedImageView.objectForImageView);
-    PFObject *eventTapped = tappedImageView.objectForImageView;
+- (void)viewEvent:(id)sender {
+    
+    UIButtonPFExtended *viewButton = (UIButtonPFExtended *)sender;
+    PFObject *eventToView = viewButton.eventToView;
     
     EventDetailVC *eventDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
-    eventDetailsVC.eventObject = eventTapped;
+    eventDetailsVC.eventObject = eventToView;
     [self.navigationController pushViewController:eventDetailsVC animated:YES];
     
 }
 
-- (void)followUser:(UITapGestureRecognizer *)tapgr {
+- (void)tappedFollowButton:(id)sender {
     
-    ImageViewPFExtended *tappedIconView = (ImageViewPFExtended *)tapgr.view;
-    tappedIconView.image = [UIImage imageNamed:@"UnfollowIcon"];
+    UIButtonPFExtended *followButton = (UIButtonPFExtended *)sender;
+    PFUser *userToChangeFollowState = followButton.personToFollow;
     
-    NSLog(@"Username Follow: %@", [tappedIconView.objectForImageView objectForKey:@"username"]);
+    followButton.enabled = NO;
     
-    PFUser *userToFollow = (PFUser *)tappedIconView.objectForImageView;
+    NSString *followState = followButton.titleLabel.text;
     
-    PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
-    newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
-    newFollowActivity[@"from"] = [PFUser currentUser];
-    newFollowActivity[@"to"] = userToFollow;
-    [newFollowActivity saveInBackground];
-    
-    //Remove old tap gesture recognizers
-    for (UIGestureRecognizer *gr in tappedIconView.gestureRecognizers) {
-        [tappedIconView removeGestureRecognizer:gr];
-    }
-    
-    //Add back a gesture recognizer for unfollow user
-    UITapGestureRecognizer *tapUnFollow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(unFollowUser:)];
-    [tappedIconView addGestureRecognizer:tapUnFollow];
-    
-}
+    //Follow User or Unfollow User Depending on Current Button State
+    if ([followState isEqualToString:@"Unfollow"]) {
 
-- (void)unFollowUser:(UITapGestureRecognizer *)tapgr {
-    
-    NSLog(@"tapgr -- %@", tapgr);
-    
-    ImageViewPFExtended *tappedIconView = (ImageViewPFExtended *)tapgr.view;
-    tappedIconView.image = [UIImage imageNamed:@"FollowIcon"];
-    
-    NSLog(@"Username Unfollow: %@", [tappedIconView.objectForImageView objectForKey:@"username"]);
-    
-    PFUser *userToUnfollow = (PFUser *)tappedIconView.objectForImageView;
-    
-    //Find and Delete Old Follow Activity
-    PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
-    
-    [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
-    [findFollowActivity whereKey:@"to" equalTo:userToUnfollow];
-    
-    [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        //Find and Delete Old Follow Activity
+        PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
         
-        NSLog(@"Objects Found: %@", objects);
+        [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+        [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+        [findFollowActivity whereKey:@"to" equalTo:userToChangeFollowState];
         
-        PFObject *previousFollowActivity = [objects firstObject];
-        [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            NSLog(@"Inside the delete part");
+        [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
-            //Update the Button....
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unfollow" message:@"deleted" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-            
-            [errorAlert show];
+            PFObject *previousFollowActivity = [objects firstObject];
+            [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+
+                if (succeeded){
+                    [followButton setTitle:@"Follow" forState:UIControlStateNormal];
+                    
+                    //Notify Profile View of Update
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
+        
+                    
+                } else {
+                    NSLog(@"Error Deletin Follow Activity");
+                }
+                
+                //Re-Enable Button
+                followButton.enabled = YES;
+                
+            }];
         }];
         
-    }];
-    
-    //Remove old tap gesture recognizers
-    for (UIGestureRecognizer *gr in tappedIconView.gestureRecognizers) {
-        [tappedIconView removeGestureRecognizer:gr];
+        
+    } else {
+        PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
+        newFollowActivity[@"from"] = [PFUser currentUser];
+        newFollowActivity[@"to"] = userToChangeFollowState;
+        newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
+        [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                [followButton setTitle:@"Unfollow" forState:UIControlStateNormal];
+                
+                //Notify Profile View of Update
+                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
+                
+            } else {
+                NSLog(@"Error Saving New Follow: %@", error);
+            }
+            
+            //Re-Enable Button
+            followButton.enabled = YES;
+            
+        }];
     }
-    
-    //Add back a gesture recognizer for unfollow user
-    UITapGestureRecognizer *tapFollow = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(followUser:)];
-    [tappedIconView addGestureRecognizer:tapFollow];
-
-    
 }
 
 
 @end
+

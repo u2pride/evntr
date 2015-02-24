@@ -50,6 +50,16 @@ extern NSString *const kNumberOfNotifications;
 extern NSString *const kLastBackgroundFetchTimeStamp;
 
 
+#pragma mark - Default Button Attributes
+#define BUTTON_BORDER_WIDTH 1.5f
+#define BUTTON_CORNER_RADIUS 8
+
+#pragma mark - Notification Names
+extern NSString *const kNotificationNewFollow;
+extern NSString *const kNotificationRemovedFollow;
+extern NSString *const kFollowActivity;
+
+
 // Time Type From To Content
 // Alex followed Ben - 8 m ago
 // Alex is attending Concert on Jan 30th

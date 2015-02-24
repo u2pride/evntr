@@ -16,17 +16,18 @@
 
 @interface ProfileVC ()
 {
-    
     NSData *userPictureData;
+    int profileType;
 }
 
 @property (nonatomic, strong) PFUser *userForProfileView;
+@property (weak, nonatomic) IBOutlet UIButton *editProfileButton;
 
 @end
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, setPictureButton, isComingFromEditProfile;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, isComingFromEditProfile, editProfileButton;
 
 
 - (id)initWithCoder:(NSCoder*)aDecoder
@@ -65,6 +66,7 @@
     
     //Some Minor UI Adjustments
     //self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    self.editProfileButton.hidden = YES;
     
     self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.loadingSpinner.hidesWhenStopped = YES;
@@ -91,45 +93,105 @@
     //Updates From Edit Screen are Already Populated
     //if (!isComingFromEditProfile) {
         
-        //Query Parse for the User.
-        PFQuery *usernameQuery = [PFUser query];
-        [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
-        [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            userForProfileView = (PFUser *)object;
-            [self updateUIWithUser];
+    //Query Parse for the User.
+    PFQuery *usernameQuery = [PFUser query];
+    [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
+    [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        userForProfileView = (PFUser *)object;
+        
+        //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
+        //TODO: Separate out what actually needs to be updated from database instead of updating all with updateUIWithUser
+        // make sure to include follow status and following and followers counts.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUIDueToNewFollow:) name:kFollowActivity object:nil];
+        
+        if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+            profileType = CURRENT_USER_PROFILE;
             
+        } else {
+            profileType = OTHER_USER_PROFILE;
+            
+        }
+        
+        
+        [self updateUIAll];
+            
+    }];
+        
+}
+
+
+- (void)updateUIDueToNewFollow:(NSNotification *)notification {
+    NSLog(@"------------------------------------------PROCESSING UI UPDATES FROM NOTIFICATION-------------------------------------");
+    
+    //if (notification.object is activity table view) {
+    //     then just use decrement and increment on views.. don't have to go to parse and back.
+    //}
+
+    if (profileType != CURRENT_USER_PROFILE) {
+        
+        //Update the Button For Following/Follow
+        PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
+        [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+        [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+        [followActivity whereKey:@"to" equalTo:userForProfileView];
+        [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            //TODO - Does this make sense?
+            
+            if (!objects || !objects.count) {
+                //followButton.titleLabel.text = @"Follow";
+                [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+            } else {
+                //followButton.titleLabel.text = @"Following";
+                [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+                NSLog(@"Changing String to Following because objects: %@", objects);
+            }
         }];
         
-    //}
+    }
+     
+
+    //Update Following / Followers Counts
+    PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
+    [countFollowersQuery whereKey:@"to" equalTo:userForProfileView];
+    [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        NSLog(@"Current Followers Value: %@ and new count number: %d", self.numberFollowersLabel.text, number);
+
+        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
+        NSLog(@"After updating Followers Text: %@", self.numberFollowersLabel.text);
+
+    }];
+    
+    PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
+    [countFollowingQuery whereKey:@"from" equalTo:userForProfileView];
+    [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+        NSLog(@"Current Following Value: %@ and new count number: %d", self.numberFollowingLabel.text, number);
+
+        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
+    }];
 }
 
 
 
 //After User is Fetched From Parse - Update the UI
-- (void)updateUIWithUser {
+- (void)updateUIAll {
 
-    int profileType;
-    
-    if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
-        profileType = CURRENT_USER_PROFILE;
-    } else {
-        profileType = OTHER_USER_PROFILE;
-    }
-    
     switch (profileType) {
         case CURRENT_USER_PROFILE: {
             //hide follow and set picture button
             followButton.hidden = YES;
-            setPictureButton.hidden = NO;
             
+            self.editProfileButton.hidden = NO;
             self.title = @"My Profile";
             
             break;
         }
         case OTHER_USER_PROFILE: {
+            
             //setup follow state and set picture button
             followButton.hidden = NO;
-            setPictureButton.hidden = YES;
+            self.editProfileButton.hidden = YES;
             
             self.title = userForProfileView[@"username"];
             
@@ -309,6 +371,9 @@
 
 - (IBAction)followUser:(id)sender {
     
+    NSLog(@"------------------------------------------POSTED NOTIFICATION-------------------------------------");
+
+    //TOOD: Add disable and enable the button for following on here just like in activity table.
     NSLog(@"Clicked Follow User");
     
     if ([followButton.titleLabel.text isEqualToString:@"Follow"]) {
@@ -326,6 +391,7 @@
             if (succeeded) {
                 NSLog(@"Saved");
                 [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
 
 
             } else {
@@ -353,7 +419,9 @@
             
             PFObject *previousFollowActivity = [objects firstObject];
             [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                NSLog(@"Inside the delete part");
+                
+                //Notify View Controllers of a New Follow
+                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
                 
                 [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
 
@@ -445,6 +513,30 @@
 }
 
 
+#pragma mark -
+#pragma mark - Update Following Count From Notification
+- (void) incrementFollowing {
+    
+    NSNumberFormatter *numFormat = [[NSNumberFormatter alloc] init];
+    NSNumber *followingCount = [numFormat numberFromString:self.numberFollowingLabel.text];
+    followingCount = [NSNumber numberWithInt:[followingCount intValue] + 1];
+    
+    self.numberFollowingLabel.text = [numFormat stringFromNumber:followingCount];
+    
+}
+
+
+- (void) decrementFollowing {
+    
+    NSNumberFormatter *numFormat = [[NSNumberFormatter alloc] init];
+    NSNumber *followingCount = [numFormat numberFromString:self.numberFollowingLabel.text];
+    followingCount = [NSNumber numberWithInt:[followingCount intValue] - 1];
+    
+    self.numberFollowingLabel.text = [numFormat stringFromNumber:followingCount];
+    
+}
+
+
 
  #pragma mark - Navigation
  
@@ -472,6 +564,7 @@
      }
      
  }
+
 
 
 

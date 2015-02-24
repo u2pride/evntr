@@ -17,6 +17,7 @@
     //eventCoverImage.image = [UIImage imageNamed:@"EventLoading"];
     eventTitle.textColor = [UIColor whiteColor];
     numberOfAttenders.textColor = [UIColor whiteColor];
+    numberOfAttenders.hidden = YES;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

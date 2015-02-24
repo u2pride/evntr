@@ -1,0 +1,17 @@
+//
+//  UIButtonPFExtended.h
+//  EVNTR
+//
+//  Created by Alex Ryan on 2/23/15.
+//  Copyright (c) 2015 U2PrideLabs. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
+
+@interface UIButtonPFExtended : UIButton
+
+@property (nonatomic, strong) PFObject *eventToView;
+@property (nonatomic, strong) PFUser *personToFollow;
+
+@end

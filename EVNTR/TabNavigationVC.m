@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
+#import "UIColor+EVNColors.h"
 
 @interface TabNavigationVC ()
 
@@ -34,6 +35,17 @@
     //Should we register for the notification on the user returning to the app? maybe if we used userprefs to store new activity count. but not with other notificaiton.
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name: UIApplicationWillEnterForegroundNotification object:nil];
     
+    //Update Color of Navigation Bars
+    for (UINavigationController *navController in self.viewControllers) {
+        navController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+        navController.navigationBar.translucent = YES;
+        
+        //Set Font Color to White
+        [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    }
+    
+    self.tabBar.barTintColor = [UIColor orangeThemeColor];
+    self.tabBar.tintColor = [UIColor whiteColor];
 
     
     

@@ -8,10 +8,14 @@
 
 #import <ParseUI/ParseUI.h>
 #import "ImageViewPFExtended.h"
+#import "UIButtonPFExtended.h"
 
 @interface ActivityTableCell : PFTableViewCell
-@property (weak, nonatomic) IBOutlet ImageViewPFExtended *leftSideImageView;
-@property (weak, nonatomic) IBOutlet ImageViewPFExtended *rightSideImageView;
-@property (weak, nonatomic) IBOutlet UILabel *activityContentTextLabel;
 
+@property (weak, nonatomic) IBOutlet ImageViewPFExtended *leftSideImageView;
+@property (weak, nonatomic) IBOutlet UILabel *activityContentTextLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timestampActivity;
+@property (weak, nonatomic) IBOutlet UIButtonPFExtended *actionButton;
+
+//instead of custom button and image views, can attach pfuser and pfobjects to table cell maybe?
 @end

@@ -58,7 +58,7 @@
 
 - (void)cancel:(id)sender {
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    //[self dismissViewControllerAnimated:YES completion:nil];
     
 }
 
@@ -344,7 +344,7 @@
                     
 
 
-                    [self dismissViewControllerAnimated:YES completion:nil];
+                    //[self dismissViewControllerAnimated:YES completion:nil];
                     
                 } else {
                     UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Title" message:@"Error Creating Event2" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];

@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import "EVNConstants.h"
 #import "PeopleVC.h"
+#import "EVNUtility.h"
 
 @interface EventDetailVC ()
 
@@ -95,7 +96,9 @@
     [eventUser fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         creatorName.text = user[@"username"];
         creatorPhoto.file = (PFFile *)user[@"profilePicture"];
-        [creatorPhoto loadInBackground];
+        [creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
+            creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+        }];
     }];
     
     NSLog(@"Event: %@ and User: %@", eventObject, eventUser);
