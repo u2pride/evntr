@@ -64,6 +64,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
+    
     //Some Minor UI Adjustments
     //self.navigationController.view.backgroundColor = [UIColor whiteColor];
     self.editProfileButton.hidden = YES;
@@ -371,9 +375,8 @@
 
 - (IBAction)followUser:(id)sender {
     
-    NSLog(@"------------------------------------------POSTED NOTIFICATION-------------------------------------");
-
-    //TOOD: Add disable and enable the button for following on here just like in activity table.
+    self.followButton.enabled = NO;
+    
     NSLog(@"Clicked Follow User");
     
     if ([followButton.titleLabel.text isEqualToString:@"Follow"]) {
@@ -393,11 +396,11 @@
                 [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
 
-
             } else {
                 NSLog(@"Error in Saved");
-
             }
+            
+            self.followButton.enabled = YES;
 
         }];
         
@@ -428,12 +431,17 @@
                 UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"DELETED" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                     
                     [errorAlert show];
+                
+                self.followButton.enabled = YES;
             }];
             
         }];
         
         
         
+    } else {
+        NSLog(@"Weird error - need to notify user");
+        self.followButton.enabled = YES;
     }
          
     

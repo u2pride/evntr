@@ -31,6 +31,7 @@
     // Do any additional setup after loading the view.
     self.title = @"Search";
     self.searchResultsArray = [[NSMutableArray alloc] init];
+    self.hidesBottomBarWhenPushed = YES;
     
     self.searchResultsTable.delegate = self;
     self.searchResultsTable.dataSource = self;
@@ -112,6 +113,8 @@
     
     EventDetailVC *eventVC = (EventDetailVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
     eventVC.eventObject = selectedObject;
+    
+
     
     [self.navigationController pushViewController:eventVC animated:YES];
     

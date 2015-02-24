@@ -30,6 +30,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
+    
     self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.loadingSpinner.hidesWhenStopped = YES;
     self.loadingSpinner.center = self.view.center;
@@ -37,6 +41,7 @@
     [self.loadingSpinner startAnimating];
     
     //[self startLoadingAnimationAndBlur];
+    
     
     
     // Do any additional setup after loading the view.
@@ -169,8 +174,13 @@
  }
  */
 
+
+//Current: User is added to the event as a Relation.  No information about the activity is stored (ie timestamp)
+//Update:  User is added to the event as a Relation and an entry in the activity table is created - will be used for Activity/Notifications View.
+//Long-Term:  Is this the best solution?
 - (IBAction)rsvpForEvent:(id)sender {
     
+    //ADDING USER VIA A RELATION
     PFRelation *attendersRelation = [self.eventObject relationForKey:@"attenders"];
     NSLog(@"PFRelation: %@", attendersRelation);
 
@@ -181,7 +191,7 @@
         [attendersRelation removeObject:[PFUser currentUser]];
         [eventObject saveInBackground];
         
-        [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+        //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
         
     } else {
         
@@ -191,7 +201,74 @@
         [attendersRelation addObject:[PFUser currentUser]];
         [eventObject saveInBackground];
         
-        [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+        //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+    }
+    
+    
+    //CREATING AN ENTRY IN THE ACTIVITY TABLE
+    if ([rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
+        
+        NSLog(@"Deleting an Entry in the Activity Table");
+        
+        //Disable the rsvp button
+        self.rsvpButton.enabled = NO;
+        
+        //Query for the Previous Entry
+        PFQuery *queryForRSVP = [PFQuery queryWithClassName:@"Activities"];
+        [queryForRSVP whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
+        [queryForRSVP whereKey:@"to" equalTo:[PFUser currentUser]];
+        [queryForRSVP whereKey:@"activityContent" equalTo:eventObject];
+        [queryForRSVP findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            
+            PFObject *previousActivity = [objects firstObject];
+            [previousActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+                    
+                } else {
+                    NSLog(@"Failed to Delete Previous Activity");
+                }
+                
+                //re-enable the RSVP button
+                self.rsvpButton.enabled = YES;
+                
+                
+            }];
+            
+        }];
+        
+        
+    } else {
+        
+        NSLog(@"Creating a New Entry in the Activity Table");
+        
+        //Disable Button
+        self.rsvpButton.enabled = NO;
+        
+        PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
+        newAttendingActivity[@"to"] = [PFUser currentUser];
+        newAttendingActivity[@"type"] = [NSNumber numberWithInt:ATTENDING_ACTIVITY];
+        newAttendingActivity[@"activityContent"] = eventObject;
+        [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded) {
+                
+                //if succeeded, change the title to reflect the RSVP event
+                [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+                
+            } else {
+                
+                //if failed, alert the user.
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"RSVP" message:@"Unable to RSVP at this time. Try later." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                
+                [errorAlert show];
+            }
+            
+            //Re-Enable Button
+            self.rsvpButton.enabled = YES;
+            
+        }];
+
     }
     
 

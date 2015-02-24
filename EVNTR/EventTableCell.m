@@ -10,19 +10,30 @@
 
 @implementation EventTableCell
 
-@synthesize eventCoverImage, eventTitle, numberOfAttenders;
+@synthesize dateOfEventLabel, timeOfEventLabel, attendersCountLabel;
+@synthesize eventCoverImage, eventTitle, roundedContaingView;
 
 - (void)awakeFromNib {
     // Initialization code
     //eventCoverImage.image = [UIImage imageNamed:@"EventLoading"];
+    
+    self.backgroundColor = [UIColor clearColor];
+    
     eventTitle.textColor = [UIColor whiteColor];
-    numberOfAttenders.textColor = [UIColor whiteColor];
-    numberOfAttenders.hidden = YES;
+    
+    self.dateOfEventLabel.text = @"July 30th";
+    self.timeOfEventLabel.text = @"7:00pm";
+    self.attendersCountLabel.text = @"120";
+    
+    self.roundedContaingView.layer.cornerRadius = 10;
 }
+
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 
+    //TODO: ANIMATION FOR WHEN A USER SELECTS AN EVENT.
+    
     // Configure the view for the selected state
 }
 

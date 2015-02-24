@@ -40,6 +40,12 @@ extern NSString *const kNotAttendingEvent;
 #define REQUEST_ACCESS_ACTIVITY 3
 #define ATTENDING_ACTIVITY 4
 
+// 1 - {from} followed {to}
+// 2 - {from} invited {to} to {activityContent}
+// 3 -
+// 4 - {to} is attending {activityContent}
+// Notifications Query - for all Activities in which {to} matches [PFUser CurrentUser]
+
 #pragma mark - Event Types
 
 #define PUBLIC_EVENT_TYPE 1

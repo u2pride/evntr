@@ -33,7 +33,11 @@
     //self.typeOfUsers = VIEW_ALL_PEOPLE;
     //self.profileUsername = nil;
     //[self findUsersOnParse];
-        
+    
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
+    
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     

@@ -38,8 +38,11 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
 
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
 
-    
+
 }
 
 
@@ -99,6 +102,7 @@
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
     
+    NSLog(@"RETURNED ACTIVITIES: %@", self.objects);
     
     
 }
@@ -111,17 +115,32 @@
 
     ActivityTableCell *activityCell = (ActivityTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
-
+    int activityType = (int) [[object objectForKey:@"type"] integerValue];
+    //NSLog(@"-------OBJECT: %@ for Row: %ld", object, (long)indexPath.row);
+    //NSLog(@"activity type : %d", activityType);
     
-    int activityType = (int)[[object objectForKey:@"type"] integerValue];
+    
+    if (activityType == FOLLOW_ACTIVITY) {
+        NSLog(@"Follow Activity");
+    } else if (activityType == INVITE_ACTIVITY) {
+        NSLog(@"Invite Activity");
+    } else if (activityType == REQUEST_ACCESS_ACTIVITY) {
+        NSLog(@"Request Access Activity");
+    } else if (activityType == ATTENDING_ACTIVITY) {
+        NSLog(@"Attending Activity");
+    } else {
+        NSLog(@"Activity Type Not Found");
+    }
+    
+    //Update Cell UI
+    activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
+    NSDate *createdAtDate = object.createdAt;
+    activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
             
-            //Update the Cell
-            activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
-            NSDate *createdAtDate = object.createdAt;
-            activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
+            NSLog(@"Follow Activity SWITCH");
             
             PFUser *userWhoFollowedCurrentProfile = object[@"from"];
             
@@ -150,8 +169,7 @@
                 activityCell.actionButton.backgroundColor = [UIColor clearColor];
                 
 
-                
-                
+            
                 //Grab the profile pic of the user and set it to the left image
                 PFFile *profilePictureFromParse = user[@"profilePicture"];
                 [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
@@ -186,19 +204,21 @@
         }
         case INVITE_ACTIVITY: {
             
-            //Update Cell UI
-            activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
-            NSDate *createdAtDate = object.createdAt;
-            activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
+            NSLog(@"Invite Activity SWITCH");
+            
+
 
             PFUser *userWhoInvitedCurrentProfile = object[@"from"];
+            __block NSString *username;
+
             
             [userWhoInvitedCurrentProfile fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
                 
                 //next line is unneccessary?
+                //TOOD: is this causing the error?
                 PFUser *userWhoInvited = (PFUser *)user;
                 
-                NSString *username = userWhoInvited[@"username"];
+                username = userWhoInvited[@"username"];
                 
                 //attach user to imageview for tap gesture recognizer
                 activityCell.leftSideImageView.userInteractionEnabled = YES;
@@ -223,40 +243,87 @@
                     }
                 }];
                 
-                PFObject *eventInvitedTo = object[@"activityContent"];
-                [eventInvitedTo fetchIfNeededInBackgroundWithBlock:^(PFObject *event, NSError *error) {
-                   
-                    
-                    PFFile *eventCoverPhoto = event[@"coverPhoto"];
-                    [eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                        if (!error) {
-                            //activityCell.rightSideImageView.image = [UIImage imageWithData:data];
-                         
-                            NSString *eventName = event[@"title"];
-                            NSString *textForActivityCell = [NSString stringWithFormat:@"%@ invited you to %@", username, eventName];
-                            activityCell.activityContentTextLabel.text = textForActivityCell;
-                        }
-                    }];
+            }];
+            
+            
+            PFObject *eventInvitedTo = object[@"activityContent"];
+            NSLog(@"eventInvitedTo: %@", eventInvitedTo);
+            [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *event, NSError *error) {
+                
+                if (!error) {
+                    NSString *eventName = [event objectForKey:@"title"];
+                    NSString *textForActivityCell = [NSString stringWithFormat:@"%@ invited you to %@", username, eventName];
+                    activityCell.activityContentTextLabel.text = textForActivityCell;
                     
                     //attach the event to the cell
                     activityCell.actionButton.eventToView = event;
-
                     
-                    //activityCell.rightSideImageView.userInteractionEnabled = YES;
-                    //activityCell.rightSideImageView.objectForImageView = event;
-                    //UITapGestureRecognizer *viewEventGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvent:)];
-                    //[activityCell.rightSideImageView addGestureRecognizer:viewEventGR];
-   
+                } else {
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"ERROR IN GETTING EVENT THRU FETCH" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                     
-
-                }];
+                    [errorAlert show];
+                }
+                
+                
+                
+                
+                //activityCell.rightSideImageView.userInteractionEnabled = YES;
+                //activityCell.rightSideImageView.objectForImageView = event;
+                //UITapGestureRecognizer *viewEventGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvent:)];
+                //[activityCell.rightSideImageView addGestureRecognizer:viewEventGR];
                 
             }];
             
+            break;
+        }
+        case REQUEST_ACCESS_ACTIVITY: {
+            
+            break;
+        }
+        case ATTENDING_ACTIVITY: {
+            
+            //you are attending {eventName} view button
+            PFFile *profilePicture = [[PFUser currentUser] objectForKey:@"profilePicture"];
+            [profilePicture getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+                if (!error) {
+                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                }
+            }];
+            
+            PFObject *eventAttending = object[@"activityContent"];
+            [eventAttending fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                
+                if (!error) {
+                    NSString *activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", object[@"title"]];
+
+                    activityCell.activityContentTextLabel.text = activityDescriptionString;
+                    
+                    activityCell.actionButton.eventToView = object;
+                    
+                    //configure view button on right side
+                    [activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
+                    activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+                    activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+                    activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+                    activityCell.actionButton.backgroundColor = [UIColor clearColor];
+                    [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                }
+                
+                
+            }];
+            
+            
+            
+            
+            
+            break;
         }
         default:
             
-            NSLog(@"Other");
+            NSLog(@"DEFAULT Activity SWITCH");
+
+            //NSLog(@"UNKNOWN TYPE OF ACTIVITY");
+            //NSLog(@"WITH OBJECT: %@", object);
             break;
     }
     

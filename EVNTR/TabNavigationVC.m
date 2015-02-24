@@ -35,6 +35,11 @@
     //Should we register for the notification on the user returning to the app? maybe if we used userprefs to store new activity count. but not with other notificaiton.
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name: UIApplicationWillEnterForegroundNotification object:nil];
     
+    
+    
+    //Set all Navigation Bars to White
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    
     //Update Color of Navigation Bars
     for (UINavigationController *navController in self.viewControllers) {
         navController.navigationBar.barTintColor = [UIColor orangeThemeColor];
@@ -42,6 +47,9 @@
         
         //Set Font Color to White
         [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        
+
+
     }
     
     self.tabBar.barTintColor = [UIColor orangeThemeColor];
@@ -97,7 +105,7 @@
         eventsView.userForEventsQuery = [PFUser currentUser];
         
     //Profile VC
-    } else if (viewController == [self.viewControllers objectAtIndex:4]) {
+    } else if (viewController == [self.viewControllers objectAtIndex:3]) {
         
         UINavigationController *navVC = (UINavigationController *) self.viewControllers.lastObject;
         ProfileVC *profileView = navVC.childViewControllers.firstObject;

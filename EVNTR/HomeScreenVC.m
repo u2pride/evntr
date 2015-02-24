@@ -16,6 +16,8 @@
 #import "AppDelegate.h"
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
+#import "SearchVC.h"
+#import "UIImageEffects.h"
 
 @interface HomeScreenVC () {
     PFGeoPoint *currentLocation;
@@ -48,9 +50,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SearchIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySearchController)];
+    self.navigationItem.rightBarButtonItem = searchButton;
+    
     //Subscribe to Location Updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedLocation:) name:@"newLocationNotif" object:nil];
     
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
     
     NSLog(@"type: %d", self.typeOfEventTableView);
     
@@ -88,6 +96,15 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+//TODO: Create New View Controller and Add TableView Programmatically - change here and in SeachVC
+- (void)displaySearchController {
+    NSLog(@"Display Search Controller");
+    
+    SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
+    [self.navigationController pushViewController:searchController animated:YES];
+    
 }
 
 
@@ -212,11 +229,25 @@
     if (cell) {
         cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
         cell.eventCoverImage.file = (PFFile *)[object objectForKey:@"coverPhoto"];
-        [cell.eventCoverImage loadInBackground];
+        [cell.eventCoverImage loadInBackground:^(UIImage *image, NSError *error) {
+            
+            cell.eventCoverImage.image = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] saturationDeltaFactor:1.0 maskImage:nil];
+            
+            
+        }];
         cell.eventTitle.text = [object objectForKey:@"title"];
         //cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"attenders"]];
+        
+        
+        
+        /*
+        UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        
+        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        effectView.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height);
+        [cell.eventCoverImage addSubview:effectView];
+        */
     }
-    
     
     return cell;
     

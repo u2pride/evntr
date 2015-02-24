@@ -12,8 +12,11 @@
 
 @interface EventTableCell : PFTableViewCell
 
+@property (weak, nonatomic) IBOutlet UIView *roundedContaingView;
 @property (nonatomic, strong) IBOutlet PFImageView *eventCoverImage;
 @property (nonatomic, strong) IBOutlet UILabel *eventTitle;
-@property (nonatomic, strong) IBOutlet UILabel *numberOfAttenders;
+@property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timeOfEventLabel;
+@property (weak, nonatomic) IBOutlet UILabel *attendersCountLabel;
 
 @end

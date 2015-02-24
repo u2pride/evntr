@@ -37,6 +37,7 @@
         self.locationManager.delegate = self;
         self.eventGeoPoint = [[PFGeoPoint alloc] init];
         self.eventDatePicker.timeZone = [NSTimeZone systemTimeZone];
+        self.title = @"Add Event";
     }
     
     return self;
