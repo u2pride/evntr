@@ -23,7 +23,7 @@
     
     self = [super initWithCoder:aDecoder];
     if (self) {
-        self.title = @"Activity Feed";
+        self.title = @"Activity";
         self.parseClassName = @"Activities";
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
@@ -216,7 +216,7 @@
                 
                 //next line is unneccessary?
                 //TOOD: is this causing the error?
-                PFUser *userWhoInvited = (PFUser *)user;
+                PFObject *userWhoInvited = user;
                 
                 username = userWhoInvited[@"username"];
                 
@@ -243,36 +243,38 @@
                     }
                 }];
                 
+                PFObject *eventInvitedTo = object[@"activityContent"];
+                NSLog(@"eventInvitedTo: %@", eventInvitedTo);
+                [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *event, NSError *error) {
+                    
+                    if (!error) {
+                        NSString *eventName = [event objectForKey:@"title"];
+                        NSString *textForActivityCell = [NSString stringWithFormat:@"%@ invited you to %@", username, eventName];
+                        activityCell.activityContentTextLabel.text = textForActivityCell;
+                        
+                        //attach the event to the cell
+                        activityCell.actionButton.eventToView = event;
+                        
+                    } else {
+                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"ERROR IN GETTING EVENT THRU FETCH" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [errorAlert show];
+                    }
+                    
+                    
+                    
+                    
+                    //activityCell.rightSideImageView.userInteractionEnabled = YES;
+                    //activityCell.rightSideImageView.objectForImageView = event;
+                    //UITapGestureRecognizer *viewEventGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvent:)];
+                    //[activityCell.rightSideImageView addGestureRecognizer:viewEventGR];
+                    
+                }];
+                
             }];
             
             
-            PFObject *eventInvitedTo = object[@"activityContent"];
-            NSLog(@"eventInvitedTo: %@", eventInvitedTo);
-            [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *event, NSError *error) {
-                
-                if (!error) {
-                    NSString *eventName = [event objectForKey:@"title"];
-                    NSString *textForActivityCell = [NSString stringWithFormat:@"%@ invited you to %@", username, eventName];
-                    activityCell.activityContentTextLabel.text = textForActivityCell;
-                    
-                    //attach the event to the cell
-                    activityCell.actionButton.eventToView = event;
-                    
-                } else {
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"ERROR IN GETTING EVENT THRU FETCH" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                    
-                    [errorAlert show];
-                }
-                
-                
-                
-                
-                //activityCell.rightSideImageView.userInteractionEnabled = YES;
-                //activityCell.rightSideImageView.objectForImageView = event;
-                //UITapGestureRecognizer *viewEventGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvent:)];
-                //[activityCell.rightSideImageView addGestureRecognizer:viewEventGR];
-                
-            }];
+
             
             break;
         }

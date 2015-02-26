@@ -75,8 +75,8 @@
 //| ----------------------------------------------------------------------------
 + (UIImage *)imageByApplyingDarkEffectToImage:(UIImage*)inputImage
 {
-    UIColor *tintColor = [UIColor colorWithWhite:0.11 alpha:0.73];
-    return [self imageByApplyingBlurToImage:inputImage withRadius:40 tintColor:tintColor saturationDeltaFactor:1.8 maskImage:nil];
+    UIColor *tintColor = [UIColor colorWithWhite:0.11 alpha:0.5];
+    return [self imageByApplyingBlurToImage:inputImage withRadius:20 tintColor:tintColor saturationDeltaFactor:1.8 maskImage:nil];
 }
 
 

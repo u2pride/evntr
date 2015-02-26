@@ -13,4 +13,6 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
 
+//Add properties to enable customization.  add username and activity type parameters.
+
 @end

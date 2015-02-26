@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LogInVC.h"
+#import "SignUpVC.h"
+#import "NewUserFacebookVC.h"
 
-@interface InitialScreenVC : UIViewController
+@interface InitialScreenVC : UIViewController <NewUserFacebookDelegate>
 
 @end

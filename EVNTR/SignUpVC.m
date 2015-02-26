@@ -10,6 +10,9 @@
 #import <Parse/Parse.h>
 #import "EVNUtility.h"
 #import "UIColor+EVNColors.h"
+#import <FacebookSDK/FacebookSDK.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import "LogInVC.h"
 
 
 @interface SignUpVC ()
@@ -61,11 +64,91 @@
     
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    if ([self.presentingViewController isKindOfClass:[LogInVC class]]) {
+        NSLog(@"facebook presentation");
+        
+        [self grabUserDetailsFromFacebook];
+    }
+}
+
 - (void)didReceiveMemoryWarning {
     
     [super didReceiveMemoryWarning];
 
 }
+
+
+
+- (void)grabUserDetailsFromFacebook {
+    
+    FBRequest *request = [FBRequest requestForMe];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // result is a dictionary with the user's Facebook data
+            NSDictionary *userData = (NSDictionary *)result;
+            
+            NSLog(@"FB User Data: %@", result);
+            
+            NSString *facebookID = userData[@"id"];
+            NSString *name = userData[@"name"];
+            NSString *location = userData[@"location"][@"name"];
+            NSString *firstName = userData[@"first_name"];
+            //NSString *gender = userData[@"gender"];
+            //NSString *birthday = userData[@"birthday"];
+            // NSString *relationship = userData[@"relationship_status"];
+            
+            
+            NSLog(@"%@", [NSString stringWithFormat:@"ID: %@ - Name: %@ - Location: %@ - firstName: %@", facebookID, name, location, firstName]);
+            
+            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+            [NSURLConnection sendAsynchronousRequest:urlRequest
+                                               queue:[NSOperationQueue mainQueue]
+                                   completionHandler:
+             ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                 if (connectionError == nil && data != nil) {
+
+                     UIImage *profileImage2 = [UIImage imageWithData:data];
+                     
+                     NSLog(@"ABOUT TO GET THE PROFILE IMAGE DATA with data - %@", data);
+                     
+                     NSData *pictureData = UIImageJPEGRepresentation(profileImage2, 0.5);
+                     
+                     PFFile *profileImage = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
+                     [profileImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                         if (succeeded) {
+                             NSLog(@"YAY");
+                             [[PFUser currentUser] setValue:profileImage forKey:@"profilePicture"];
+                         }
+                         
+                     }];
+                 }
+                 
+                 [[PFUser currentUser] setObject:firstName forKey:@"username"];
+                 [[PFUser currentUser] setObject:facebookID forKey:@"facebookID"];
+                 [[PFUser currentUser] setObject:name forKey:@"realName"];
+                 [[PFUser currentUser] setObject:location forKey:@"hometown"];
+                 
+                 //Update UI with FB Details
+                 //self.usernameField.text = firstName;
+                 //self.passwordField.text
+                 
+                 
+                 //Save User Details to Parse
+                 [[PFUser currentUser] saveInBackground];
+                 
+                 
+             }];
+            
+            
+            
+        }
+    }];
+    
+}
+
+
 
 
 #pragma mark - Sign Up New User

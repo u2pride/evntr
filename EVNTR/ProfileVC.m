@@ -187,7 +187,7 @@
             followButton.hidden = YES;
             
             self.editProfileButton.hidden = NO;
-            self.title = @"My Profile";
+            self.title = @"Profile";
             
             break;
         }
@@ -503,6 +503,11 @@
 
 -(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData {
 
+    PFFile *newProfilePicture = [PFFile fileWithData:imageData];
+    [newProfilePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        
+    }];
     
     NSString *username = [stringDictionary objectForKey:@"username"];
     //NSString *realName = [stringDictionary objectForKey:@"realName"];

@@ -19,8 +19,17 @@
             <string>Lato-Light</string>
             <string>Lato-Light</string>
             <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
         </mutableArray>
         <mutableArray key="Lato-Regular.ttf">
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
@@ -69,7 +78,7 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <segue destination="5DD-Kt-92r" kind="presentation" id="bcK-hb-Uzf"/>
+                                    <segue destination="5DD-Kt-92r" kind="custom" identifier="InitialToLogin" id="bcK-hb-Uzf"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="EVNTR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GJo-Jy-t8s">
@@ -128,8 +137,11 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="backgroundImageView" destination="MTQ-bR-0Ma" id="ZhP-V1-7bq"/>
                         <outlet property="loginButton" destination="xJN-uG-fCS" id="M2t-GQ-TBs"/>
+                        <outlet property="logoView" destination="GJo-Jy-t8s" id="gzc-aU-N9G"/>
                         <outlet property="registerButton" destination="q3U-Nf-Gaw" id="r5O-Na-E4O"/>
+                        <segue destination="o8p-62-GhP" kind="custom" identifier="NewUserFacebook" id="zA2-0p-EGp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qKs-DE-VnS" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -225,7 +237,100 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zlz-Er-nPi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-572" y="2614"/>
+            <point key="canvasLocation" x="-1132" y="2336"/>
+        </scene>
+        <!--New User FacebookVC-->
+        <scene sceneID="wP0-uk-RZY">
+            <objects>
+                <viewController storyboardIdentifier="NewUserFacebookViewController" id="o8p-62-GhP" customClass="NewUserFacebookVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="V7G-ha-yc0"/>
+                        <viewControllerLayoutGuide type="bottom" id="9qf-KO-6qe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bnx-Ie-CM1">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="New Facebook Profile" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cKm-et-7Jh">
+                                <rect key="frame" x="65" y="28" width="190" height="30"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="19"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WD9-db-Vtc">
+                                <rect key="frame" x="65" y="118" width="190" height="30"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="19"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uxK-Rr-Fi5">
+                                <rect key="frame" x="-19" y="66" width="358" height="41"/>
+                                <string key="text">Here's what we'll use to create your profile.  
+Click continue when you're ready.</string>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="13"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yQ9-Gj-eTl">
+                                <rect key="frame" x="52" y="156" width="216" height="32"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Email" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JQR-IM-JAg">
+                                <rect key="frame" x="65" y="196" width="190" height="30"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="19"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eca-y7-Av6">
+                                <rect key="frame" x="52" y="234" width="216" height="32"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LX8-EO-dzV">
+                                <rect key="frame" x="65" y="274" width="190" height="30"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="19"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QoT-E3-pSN">
+                                <rect key="frame" x="52" y="312" width="216" height="32"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OPh-Ig-3CV">
+                                <rect key="frame" x="85" y="352" width="150" height="128"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r85-Ny-G4u">
+                                <rect key="frame" x="47" y="496" width="226" height="41"/>
+                                <color key="backgroundColor" red="0.96470588239999999" green="0.55294117649999996" blue="0.18039215689999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="18"/>
+                                <state key="normal" title="Get Started">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="registerWithFBInformation:" destination="o8p-62-GhP" eventType="touchUpInside" id="5BL-ou-Eqb"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="continueButton" destination="r85-Ny-G4u" id="0B0-PH-dSA"/>
+                        <outlet property="emailField" destination="eca-y7-Av6" id="7bY-tH-xOJ"/>
+                        <outlet property="nameField" destination="QoT-E3-pSN" id="DtG-JN-vUO"/>
+                        <outlet property="profileImageView" destination="OPh-Ig-3CV" id="aIF-Mj-j2l"/>
+                        <outlet property="usernameField" destination="yQ9-Gj-eTl" id="3m5-1w-Uzm"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oNr-Oe-ul8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-470" y="2306"/>
         </scene>
         <!--Log InVC-->
         <scene sceneID="yO6-yF-vyE">
@@ -239,8 +344,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LoginBackground" translatesAutoresizingMaskIntoConstraints="NO" id="RUo-cJ-rnt">
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LoginBackground" translatesAutoresizingMaskIntoConstraints="NO" id="RUo-cJ-rnt">
                                 <rect key="frame" x="-5" y="0.0" width="352" height="568"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t4y-2O-HVQ">
                                 <rect key="frame" x="16" y="488" width="288" height="50"/>
@@ -387,7 +493,7 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="oaP-f5-UpO" firstAttribute="top" secondItem="OSt-mn-S5x" secondAttribute="bottom" constant="8" id="7Of-b1-TV7"/>
                             <constraint firstItem="t4y-2O-HVQ" firstAttribute="leading" secondItem="CtE-Aw-shP" secondAttribute="leadingMargin" id="8JB-86-nHF"/>
@@ -987,7 +1093,7 @@
         <!--Sign UpVC-->
         <scene sceneID="RnY-vN-CKs">
             <objects>
-                <viewController id="kNH-N0-DyF" customClass="SignUpVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignUpViewController" id="kNH-N0-DyF" customClass="SignUpVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="0vx-fy-rZa"/>
                         <viewControllerLayoutGuide type="bottom" id="CX1-km-5KA"/>
@@ -1666,11 +1772,11 @@
             </objects>
             <point key="canvasLocation" x="2024" y="1655"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Create-->
         <scene sceneID="ige-pR-KMb">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="TxJ-va-2hC" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="tabAdd" id="D2l-YU-YKI"/>
+                    <tabBarItem key="tabBarItem" title="Create" image="tabAdd" id="D2l-YU-YKI"/>
                     <toolbarItems/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ZMD-zz-cLN">

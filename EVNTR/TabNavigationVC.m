@@ -52,8 +52,10 @@
 
     }
     
-    self.tabBar.barTintColor = [UIColor orangeThemeColor];
-    self.tabBar.tintColor = [UIColor whiteColor];
+    self.tabBar.barTintColor = [UIColor whiteColor];
+    self.tabBar.tintColor = [UIColor orangeThemeColor];
+    self.tabBar.backgroundColor = [UIColor clearColor];
+    self.tabBar.translucent = YES;
 
     
     

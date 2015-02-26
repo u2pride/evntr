@@ -228,7 +228,7 @@
     
     [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded){
-            [[PFUser currentUser] setValue:profilePictureFile forKey:@"profilePicture"];
+            [PFUser currentUser][@"profilePicture"] = profilePictureFile;
             [[PFUser currentUser] saveInBackground];
         }
     }];

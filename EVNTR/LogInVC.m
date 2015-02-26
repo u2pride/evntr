@@ -16,6 +16,7 @@
 #import "UIColor+EVNColors.h"
 #import <Parse/Parse.h>
 #import <QuartzCore/QuartzCore.h>
+#import "SignUpVC.h"
 
 
 @interface LogInVC ()
@@ -166,30 +167,50 @@
         } else {
             if (user.isNew) {
                 NSLog(@"User with facebook signed up and logged in!");
+                
+                [self grabUserDetailsFromFacebook];
+                
+                /*
                 isNewUserFromFacebook = YES;
+                
+                //Create a Sign Up page and populate it with Facebook Details.  Have the user verify.  Also helps funnel users through onboading. Maybe have guests go through onboarding as well? yeah.
+                SignUpVC *signUpVC = (SignUpVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SignUpViewController"];
+                [self presentViewController:signUpVC animated:YES completion:nil];
+                
+                id<NewUserFacebookDelegate> strongDelegate = self.delegate;
+                
+                if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetails:)]) {
+                    
+                    [strongDelegate createFBRegisterVCWithDetails:nil];
+                }
+                 */
+                
+                
                 
             } else {
                 NSLog(@"User with facebook logged in!");
+                
+                UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
+                loginInTextLabel.alpha = 0;
+                loginInTextLabel.text = @"WELCOME to EVNTR";
+                loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:26];
+                loginInTextLabel.textAlignment = NSTextAlignmentCenter;
+                loginInTextLabel.textColor = [UIColor whiteColor];
+                loginInTextLabel.center = self.view.center;
+                [self.view addSubview:loginInTextLabel];
+                
+                
+                [UIView animateWithDuration:1.0 animations:^{
+                    loginInTextLabel.alpha = 1;
+                } completion:^(BOOL finished) {
+                    
+                    NSLog(@"Finished");
+                    [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+                    
+                }];
             }
             
-            UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
-            loginInTextLabel.alpha = 0;
-            loginInTextLabel.text = @"WELCOME to EVNTR";
-            loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:26];
-            loginInTextLabel.textAlignment = NSTextAlignmentCenter;
-            loginInTextLabel.textColor = [UIColor whiteColor];
-            loginInTextLabel.center = self.view.center;
-            [self.view addSubview:loginInTextLabel];
-            
-            
-            [UIView animateWithDuration:1.0 animations:^{
-                loginInTextLabel.alpha = 1;
-            } completion:^(BOOL finished) {
-                
-                NSLog(@"Finished");
-                [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
-                
-            }];
+
             
         }
     }];
@@ -211,6 +232,40 @@
         
     }];
     
+    
+}
+
+
+
+- (void) grabUserDetailsFromFacebook {
+    
+    FBRequest *request = [FBRequest requestForMe];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // result is a dictionary with the user's Facebook data
+            NSDictionary *userData = (NSDictionary *)result;
+            NSLog(@"FB User Data: %@", result);
+            
+            NSString *facebookID = userData[@"id"];
+            NSString *name = userData[@"name"];
+            NSString *location = userData[@"location"][@"name"];
+            NSString *firstName = userData[@"first_name"];
+            NSString *email = userData[@"email"];
+            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+            
+            
+            NSDictionary *userDetailsForFBRegistration = [NSDictionary dictionaryWithObjectsAndKeys:facebookID, @"ID", name, @"realName", location, @"location", firstName, @"firstName", email, @"email", pictureURL, @"profilePictureURL", nil];
+            
+            
+            id<NewUserFacebookDelegate> strongDelegate = self.delegate;
+            
+            if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetails:)]) {
+                
+                [strongDelegate createFBRegisterVCWithDetails:userDetailsForFBRegistration];
+            }
+            
+        }
+    }];
     
 }
 
