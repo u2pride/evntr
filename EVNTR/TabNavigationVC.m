@@ -65,7 +65,7 @@
     
     //If User Logged in Through Facebook
     if (isNewUserWithFacebookLogin) {
-        [self grabUserDetailsFromFacebook];
+        //[self grabUserDetailsFromFacebook];
     }
 }
 

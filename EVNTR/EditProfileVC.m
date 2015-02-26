@@ -289,7 +289,7 @@
     [[PFUser currentUser] setUsername:self.usernameTextField.text];
     [[PFUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
     [[PFUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
-    [[PFUser currentUser] setValue:self.bioTextField.text forKey:@"biography"];
+    [[PFUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
     [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {

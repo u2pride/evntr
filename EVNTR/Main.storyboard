@@ -9,6 +9,7 @@
         <mutableArray key="Lato-Bold.ttf">
             <string>Lato-Bold</string>
             <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
         </mutableArray>
         <mutableArray key="Lato-Light.ttf">
             <string>Lato-Light</string>
@@ -78,6 +79,8 @@
                                     </mask>
                                 </variation>
                                 <connections>
+                                    <action selector="loginButtonTouchDownTrial:" destination="xaR-eF-GqN" eventType="touchDown" id="8Zd-vx-G69"/>
+                                    <action selector="loginButtonTouchUpInsideExample:" destination="xaR-eF-GqN" eventType="touchUpInside" id="qNq-Wi-pnu"/>
                                     <segue destination="5DD-Kt-92r" kind="custom" identifier="InitialToLogin" id="bcK-hb-Uzf"/>
                                 </connections>
                             </button>
@@ -102,7 +105,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="kNH-N0-DyF" kind="show" id="oBv-38-Q2X"/>
+                                    <segue destination="kNH-N0-DyF" kind="custom" identifier="InitialToSignUp" id="oBv-38-Q2X"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -326,11 +329,12 @@ Click continue when you're ready.</string>
                         <outlet property="nameField" destination="QoT-E3-pSN" id="DtG-JN-vUO"/>
                         <outlet property="profileImageView" destination="OPh-Ig-3CV" id="aIF-Mj-j2l"/>
                         <outlet property="usernameField" destination="yQ9-Gj-eTl" id="3m5-1w-Uzm"/>
+                        <segue destination="b3Y-Sh-ZP4" kind="presentation" identifier="FBRegisterToOnboard" id="13j-NK-EMa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oNr-Oe-ul8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-470" y="2306"/>
+            <point key="canvasLocation" x="-72" y="1375"/>
         </scene>
         <!--Log InVC-->
         <scene sceneID="yO6-yF-vyE">
@@ -382,10 +386,10 @@ Click continue when you're ready.</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="slF-lZ-Wo1">
-                                <rect key="frame" x="16" y="20" width="15" height="20"/>
+                                <rect key="frame" x="16" y="20" width="20" height="30"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="15" id="dJ6-Dq-j7M"/>
-                                    <constraint firstAttribute="height" constant="20" id="gYf-au-F2J"/>
+                                    <constraint firstAttribute="width" constant="20" id="dJ6-Dq-j7M"/>
+                                    <constraint firstAttribute="height" constant="30" id="gYf-au-F2J"/>
                                 </constraints>
                                 <state key="normal" backgroundImage="CustomBackButton">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -421,7 +425,7 @@ Click continue when you're ready.</string>
                                     <constraint firstAttribute="height" constant="21" id="dvA-cS-RId"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GhJ-Je-H5h">
@@ -1102,8 +1106,8 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LoginBackground2" translatesAutoresizingMaskIntoConstraints="NO" id="hJh-VE-19E">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LoginBackground2" translatesAutoresizingMaskIntoConstraints="NO" id="hJh-VE-19E">
+                                <rect key="frame" x="0.0" y="123" width="320" height="445"/>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ekM-Zk-pWu">
                                 <rect key="frame" x="33" y="114" width="255" height="314"/>
@@ -1162,7 +1166,7 @@ Click continue when you're ready.</string>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="1" alpha="0.75" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="ip8-o7-UOQ" firstAttribute="leading" secondItem="ekM-Zk-pWu" secondAttribute="leading" constant="28" id="3tf-h8-LXt"/>
                                     <constraint firstItem="gWo-WQ-Nn8" firstAttribute="top" secondItem="LXp-1A-m4w" secondAttribute="bottom" constant="25" id="HHv-9I-ggg"/>
@@ -1199,10 +1203,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LaK-R2-q43">
-                                <rect key="frame" x="16" y="20" width="15" height="20"/>
+                                <rect key="frame" x="16" y="20" width="20" height="30"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="2n5-4P-Eyt"/>
-                                    <constraint firstAttribute="width" constant="15" id="WFj-b9-hDO"/>
+                                    <constraint firstAttribute="height" constant="30" id="2n5-4P-Eyt"/>
+                                    <constraint firstAttribute="width" constant="20" id="WFj-b9-hDO"/>
                                 </constraints>
                                 <state key="normal" backgroundImage="CustomBackButton">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1211,8 +1215,20 @@ Click continue when you're ready.</string>
                                     <segue destination="mOe-3U-Ik9" kind="unwind" unwindAction="backToLoginSignUpScreen:" id="ZpN-Cs-6H4"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uYO-wh-CD7">
+                                <rect key="frame" x="59" y="59" width="203" height="39"/>
+                                <color key="backgroundColor" red="0.1249488552" green="0.209113573" blue="0.46198266389999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="17"/>
+                                <state key="normal" title="Connect With Facebook">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="signUpWithFacebook:" destination="kNH-N0-DyF" eventType="touchUpInside" id="rz8-5p-bTi"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Ecg-Mp-MVT" firstAttribute="leading" secondItem="8Hi-Vy-5Tk" secondAttribute="leadingMargin" id="3L9-a9-h34"/>
                             <constraint firstItem="ekM-Zk-pWu" firstAttribute="top" secondItem="0vx-fy-rZa" secondAttribute="bottom" constant="71" id="C54-Hz-pHV"/>
@@ -1241,6 +1257,7 @@ Click continue when you're ready.</string>
                         <outlet property="profileImageView" destination="ip8-o7-UOQ" id="H2z-IM-Dnn"/>
                         <outlet property="usernameField" destination="Upj-CP-rjA" id="JQ4-m6-wFR"/>
                         <segue destination="b3Y-Sh-ZP4" kind="presentation" identifier="SignUpToOnBoard" id="XMT-eB-l88"/>
+                        <segue destination="Hoa-x5-Et8" kind="presentation" identifier="SignUpToHomeView" id="vng-gU-3GQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vDZ-ZC-lUv" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1834,6 +1851,7 @@ Click continue when you're ready.</string>
         <image name="tabProfile" width="26" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="hsO-YW-5Lp"/>
+        <segue reference="vng-gU-3GQ"/>
+        <segue reference="XMT-eB-l88"/>
     </inferredMetricsTieBreakers>
 </document>

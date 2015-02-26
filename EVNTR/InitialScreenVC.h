@@ -11,6 +11,8 @@
 #import "SignUpVC.h"
 #import "NewUserFacebookVC.h"
 
-@interface InitialScreenVC : UIViewController <NewUserFacebookDelegate>
+@interface InitialScreenVC : UIViewController <NewUserFacebookDelegate, NewUserFacebookSignUpDelegate>
 
+- (IBAction)loginButtonTouchDownTrial:(id)sender;
+- (IBAction)loginButtonTouchUpInsideExample:(id)sender;
 @end

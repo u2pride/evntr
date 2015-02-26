@@ -35,6 +35,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //for testing purposes
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor redColor];
+
 
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
@@ -77,7 +81,6 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     
-    
     if ([segue.identifier isEqualToString:@"InitialToLogin"]) {
         
         UIBlurEffect *lightBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
@@ -114,7 +117,7 @@
         //uncomment to run timer - [[NSRunLoop mainRunLoop] addTimer:simulation forMode:NSDefaultRunLoopMode];
         
         LogInVC *viewController = (LogInVC *) [segue destinationViewController];
-        viewController.transitioningDelegate = self.customTransitionDelegate;\
+        viewController.transitioningDelegate = self.customTransitionDelegate;
         viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         viewController.delegate = self;
         
@@ -127,8 +130,46 @@
         destVC.informationFromFB = self.detailsFromFBRegistration;
         NSLog(@"in PrepareForSegue: %@", destVC.informationFromFB);
         NSLog(@"in PFS:  %@", self.detailsFromFBRegistration);
+                
+    
+    } else if ([segue.identifier isEqualToString:@"InitialToSignUp"]) {
         
-        //Fill in FB Details
+        UIBlurEffect *lightBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        self.darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:lightBlur];
+        self.darkBlurEffectView.alpha = 0;
+        self.darkBlurEffectView.frame = self.view.bounds;
+        [self.view addSubview:self.darkBlurEffectView];
+        
+        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:lightBlur];
+        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+        [vibrancyEffectView setFrame:self.view.bounds];
+        
+        [[self.darkBlurEffectView contentView] addSubview:vibrancyEffectView];
+        
+        [UIView animateWithDuration:1.0 animations:^{
+            self.darkBlurEffectView.alpha = 0.76;
+        } completion:^(BOOL finished) {
+            
+            NSLog(@"Finished");
+            
+        }];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
+            
+            self.logoView.alpha = 0;
+            self.loginButton.alpha = 0;
+            self.registerButton.alpha = 0;
+            
+        }];
+        
+        
+        SignUpVC *signUpView = (SignUpVC *) [segue destinationViewController];
+        signUpView.transitioningDelegate = self.customTransitionDelegate;
+        signUpView.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        signUpView.delegate = self;
+        
     }
     
     
@@ -166,9 +207,37 @@
 }
 
 
+- (void) createFBRegisterVCWithDetailsFromSignUp:(NSDictionary *)userDetailsFromFB {
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+       
+        NSLog(@"User Details Passed Back to Initial Screen From Sign Up: %@ and User: %@", userDetailsFromFB, [PFUser currentUser]);
+        
+        self.detailsFromFBRegistration = [NSDictionary dictionaryWithDictionary:userDetailsFromFB];
+
+        [self performSegueWithIdentifier:@"NewUserFacebook" sender:nil];
+        
+        
+    }];
+    
+    
+}
 
 
 
+
+//TOOD: Implement Button States
+
+- (IBAction)loginButtonTouchDownTrial:(id)sender {
+    
+    self.loginButton.backgroundColor = [UIColor orangeColor];
+    
+}
+
+- (IBAction)loginButtonTouchUpInsideExample:(id)sender {
+    self.loginButton.backgroundColor = [UIColor orangeThemeColor];
+
+}
 @end
 
 

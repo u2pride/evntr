@@ -22,6 +22,7 @@
 @interface LogInVC ()
 {
     BOOL isNewUserFromFacebook;
+    BOOL viewIsPulledUpForTextInput;
 }
 
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegateForModal;
@@ -41,7 +42,7 @@
 @implementation LogInVC
 
 @synthesize usernameField, passwordField, transitioningDelegateForModal;
-@synthesize forgotPasswordButton, textSeparator, loginButton, fbLoginButton, blurViewForModal;
+@synthesize forgotPasswordButton, textSeparator, loginButton, fbLoginButton, blurViewForModal, delegate;
 
 
 - (void)viewDidLoad {
@@ -49,6 +50,7 @@
 
     //Initializing Variables and Objects
     isNewUserFromFacebook = NO;
+    viewIsPulledUpForTextInput = NO;
     self.transitioningDelegateForModal = [[IDTransitioningDelegate alloc] init];
     
     self.usernameField.delegate = self;
@@ -186,7 +188,6 @@
                  */
                 
                 
-                
             } else {
                 NSLog(@"User with facebook logged in!");
                 
@@ -253,7 +254,6 @@
             NSString *email = userData[@"email"];
             NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
             
-            
             NSDictionary *userDetailsForFBRegistration = [NSDictionary dictionaryWithObjectsAndKeys:facebookID, @"ID", name, @"realName", location, @"location", firstName, @"firstName", email, @"email", pictureURL, @"profilePictureURL", nil];
             
             
@@ -282,7 +282,7 @@
     
     //Add Blur Effect
     self.view.backgroundColor = [UIColor clearColor];
-    UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     self.blurViewForModal = [[UIVisualEffectView alloc] initWithEffect:blur];
     self.blurViewForModal.frame = self.view.bounds;
     self.blurViewForModal.alpha = 0;
@@ -309,7 +309,12 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    [textField resignFirstResponder];
+    if ([textField isEqual:self.usernameField])
+    {
+        [self.passwordField becomeFirstResponder];
+    } else {
+        [textField resignFirstResponder];
+    }
 
     return YES;
 }
@@ -317,13 +322,19 @@
 //Adjust View When The User Starts Inputting Credentials
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
  
-    [self moveLoginFieldsWithKeyboard:YES];
+    if (!viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsWithKeyboard:YES];
+    }
+
     return YES;
 }
  
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
  
-    [self moveLoginFieldsWithKeyboard:NO];
+    if ([textField isEqual:self.passwordField] && viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsWithKeyboard:NO];
+    }
+    
     return YES;
 }
  
@@ -343,18 +354,28 @@
         self.loginButton.alpha = (up ? 0 : 1);
         
     } completion:^(BOOL finished) {
-        
+        viewIsPulledUpForTextInput = (up ? YES : NO);
+
     }];
 
 }
  
 
 //Allow user to dismiss keyboard by tapping the View
+//TODO: Implement for all Use Cases of Tapping and Entering Return on Keyboard
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self.usernameField resignFirstResponder];
-    [self.passwordField resignFirstResponder];
+    
+    if (viewIsPulledUpForTextInput) {
+        viewIsPulledUpForTextInput = NO;
+        [self.usernameField resignFirstResponder];
+        [self.passwordField resignFirstResponder];
+        [self moveLoginFieldsWithKeyboard:NO];
+    }
+
 
 }
+
 
 
 
@@ -409,7 +430,7 @@
      
     if ([segue.identifier isEqualToString:@"LoginToHomeView"]) {
         TabNavigationVC *tabController = (TabNavigationVC *)[segue destinationViewController];
-        tabController.isNewUserWithFacebookLogin = isNewUserFromFacebook;
+        //tabController.isNewUserWithFacebookLogin = isNewUserFromFacebook;
     }
      
 }

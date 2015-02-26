@@ -29,6 +29,8 @@
 //Users Picture Data
 @property (nonatomic, strong) NSData *pictureData;
 
+- (IBAction)signUpWithFacebook:(id)sender;
+
 @end
 
 
@@ -37,6 +39,7 @@
 
 @synthesize usernameField, passwordField, emailField;
 @synthesize backgroundView, profileImageView, pictureData;
+@synthesize delegate;
 
 
 - (void)viewDidLoad {
@@ -79,77 +82,122 @@
 }
 
 
-
-- (void)grabUserDetailsFromFacebook {
+- (IBAction)signUpWithFacebook:(id)sender {
     
-    FBRequest *request = [FBRequest requestForMe];
-    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            // result is a dictionary with the user's Facebook data
-            NSDictionary *userData = (NSDictionary *)result;
+    // TODO:  Set permissions required from the facebook user account
+    NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
+    
+    // Login PFUser using Facebook
+    [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
+        
+        //TODO: Stop Activity Indicator
+        
+        if (!user) {
+            NSString *errorMessage = nil;
+            if (!error) {
+                NSLog(@"Uh oh. The user cancelled the Facebook login.");
+                errorMessage = @"Uh oh. The user cancelled the Facebook login.";
+            } else {
+                NSLog(@"Uh oh. An error occurred: %@", error);
+                errorMessage = [error localizedDescription];
+            }
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error"
+                                                            message:errorMessage
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"Dismiss", nil];
+            [alert show];
             
-            NSLog(@"FB User Data: %@", result);
-            
-            NSString *facebookID = userData[@"id"];
-            NSString *name = userData[@"name"];
-            NSString *location = userData[@"location"][@"name"];
-            NSString *firstName = userData[@"first_name"];
-            //NSString *gender = userData[@"gender"];
-            //NSString *birthday = userData[@"birthday"];
-            // NSString *relationship = userData[@"relationship_status"];
-            
-            
-            NSLog(@"%@", [NSString stringWithFormat:@"ID: %@ - Name: %@ - Location: %@ - firstName: %@", facebookID, name, location, firstName]);
-            
-            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
-            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
-            [NSURLConnection sendAsynchronousRequest:urlRequest
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:
-             ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                 if (connectionError == nil && data != nil) {
-
-                     UIImage *profileImage2 = [UIImage imageWithData:data];
-                     
-                     NSLog(@"ABOUT TO GET THE PROFILE IMAGE DATA with data - %@", data);
-                     
-                     NSData *pictureData = UIImageJPEGRepresentation(profileImage2, 0.5);
-                     
-                     PFFile *profileImage = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
-                     [profileImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                         if (succeeded) {
-                             NSLog(@"YAY");
-                             [[PFUser currentUser] setValue:profileImage forKey:@"profilePicture"];
-                         }
-                         
-                     }];
-                 }
-                 
-                 [[PFUser currentUser] setObject:firstName forKey:@"username"];
-                 [[PFUser currentUser] setObject:facebookID forKey:@"facebookID"];
-                 [[PFUser currentUser] setObject:name forKey:@"realName"];
-                 [[PFUser currentUser] setObject:location forKey:@"hometown"];
-                 
-                 //Update UI with FB Details
-                 //self.usernameField.text = firstName;
-                 //self.passwordField.text
-                 
-                 
-                 //Save User Details to Parse
-                 [[PFUser currentUser] saveInBackground];
-                 
-                 
-             }];
+        } else {
+            if (user.isNew) {
+                NSLog(@"User with facebook signed up and logged in!");
+                
+                [self grabUserDetailsFromFacebook];
+                
+                
+            } else {
+                NSLog(@"User with facebook logged in!");
+                NSLog(@"User is already signed up, send them to home page.");
+                
+                UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
+                loginInTextLabel.alpha = 0;
+                loginInTextLabel.text = @"WELCOME to EVNTR";
+                loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:26];
+                loginInTextLabel.textAlignment = NSTextAlignmentCenter;
+                loginInTextLabel.textColor = [UIColor whiteColor];
+                loginInTextLabel.center = self.view.center;
+                [self.view addSubview:loginInTextLabel];
+                
+                
+                [UIView animateWithDuration:1.0 animations:^{
+                    loginInTextLabel.alpha = 1;
+                } completion:^(BOOL finished) {
+                    
+                    NSLog(@"Finished");
+                    [self performSegueWithIdentifier:@"SignUpToHomeView" sender:self];
+                    
+                }];
+            }
             
             
             
         }
     }];
     
+    // TODO: Start Activity Indicator
+    
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    UIVisualEffectView *blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    blurOutLogInScreen.alpha = 0;
+    blurOutLogInScreen.frame = self.view.bounds;
+    [self.view addSubview:blurOutLogInScreen];
+    //[self.view bringSubviewToFront:blurOutLogInScreen];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        blurOutLogInScreen.alpha = 1;
+    } completion:^(BOOL finished) {
+        
+        NSLog(@"Finished");
+        
+    }];
+    
+
+    
+    
+
 }
 
 
-
+- (void) grabUserDetailsFromFacebook {
+    
+    FBRequest *request = [FBRequest requestForMe];
+    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // result is a dictionary with the user's Facebook data
+            NSDictionary *userData = (NSDictionary *)result;
+            NSLog(@"FB User Data: %@", result);
+            
+            NSString *facebookID = userData[@"id"];
+            NSString *name = userData[@"name"];
+            NSString *location = userData[@"location"][@"name"];
+            NSString *firstName = userData[@"first_name"];
+            NSString *email = userData[@"email"];
+            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+            
+            NSDictionary *userDetailsForFBRegistration = [NSDictionary dictionaryWithObjectsAndKeys:facebookID, @"ID", name, @"realName", location, @"location", firstName, @"firstName", email, @"email", pictureURL, @"profilePictureURL", nil];
+            
+            
+            id<NewUserFacebookSignUpDelegate> strongDelegate = self.delegate;
+            
+            if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetailsFromSignUp:)]) {
+                
+                [strongDelegate createFBRegisterVCWithDetailsFromSignUp:userDetailsForFBRegistration];
+            }
+            
+        }
+    }];
+    
+}
 
 #pragma mark - Sign Up New User
 
@@ -282,4 +330,85 @@
 
 
 
+
+
+
+
+
+
+
+/*
+ - (void)grabUserDetailsFromFacebook {
+ 
+ FBRequest *request = [FBRequest requestForMe];
+ [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+ if (!error) {
+ // result is a dictionary with the user's Facebook data
+ NSDictionary *userData = (NSDictionary *)result;
+ 
+ NSLog(@"FB User Data: %@", result);
+ 
+ NSString *facebookID = userData[@"id"];
+ NSString *name = userData[@"name"];
+ NSString *location = userData[@"location"][@"name"];
+ NSString *firstName = userData[@"first_name"];
+ //NSString *gender = userData[@"gender"];
+ //NSString *birthday = userData[@"birthday"];
+ // NSString *relationship = userData[@"relationship_status"];
+ 
+ 
+ NSLog(@"%@", [NSString stringWithFormat:@"ID: %@ - Name: %@ - Location: %@ - firstName: %@", facebookID, name, location, firstName]);
+ 
+ NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+ NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+ [NSURLConnection sendAsynchronousRequest:urlRequest
+ queue:[NSOperationQueue mainQueue]
+ completionHandler:
+ ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+ if (connectionError == nil && data != nil) {
+ 
+ UIImage *profileImage2 = [UIImage imageWithData:data];
+ 
+ NSLog(@"ABOUT TO GET THE PROFILE IMAGE DATA with data - %@", data);
+ 
+ NSData *pictureData = UIImageJPEGRepresentation(profileImage2, 0.5);
+ 
+ PFFile *profileImage = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
+ [profileImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+ if (succeeded) {
+ NSLog(@"YAY");
+ [[PFUser currentUser] setValue:profileImage forKey:@"profilePicture"];
+ }
+ 
+ }];
+ }
+ 
+ [[PFUser currentUser] setObject:firstName forKey:@"username"];
+ [[PFUser currentUser] setObject:facebookID forKey:@"facebookID"];
+ [[PFUser currentUser] setObject:name forKey:@"realName"];
+ [[PFUser currentUser] setObject:location forKey:@"hometown"];
+ 
+ //Update UI with FB Details
+ //self.usernameField.text = firstName;
+ //self.passwordField.text
+ 
+ 
+ //Save User Details to Parse
+ [[PFUser currentUser] saveInBackground];
+ 
+ 
+ }];
+ 
+ 
+ 
+ }
+ }];
+ 
+ }
+ */
+
+
 @end
+
+
+

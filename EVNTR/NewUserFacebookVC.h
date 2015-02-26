@@ -6,16 +6,11 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-@protocol NewUserFacebookDelegate;
-
 #import <UIKit/UIKit.h>
 
-@interface NewUserFacebookVC : UIViewController
-
-@property (nonatomic, weak) id<NewUserFacebookDelegate> delegate;
+@interface NewUserFacebookVC : UIViewController <UITextFieldDelegate>
 
 @property (nonatomic, strong) NSDictionary *informationFromFB;
-
 
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
@@ -23,14 +18,10 @@
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 
 @property (weak, nonatomic) NSString *urlForProfilePicture;
-@property (weak, nonatomic) NSString *facebookID;
+@property (strong, nonatomic) NSString *facebookID;
+@property (strong, nonatomic) NSString *firstName;
+@property (strong, nonatomic) NSString *location;
 
 - (IBAction)registerWithFBInformation:(id)sender;
-
-@end
-
-@protocol NewUserFacebookDelegate <NSObject>
-
-- (void) createFBRegisterVCWithDetails:(NSDictionary *) userDetailsFromFB;
 
 @end
