@@ -16,6 +16,5 @@
 
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) PFUser *userForEventsQuery;
-@property BOOL isComingFromNavigation;
 
 @end

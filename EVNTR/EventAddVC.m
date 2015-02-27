@@ -303,6 +303,8 @@
                     
                     [saveAlert show];
                     
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kEventCreated object:nil userInfo:nil];
+                    
                     
                     //now invite people
                     

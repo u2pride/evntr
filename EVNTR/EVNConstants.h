@@ -64,7 +64,11 @@ extern NSString *const kLastBackgroundFetchTimeStamp;
 extern NSString *const kNotificationNewFollow;
 extern NSString *const kNotificationRemovedFollow;
 extern NSString *const kFollowActivity;
+extern NSString *const kEventCreated;
 
+
+#pragma mark - User Management 
+extern NSString *const kIsGuest;
 
 // Time Type From To Content
 // Alex followed Ben - 8 m ago

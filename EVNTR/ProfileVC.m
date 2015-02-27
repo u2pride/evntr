@@ -22,12 +22,13 @@
 
 @property (nonatomic, strong) PFUser *userForProfileView;
 @property (weak, nonatomic) IBOutlet UIButton *editProfileButton;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navigationItemWithSettingsBarItem;
 
 @end
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, isComingFromEditProfile, editProfileButton;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, isComingFromEditProfile, editProfileButton, navigationItemWithSettingsBarItem;
 
 
 - (id)initWithCoder:(NSCoder*)aDecoder
@@ -108,11 +109,17 @@
         // make sure to include follow status and following and followers counts.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUIDueToNewFollow:) name:kFollowActivity object:nil];
         
+
+        
         if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
             profileType = CURRENT_USER_PROFILE;
             
+            //Register for Notifications when Current User Creates a New Event
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kEventCreated object:nil];
+            
         } else {
             profileType = OTHER_USER_PROFILE;
+            self.navigationItemWithSettingsBarItem.rightBarButtonItems = nil;
             
         }
         
@@ -123,6 +130,12 @@
         
 }
 
+
+- (void) updateEventCount {
+    
+    self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", [self.numberEventsLabel.text intValue] + 1 ];
+    
+}
 
 - (void)updateUIDueToNewFollow:(NSNotification *)notification {
     NSLog(@"------------------------------------------PROCESSING UI UPDATES FROM NOTIFICATION-------------------------------------");
@@ -152,8 +165,8 @@
         }];
         
     }
-     
-
+    
+    
     //Update Following / Followers Counts
     PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
     [countFollowersQuery whereKey:@"to" equalTo:userForProfileView];

@@ -23,11 +23,13 @@
     PFGeoPoint *currentLocation;
 }
 
+@property BOOL isGuestUser;
+
 @end
 
 @implementation HomeScreenVC
 
-@synthesize userForEventsQuery, typeOfEventTableView, isComingFromNavigation;
+@synthesize userForEventsQuery, typeOfEventTableView, isGuestUser;
 
 //Question:  What's best to do in initWithCoder v. ViewDidLoad?
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -41,7 +43,12 @@
         self.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         self.userForEventsQuery = [PFUser currentUser];
         self.tabBarController.hidesBottomBarWhenPushed = YES;
-        self.isComingFromNavigation = NO;
+        NSLog(@"INITWITHCODER OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
+        
+        //Get isGuest Object
+        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+        self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
+
     }
     return self;
     
@@ -49,6 +56,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSLog(@"VIEWDIDLOAD OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
+
     
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SearchIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySearchController)];
     self.navigationItem.rightBarButtonItem = searchButton;
@@ -267,6 +277,8 @@
         
         PFObject *event = [self.objects objectAtIndex:indexPathOfSelectedItem.row];
         eventDetailVC.eventObject = event;
+        NSLog(@"PERFORMSEGUE OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
+
         
     } else if ([[segue identifier] isEqualToString:@"AddNewEvent"]) {
         //nothing needed yet

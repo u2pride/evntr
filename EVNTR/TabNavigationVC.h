@@ -10,8 +10,6 @@
 
 @interface TabNavigationVC : UITabBarController <UITabBarControllerDelegate>
 
-@property BOOL isNewUserWithFacebookLogin;
-
 
 @end
 

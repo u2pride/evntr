@@ -10,6 +10,10 @@
             <string>Lato-Bold</string>
             <string>Lato-Bold</string>
             <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
         </mutableArray>
         <mutableArray key="Lato-Light.ttf">
             <string>Lato-Light</string>
@@ -24,8 +28,11 @@
             <string>Lato-Light</string>
             <string>Lato-Light</string>
             <string>Lato-Light</string>
+            <string>Lato-Light</string>
         </mutableArray>
         <mutableArray key="Lato-Regular.ttf">
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
@@ -62,7 +69,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xJN-uG-fCS">
-                                <rect key="frame" x="31" y="503" width="119" height="40"/>
+                                <rect key="frame" x="31" y="468" width="119" height="40"/>
                                 <color key="backgroundColor" red="0.63401805171216918" green="0.36618297950110507" blue="0.12392663491009889" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="rRm-V6-NWp"/>
@@ -94,7 +101,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q3U-Nf-Gaw">
-                                <rect key="frame" x="170" y="503" width="119" height="40"/>
+                                <rect key="frame" x="170" y="468" width="119" height="40"/>
                                 <color key="backgroundColor" red="0.63401805170000003" green="0.36618297950000001" blue="0.1239266349" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="dat-kD-sSl"/>
@@ -106,6 +113,17 @@
                                 </state>
                                 <connections>
                                     <segue destination="kNH-N0-DyF" kind="custom" identifier="InitialToSignUp" id="oBv-38-Q2X"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q6f-MP-XFO">
+                                <rect key="frame" x="94" y="523" width="133" height="30"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="19"/>
+                                <state key="normal" title="Skip For Now">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="TfP-RV-XpY" kind="custom" identifier="SkipForNowSegue" id="3wf-XP-AcN"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -121,11 +139,11 @@
                             <constraint firstItem="q3U-Nf-Gaw" firstAttribute="leading" secondItem="tQb-zO-PCS" secondAttribute="leadingMargin" id="bFw-9D-JUr"/>
                             <constraint firstItem="q3U-Nf-Gaw" firstAttribute="leading" secondItem="tQb-zO-PCS" secondAttribute="leadingMargin" constant="40" id="eMA-zf-nGA"/>
                             <constraint firstItem="q3U-Nf-Gaw" firstAttribute="width" secondItem="xJN-uG-fCS" secondAttribute="width" id="oGQ-3U-CYt"/>
-                            <constraint firstItem="eEp-Kd-ceI" firstAttribute="top" secondItem="q3U-Nf-Gaw" secondAttribute="bottom" constant="25" id="rcb-XI-9wI"/>
+                            <constraint firstItem="eEp-Kd-ceI" firstAttribute="top" secondItem="q3U-Nf-Gaw" secondAttribute="bottom" constant="60" id="rcb-XI-9wI"/>
                             <constraint firstAttribute="trailingMargin" secondItem="q3U-Nf-Gaw" secondAttribute="trailing" constant="15" id="sQB-Nt-uIo"/>
                             <constraint firstItem="xJN-uG-fCS" firstAttribute="leading" secondItem="tQb-zO-PCS" secondAttribute="leadingMargin" constant="15" id="sjY-VE-fnh"/>
                             <constraint firstItem="eEp-Kd-ceI" firstAttribute="top" secondItem="xJN-uG-fCS" secondAttribute="bottom" constant="20" id="xSs-aU-meX"/>
-                            <constraint firstItem="eEp-Kd-ceI" firstAttribute="top" secondItem="xJN-uG-fCS" secondAttribute="bottom" constant="25" id="xU0-8R-XOP"/>
+                            <constraint firstItem="eEp-Kd-ceI" firstAttribute="top" secondItem="xJN-uG-fCS" secondAttribute="bottom" constant="60" id="xU0-8R-XOP"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -320,7 +338,7 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -334,7 +352,7 @@ Click continue when you're ready.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oNr-Oe-ul8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-72" y="1375"/>
+            <point key="canvasLocation" x="-54" y="1375"/>
         </scene>
         <!--Log InVC-->
         <scene sceneID="yO6-yF-vyE">
@@ -557,7 +575,62 @@ Click continue when you're ready.</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j5a-Eo-i9X" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="bxN-92-FQK" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-475" y="1655"/>
+            <point key="canvasLocation" x="-475" y="1677"/>
+        </scene>
+        <!--Guest WelcomeVC-->
+        <scene sceneID="Yt3-Ze-wda">
+            <objects>
+                <viewController id="TfP-RV-XpY" customClass="GuestWelcomeVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dBa-JJ-biJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="s0X-hV-kpe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="vrE-vp-BKf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="WELCOME TO EVNTR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wj2-es-MFc">
+                                <rect key="frame" x="43" y="46" width="235" height="36"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvR-n1-R0o">
+                                <rect key="frame" x="26" y="61" width="269" height="190"/>
+                                <string key="text">You're currently exploring events as a guest.  In order to attend events and follow users to see events they post, you will need to create an account.  You can do this at any time from the settings menu.</string>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="One More Thing.  We need your location in order to find events next to you." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ndj-Gw-5zn">
+                                <rect key="frame" x="51" y="250" width="218" height="122"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jok-PH-l5H">
+                                <rect key="frame" x="99" y="419" width="123" height="55"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
+                                <state key="normal" title="Got It">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="Hoa-x5-Et8" kind="presentation" id="2rG-LN-NSK"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="0.32000000000000001" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="continueButton" destination="jok-PH-l5H" id="nCW-Nf-h33"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4CJ-A6-Efi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-475" y="2365"/>
         </scene>
         <!--Profile-->
         <scene sceneID="IJP-Pa-4kn">
@@ -684,6 +757,7 @@ Click continue when you're ready.</string>
                         <outlet property="followButton" destination="jjw-9d-nCf" id="sUX-YI-5T0"/>
                         <outlet property="instagramLabel" destination="YYv-5K-Rjy" id="ebE-3T-ybf"/>
                         <outlet property="nameLabel" destination="9r6-zM-w9m" id="zGN-kF-Mem"/>
+                        <outlet property="navigationItemWithSettingsBarItem" destination="xCR-Wy-afg" id="eFb-nE-Y3u"/>
                         <outlet property="numberEventsLabel" destination="Kmz-sb-2mR" id="Lhu-BW-cYB"/>
                         <outlet property="numberFollowersLabel" destination="cLb-di-5zP" id="Tc3-FJ-XLw"/>
                         <outlet property="numberFollowingLabel" destination="Fyz-kJ-guQ" id="JTn-d8-Nca"/>
@@ -943,12 +1017,52 @@ Click continue when you're ready.</string>
                     <navigationItem key="navigationItem" title="Settings" id="Kak-5n-fUZ"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <segue destination="xaR-eF-GqN" kind="showDetail" identifier="logOutToMain" id="Eb3-7Y-a1w"/>
+                        <segue destination="miq-lf-eFH" kind="unwind" identifier="SettingsToInitialScreen" unwindAction="logOutUnwindSegue:" id="qQ9-Ge-uGn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xYL-WK-hqa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="miq-lf-eFH" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1576" y="2440"/>
+            <point key="canvasLocation" x="2108" y="2440"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="7mC-ZV-ssE">
+            <objects>
+                <viewController id="N7T-Hd-Vbx" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="RX3-aH-wdC"/>
+                        <viewControllerLayoutGuide type="bottom" id="Dl1-1Y-uDP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="P59-mk-R76">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8OY-wJ-G4D">
+                                <rect key="frame" x="74" y="256" width="172" height="56"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="26"/>
+                                <state key="normal" title="Sign Up">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="FSL-PO-gyc" kind="unwind" unwindAction="logOutUnwindSegue:" id="YRO-mM-oBK"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ready to Join the Party?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clS-50-gO5">
+                                <rect key="frame" x="33" y="86" width="254" height="52"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="aic-ER-whK"/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ScX-tW-xOg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="FSL-PO-gyc" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1612" y="2373"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="xl3-VJ-Nsb">
@@ -1350,7 +1464,7 @@ Click continue when you're ready.</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bda-Oz-hMR" customClass="PFImageView">
-                                <rect key="frame" x="0.0" y="19" width="320" height="149"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="168"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="429-cp-IMw" customClass="PFImageView">
                                 <rect key="frame" x="16" y="185" width="101" height="102"/>
@@ -1416,9 +1530,12 @@ Click continue when you're ready.</string>
                         <outlet property="eventLocationLabel" destination="2OV-TK-qk5" id="k1R-IQ-7Ae"/>
                         <outlet property="eventTitle" destination="WEQ-g4-QdZ" id="66p-53-51R"/>
                         <outlet property="rsvpButton" destination="Lzv-La-u3a" id="GFf-rN-hIb"/>
+                        <outlet property="viewAttendingButton" destination="Yz9-9S-wgt" id="g4S-Te-Axt"/>
+                        <segue destination="bz5-ND-8x1" kind="unwind" identifier="EventDetailToInitial" unwindAction="logOutUnwindSegue:" id="peG-wK-7Ki"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OjH-ZA-Wlw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="bz5-ND-8x1" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2049" y="-1215"/>
         </scene>
@@ -1565,11 +1682,12 @@ Click continue when you're ready.</string>
                         <segue destination="TxJ-va-2hC" kind="relationship" relationship="viewControllers" id="LWw-MI-gds"/>
                         <segue destination="ZjU-EG-f3Z" kind="relationship" relationship="viewControllers" id="F9q-c0-t9o"/>
                         <segue destination="bv7-wO-6dk" kind="relationship" relationship="viewControllers" id="6fj-oV-69T"/>
+                        <segue destination="8Wm-Yy-m4x" kind="relationship" relationship="viewControllers" id="I6O-hH-Ko3"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jsa-vc-7NX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="346" y="1655"/>
+            <point key="canvasLocation" x="370" y="1655"/>
         </scene>
         <!--Profile-->
         <scene sceneID="P3Z-kh-4tK">
@@ -1839,6 +1957,25 @@ Click continue when you're ready.</string>
             </objects>
             <point key="canvasLocation" x="2049" y="-579"/>
         </scene>
+        <!--Sign Up-->
+        <scene sceneID="1oE-mU-Z8c">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8Wm-Yy-m4x" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Sign Up" image="tabSearch" id="D1t-T9-kcc"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="DaJ-Gk-qy6">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="N7T-Hd-Vbx" kind="relationship" relationship="rootViewController" id="aUp-Gf-R9w"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XPb-LB-FdT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1080" y="2373"/>
+        </scene>
     </scenes>
     <resources>
         <image name="CustomBackButton" width="33" height="52"/>
@@ -1849,9 +1986,10 @@ Click continue when you're ready.</string>
         <image name="tabAdd" width="25" height="25"/>
         <image name="tabHome" width="25" height="25"/>
         <image name="tabProfile" width="26" height="25"/>
+        <image name="tabSearch" width="26" height="26"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="vng-gU-3GQ"/>
+        <segue reference="2rG-LN-NSK"/>
         <segue reference="XMT-eB-l88"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -24,6 +24,8 @@
 		A41563421A76ACC000565BB6 /* LogInVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563411A76ACC000565BB6 /* LogInVC.m */; };
 		A41563451A76E15100565BB6 /* EventAddVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563441A76E15100565BB6 /* EventAddVC.m */; };
 		A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634B1A76EF3A00565BB6 /* ProfileVC.m */; };
+		A418129B1AA0BFA200317B0C /* GuestWelcomeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */; };
+		A418129D1AA0CA6600317B0C /* busy.gif in Resources */ = {isa = PBXBuildFile; fileRef = A418129C1AA0CA6600317B0C /* busy.gif */; };
 		A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */; };
 		A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */; };
 		A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7F11A9BFF0900DF9ABE /* SearchVC.m */; };
@@ -115,6 +117,9 @@
 		A41563441A76E15100565BB6 /* EventAddVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventAddVC.m; sourceTree = "<group>"; };
 		A415634A1A76EF3A00565BB6 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
 		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
+		A41812991AA0BFA200317B0C /* GuestWelcomeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestWelcomeVC.h; sourceTree = "<group>"; };
+		A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestWelcomeVC.m; sourceTree = "<group>"; };
+		A418129C1AA0CA6600317B0C /* busy.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = busy.gif; sourceTree = "<group>"; };
 		A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
 		A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		A423F7EC1A9BC46600DF9ABE /* UIButtonPFExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonPFExtended.h; sourceTree = "<group>"; };
@@ -240,6 +245,7 @@
 				A4C4EDC71A94E862000BC3AD /* Transitioning Delegate */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
+				A418129C1AA0CA6600317B0C /* busy.gif */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
 			);
@@ -436,6 +442,8 @@
 				A41563411A76ACC000565BB6 /* LogInVC.m */,
 				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
 				A415633E1A769FDE00565BB6 /* SignUpVC.m */,
+				A41812991AA0BFA200317B0C /* GuestWelcomeVC.h */,
+				A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */,
 				A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */,
 				A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */,
 				A4C4EDC81A94EB0E000BC3AD /* ResetPasswordModalVC.h */,
@@ -537,6 +545,7 @@
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
+				A418129D1AA0CA6600317B0C /* busy.gif in Resources */,
 				A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
 			);
@@ -560,6 +569,7 @@
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
+				A418129B1AA0BFA200317B0C /* GuestWelcomeVC.m in Sources */,
 				A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */,
 				A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,

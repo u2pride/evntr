@@ -13,6 +13,7 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import "LogInVC.h"
+#import "EVNConstants.h"
 
 
 @interface SignUpVC ()
@@ -128,6 +129,10 @@
                 loginInTextLabel.center = self.view.center;
                 [self.view addSubview:loginInTextLabel];
                 
+                //Set isGuest Object
+                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                [standardDefaults setBool:NO forKey:kIsGuest];
+                [standardDefaults synchronize];
                 
                 [UIView animateWithDuration:1.0 animations:^{
                     loginInTextLabel.alpha = 1;
@@ -226,6 +231,11 @@
                         [newUser saveInBackground];
                     }
                 }];
+                
+                //Set isGuest Object
+                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                [standardDefaults setBool:NO forKey:kIsGuest];
+                [standardDefaults synchronize];
                 
                 [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
                 

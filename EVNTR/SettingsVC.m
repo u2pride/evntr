@@ -48,7 +48,7 @@
     
     [PFUser logOut];
     
-    [self performSegueWithIdentifier:@"logOutToMain" sender:self];
+    [self performSegueWithIdentifier:@"SettingsToInitialScreen" sender:self];
     
     
 }

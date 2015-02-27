@@ -24,4 +24,5 @@
 @property (nonatomic, strong) PFObject *eventObject;
 
 
+
 @end

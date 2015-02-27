@@ -12,6 +12,9 @@
 #import "LogInVC.h"
 #import "UIImageEffects.h"
 #import <Parse/Parse.h>
+#import "TabNavigationVC.h"
+#import "GuestWelcomeVC.h"
+#import "EVNConstants.h"
 
 
 @interface InitialScreenVC ()
@@ -53,6 +56,28 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 
+}
+
+
+- (IBAction) logOutUnwindSegue:(UIStoryboardSegue *)unwindSegue {
+    
+
+    [UIView animateWithDuration:0.5 animations:^{
+        self.backgroundImageView.transform = CGAffineTransformMakeScale(1, 1);
+        self.darkBlurEffectView.alpha = 0;
+        self.logoView.alpha = 1;
+        self.loginButton.alpha = 1;
+        self.registerButton.alpha = 1;
+        
+        
+    } completion:^(BOOL finished) {
+        
+        if (finished) {
+            [self.darkBlurEffectView removeFromSuperview];
+        }
+        
+    }];
+    
 }
 
 //Unwind Segue from Register or Login Pages - Via Back Button (or Cancel from FB Page - todo)
@@ -116,17 +141,17 @@
         //NSTimer *simulation = [NSTimer timerWithTimeInterval:4.0 target:self selector:@selector(simulateMovement) userInfo:nil repeats:NO];
         //uncomment to run timer - [[NSRunLoop mainRunLoop] addTimer:simulation forMode:NSDefaultRunLoopMode];
         
-        LogInVC *viewController = (LogInVC *) [segue destinationViewController];
-        viewController.transitioningDelegate = self.customTransitionDelegate;
-        viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        viewController.delegate = self;
+        LogInVC *loginVC = (LogInVC *) [segue destinationViewController];
+        loginVC.transitioningDelegate = self.customTransitionDelegate;
+        loginVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        loginVC.delegate = self;
         
     } else if ([segue.identifier isEqualToString:@"NewUserFacebook"]) {
         
         NewUserFacebookVC *destVC = (NewUserFacebookVC *) [segue destinationViewController];
         
         destVC.transitioningDelegate = self.customTransitionDelegate;
-        destVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+        destVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         destVC.informationFromFB = self.detailsFromFBRegistration;
         NSLog(@"in PrepareForSegue: %@", destVC.informationFromFB);
         NSLog(@"in PFS:  %@", self.detailsFromFBRegistration);
@@ -169,6 +194,47 @@
         signUpView.transitioningDelegate = self.customTransitionDelegate;
         signUpView.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         signUpView.delegate = self;
+        
+    } else if ([segue.identifier isEqualToString:@"SkipForNowSegue"]) {
+        
+        //Set isGuest Object
+        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+        [standardDefaults setBool:YES forKey:kIsGuest];
+        [standardDefaults synchronize];
+        
+        UIBlurEffect *lightBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        self.darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:lightBlur];
+        self.darkBlurEffectView.alpha = 0;
+        self.darkBlurEffectView.frame = self.view.bounds;
+        [self.view addSubview:self.darkBlurEffectView];
+        
+        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:lightBlur];
+        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+        [vibrancyEffectView setFrame:self.view.bounds];
+        
+        [[self.darkBlurEffectView contentView] addSubview:vibrancyEffectView];
+        
+        [UIView animateWithDuration:1.0 animations:^{
+            self.darkBlurEffectView.alpha = 0.76;
+        } completion:^(BOOL finished) {
+            
+            NSLog(@"Finished");
+            
+        }];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
+            
+            self.logoView.alpha = 0;
+            self.loginButton.alpha = 0;
+            self.registerButton.alpha = 0;
+            
+        }];
+
+        GuestWelcomeVC *guestWelcomeView = (GuestWelcomeVC *) [segue destinationViewController];
+        guestWelcomeView.transitioningDelegate = self.customTransitionDelegate;
+        guestWelcomeView.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         
     }
     

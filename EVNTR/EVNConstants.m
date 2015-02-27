@@ -21,3 +21,8 @@ NSString *const kNotAttendingEvent = @"Not Attending";
 NSString *const kNotificationNewFollow = @"NotificationNewFollow";
 NSString *const kNotificationRemovedFollow = @"NotificationRemovedFollow";
 NSString *const kFollowActivity = @"FollowActivity";
+NSString *const kEventCreated = @"EventCreated";
+
+
+
+NSString *const kIsGuest = @"isGuestKey";

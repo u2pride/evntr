@@ -18,15 +18,23 @@
 @interface TabNavigationVC ()
 
 @property (strong, nonatomic) UITabBarItem *activityItem;
+@property BOOL isGuestUser;
 
 @end
 
 @implementation TabNavigationVC
 
-@synthesize activityItem, isNewUserWithFacebookLogin;
+@synthesize activityItem, isGuestUser;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //Get isGuest Object
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
+    
+    NSLog(@"VIEWDIDLOAD OF TABNAVIGATIONVC: %@", [NSNumber numberWithBool:self.isGuestUser]);
+    
     // Do any additional setup after loading the view.
     self.delegate = self;
     
@@ -36,19 +44,40 @@
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name: UIApplicationWillEnterForegroundNotification object:nil];
     
     
+    if (isGuestUser) {
+        
+        NSLog(@"Guest User");
+        
+        //remember you have to initialize the nsmutablearay. ie viewControllersTab = self.tabBarController.viewControllers won't work.
+        NSMutableArray *viewControllersTab = [NSMutableArray arrayWithArray:[self viewControllers]];
+        [viewControllersTab removeObjectAtIndex:3];
+        
+        [self setViewControllers:viewControllersTab];
+        
+        [[self.tabBar.items objectAtIndex:1] setEnabled:NO];
+        [[self.tabBar.items objectAtIndex:2] setEnabled:NO];
+        
+    } else {
+        
+        NSMutableArray *viewControllersTab = [NSMutableArray arrayWithArray:[self viewControllers]];
+        [viewControllersTab removeObjectAtIndex:4];
+
+        [self setViewControllers:viewControllersTab];
+        
+    }
+    
     
     //Set all Navigation Bars to White
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
     //Update Color of Navigation Bars
+    
     for (UINavigationController *navController in self.viewControllers) {
         navController.navigationBar.barTintColor = [UIColor orangeThemeColor];
         navController.navigationBar.translucent = YES;
         
         //Set Font Color to White
         [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-        
-
 
     }
     
@@ -56,17 +85,18 @@
     self.tabBar.tintColor = [UIColor orangeThemeColor];
     self.tabBar.backgroundColor = [UIColor clearColor];
     self.tabBar.translucent = YES;
-
+    
+    //UINavigationController *navVC = (UINavigationController *) self.viewControllers.firstObject;
+    //HomeScreenVC *homeEventsView = navVC.childViewControllers.firstObject;
+    
+    //NSLog(@"VIEWDIDLOAD OF TABBARCONTROLLER: %@", [NSNumber numberWithBool:self.isGuestUser]);
+    //homeEventsView.isGuestUser = self.isGuestUser;
     
     
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    
-    //If User Logged in Through Facebook
-    if (isNewUserWithFacebookLogin) {
-        //[self grabUserDetailsFromFacebook];
-    }
+    [super viewDidAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -105,77 +135,17 @@
         
         eventsView.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         eventsView.userForEventsQuery = [PFUser currentUser];
+        NSLog(@"didSelectVC OF TABBARCONTROLLER: %@", [NSNumber numberWithBool:self.isGuestUser]);
+
         
     //Profile VC
-    } else if (viewController == [self.viewControllers objectAtIndex:3]) {
+    } else if (viewController == [self.viewControllers objectAtIndex:3] && !isGuestUser) {
         
         UINavigationController *navVC = (UINavigationController *) self.viewControllers.lastObject;
         ProfileVC *profileView = navVC.childViewControllers.firstObject;
         
         profileView.userNameForProfileView = [[PFUser currentUser] objectForKey:@"username"];
     }
-}
-
-//Grab User Details From Facebook - Name, Hometown, and Profile Picture
-- (void)grabUserDetailsFromFacebook {
-    
-    FBRequest *request = [FBRequest requestForMe];
-    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            // result is a dictionary with the user's Facebook data
-            NSDictionary *userData = (NSDictionary *)result;
-            
-            NSLog(@"FB User Data: %@", result);
-            
-            NSString *facebookID = userData[@"id"];
-            NSString *name = userData[@"name"];
-            NSString *location = userData[@"location"][@"name"];
-            NSString *firstName = userData[@"first_name"];
-            //NSString *gender = userData[@"gender"];
-            //NSString *birthday = userData[@"birthday"];
-            // NSString *relationship = userData[@"relationship_status"];
-            
-            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
-            NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
-            [NSURLConnection sendAsynchronousRequest:urlRequest
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:
-             ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                 if (connectionError == nil && data != nil) {
-                     // Set the image in the header imageView
-                     
-                     //
-                     UIImage *profileImage2 = [UIImage imageWithData:data];
-
-                     NSLog(@"ABOUT TO GET THE PROFILE IMAGE DATA with data - %@", data);
-                     
-                     NSData *pictureData = UIImageJPEGRepresentation(profileImage2, 0.5);
-                     
-                     PFFile *profileImage = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
-                     [profileImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                         if (succeeded) {
-                             NSLog(@"YAY");
-                             [[PFUser currentUser] setValue:profileImage forKey:@"profilePicture"];
-                         }
-                         
-                     }];
-                 }
-                 
-                 [[PFUser currentUser] setObject:firstName forKey:@"username"];
-                 [[PFUser currentUser] setObject:facebookID forKey:@"facebookID"];
-                 [[PFUser currentUser] setObject:name forKey:@"realName"];
-                 [[PFUser currentUser] setObject:location forKey:@"hometown"];
-                 
-                 //Save User Details to Parse
-                 [[PFUser currentUser] saveInBackground];
-
-             }];
-            
-
-            
-        }
-    }];
-    
 }
 
     /*
@@ -220,4 +190,69 @@
 }
 */
 
+
+/*
+ //Grab User Details From Facebook - Name, Hometown, and Profile Picture
+ - (void)grabUserDetailsFromFacebook {
+ 
+ FBRequest *request = [FBRequest requestForMe];
+ [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+ if (!error) {
+ // result is a dictionary with the user's Facebook data
+ NSDictionary *userData = (NSDictionary *)result;
+ 
+ NSLog(@"FB User Data: %@", result);
+ 
+ NSString *facebookID = userData[@"id"];
+ NSString *name = userData[@"name"];
+ NSString *location = userData[@"location"][@"name"];
+ NSString *firstName = userData[@"first_name"];
+ //NSString *gender = userData[@"gender"];
+ //NSString *birthday = userData[@"birthday"];
+ // NSString *relationship = userData[@"relationship_status"];
+ 
+ NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+ NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
+ [NSURLConnection sendAsynchronousRequest:urlRequest
+ queue:[NSOperationQueue mainQueue]
+ completionHandler:
+ ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+ if (connectionError == nil && data != nil) {
+ // Set the image in the header imageView
+ 
+ //
+ UIImage *profileImage2 = [UIImage imageWithData:data];
+ 
+ NSLog(@"ABOUT TO GET THE PROFILE IMAGE DATA with data - %@", data);
+ 
+ NSData *pictureData = UIImageJPEGRepresentation(profileImage2, 0.5);
+ 
+ PFFile *profileImage = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
+ [profileImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+ if (succeeded) {
+ NSLog(@"YAY");
+ [[PFUser currentUser] setValue:profileImage forKey:@"profilePicture"];
+ }
+ 
+ }];
+ }
+ 
+ [[PFUser currentUser] setObject:firstName forKey:@"username"];
+ [[PFUser currentUser] setObject:facebookID forKey:@"facebookID"];
+ [[PFUser currentUser] setObject:name forKey:@"realName"];
+ [[PFUser currentUser] setObject:location forKey:@"hometown"];
+ 
+ //Save User Details to Parse
+ [[PFUser currentUser] saveInBackground];
+ 
+ }];
+ 
+ 
+ 
+ }
+ }];
+ 
+ }
+ 
+*/
 @end

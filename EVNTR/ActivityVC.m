@@ -79,6 +79,7 @@
     NSNumber *noNewActivities = 0;
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setObject:noNewActivities forKey:kNumberOfNotifications];
+    [standardDefaults synchronize];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 
 }

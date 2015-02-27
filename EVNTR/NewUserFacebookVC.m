@@ -9,6 +9,7 @@
 #import "EVNUtility.h"
 #import "NewUserFacebookVC.h"
 #import <Parse/Parse.h>
+#import "EVNConstants.h"
 
 @interface NewUserFacebookVC ()
 
@@ -121,6 +122,11 @@
                     
                     if (succeeded) {
                         NSLog(@"Successfully created new user with FB profile and saved user's information to database.");
+                        
+                        //Set isGuest Object
+                        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                        [standardDefaults setBool:NO forKey:kIsGuest];
+                        [standardDefaults synchronize];
                         
                         [self performSegueWithIdentifier:@"FBRegisterToOnboard" sender:nil];
                         

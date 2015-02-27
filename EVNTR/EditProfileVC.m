@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import "EVNUtility.h"
 #import <Accounts/Accounts.h>
+#import "UIColor+EVNColors.h"
 
 @interface EditProfileVC ()
 
@@ -55,6 +56,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //change font color of title to white
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+
+    
     //default profile image
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.profileImageView.userInteractionEnabled = YES;
@@ -63,6 +68,10 @@
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(updateProfilePicture)];
     [self.profileImageView addGestureRecognizer:tapgr];
     
+    //Change Navigation Bar Color to Theme
+    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+    self.navigationController.navigationBar.translucent = YES;
+
     
     //Populate Edit Profile Screen with Values Passed From Profile VC
     self.realNameTextField.text = self.realName;

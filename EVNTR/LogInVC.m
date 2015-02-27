@@ -17,7 +17,7 @@
 #import <Parse/Parse.h>
 #import <QuartzCore/QuartzCore.h>
 #import "SignUpVC.h"
-
+#import "EVNConstants.h"
 
 @interface LogInVC ()
 {
@@ -113,6 +113,10 @@
             loginInTextLabel.center = self.view.center;
             [self.view addSubview:loginInTextLabel];
             
+            //Set isGuest Object
+            NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+            [standardDefaults setBool:NO forKey:kIsGuest];
+            [standardDefaults synchronize];
             
             [UIView animateWithDuration:2.0 animations:^{
                 blurOutLogInScreen.alpha = 1;
@@ -200,6 +204,10 @@
                 loginInTextLabel.center = self.view.center;
                 [self.view addSubview:loginInTextLabel];
                 
+                //Set isGuest Object
+                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                [standardDefaults setBool:NO forKey:kIsGuest];
+                [standardDefaults synchronize];
                 
                 [UIView animateWithDuration:1.0 animations:^{
                     loginInTextLabel.alpha = 1;
