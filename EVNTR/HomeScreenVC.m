@@ -17,6 +17,7 @@
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "SearchVC.h"
+#import "NSDate+NVTimeAgo.h"
 #import "UIImageEffects.h"
 
 @interface HomeScreenVC () {
@@ -245,9 +246,28 @@
             
             
         }];
-        cell.eventTitle.text = [object objectForKey:@"title"];
-        //cell.numberOfAttenders.text = [NSString stringWithFormat:@"%@", [object objectForKey:@"attenders"]];
         
+        cell.eventTitle.text = [object objectForKey:@"title"];
+        NSDate *dateOfEvent = [object objectForKey:@"dateOfEvent"];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.timeStyle = NSDateFormatterNoStyle;
+        dateFormatter.dateStyle = NSDateFormatterShortStyle;
+        
+        cell.dateOfEventLabel.text = [dateFormatter stringFromDate:dateOfEvent];
+        
+        dateFormatter.timeStyle = NSDateFormatterShortStyle;
+        dateFormatter.dateStyle = NSDateFormatterNoStyle;
+        
+        cell.timeOfEventLabel.text = [dateFormatter stringFromDate:dateOfEvent];
+        
+        PFRelation *relation = [object relationForKey:@"attenders"];
+        PFQuery *query = [relation query];
+        [query countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+           
+            cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", number];
+            
+        }];
+
         
         
         /*

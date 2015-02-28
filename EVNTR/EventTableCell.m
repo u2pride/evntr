@@ -21,10 +21,7 @@
     
     eventTitle.textColor = [UIColor whiteColor];
     
-    self.dateOfEventLabel.text = @"July 30th";
-    self.timeOfEventLabel.text = @"7:00pm";
-    self.attendersCountLabel.text = @"120";
-    
+       
     self.roundedContaingView.layer.cornerRadius = 10;
 }
 
