@@ -13,9 +13,16 @@ NSString *const kNumberOfNotifications = @"NUM_NOTIFICATIONS";
 NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
 
 
-
 NSString *const kAttendingEvent = @"You're going!";
 NSString *const kNotAttendingEvent = @"Not Attending";
+NSString *const kRSVPedForEvent = @"Request Sent";
+NSString *const kNOTRSVPedForEvent = @"Request Access";
+NSString *const kGrantedAccessToEvent = @"Granted Access";
+
+//TODO:  Color button if granted acesss - similar to insta follow button
+NSString *const kGrantAccess = @"Let In";
+NSString *const kRevokeAccess = @"Take Back";
+
 
 
 NSString *const kNotificationNewFollow = @"NotificationNewFollow";

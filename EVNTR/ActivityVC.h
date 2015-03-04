@@ -11,8 +11,7 @@
 
 @interface ActivityVC : PFQueryTableViewController
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
-
-//Add properties to enable customization.  add username and activity type parameters.
+@property (nonatomic, assign) int typeOfActivityView;
+@property (nonatomic, strong) PFUser *userForActivities;
 
 @end

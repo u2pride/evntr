@@ -11,5 +11,6 @@
 @interface UIColor (EVNColors)
 
 + (UIColor *) orangeThemeColor;
++ (UIColor *) darkOrangeThemeColor;
 
 @end

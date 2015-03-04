@@ -10,7 +10,7 @@
 
 @implementation EventTableCell
 
-@synthesize dateOfEventLabel, timeOfEventLabel, attendersCountLabel;
+@synthesize dateOfEventLabel, timeOfEventLabel, attendersCountLabel, eventTypeLabel;
 @synthesize eventCoverImage, eventTitle, roundedContaingView;
 
 - (void)awakeFromNib {

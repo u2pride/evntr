@@ -263,7 +263,48 @@
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
 
         PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        cell.profileImage.image = [EVNUtility maskImage:cell.profileImage.image withMask:[UIImage imageNamed:@"MaskImageSelected"]];
+        
+        PFUser *currentUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
+        
+        NSLog(@"Current User: %@", currentUser);
+        NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+
+        [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+            [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
+                NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+                
+            }];
+        }];
+        
+    
+        //FOR SOME REASON, using the masking with the current image in cell.profileImage.image comes back null.  Maybe because the image is already masked???????
+        
+        //PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        //UIImage *cellProfileImage = cell.profileImage.image;
+        //cell.profileImage.image = nil;
+        
+        //NSLog(@"MY CELL: %@ and its Image: %@", cell, cellProfileImage);
+        
+        //UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:cell.bounds];
+        //backgroundView.image = [EVNUtility maskImage:cell.profileImage.image withMask:[UIImage imageNamed:@"MaskImage"]];
+        //backgroundView.image = cell.profileImage.image;
+        //UIImage *imageReturned = [self maskImage:cell.profileImage.image withMask:[UIImage imageNamed:@"MaskImageSelected"]];
+        //backgroundView.image = imageReturned;
+        
+        //cell.profileImage.alpha = 0.2;
+        
+        //NSLog(@"DEBUG ALL.  cell frame: %@ bckview frame: %@ and image: %@", NSStringFromCGRect(cell.frame), NSStringFromCGRect(backgroundView.frame), imageReturned);
+        
+        //cell.selectedBackgroundView = backgroundView;
+        //cell.selectedBackgroundView.backgroundColor = [UIColor greenColor];
+        
+        
+        //UIImageView *maskView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"MaskImageSelected"]];
+        //cell.profileImage.layer.mask = maskView.layer;
+        //[cell.profileImage setNeedsDisplay];
+
         
     } else {
         
@@ -278,6 +319,34 @@
     }
     
 }
+
+
+
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
+
+        PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        
+        PFUser *currentUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
+        
+        NSLog(@"Current User: %@", currentUser);
+        NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+        
+        [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+            [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+                NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+                
+            }];
+        }];
+    } else {
+        
+    }
+}
+
 
 
 #pragma mark -

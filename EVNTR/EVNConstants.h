@@ -18,6 +18,24 @@ extern NSString *const kAppName;
 #define OTHER_USER_EVENTS 3
 extern NSString *const kAttendingEvent;
 extern NSString *const kNotAttendingEvent;
+extern NSString *const kRSVPedForEvent;
+extern NSString *const kNOTRSVPedForEvent;
+extern NSString *const kGrantedAccessToEvent;
+
+
+#pragma mark - Activities Pull and Details
+
+#define ACTIVITIES_ALL 1
+#define ACTIVITIES_INVITES 2
+//TODO:  requests
+#define ACTIVITIES_REQUESTS_TO_ME 3
+#define ACTIVITIES_ATTENDED 4
+#define ACTIVITIES_MY_REQUESTS_STATUS 5
+
+extern NSString *const kGrantAccess;
+extern NSString *const kRevokeAccess;
+
+
 
 #pragma mark - People
 
@@ -39,17 +57,20 @@ extern NSString *const kNotAttendingEvent;
 #define INVITE_ACTIVITY 2
 #define REQUEST_ACCESS_ACTIVITY 3
 #define ATTENDING_ACTIVITY 4
+#define ACCESS_GRANTED_ACTIVITY 5
 
 // 1 - {from} followed {to}
 // 2 - {from} invited {to} to {activityContent}
-// 3 -
+// 3 - {from} requested that {to} give access to {activityContent}
 // 4 - {to} is attending {activityContent}
+// 5 - {from} let {to} in to {activityContent}
 // Notifications Query - for all Activities in which {to} matches [PFUser CurrentUser]
 
 #pragma mark - Event Types
 
 #define PUBLIC_EVENT_TYPE 1
 #define PRIVATE_EVENT_TYPE 2
+#define PUBLIC_APPROVED_EVENT_TYPE 3
 
 #pragma mark - Notifications
 extern NSString *const kNumberOfNotifications;

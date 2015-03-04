@@ -12,6 +12,7 @@
 
 @interface ProfileVC : UIViewController <UINavigationControllerDelegate, ProfileEditDelegate>
 
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
 //User Information
 @property (strong, nonatomic) IBOutlet UIImageView *profileImageView;
@@ -35,12 +36,7 @@
 @property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
 
 
-- (IBAction)viewMyEvents:(id)sender;
-- (IBAction)viewFollowers:(id)sender;
-- (IBAction)viewFollowing:(id)sender;
 
-
-- (IBAction)followUser:(id)sender;
 
 
 @end

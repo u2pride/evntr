@@ -10,7 +10,7 @@
 
 @implementation UIButtonPFExtended
 
-@synthesize personToFollow, eventToView;
+@synthesize personToFollow, eventToView, personToGrantAccess, eventToGrantAccess;
 
 /*
 // Only override drawRect: if you perform custom drawing.

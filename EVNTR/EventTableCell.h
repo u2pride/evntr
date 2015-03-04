@@ -18,5 +18,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 @property (weak, nonatomic) IBOutlet UILabel *attendersCountLabel;
+@property (weak, nonatomic) IBOutlet UILabel *eventTypeLabel;
 
 @end

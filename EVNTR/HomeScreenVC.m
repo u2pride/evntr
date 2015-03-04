@@ -82,12 +82,16 @@
         case CURRENT_USER_EVENTS: {
             NSLog(@"EventsView - My Events");
             [self.navigationItem setTitle:@"My Events"];
+            //remove search icon
+            self.navigationItem.rightBarButtonItems = nil;
             
             break;
         }
         case OTHER_USER_EVENTS: {
             NSLog(@"EventsView - User Events");
-            [self.navigationItem setTitle:@"User Events"];
+            [self.navigationItem setTitle:@"User's Public Events"];
+            //remove search icon
+            self.navigationItem.rightBarButtonItems = nil;
             
             break;
         }
@@ -197,7 +201,9 @@
                 return nil;
             }
 
-            [eventsQuery whereKey:@"typeOfEvent" equalTo:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE]];
+            NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
+
+            [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
             [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:currentLocation];
             
             break;
@@ -212,6 +218,8 @@
         case OTHER_USER_EVENTS: {
 
             [eventsQuery whereKey:@"parent" equalTo:userForEventsQuery];
+            NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
+            [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
             [eventsQuery orderByAscending:@"Title"];
             
             break;
@@ -267,7 +275,26 @@
             cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", number];
             
         }];
-
+        
+        //TODO: set type property of cell and move this logic into the cell class.
+        int typeOfEvent = [[object objectForKey:@"typeOfEvent"] intValue];
+        switch (typeOfEvent) {
+            case PUBLIC_EVENT_TYPE: {
+                cell.eventTypeLabel.text = @"Pu";
+                break;
+            }
+            case PRIVATE_EVENT_TYPE: {
+                cell.eventTypeLabel.text = @"Pr";
+                break;
+            }
+            case PUBLIC_APPROVED_EVENT_TYPE: {
+                cell.eventTypeLabel.text = @"Pa";
+                break;
+            }
+            default:
+                break;
+        }
+        
         
         
         /*
@@ -290,12 +317,17 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     //open view with the event details
+    //TODO: move this code to didSelectRowAtIndexPath - also make sure to call [super tableview didselectrowatindexpath?]
     if ([[segue identifier] isEqualToString:@"pushEventDetails"]) {
         
         NSIndexPath *indexPathOfSelectedItem = [self.tableView indexPathForSelectedRow];
         EventDetailVC *eventDetailVC = segue.destinationViewController;
         
         PFObject *event = [self.objects objectAtIndex:indexPathOfSelectedItem.row];
+        
+        //TODO: Better way to select object and transition to new VC
+        //PFObject *selectedObject = [self objectAtIndexPath:indexPath];
+
         eventDetailVC.eventObject = event;
         NSLog(@"PERFORMSEGUE OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
 

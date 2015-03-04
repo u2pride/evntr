@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PictureFullScreenVC.h"
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 
-@interface EventDetailVC : UIViewController
+@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PictureViewerDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *eventTitle;
 @property (weak, nonatomic) IBOutlet PFImageView *eventCoverPhoto;

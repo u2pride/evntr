@@ -13,30 +13,51 @@
 #import "EVNUtility.h"
 #import "UIImageEffects.h"
 #import "UIColor+EVNColors.h"
+#import "EventPictureCell.h"
+#import "PictureFullScreenVC.h"
+#import "IDTransitioningDelegate.h"
 
-@interface EventDetailVC ()
+@interface EventDetailVC () {
+    NSMutableArray *picturesFromEvent;
+}
 
 @property (nonatomic, strong) PFUser *eventUser;
 @property (weak, nonatomic) IBOutlet UIButton *rsvpButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewAttendingButton;
+@property (weak, nonatomic) IBOutlet UICollectionView *pictureCollectionView;
 
 @property (nonatomic, strong) UIImage *navBarBackground;
 @property (nonatomic, strong) UIImage *navbarShadow;
+@property (weak, nonatomic) IBOutlet UIButton *uploadPhotoFromEvent;
+@property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
+
+@property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
 @property BOOL isGuestUser;
 
 - (IBAction)rsvpForEvent:(id)sender;
 - (IBAction)viewEventAttenders:(id)sender;
+- (IBAction)uploadPhotoFromEvent:(id)sender;
 
 @end
 
 @implementation EventDetailVC
 
-@synthesize eventTitle, eventCoverPhoto, creatorName, creatorPhoto, eventDescription, eventObject, eventUser, dateOfEventLabel, loadingSpinner, eventLocationLabel, rsvpButton, isGuestUser, viewAttendingButton, navBarBackground, navbarShadow;
+@synthesize eventTitle, eventCoverPhoto, creatorName, creatorPhoto, eventDescription, eventObject, eventUser, dateOfEventLabel, loadingSpinner, eventLocationLabel, rsvpButton, isGuestUser, viewAttendingButton, navBarBackground, navbarShadow, pictureCollectionView;
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
+    
+    //UICollectionView
+    self.pictureCollectionView.delegate = self;
+    self.pictureCollectionView.dataSource = self;
+    self.pictureCollectionView.backgroundColor = [UIColor whiteColor];
+    picturesFromEvent = [[NSMutableArray alloc] init];
+    
+    [self startSearchForEventPhotos];
     
     //self.navigationBarOriginal = [[UINavigationBar alloc] init];
     
@@ -74,7 +95,7 @@
     self.navbarShadow = self.navigationController.navigationBar.shadowImage;
     self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
     
-    
+    //Animate Navigation Bar
     [UIView animateWithDuration:0.2 animations:^{
         self.navigationController.navigationBar.alpha = 0;
         
@@ -97,13 +118,11 @@
         
     }];
     
-    
+ 
 
-    
 
-    
+    //TODO: move network tasks to viewDidAppear and add activity indicator
     self.title = eventObject[@"title"];
-
     
     if (isGuestUser) {
         
@@ -112,28 +131,99 @@
         
     } else {
         
-        NSString *username = [[PFUser currentUser] objectForKey:@"username"];
-        
-        PFRelation *eventAttendersRelation = [eventObject relationForKey:@"attenders"];
-        PFQuery *attendingQuery = [eventAttendersRelation query];
-        [attendingQuery whereKey:@"username" equalTo:username];
-        
-        [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            
-            NSLog(@"Result of Query: %@", object);
-            
-            if (object) {
-                NSLog(@"Currently Attending Event");
+        //Update Event Detail view based on Event Type
+        int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];
+        switch (eventType) {
+            case PUBLIC_EVENT_TYPE: {
+                NSString *username = [[PFUser currentUser] objectForKey:@"username"];
                 
-                [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+                PFRelation *eventAttendersRelation = [eventObject relationForKey:@"attenders"];
+                PFQuery *attendingQuery = [eventAttendersRelation query];
+                [attendingQuery whereKey:@"username" equalTo:username];
+                [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    NSLog(@"Result of Query: %@", object);
+                    if (object) {
+                        NSLog(@"Currently Attending Event");
+                        [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+                    } else {
+                        NSLog(@"Not Currently Attending Event");
+                        [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+                    }
+                }];
                 
-            } else {
-                NSLog(@"Not Currently Attending Event");
-                
-                [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+                break;
             }
-            
-        }];
+            case PRIVATE_EVENT_TYPE: {
+                
+                NSString *username = [[PFUser currentUser] objectForKey:@"username"];
+                
+                PFRelation *eventAttendersRelation = [eventObject relationForKey:@"attenders"];
+                PFQuery *attendingQuery = [eventAttendersRelation query];
+                [attendingQuery whereKey:@"username" equalTo:username];
+                [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    NSLog(@"Result of Query: %@", object);
+                    if (object) {
+                        NSLog(@"Currently Attending Event");
+                        [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+                    } else {
+                        NSLog(@"Not Currently Attending Event");
+                        [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+                    }
+                }];
+                
+                break;
+            }
+            case PUBLIC_APPROVED_EVENT_TYPE: {
+                
+                //Determine the state of the user with the event
+                // Hasn't requested Accesss - Requested Access - Granted Acccess
+                
+                //User has not requested Access to Event
+                [self.rsvpButton setTitle:kNOTRSVPedForEvent forState:UIControlStateNormal];
+
+                PFQuery *requestedAccessQuery = [PFQuery queryWithClassName:@"Activities"];
+                [requestedAccessQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
+                [requestedAccessQuery whereKey:@"from" equalTo:[PFUser currentUser]];
+                [requestedAccessQuery whereKey:@"activityContent" equalTo:self.eventObject];
+                [requestedAccessQuery findObjectsInBackgroundWithBlock:^(NSArray *requestedActivityObjects, NSError *error) {
+                   
+                    NSLog(@"FoundObjects for RequestedAccessQuery: %@", requestedActivityObjects);
+                    
+                    if (requestedActivityObjects.count > 0) {
+                        
+                        //User has requested Access to Event
+                        [self.rsvpButton setTitle:kRSVPedForEvent forState:UIControlStateNormal];
+
+                        //Now Query For Access Granted
+                        PFQuery *accessGrantedQuery = [PFQuery queryWithClassName:@"Activities"];
+                        [accessGrantedQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+                        [accessGrantedQuery whereKey:@"to" equalTo:[PFUser currentUser]];
+                        [accessGrantedQuery whereKey:@"activityContent" equalTo:self.eventObject];
+                        [accessGrantedQuery findObjectsInBackgroundWithBlock:^(NSArray *accessActivityObjects, NSError *error) {
+                            
+                            NSLog(@"FoundObjects for ACCESSGRANTED: %@", accessActivityObjects);
+                            
+                            if (accessActivityObjects.count > 0) {
+                                
+                                //User has Access to Event
+                                [self.rsvpButton setTitle:kGrantedAccessToEvent forState:UIControlStateNormal];
+                            }
+                            
+                        }];
+                        
+                        
+                    }
+                    
+                }];
+                
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        
+  
     }
     
     
@@ -166,8 +256,15 @@
         
     }
     
-    eventUser = (PFUser *)eventObject[@"parent"];
-    [eventUser fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
+    self.eventUser = (PFUser *)eventObject[@"parent"];
+    [self.eventUser fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
+        
+        NSLog(@"User ObjectID: %@ and current user id: %@", user.objectId, [PFUser currentUser].objectId);
+        
+        if ([user.objectId isEqualToString:[PFUser currentUser].objectId]) {
+            self.rsvpButton.hidden = YES;
+        }
+        
         creatorName.text = user[@"username"];
         creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
@@ -203,10 +300,219 @@
     
     
     
+    
+    
+    
 
     
     
 }
+
+
+- (void) startSearchForEventPhotos {
+    
+    NSLog(@"What eventImages contains: %@", eventObject[@"eventImages"]);
+    
+    picturesFromEvent = eventObject[@"eventImages"];
+    
+    
+    
+    //see what eventObject[@"eventImages"] returns.
+    
+    //Grab the array 'eventImages' from the event table. // set it to picturesFromEvent;
+    //it's a list of pffiles.
+    //this array of pffiles can be used for datasource methods of the uicollection view.  count should be good.
+    //Next assign a default image for each cell created (number of pffiles stored on parse)
+    //Use a PFImageView and assign the pffile to the imageview.
+    //need to create a custom cell.
+    
+    
+}
+
+#pragma mark -
+#pragma mark CollectionView Delegate and DataSource Methods
+
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return [picturesFromEvent count];
+}
+
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *cellIdentifier = @"EventPhotoCell";
+    
+    EventPictureCell *cell = (EventPictureCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
+    
+    PFFile *currentPictureFile = [picturesFromEvent objectAtIndex:indexPath.row];
+    
+    cell.eventPictureView.file = currentPictureFile;
+    [cell.eventPictureView loadInBackground];
+    
+    return cell;
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    //TODO: For all blur effects, move initialization to top and in these methods just change alpha values.  no need to recreate each time.
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    self.blurEffectForModals.alpha = 0;
+    self.blurEffectForModals.frame = self.view.bounds;
+    [self.view addSubview:self.blurEffectForModals];
+    
+    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
+    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+    [vibrancyEffectView setFrame:self.view.bounds];
+    
+    [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.blurEffectForModals.alpha = 0.9;
+    } completion:^(BOOL finished) {
+        
+        NSLog(@"Finished");
+        
+    }];
+    
+    /* animate screenshot of view
+    [UIView animateWithDuration:0.5 animations:^{
+        self.view.transform = CGAffineTransformMakeScale(1.4, 1.4);
+    }];
+    */
+    
+    PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
+    
+    displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
+    displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[picturesFromEvent objectAtIndex:indexPath.row];
+    displayFullScreenPhoto.delegate = self;
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        self.navigationController.navigationBar.alpha = 0;
+        self.tabBarController.tabBar.alpha = 0;
+        
+    } completion:^(BOOL finished) {
+       
+        self.navigationController.navigationBar.hidden = finished;
+        self.tabBarController.tabBar.hidden = finished;
+        
+    }];
+    
+    [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
+    /*
+    ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
+    resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
+    resetPasswordModal.delegate = self;
+     */
+    
+}
+
+
+- (void)returnToEvent {
+    
+    NSLog(@"IS THIS BEING CALLED");
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    self.navigationController.navigationBar.hidden = NO;
+    self.tabBarController.tabBar.hidden = NO;
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        
+        self.navigationController.navigationBar.alpha = 1;
+        self.tabBarController.tabBar.alpha = 1;
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        self.blurEffectForModals.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self.blurEffectForModals removeFromSuperview];
+        self.blurEffectForModals = nil;
+        NSLog(@"Finished");
+        
+    }];
+}
+
+#pragma mark -
+#pragma mark - Upload Picture From Event
+
+- (IBAction)uploadPhotoFromEvent:(id)sender {
+    
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    //Check to see if device has a camera
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [pictureOptionsMenu addAction:takePhoto];
+    }
+    
+    [pictureOptionsMenu addAction:cancelAction];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
+    
+    
+}
+
+
+#pragma mark - Delegate Methods for UIImagePickerController
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
+    
+    NSData *pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
+    PFFile *profilePictureFile = [PFFile fileWithName:@"eventPhoto.jpg" data:pictureData];
+    
+    //save picture as pffile to parse
+    [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded){
+            
+            //append pffile to eventImages array on event (PFObject)
+            [self.eventObject addObject:profilePictureFile forKey:@"eventImages"];
+            [self.eventObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    [self.pictureCollectionView reloadData];
+                }
+                
+            }];
+            
+        }
+    }];
+    
+    
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+
 
 - (void) viewWillDisappear:(BOOL)animated {
     
@@ -282,12 +588,39 @@
 //Long-Term:  Is this the best solution?
 - (IBAction)rsvpForEvent:(id)sender {
     
+    int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];
+    
     if (isGuestUser) {
         
         [self performSegueWithIdentifier:@"EventDetailToInitial" sender:self];
-    
-    } else {
         
+    
+    } else if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
+        
+        //Currently only allowing an RSVP - not to cancel an RSVP
+        if ([rsvpButton.titleLabel.text isEqualToString:kNOTRSVPedForEvent]) {
+            
+            self.rsvpButton.enabled = NO;
+            
+            //RSVP User for Event
+            PFObject *rsvpActivity = [PFObject objectWithClassName:@"Activities"];
+            rsvpActivity[@"from"] = [PFUser currentUser];
+            rsvpActivity[@"to"] = self.eventUser;
+            rsvpActivity[@"type"] = [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY];
+            rsvpActivity[@"activityContent"] = self.eventObject;
+            
+            [rsvpActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    [self.rsvpButton setTitle:kRSVPedForEvent forState:UIControlStateNormal];
+                }
+                self.rsvpButton.enabled = YES;
+                
+            }];
+        }
+        
+        
+    } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
         
         //ADDING USER VIA A RELATION
         PFRelation *attendersRelation = [self.eventObject relationForKey:@"attenders"];
@@ -404,6 +737,8 @@
 
     
 }
+
+
 
 
 

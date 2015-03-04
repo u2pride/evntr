@@ -13,6 +13,7 @@
 #import "EVNConstants.h"
 #import "EVNUtility.h"
 #import <AddressBookUI/AddressBookUI.h>
+#import "AddEventPrimaryVC.h"
 
 @interface EventAddVC ()
 
@@ -22,12 +23,13 @@
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSArray *peopleToInvite;
 @property (weak, nonatomic) IBOutlet UISwitch *publicPrivateSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *publicApprovedSwitch;
 
 @end
 
 @implementation EventAddVC
 
-@synthesize eventTitleField, eventDescriptionField, imageChosenAsCover, eventLocationText, eventGeoPoint, eventDatePicker, selectedDate, peopleToInvite, publicPrivateSwitch;
+@synthesize eventTitleField, eventDescriptionField, imageChosenAsCover, eventLocationText, eventGeoPoint, eventDatePicker, selectedDate, peopleToInvite, publicPrivateSwitch, publicApprovedSwitch;
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
@@ -37,7 +39,11 @@
         self.locationManager.delegate = self;
         self.eventGeoPoint = [[PFGeoPoint alloc] init];
         self.eventDatePicker.timeZone = [NSTimeZone systemTimeZone];
+        self.publicApprovedSwitch.on = NO;
+        self.publicPrivateSwitch.on = NO;
         self.title = @"Add Event";
+        //initialize to current date
+        self.selectedDate = [NSDate date];
     }
     
     return self;
@@ -58,6 +64,11 @@
 }
 
 - (void)cancel:(id)sender {
+    
+    AddEventPrimaryVC *vc = (AddEventPrimaryVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"AddEventNav"];
+    vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    
+    [self presentViewController:vc animated:YES completion:nil];
     
     //[self dismissViewControllerAnimated:YES completion:nil];
     
@@ -235,9 +246,10 @@
     invitePeopleVC.profileUsername = [PFUser currentUser];
     invitePeopleVC.delegate = self;
     
-    [self presentViewController:invitePeopleVC animated:YES completion:nil];
+    //TODO: Research this method.  Also if stops working, re-embed the PeopleVC in a navigation controller and uncomment this method.
+    //[self presentViewController:invitePeopleVC animated:YES completion:nil];
     
-    //[self.navigationController pushViewController:invitePeopleVC animated:YES];
+    [self.navigationController pushViewController:invitePeopleVC animated:YES];
     
 }
 
@@ -274,12 +286,19 @@
     newEvent[@"dateOfEvent"] = self.selectedDate;
     
     //Set Type of Event - Default is Public For Now
-    if (publicPrivateSwitch.on) {
-        newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:PUBLIC_EVENT_TYPE];
+    if (publicApprovedSwitch.on) {
+        NSLog(@"Creating P-A event");
+        newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE];
     } else {
-        NSLog(@"Private Event");
-        newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:PRIVATE_EVENT_TYPE];
+        if (publicPrivateSwitch.on) {
+            NSLog(@"Public Event");
+            newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:PRIVATE_EVENT_TYPE];
+        } else {
+            NSLog(@"Private Event");
+            newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:PUBLIC_EVENT_TYPE];
+        }
     }
+    
 
     NSData *eventCoverPhotoData = UIImageJPEGRepresentation(self.imageChosenAsCover, 0.5);
     PFFile *eventCoverPhotoFile = [PFFile fileWithName:@"coverphoto.jpg" data:eventCoverPhotoData];

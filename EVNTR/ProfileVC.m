@@ -13,6 +13,7 @@
 #import "LogInVC.h"
 #import "PeopleVC.h"
 #import "ProfileVC.h"
+#import "ActivityVC.h"
 
 @interface ProfileVC ()
 {
@@ -20,17 +21,39 @@
     int profileType;
 }
 
+@property (weak, nonatomic) IBOutlet UIImageView *instagramIcon;
+@property (weak, nonatomic) IBOutlet UIImageView *twitterIcon;
+
 @property (nonatomic, strong) PFUser *userForProfileView;
 @property (weak, nonatomic) IBOutlet UIButton *editProfileButton;
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationItemWithSettingsBarItem;
+
+- (IBAction)viewEventsAttending:(id)sender;
+- (IBAction)viewInvites:(id)sender;
+- (IBAction)viewMyRequestStatus:(id)sender;
+
+- (IBAction)viewMyEvents:(id)sender;
+- (IBAction)viewFollowers:(id)sender;
+- (IBAction)viewFollowing:(id)sender;
+- (IBAction)viewPendingAccessRequests:(id)sender;
+
+
+- (IBAction)followUser:(id)sender;
+
+@property (weak, nonatomic) IBOutlet UIButton *viewEventsAttendedButton;
+@property (weak, nonatomic) IBOutlet UIButton *viewInvitesButton;
+@property (weak, nonatomic) IBOutlet UIButton *viewAccessRequestsForMyEventsButton;
+@property (weak, nonatomic) IBOutlet UIButton *viewMyAccessRequestsButton;
+
 
 @end
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, isComingFromEditProfile, editProfileButton, navigationItemWithSettingsBarItem;
+@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, isComingFromEditProfile, editProfileButton, navigationItemWithSettingsBarItem, scrollView;
 
 
+//TODO: note: this is called before you would programmatically set variables in prepareforsegue when creating this viewcontroller.
 - (id)initWithCoder:(NSCoder*)aDecoder
 {
     self = [super initWithCoder:aDecoder];
@@ -50,6 +73,7 @@
         */
         
         
+        
         //initial values
         self.userForProfileView = [PFUser currentUser];
         self.userNameForProfileView = [PFUser currentUser][@"username"];
@@ -64,6 +88,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -86,6 +112,11 @@
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.twitterLabel.text = nil;
     self.instagramLabel.text = nil;
+    
+    // image respects tint color
+    self.instagramIcon.image = [[UIImage imageNamed:@"instagram"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    self.twitterIcon.image = [[UIImage imageNamed:@"twitter"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
     
     //Update Nav Bar
     //self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
@@ -202,6 +233,7 @@
             self.editProfileButton.hidden = NO;
             self.title = @"Profile";
             
+            
             break;
         }
         case OTHER_USER_PROFILE: {
@@ -231,6 +263,11 @@
                 }
             }];
             
+            //Hide Buttons
+            self.viewAccessRequestsForMyEventsButton.hidden = YES;
+            self.viewMyAccessRequestsButton.hidden = YES;
+            self.viewInvitesButton.hidden = YES;
+            
             break;
         }
         case SPONSORED_PROFILE: {
@@ -246,7 +283,7 @@
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
             userPictureData = data;
-            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"]];
+            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
         }
     }];
     
@@ -255,6 +292,15 @@
 
     //If Social Media Handles Exist, Setup with Handles and Tap Gestures
     if (userForProfileView[@"twitterHandle"]) {
+        
+        self.twitterIcon.userInteractionEnabled = YES;
+        self.twitterIcon.tag = 1;
+        
+        UITapGestureRecognizer *twitterTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
+        
+        [self.twitterIcon addGestureRecognizer:twitterTapGesture];
+        
+        /*
         self.twitterLabel.text = userForProfileView[@"twitterHandle"];
         
         self.twitterLabel.userInteractionEnabled = YES;
@@ -262,11 +308,23 @@
         UITapGestureRecognizer *twitterTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
         
         [self.twitterLabel addGestureRecognizer:twitterTapGesture];
+         */
     } else {
-        self.twitterLabel.text = @"Not Connected";
+        //self.twitterLabel.text = @"Not Connected";
     }
     
     if (userForProfileView[@"instagramHandle"]) {
+        
+        
+        self.instagramIcon.userInteractionEnabled = YES;
+        self.instagramIcon.tag = 2;
+        
+        UITapGestureRecognizer *instagramTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
+        
+        [self.instagramIcon addGestureRecognizer:instagramTapGesture];
+        
+        
+        /*
         self.instagramLabel.text = userForProfileView[@"instagramHandle"];
         
         self.instagramLabel.userInteractionEnabled = YES;
@@ -274,6 +332,7 @@
         UITapGestureRecognizer *instagramTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
         
         [self.instagramLabel addGestureRecognizer:instagramTapGesture];
+         */
         
     } else {
         self.instagramLabel.text = @"Not Connected";
@@ -386,6 +445,20 @@
     
 }
 
+- (IBAction)viewPendingAccessRequests:(id)sender {
+    
+    ActivityVC *viewPendingRequests = [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
+    
+    viewPendingRequests.typeOfActivityView = ACTIVITIES_REQUESTS_TO_ME;
+    viewPendingRequests.userForActivities = [PFUser currentUser];
+    
+    [self.navigationController pushViewController:viewPendingRequests animated:YES];
+}
+
+
+
+
+
 - (IBAction)followUser:(id)sender {
     
     self.followButton.enabled = NO;
@@ -468,13 +541,13 @@
 
 //Responds to the selection of a social media link and switches to the native app or web view.
 - (void)socialMediaTap:(UITapGestureRecognizer *)tapgr {
-    UILabel *tappedLabel = (UILabel *)tapgr.view;
-    NSInteger tag = tappedLabel.tag;
+    UIImageView *tappedImageView = (UIImageView *)tapgr.view;
+    NSInteger tag = tappedImageView.tag;
     
     switch (tag) {
         case 1: {
-            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", self.twitterLabel.text];
-            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", self.twitterLabel.text];
+            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", userForProfileView[@"twitterHandle"]];
+            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", userForProfileView[@"twitterHandle"]];
             
             if(![[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterNativeURLString]])
             {
@@ -483,8 +556,8 @@
             break;
         }
         case 2: {
-            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", self.instagramLabel.text];
-            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", self.instagramLabel.text];
+            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", userForProfileView[@"instagramHandle"]];
+            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", userForProfileView[@"instagramHandle"]];
             
             if (![[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramNativeURLString]])
             {
@@ -527,7 +600,7 @@
     //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
     //NSString *bio = [stringDictionary objectForKey:@"bio"];
     
-    self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"]];
+    self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
     self.nameLabel.text = username;
 
     self.isComingFromEditProfile = YES;
@@ -564,6 +637,49 @@
 
 
 
+
+
+
+
+
+
+
+
+- (IBAction)viewEventsAttending:(id)sender {
+    
+    ActivityVC *eventsAttended = (ActivityVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
+    eventsAttended.typeOfActivityView = ACTIVITIES_ATTENDED;
+    eventsAttended.userForActivities = self.userForProfileView;
+    eventsAttended.title = @"Events Attended";
+    
+    [self.navigationController pushViewController:eventsAttended animated:YES];
+    
+}
+
+- (IBAction)viewInvites:(id)sender {
+    
+    ActivityVC *inviteActivity = (ActivityVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
+    inviteActivity.typeOfActivityView = ACTIVITIES_INVITES;
+    inviteActivity.title = @"Invites";
+    
+    [self.navigationController pushViewController:inviteActivity animated:YES];
+    
+    
+}
+
+- (IBAction)viewMyRequestStatus:(id)sender {
+    
+    ActivityVC *viewMyRequests = [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
+    
+    viewMyRequests.typeOfActivityView = ACTIVITIES_MY_REQUESTS_STATUS;
+    viewMyRequests.userForActivities = [PFUser currentUser];
+    
+    [self.navigationController pushViewController:viewMyRequests animated:YES];
+    
+}
+
+
+
  #pragma mark - Navigation
  
  // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -590,6 +706,7 @@
      }
      
  }
+
 
 
 

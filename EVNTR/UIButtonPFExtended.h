@@ -14,4 +14,7 @@
 @property (nonatomic, strong) PFObject *eventToView;
 @property (nonatomic, strong) PFUser *personToFollow;
 
+@property (nonatomic, strong) PFUser *personToGrantAccess;
+@property (nonatomic, strong) PFObject *eventToGrantAccess;
+
 @end

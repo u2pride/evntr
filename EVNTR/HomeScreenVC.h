@@ -12,8 +12,6 @@
 
 @interface HomeScreenVC : PFQueryTableViewController
 
-@property (nonatomic, weak) IBOutlet UIBarButtonItem *sidebarButton;
-
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) PFUser *userForEventsQuery;
 

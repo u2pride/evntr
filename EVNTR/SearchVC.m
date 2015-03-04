@@ -63,7 +63,7 @@
     PFQuery *searchQuery = [PFQuery queryWithClassName:@"Events"];
     [searchQuery whereKey:@"title" containsString:self.searchController.searchBar.text];
     //Add constraint for event type
-    [searchQuery whereKey:@"typeOfEvent" equalTo:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE]];
+    [searchQuery whereKey:@"typeOfEvent" notEqualTo:[NSNumber numberWithInt:PRIVATE_EVENT_TYPE]];
     [searchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         NSLog(@"Results of Search: %@", objects);
         self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
