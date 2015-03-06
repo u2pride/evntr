@@ -64,6 +64,7 @@
 		A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */; };
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
+		A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */ = {isa = PBXBuildFile; fileRef = A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */; };
 		A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */; };
 		A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */; };
 		A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */; };
@@ -180,6 +181,8 @@
 		A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabNavigationVC.m; sourceTree = "<group>"; };
 		A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileVC.h; sourceTree = "<group>"; };
 		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileVC.m; sourceTree = "<group>"; };
+		A4D72FB31AAA175E00488D8D /* IDTransitionControllerTab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitionControllerTab.h; sourceTree = "<group>"; };
+		A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDTransitionControllerTab.m; sourceTree = "<group>"; };
 		A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewUserFacebookVC.h; sourceTree = "<group>"; };
 		A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewUserFacebookVC.m; sourceTree = "<group>"; };
 		A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationSearchVC.h; sourceTree = "<group>"; };
@@ -453,6 +456,8 @@
 		A4C4EDC71A94E862000BC3AD /* Transitioning Delegate */ = {
 			isa = PBXGroup;
 			children = (
+				A4D72FB31AAA175E00488D8D /* IDTransitionControllerTab.h */,
+				A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */,
 				A4C4EDC11A94E85D000BC3AD /* IDTransitionController.h */,
 				A4C4EDC21A94E85D000BC3AD /* IDTransitionController.m */,
 				A4C4EDC31A94E85D000BC3AD /* IDTransitioningDelegate.h */,
@@ -658,6 +663,7 @@
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
 				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
+				A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */,
 				A41562C71A767D3A00565BB6 /* main.m in Sources */,
 				A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */,
 				A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */,

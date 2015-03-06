@@ -108,7 +108,7 @@
     NSString *yesString = [standardDefaults objectForKey:@"MYKEY"];
     
     
-    
+    /*
     if ([yesString isEqualToString:@"Yes"]) {
     
         UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
@@ -135,6 +135,8 @@
         }];
         
     }
+     
+     */
     
 
 }
@@ -143,6 +145,9 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
+    
+    NSLog(@"HOME FRAME: %@", NSStringFromCGRect(self.view.frame));
+    NSLog(@"HOME BOUNDS: %@", NSStringFromCGRect(self.view.bounds));
 }
 
 - (void)didReceiveMemoryWarning {

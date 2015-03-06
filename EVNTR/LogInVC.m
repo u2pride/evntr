@@ -209,7 +209,7 @@
                 [standardDefaults setBool:NO forKey:kIsGuest];
                 [standardDefaults synchronize];
                 
-                [UIView animateWithDuration:1.0 animations:^{
+                [UIView animateWithDuration:0.64 animations:^{
                     loginInTextLabel.alpha = 1;
                 } completion:^(BOOL finished) {
                     
@@ -233,7 +233,7 @@
     [self.view addSubview:blurOutLogInScreen];
     //[self.view bringSubviewToFront:blurOutLogInScreen];
     
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.3 animations:^{
         blurOutLogInScreen.alpha = 1;
     } completion:^(BOOL finished) {
         

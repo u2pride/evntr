@@ -14,10 +14,15 @@
 #import <FacebookSDK/FacebookSDK.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import "UIColor+EVNColors.h"
+#import "IDTransitioningDelegate.h"
+#import "IDTransitionControllerTab.h"
 
 @interface TabNavigationVC ()
 {
     BOOL isComingFromEventCreation;
+    IDTransitionControllerTab *controller;
+    //CECardsAnimationController *_animationController;
+
 }
 
 @property (nonatomic, strong) UIVisualEffectView *darkBlur;
@@ -33,6 +38,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    
+    //transition inits
+    controller = [[IDTransitionControllerTab alloc] init];
+    //_animationController = [CECardsAnimationController new];
+
     
     isComingFromEventCreation = NO;
     
@@ -134,8 +146,6 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
     
-    
-    
     //Events View Controller
     if (viewController == [self.viewControllers objectAtIndex:0]) {
         
@@ -146,6 +156,7 @@
         eventsView.userForEventsQuery = [PFUser currentUser];
         NSLog(@"didSelectVC OF TABBARCONTROLLER: %@", [NSNumber numberWithBool:self.isGuestUser]);
         
+        /*
         if (isComingFromEventCreation) {
             
             [UIView animateWithDuration:2.0 animations:^{
@@ -158,6 +169,7 @@
                 
             }];
         }
+         */
 
         
     //Profile VC
@@ -175,18 +187,30 @@
         UINavigationController *navController = (UINavigationController *)viewController;
         AddEventPrimaryVC *addEventModal = (AddEventPrimaryVC *)navController.childViewControllers.firstObject;
         addEventModal.delegate = self;
-        
-
-        
-        
-        
     }
     
+}
+
+
+#pragma mark - Custom Tab Switch Animation
+
+- (id<UIViewControllerAnimatedTransitioning>) tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     
+    NSUInteger fromVCIndex = [tabBarController.viewControllers indexOfObject:fromVC];
+    NSUInteger toVCIndex = [tabBarController.viewControllers indexOfObject:toVC];
     
+    if (toVCIndex == TAB_CREATE) {
+        controller.isPresenting = YES;
+        return controller;
+    } else if (fromVCIndex == TAB_CREATE) {
+        controller.isPresenting = NO;
+        return controller;
+    }
     
+    return nil;
     
 }
+
 
 
 #pragma mark - AddEventModal Delegate Methods

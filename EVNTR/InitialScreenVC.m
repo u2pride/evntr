@@ -128,7 +128,7 @@
             
         }];
     
-        [UIView animateWithDuration:0.45 animations:^{
+        [UIView animateWithDuration:0.3 animations:^{
            
             self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
             

@@ -11,6 +11,13 @@
 extern NSString *const kAppName;
 
 
+#pragma mark - View Controllers on Tab 
+#define TAB_HOME 0
+#define TAB_CREATE 1
+#define TAB_ACTIVITY 2
+#define TAB_PROFILE 3
+
+
 #pragma mark - Events Pull and Details
 
 #define ALL_PUBLIC_EVENTS 1
