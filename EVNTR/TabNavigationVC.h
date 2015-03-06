@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AddEventPrimaryVC.h"
 
-@interface TabNavigationVC : UITabBarController <UITabBarControllerDelegate>
+@interface TabNavigationVC : UITabBarController <UITabBarControllerDelegate, EventModalProtocol>
 
 
 @end

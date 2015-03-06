@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "EVNConstants.h"
+#import "AddEventSecondaryVC.h"
 
-@interface AddEventPrimaryVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
+@protocol EventModalProtocol;
+
+@interface AddEventPrimaryVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, EventCreationCompleted>
 
 // create outlets to event title, event type buttons, and cameraimageview.
 // on click of next button,
@@ -23,7 +26,14 @@
 
 //eye candy:  custom buttons with click animation
 
+@property (nonatomic, strong) id <EventModalProtocol> delegate;
 
 
+@end
+
+@protocol EventModalProtocol <NSObject>
+
+- (void) completedEventCreation:(UIVisualEffectView *)darkBlur;
+- (void) canceledEventCreation;
 
 @end

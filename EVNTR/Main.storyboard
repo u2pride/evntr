@@ -66,6 +66,8 @@
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
         </mutableArray>
         <mutableArray key="Lato-Thin.ttf">
             <string>Lato-Thin</string>
@@ -1983,7 +1985,7 @@ Click continue when you're ready.</string>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="r06-GL-svP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2054" y="759"/>
+            <point key="canvasLocation" x="2044" y="813"/>
         </scene>
         <!--Activity-->
         <scene sceneID="9sK-GK-i4v">
@@ -2230,12 +2232,12 @@ Click continue when you're ready.</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TAK-8g-aX7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1576" y="159"/>
+            <point key="canvasLocation" x="4540" y="611"/>
         </scene>
         <!--Create An Event-->
         <scene sceneID="8W5-Gm-SuV">
             <objects>
-                <viewController storyboardIdentifier="CreateEventFirstStep" id="q4z-iz-15h" customClass="AddEventPrimaryVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CreateEventFirstStep" hidesBottomBarWhenPushed="YES" id="q4z-iz-15h" customClass="AddEventPrimaryVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IdU-Ix-d3t"/>
                         <viewControllerLayoutGuide type="bottom" id="mrI-Bi-3Mi"/>
@@ -2244,19 +2246,13 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Da-6w-rVW">
-                                <rect key="frame" x="0.0" y="514" width="320" height="54"/>
-                                <color key="backgroundColor" red="0.59255125661375663" green="0.25465348715860397" blue="0.045657431337429728" alpha="0.67000000000000004" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="27"/>
-                                <state key="normal" title="next">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="nextButtonPressed:" destination="q4z-iz-15h" eventType="touchUpInside" id="jde-tv-fcJ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="54F-3c-eHF" customClass="CustomEventTypeButton">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="takePicture" translatesAutoresizingMaskIntoConstraints="NO" id="r1A-qW-tQC">
+                                <rect key="frame" x="16" y="301" width="288" height="162"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="r1A-qW-tQC" secondAttribute="height" multiplier="16:9" id="yEi-Zk-j8G"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="54F-3c-eHF" customClass="CustomEventTypeButton">
                                 <rect key="frame" x="236" y="216" width="68" height="30"/>
                                 <state key="normal" title="Private">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -2265,8 +2261,8 @@ Click continue when you're ready.</string>
                                     <action selector="selectedPrivateType:" destination="q4z-iz-15h" eventType="touchUpInside" id="eZh-34-58f"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wLw-S6-GbG" customClass="CustomEventTypeButton">
-                                <rect key="frame" x="98" y="216" width="124" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wLw-S6-GbG" customClass="CustomEventTypeButton">
+                                <rect key="frame" x="88" y="216" width="144" height="30"/>
                                 <state key="normal" title="Public Approved">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -2274,7 +2270,7 @@ Click continue when you're ready.</string>
                                     <action selector="selectedPublicApprovedType:" destination="q4z-iz-15h" eventType="touchUpInside" id="Hi5-D0-1TJ"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IO2-ll-kfC" customClass="CustomEventTypeButton">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IO2-ll-kfC" customClass="CustomEventTypeButton">
                                 <rect key="frame" x="26" y="216" width="46" height="30"/>
                                 <state key="normal" title="Public">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -2291,24 +2287,32 @@ Click continue when you're ready.</string>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="55"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="takePicture" translatesAutoresizingMaskIntoConstraints="NO" id="r1A-qW-tQC">
-                                <rect key="frame" x="16" y="301" width="288" height="162"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="r1A-qW-tQC" secondAttribute="height" multiplier="16:9" id="yEi-Zk-j8G"/>
-                                </constraints>
-                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Da-6w-rVW">
+                                <rect key="frame" x="49" y="498" width="223" height="50"/>
+                                <color key="backgroundColor" red="0.94106498565623364" green="0.3323695400198407" blue="0.19536666298269229" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="27"/>
+                                <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="next">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="nextButtonPressed:" destination="q4z-iz-15h" eventType="touchUpInside" id="jde-tv-fcJ"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="54F-3c-eHF" firstAttribute="leading" secondItem="IO2-ll-kfC" secondAttribute="trailing" constant="164" id="2R7-D3-3yg"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="leading" secondItem="Vyx-EZ-Pch" secondAttribute="leading" id="8KT-0b-gln"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="top" secondItem="P94-F3-mT6" secondAttribute="top" constant="301" id="92M-Pb-xdj"/>
-                            <constraint firstItem="1Da-6w-rVW" firstAttribute="leading" secondItem="P94-F3-mT6" secondAttribute="leading" id="FWE-MS-wEs"/>
+                            <constraint firstItem="1Da-6w-rVW" firstAttribute="leading" secondItem="P94-F3-mT6" secondAttribute="leading" constant="49" id="FWE-MS-wEs"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="trailing" secondItem="P94-F3-mT6" secondAttribute="trailingMargin" id="IMB-fi-Oja"/>
                             <constraint firstItem="54F-3c-eHF" firstAttribute="baseline" secondItem="wLw-S6-GbG" secondAttribute="baseline" id="Lth-ub-2h0"/>
                             <constraint firstItem="1Da-6w-rVW" firstAttribute="top" secondItem="r1A-qW-tQC" secondAttribute="bottom" constant="80" id="Oa7-Xx-skm"/>
-                            <constraint firstItem="1Da-6w-rVW" firstAttribute="bottom" secondItem="mrI-Bi-3Mi" secondAttribute="top" id="RC0-9l-ToV"/>
-                            <constraint firstItem="1Da-6w-rVW" firstAttribute="top" secondItem="r1A-qW-tQC" secondAttribute="bottom" constant="51" id="Zt8-vt-clv"/>
+                            <constraint firstItem="1Da-6w-rVW" firstAttribute="bottom" secondItem="mrI-Bi-3Mi" secondAttribute="top" constant="-20" id="RC0-9l-ToV"/>
+                            <constraint firstItem="1Da-6w-rVW" firstAttribute="top" secondItem="r1A-qW-tQC" secondAttribute="bottom" constant="35" id="Zt8-vt-clv"/>
+                            <constraint firstAttribute="centerX" secondItem="wLw-S6-GbG" secondAttribute="centerX" id="hZb-6t-xQZ"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="trailing" secondItem="Vyx-EZ-Pch" secondAttribute="trailing" id="iqR-tu-gMh"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="centerX" secondItem="1Da-6w-rVW" secondAttribute="centerX" id="nty-mW-2cw"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="leading" secondItem="P94-F3-mT6" secondAttribute="leadingMargin" id="prS-lu-otY"/>
@@ -2325,7 +2329,11 @@ Click continue when you're ready.</string>
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Create An Event" id="Ou9-Lk-f8U">
-                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="XlW-I8-9CC"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="XlW-I8-9CC">
+                            <connections>
+                                <action selector="canceledEventCreation:" destination="q4z-iz-15h" id="OWJ-08-jAD"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -2336,12 +2344,12 @@ Click continue when you're ready.</string>
                         <outlet property="privateButton" destination="54F-3c-eHF" id="wdH-HP-255"/>
                         <outlet property="publicApprovedButton" destination="wLw-S6-GbG" id="3jr-LQ-Ssd"/>
                         <outlet property="publicButton" destination="IO2-ll-kfC" id="JhC-6K-B4W"/>
-                        <segue destination="QCx-g5-Fam" kind="show" identifier="AddEventNextStep" id="YUY-0n-ZPm"/>
+                        <segue destination="lTc-MJ-RxB" kind="show" identifier="AddEventNextStep" id="jHi-15-tQl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1gz-M8-tPY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2936" y="-61"/>
+            <point key="canvasLocation" x="1666" y="159"/>
         </scene>
         <!--Add Event SecondaryVC-->
         <scene sceneID="NEg-6u-VvP">
@@ -2354,42 +2362,53 @@ Click continue when you're ready.</string>
                     <view key="view" contentMode="scaleToFill" id="tpt-Th-kit">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="2QN-rq-Kge">
-                                <rect key="frame" x="0.0" y="289" width="320" height="162"/>
-                                <date key="date" timeIntervalSinceReferenceDate="447173872.50640899">
-                                    <!--2015-03-04 14:57:52 +0000-->
-                                </date>
-                            </datePicker>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="um6-Vh-dsV">
-                                <rect key="frame" x="0.0" y="514" width="320" height="54"/>
-                                <color key="backgroundColor" red="0.59255125659999996" green="0.25465348719999997" blue="0.045657431339999999" alpha="0.67000000000000004" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="27"/>
-                                <state key="normal" title="create">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aLU-lD-cFE">
-                                <rect key="frame" x="117" y="215" width="87" height="30"/>
-                                <state key="normal" title="Set Location">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Description of the event.  this is probably a two-three line description that is displayed on the event detail page." translatesAutoresizingMaskIntoConstraints="NO" id="v8s-KK-q9a">
-                                <rect key="frame" x="16" y="109" width="288" height="84"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tOF-YS-0kt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3356" y="-61"/>
+            <point key="canvasLocation" x="2679" y="841"/>
+        </scene>
+        <!--Location-->
+        <scene sceneID="AnI-lY-S1u">
+            <objects>
+                <viewController id="Izt-Iv-8tg" customClass="LocationSearchVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ImH-KT-aDb"/>
+                        <viewControllerLayoutGuide type="bottom" id="Gpt-CK-hSK"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="pe9-Mv-7Dv">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="aBy-sK-GJY">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Location" id="Ylm-hB-zLJ">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="XJr-3M-QOG">
+                            <connections>
+                                <action selector="cancelLocationSearch:" destination="Izt-Iv-8tg" id="OL2-oV-Yzv"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Qm0-Q4-wKS">
+                            <connections>
+                                <action selector="getCurrentLocation:" destination="Izt-Iv-8tg" id="CKU-QK-vUN"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="searchResultsTable" destination="aBy-sK-GJY" id="mfH-5G-zNz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VSf-Rh-gCq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3242" y="122"/>
         </scene>
         <!--Home-->
         <scene sceneID="A01-jT-bCk">
@@ -2462,7 +2481,7 @@ Click continue when you're ready.</string>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="V8p-hm-ZWW" kind="relationship" relationship="rootViewController" id="Kfs-6Y-hx7"/>
+                        <segue destination="q4z-iz-15h" kind="relationship" relationship="rootViewController" id="iUQ-QY-gg6"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mts-rK-hjO" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2519,22 +2538,135 @@ Click continue when you're ready.</string>
             <point key="canvasLocation" x="1080" y="2373"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="NbM-Qh-Vjt">
+        <scene sceneID="4Y4-sY-IH2">
             <objects>
-                <navigationController storyboardIdentifier="AddEventNav" automaticallyAdjustsScrollViewInsets="NO" id="ad8-gW-gPv" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="N1H-ct-sUa" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="b6A-J1-cye">
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="QNY-eG-vDG">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="q4z-iz-15h" kind="relationship" relationship="rootViewController" id="Xfe-5a-zs2"/>
+                        <segue destination="Izt-Iv-8tg" kind="relationship" relationship="rootViewController" id="tsX-h5-fgt"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UaV-Lf-hmH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WOX-sK-7TA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2124" y="-61"/>
+            <point key="canvasLocation" x="2810" y="125"/>
+        </scene>
+        <!--Add Event SecondVC-->
+        <scene sceneID="QFl-hY-7Qw">
+            <objects>
+                <tableViewController id="lTc-MJ-RxB" customClass="AddEventSecondVC" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="gY1-Qs-tvA">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection headerTitle="Description" id="ba2-qR-hHe">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="85" id="nWs-xY-ohp">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="nWs-xY-ohp" id="nvb-ZU-0Wm">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" text="Add an event description." translatesAutoresizingMaskIntoConstraints="NO" id="2pF-Bo-MzO">
+                                                    <rect key="frame" x="16" y="0.0" width="288" height="84"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="lTc-MJ-RxB" id="nMS-EZ-K5F"/>
+                                                    </connections>
+                                                </textView>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Location" id="PCf-Fd-MkV">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="mJx-4L-cJV">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mJx-4L-cJV" id="prK-Ev-BwK">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Set Location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ySp-0X-Lgf">
+                                                    <rect key="frame" x="112" y="11" width="97" height="21"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
+                                                    <color key="textColor" red="0.94106498569999997" green="0.33236954000000002" blue="0.195366663" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="DateTime" id="jP2-6F-u7F">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="150" id="dPp-bk-V04">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="dPp-bk-V04" id="bnJ-L4-v4n">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="30" translatesAutoresizingMaskIntoConstraints="NO" id="wtl-KW-zGJ">
+                                                    <rect key="frame" x="0.0" y="-6" width="320" height="162"/>
+                                                    <color key="tintColor" red="0.96470588239999999" green="0.55294117649999996" blue="0.18039215689999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <date key="date" timeIntervalSinceReferenceDate="447173872.50640899">
+                                                        <!--2015-03-04 14:57:52 +0000-->
+                                                    </date>
+                                                    <date key="minimumDate" timeIntervalSinceReferenceDate="-31582800">
+                                                        <!--2000-01-01 11:00:00 +0000-->
+                                                    </date>
+                                                </datePicker>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection id="LSy-PV-kYR">
+                                <cells>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="64" id="jkF-te-rwG">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="jkF-te-rwG" id="87P-bk-fcY">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qbu-uE-y6U">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
+                                                    <color key="backgroundColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="27"/>
+                                                    <state key="normal" title="create">
+                                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="createEvent:" destination="lTc-MJ-RxB" eventType="touchUpInside" id="iYt-vN-sK7"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="lTc-MJ-RxB" id="EU8-dP-cdy"/>
+                            <outlet property="delegate" destination="lTc-MJ-RxB" id="dcb-we-Djg"/>
+                        </connections>
+                    </tableView>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="eventDatePicker" destination="wtl-KW-zGJ" id="PXF-6I-2L8"/>
+                        <outlet property="eventDescriptionText" destination="2pF-Bo-MzO" id="YC3-gZ-iKu"/>
+                        <outlet property="locationButton" destination="ySp-0X-Lgf" id="LSJ-pG-uxg"/>
+                        <segue destination="N1H-ct-sUa" kind="presentation" identifier="PresentLocationSearch" id="5ih-Mb-LfT"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="06z-3y-aH9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2139" y="159"/>
         </scene>
     </scenes>
     <resources>

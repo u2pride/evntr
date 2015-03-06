@@ -30,6 +30,7 @@
 - (IBAction)selectedPublicType:(id)sender;
 - (IBAction)selectedPublicApprovedType:(id)sender;
 - (IBAction)selectedPrivateType:(id)sender;
+- (IBAction)canceledEventCreation:(id)sender;
 
 
 @end
@@ -39,6 +40,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
     
     // Initialize button states & event type
     self.publicButton.selected = YES;
@@ -58,7 +64,8 @@
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
 
-    
+    //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
+    self.eventTitleField.delegate = self;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -68,6 +75,12 @@
     self.publicButton.selected = YES;
     self.privateButton.selected = NO;
     self.publicApprovedButton.selected = NO;
+    
+    //TODO: Remove this line - used for testing
+    NSData *dataTest = [[NSData alloc] init];
+    coverPhotoFile = [PFFile fileWithData:dataTest];
+    
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -160,6 +173,16 @@
     self.privateButton.selected = YES;
 }
 
+- (IBAction)canceledEventCreation:(id)sender {
+    
+    id<EventModalProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(canceledEventCreation)]) {
+        
+        [strongDelegate canceledEventCreation];
+    }
+}
+
 
 #pragma mark - Delegate Methods for ImagePicker
 
@@ -186,6 +209,14 @@
 }
 
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    
+    return YES;
+}
+
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -194,12 +225,63 @@
     
     AddEventSecondaryVC *nextStepVC = (AddEventSecondaryVC *) [segue destinationViewController];
     
+    nextStepVC.title = self.eventTitleField.text;
     nextStepVC.eventTitle = self.eventTitleField.text;
     nextStepVC.eventType = selectedEventType;
     nextStepVC.eventCoverImage = coverPhotoFile;
+    nextStepVC.delegate = self;
     
     NSLog(@"%@ ---- %d ----- %@", self.eventTitleField.text, selectedEventType, coverPhotoFile);
     
+    
+}
+
+
+#pragma mark - delegate methods for EventCreation
+
+- (void) eventCreationComplete:(UIVisualEffectView *)darkBlur {
+    
+    NSLog(@"EVENT CREATION COMPLETED");
+        
+    self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
+    self.eventTitleField.text = @"";
+    self.publicButton.selected = YES;
+    self.publicApprovedButton.selected = YES;
+    self.privateButton.selected = YES;
+
+    coverPhotoFile = nil;
+    
+    id<EventModalProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedEventCreation:)]) {
+        
+        NSLog(@"FOUND STRONG DELEGATE 2");
+        
+        [strongDelegate completedEventCreation:darkBlur];
+    }
+
+}
+
+
+- (void) eventCreationCanceled {
+    
+    NSLog(@"EVENT CREATION CANCELED");
+    
+    self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
+    self.eventTitleField.text = @"";
+    self.publicButton.selected = YES;
+    self.publicApprovedButton.selected = YES;
+    self.privateButton.selected = YES;
+    
+    coverPhotoFile = nil;
+    
+    id<EventModalProtocol> strongDelegate = self.delegate;
+        
+    if ([strongDelegate respondsToSelector:@selector(canceledEventCreation)]) {
+            
+        [strongDelegate canceledEventCreation];
+    }
+        
     
 }
 

@@ -102,6 +102,43 @@
     
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *yesString = [standardDefaults objectForKey:@"MYKEY"];
+    
+    
+    
+    if ([yesString isEqualToString:@"Yes"]) {
+    
+        UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        UIVisualEffectView *darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+        darkBlurEffectView.alpha = 1.0;
+        darkBlurEffectView.frame = [UIScreen mainScreen].bounds;
+        [self.tabBarController.view addSubview:darkBlurEffectView];
+        
+        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
+        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+        [vibrancyEffectView setFrame:self.view.bounds];
+        
+        [[darkBlurEffectView contentView] addSubview:vibrancyEffectView];
+        
+        
+        [UIView animateWithDuration:1.0 animations:^{
+            darkBlurEffectView.alpha = 0.0;
+            
+        } completion:^(BOOL finished) {
+        
+            NSString *noString = @"No";
+            [standardDefaults setObject:noString forKey:@"MYKEY"];
+            [standardDefaults synchronize];
+        }];
+        
+    }
+    
+
+}
+
 
 - (void)viewDidAppear:(BOOL)animated {
     

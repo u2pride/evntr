@@ -16,6 +16,11 @@
 #import "UIColor+EVNColors.h"
 
 @interface TabNavigationVC ()
+{
+    BOOL isComingFromEventCreation;
+}
+
+@property (nonatomic, strong) UIVisualEffectView *darkBlur;
 
 @property (strong, nonatomic) UITabBarItem *activityItem;
 @property BOOL isGuestUser;
@@ -28,6 +33,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    isComingFromEventCreation = NO;
     
     //Get isGuest Object
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -78,7 +85,7 @@
         
         //Set Font Color to White
         [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-
+        
     }
     
     self.tabBar.barTintColor = [UIColor whiteColor];
@@ -127,6 +134,8 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
     
     
+    
+    
     //Events View Controller
     if (viewController == [self.viewControllers objectAtIndex:0]) {
         
@@ -136,6 +145,19 @@
         eventsView.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         eventsView.userForEventsQuery = [PFUser currentUser];
         NSLog(@"didSelectVC OF TABBARCONTROLLER: %@", [NSNumber numberWithBool:self.isGuestUser]);
+        
+        if (isComingFromEventCreation) {
+            
+            [UIView animateWithDuration:2.0 animations:^{
+                
+                self.darkBlur.alpha = 0;
+                
+            } completion:^(BOOL finished) {
+                
+                [self.darkBlur removeFromSuperview];
+                
+            }];
+        }
 
         
     //Profile VC
@@ -145,7 +167,74 @@
         ProfileVC *profileView = navVC.childViewControllers.firstObject;
         
         profileView.userNameForProfileView = [[PFUser currentUser] objectForKey:@"username"];
+    
+    
+    //Add Event VC
+    } else if (viewController == [self.viewControllers objectAtIndex:1] && !isGuestUser) {
+        
+        UINavigationController *navController = (UINavigationController *)viewController;
+        AddEventPrimaryVC *addEventModal = (AddEventPrimaryVC *)navController.childViewControllers.firstObject;
+        addEventModal.delegate = self;
+        
+
+        
+        
+        
     }
+    
+    
+    
+    
+    
+}
+
+
+#pragma mark - AddEventModal Delegate Methods
+
+- (void) completedEventCreation:(UIVisualEffectView *)darkBlur {
+    
+    isComingFromEventCreation = YES;
+    NSString *yesSTring = @"Yes";
+
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setObject:yesSTring forKey:@"MYKEY"];
+    [standardDefaults synchronize];
+    
+    self.darkBlur = darkBlur;
+    
+    /*
+    // Get views. controllerIndex is passed in as the controller we want to go to.
+    UIView * fromView = self.selectedViewController.view;
+    UIView * toView = [[self.viewControllers objectAtIndex:0] view];
+    
+    // Transition using a page curl.
+    [UIView transitionFromView:fromView
+                        toView:toView
+                      duration:2.5
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    completion:^(BOOL finished) {
+                        if (finished) {
+                            self.selectedIndex = 0;
+                        }
+                    }];
+    
+    */
+    
+    /*
+     self.tabController.selectedIndex = NEWSTAB_INDEX;   // to actually switch to the controller (your code would work as well) - not sure if this does or not send the didSelectViewController: message to the delegate
+     [self.tabController.delegate tabBarController:self.tabController didSelectViewController:[self.tabController.viewControllers objectAtIndex:NEWSTAB_INDEX]];  // send didSelectViewController to the tabBarController delegate
+     
+     http://stackoverflow.com/questions/5161730/iphone-how-to-switch-tabs-with-an-animation - Switch tabs with animation!
+     */
+    [self setSelectedIndex:0];
+    
+    
+}
+
+- (void) canceledEventCreation {
+    
+    [self setSelectedIndex:0];
+    
 }
 
     /*

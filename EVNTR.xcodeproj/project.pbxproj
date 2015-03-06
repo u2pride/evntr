@@ -53,6 +53,7 @@
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
 		A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */; };
+		A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */; };
 		A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC21A94E85D000BC3AD /* IDTransitionController.m */; };
 		A4C4EDC61A94E85D000BC3AD /* IDTransitioningDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC41A94E85D000BC3AD /* IDTransitioningDelegate.m */; };
 		A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC91A94EB0E000BC3AD /* ResetPasswordModalVC.m */; };
@@ -64,6 +65,10 @@
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
 		A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */; };
+		A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */; };
+		A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */; };
+		A4E5D4C51AA909BD00E86410 /* UserLocationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */; };
+		A4E5D4C61AA909BD00E86410 /* UserLocationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */; };
 		A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */; };
 		A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B11A7ABDF400614412 /* PersonCell.m */; };
 		A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */; };
@@ -157,6 +162,8 @@
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
 		A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+EVNColors.h"; path = "../UIColor+EVNColors.h"; sourceTree = "<group>"; };
 		A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+EVNColors.m"; path = "../UIColor+EVNColors.m"; sourceTree = "<group>"; };
+		A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventSecondVC.h; sourceTree = "<group>"; };
+		A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddEventSecondVC.m; sourceTree = "<group>"; };
 		A4C4EDC11A94E85D000BC3AD /* IDTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitionController.h; sourceTree = "<group>"; };
 		A4C4EDC21A94E85D000BC3AD /* IDTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDTransitionController.m; sourceTree = "<group>"; };
 		A4C4EDC31A94E85D000BC3AD /* IDTransitioningDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitioningDelegate.h; sourceTree = "<group>"; };
@@ -175,6 +182,13 @@
 		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileVC.m; sourceTree = "<group>"; };
 		A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewUserFacebookVC.h; sourceTree = "<group>"; };
 		A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewUserFacebookVC.m; sourceTree = "<group>"; };
+		A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationSearchVC.h; sourceTree = "<group>"; };
+		A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationSearchVC.m; sourceTree = "<group>"; };
+		A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleResult.h; sourceTree = "<group>"; };
+		A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleResult.m; sourceTree = "<group>"; };
+		A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLocationTableCell.h; sourceTree = "<group>"; };
+		A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLocationTableCell.m; sourceTree = "<group>"; };
+		A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserLocationTableCell.xib; sourceTree = "<group>"; };
 		A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleVC.h; sourceTree = "<group>"; };
 		A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleVC.m; sourceTree = "<group>"; };
 		A4F2E9B01A7ABDF400614412 /* PersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonCell.h; sourceTree = "<group>"; };
@@ -252,6 +266,8 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
+				A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */,
+				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
 				A423F7F01A9BFF0900DF9ABE /* SearchVC.h */,
 				A423F7F11A9BFF0900DF9ABE /* SearchVC.m */,
 				A474306E1A81563400CF3B8F /* Activities */,
@@ -368,8 +384,14 @@
 				A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */,
 				A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */,
 				A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */,
-				A44661171AA758B600E6C3C6 /* AddEventSecondaryVC.h */,
-				A44661181AA758B600E6C3C6 /* AddEventSecondaryVC.m */,
+				A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */,
+				A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */,
+				A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */,
+				A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */,
+				A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */,
+				A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */,
+				A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */,
+				A4BEB5FE1AA938110024D731 /* Archive */,
 				A4F2E9A51A7A805800614412 /* Custom Table Cells */,
 			);
 			name = Events;
@@ -417,6 +439,15 @@
 				A423F7EF1A9BC4D800DF9ABE /* Custom ImageView and Button */,
 			);
 			name = Activities;
+			sourceTree = "<group>";
+		};
+		A4BEB5FE1AA938110024D731 /* Archive */ = {
+			isa = PBXGroup;
+			children = (
+				A44661171AA758B600E6C3C6 /* AddEventSecondaryVC.h */,
+				A44661181AA758B600E6C3C6 /* AddEventSecondaryVC.m */,
+			);
+			name = Archive;
 			sourceTree = "<group>";
 		};
 		A4C4EDC71A94E862000BC3AD /* Transitioning Delegate */ = {
@@ -571,6 +602,7 @@
 				A4F615421A8D4E5C005E2F26 /* railway.gif in Resources */,
 				A4C4EDD21A95118C000BC3AD /* Lato-Thin.ttf in Resources */,
 				A4C4EDCF1A95118C000BC3AD /* Lato-Bold.ttf in Resources */,
+				A4E5D4C61AA909BD00E86410 /* UserLocationTableCell.xib in Resources */,
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */,
@@ -604,6 +636,7 @@
 				A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
 				A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */,
+				A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */,
 				A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */,
 				A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */,
 				A4F6C4BE1AA620C1001C68BA /* EventPictureCell.m in Sources */,
@@ -620,8 +653,10 @@
 				A41563451A76E15100565BB6 /* EventAddVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
 				A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */,
+				A4E5D4C51AA909BD00E86410 /* UserLocationTableCell.m in Sources */,
 				A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
+				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A41562C71A767D3A00565BB6 /* main.m in Sources */,
 				A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */,
@@ -629,6 +664,7 @@
 				A44661161AA7589C00E6C3C6 /* AddEventPrimaryVC.m in Sources */,
 				A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */,
 				A44661191AA758B600E6C3C6 /* AddEventSecondaryVC.m in Sources */,
+				A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */,
 				A43760FD1AA50CF4000F544D /* EVNCustomButton.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
 			);

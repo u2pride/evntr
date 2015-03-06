@@ -120,7 +120,7 @@
         
         [[self.darkBlurEffectView contentView] addSubview:vibrancyEffectView];
         
-        [UIView animateWithDuration:1.0 animations:^{
+        [UIView animateWithDuration:0.65 animations:^{
             self.darkBlurEffectView.alpha = 0.76;
         } completion:^(BOOL finished) {
             
@@ -128,7 +128,7 @@
             
         }];
     
-        [UIView animateWithDuration:0.5 animations:^{
+        [UIView animateWithDuration:0.45 animations:^{
            
             self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
             
