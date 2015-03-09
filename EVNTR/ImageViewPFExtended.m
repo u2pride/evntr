@@ -11,7 +11,6 @@
 
 @implementation ImageViewPFExtended
 
-@synthesize objectForImageView;
 
 - (void)setImage:(UIImage *)image {
     

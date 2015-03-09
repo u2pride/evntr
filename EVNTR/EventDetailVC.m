@@ -50,9 +50,6 @@
 
 @implementation EventDetailVC
 
-@synthesize eventTitle, eventCoverPhoto, creatorName, creatorPhoto, eventDescription, eventObject, eventUser, dateOfEventLabel, loadingSpinner, eventLocationLabel, rsvpButton, isGuestUser, viewAttendingButton, navBarBackground, navbarShadow, pictureCollectionView;
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -90,8 +87,8 @@
 
     
     // Do any additional setup after loading the view.
-    creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
-    eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
+    self.creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
+    self.eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
     
 }
 
@@ -129,10 +126,10 @@
  
 
     //TODO: move network tasks to viewDidAppear and add activity indicator
-    self.title = eventObject[@"title"];
+    self.title = self.eventObject[@"title"];
     [self.inviteButton setTitle:@"Invite Friends" forState:UIControlStateNormal];
     
-    if (isGuestUser) {
+    if (self.isGuestUser) {
         
         [self.rsvpButton setTitle:@"Sign Up To Attend" forState:UIControlStateNormal];
         [self.viewAttendingButton setTitle:@"Sign Up to View People Going" forState:UIControlStateNormal];
@@ -147,7 +144,7 @@
             case PUBLIC_EVENT_TYPE: {
                 NSString *username = [[PFUser currentUser] objectForKey:@"username"];
                 
-                PFRelation *eventAttendersRelation = [eventObject relationForKey:@"attenders"];
+                PFRelation *eventAttendersRelation = [self.eventObject relationForKey:@"attenders"];
                 PFQuery *attendingQuery = [eventAttendersRelation query];
                 [attendingQuery whereKey:@"username" equalTo:username];
                 [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
@@ -167,7 +164,7 @@
                 
                 NSString *username = [[PFUser currentUser] objectForKey:@"username"];
                 
-                PFRelation *eventAttendersRelation = [eventObject relationForKey:@"attenders"];
+                PFRelation *eventAttendersRelation = [self.eventObject relationForKey:@"attenders"];
                 PFQuery *attendingQuery = [eventAttendersRelation query];
                 [attendingQuery whereKey:@"username" equalTo:username];
                 [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
@@ -290,13 +287,13 @@
     
     
     
-    if (isGuestUser) {
+    if (self.isGuestUser) {
         
     } else {
         
     }
     
-    self.eventUser = (PFUser *)eventObject[@"parent"];
+    self.eventUser = (PFUser *)self.eventObject[@"parent"];
     [self.eventUser fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         
         NSLog(@"User ObjectID: %@ and current user id: %@", user.objectId, [PFUser currentUser].objectId);
@@ -310,16 +307,16 @@
             
         }
         
-        creatorName.text = user[@"username"];
-        creatorPhoto.file = (PFFile *)user[@"profilePicture"];
-        [creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
-            creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+        self.creatorName.text = user[@"username"];
+        self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
+        [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
+            self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
         }];
     }];
     
-    NSLog(@"Event: %@ and User: %@", eventObject, eventUser);
+    NSLog(@"Event: %@ and User: %@", self.eventObject, self.eventUser);
     
-    NSDate *dateFromParse = (NSDate *)eventObject[@"dateOfEvent"];
+    NSDate *dateFromParse = (NSDate *)self.eventObject[@"dateOfEvent"];
     
     //NSDateFormatter *df_local = [[NSDateFormatter alloc] init];
     //[df_local setTimeZone:[NSTimeZone systemTimeZone]];
@@ -336,7 +333,7 @@
     
     
     //Find the event address based on the pfgeopoint.
-    PFGeoPoint *locationOfEventPF = eventObject[@"locationOfEvent"];
+    PFGeoPoint *locationOfEventPF = self.eventObject[@"locationOfEvent"];
     CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
     CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
     [geoCoder reverseGeocodeLocation:locationOfEvent completionHandler:^(NSArray *placemarks, NSError *error) {
@@ -357,7 +354,7 @@
     }];
     
     //Determing the Location Name - Use the Coordinates if name is "current location"
-    NSString *locationName = eventObject[@"nameOfLocation"];
+    NSString *locationName = self.eventObject[@"nameOfLocation"];
     
     NSLog(@"LocationName ------------------ %@", locationName);
     
@@ -375,11 +372,11 @@
     //NSString *locationText = [NSString stringWithFormat:@"Lat: %.02f Long: %.02f", locationOfEvent.latitude, locationOfEvent.longitude];
     //eventLocationLabel.text = locationText;
     
-    eventTitle.text = eventObject[@"title"];
-    dateOfEventLabel.text = localDateString;
-    eventDescription.text = eventObject[@"description"];
-    eventCoverPhoto.file = (PFFile *)eventObject[@"coverPhoto"];
-    [eventCoverPhoto loadInBackground:^(UIImage *image, NSError *error) {
+    self.eventTitle.text = self.eventObject[@"title"];
+    self.dateOfEventLabel.text = localDateString;
+    self.eventDescription.text = self.eventObject[@"description"];
+    self.eventCoverPhoto.file = (PFFile *)self.eventObject[@"coverPhoto"];
+    [self.eventCoverPhoto loadInBackground:^(UIImage *image, NSError *error) {
         
         [self setBackgroundOfEventViewWithImage:image];
         
@@ -400,9 +397,9 @@
 
 - (void) startSearchForEventPhotos {
     
-    NSLog(@"What eventImages contains: %@", eventObject[@"eventImages"]);
+    NSLog(@"What eventImages contains: %@", self.eventObject[@"eventImages"]);
     
-    picturesFromEvent = eventObject[@"eventImages"];
+    picturesFromEvent = self.eventObject[@"eventImages"];
     
     
     
@@ -859,7 +856,7 @@
     
     int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];
     
-    if (isGuestUser) {
+    if (self.isGuestUser) {
         
         [self performSegueWithIdentifier:@"EventDetailToInitial" sender:self];
         
@@ -867,7 +864,7 @@
     } else if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
         
         //Currently only allowing an RSVP - not to cancel an RSVP
-        if ([rsvpButton.titleLabel.text isEqualToString:kNOTRSVPedForEvent]) {
+        if ([self.rsvpButton.titleLabel.text isEqualToString:kNOTRSVPedForEvent]) {
             
             self.rsvpButton.enabled = NO;
             
@@ -895,12 +892,12 @@
         PFRelation *attendersRelation = [self.eventObject relationForKey:@"attenders"];
         NSLog(@"PFRelation: %@", attendersRelation);
         
-        if ([rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
+        if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
             
             NSLog(@"Removing PFRelation");
             
             [attendersRelation removeObject:[PFUser currentUser]];
-            [eventObject saveInBackground];
+            [self.eventObject saveInBackground];
             
             //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
             
@@ -910,14 +907,14 @@
             
             //Create New Relation and Add User to List of Attenders for Event
             [attendersRelation addObject:[PFUser currentUser]];
-            [eventObject saveInBackground];
+            [self.eventObject saveInBackground];
             
             //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
         }
         
         
         //CREATING AN ENTRY IN THE ACTIVITY TABLE
-        if ([rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
+        if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
             
             NSLog(@"Deleting an Entry in the Activity Table");
             
@@ -928,7 +925,7 @@
             PFQuery *queryForRSVP = [PFQuery queryWithClassName:@"Activities"];
             [queryForRSVP whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
             [queryForRSVP whereKey:@"to" equalTo:[PFUser currentUser]];
-            [queryForRSVP whereKey:@"activityContent" equalTo:eventObject];
+            [queryForRSVP whereKey:@"activityContent" equalTo:self.eventObject];
             [queryForRSVP findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
                 PFObject *previousActivity = [objects firstObject];
@@ -960,7 +957,7 @@
             PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
             newAttendingActivity[@"to"] = [PFUser currentUser];
             newAttendingActivity[@"type"] = [NSNumber numberWithInt:ATTENDING_ACTIVITY];
-            newAttendingActivity[@"activityContent"] = eventObject;
+            newAttendingActivity[@"activityContent"] = self.eventObject;
             [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
                     
@@ -989,7 +986,7 @@
 
 - (IBAction)viewEventAttenders:(id)sender {
     
-    if (isGuestUser) {
+    if (self.isGuestUser) {
         
         [self performSegueWithIdentifier:@"EventDetailToInitial" sender:self];
         
@@ -998,7 +995,7 @@
         PeopleVC *viewAttendees = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         
         viewAttendees.typeOfUsers = VIEW_EVENT_ATTENDERS;
-        viewAttendees.eventToViewAttenders = eventObject;
+        viewAttendees.eventToViewAttenders = self.eventObject;
         
         [self.navigationController pushViewController:viewAttendees animated:YES];
     }

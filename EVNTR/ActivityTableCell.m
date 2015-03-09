@@ -11,10 +11,6 @@
 
 @implementation ActivityTableCell
 
-@synthesize leftSideImageView = _leftSideImageView;
-@synthesize activityContentTextLabel = _activityContentTextLabel;
-@synthesize timestampActivity = _timestampActivity;
-@synthesize actionButton;
 
 //TODO: Clean up.
 - (void)setActivityContentTextLabel:(UILabel *)activityContentTextLabel {

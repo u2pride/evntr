@@ -19,8 +19,6 @@
 
 @implementation NewUserFacebookVC
 
-@synthesize usernameField, emailField, nameField, profileImageView, continueButton, urlForProfilePicture, facebookID, informationFromFB, firstName, location;
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.

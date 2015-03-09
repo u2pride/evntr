@@ -34,7 +34,6 @@
 
 @implementation TabNavigationVC
 
-@synthesize activityItem, isGuestUser;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -63,7 +62,7 @@
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name: UIApplicationWillEnterForegroundNotification object:nil];
     
     
-    if (isGuestUser) {
+    if (self.isGuestUser) {
         
         NSLog(@"Guest User");
         
@@ -173,7 +172,7 @@
 
         
     //Profile VC
-    } else if (viewController == [self.viewControllers objectAtIndex:3] && !isGuestUser) {
+    } else if (viewController == [self.viewControllers objectAtIndex:3] && !self.isGuestUser) {
         
         UINavigationController *navVC = (UINavigationController *) self.viewControllers.lastObject;
         ProfileVC *profileView = navVC.childViewControllers.firstObject;
@@ -182,7 +181,7 @@
     
     
     //Add Event VC
-    } else if (viewController == [self.viewControllers objectAtIndex:1] && !isGuestUser) {
+    } else if (viewController == [self.viewControllers objectAtIndex:1] && !self.isGuestUser) {
         
         UINavigationController *navController = (UINavigationController *)viewController;
         AddEventPrimaryVC *addEventModal = (AddEventPrimaryVC *)navController.childViewControllers.firstObject;

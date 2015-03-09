@@ -409,7 +409,6 @@
 
         [context completeTransition:finished]; // vital
 
-        /*
         
         UIViewController *toViewController = [context viewControllerForKey:UITransitionContextToViewControllerKey];
         

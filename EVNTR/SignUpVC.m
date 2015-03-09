@@ -38,10 +38,6 @@
 
 @implementation SignUpVC
 
-@synthesize usernameField, passwordField, emailField;
-@synthesize backgroundView, profileImageView, pictureData;
-@synthesize delegate;
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -223,7 +219,7 @@
                 [successAlert show];
                 
                 //Create user then save profile picture and other information.
-                PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
+                PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
                 
                 [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (succeeded){

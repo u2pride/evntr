@@ -21,10 +21,7 @@
 @end
 
 
-
 @implementation ResetPasswordModalVC
-
-@synthesize backgroundForModalPopup, emailTextField;
 
 - (void)viewDidLoad {
     [super viewDidLoad];

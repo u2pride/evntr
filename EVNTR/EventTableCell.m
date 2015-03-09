@@ -10,8 +10,6 @@
 
 @implementation EventTableCell
 
-@synthesize dateOfEventLabel, timeOfEventLabel, attendersCountLabel, eventTypeLabel;
-@synthesize eventCoverImage, eventTitle, roundedContaingView;
 
 - (void)awakeFromNib {
     // Initialization code
@@ -19,7 +17,7 @@
     
     self.backgroundColor = [UIColor clearColor];
     
-    eventTitle.textColor = [UIColor whiteColor];
+    self.eventTitle.textColor = [UIColor whiteColor];
     
        
     self.roundedContaingView.layer.cornerRadius = 10;

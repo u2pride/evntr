@@ -23,8 +23,6 @@
 
 @implementation PeopleVC
 
-@synthesize typeOfUsers, profileUsername, loadingSpinner, eventToViewAttenders;
-
 #pragma mark -
 #pragma mark Init
 
@@ -116,7 +114,7 @@
     usersArray = [[NSArray alloc] init];
     usersMutableArray = [[NSMutableArray alloc] init];
     
-    switch (typeOfUsers) {
+    switch (self.typeOfUsers) {
         case VIEW_ALL_PEOPLE: {
             
             PFQuery *query = [PFUser query];
@@ -134,7 +132,7 @@
         case VIEW_FOLLOWERS: {
             
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"to" equalTo:profileUsername];
+            [query whereKey:@"to" equalTo:self.profileUsername];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [query orderByAscending:@"createdAt"];
             [query selectKeys:@[@"from"]];
@@ -159,7 +157,7 @@
         case VIEW_FOLLOWING: {
             
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"from" equalTo:profileUsername];
+            [query whereKey:@"from" equalTo:self.profileUsername];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [query orderByAscending:@"createdAt"];
             
@@ -182,7 +180,7 @@
         case VIEW_FOLLOWING_TO_INVITE: {
             
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"from" equalTo:profileUsername];
+            [query whereKey:@"from" equalTo:self.profileUsername];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [query orderByAscending:@"createdAt"];
             

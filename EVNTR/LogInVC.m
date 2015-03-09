@@ -41,9 +41,6 @@
 
 @implementation LogInVC
 
-@synthesize usernameField, passwordField, transitioningDelegateForModal;
-@synthesize forgotPasswordButton, textSeparator, loginButton, fbLoginButton, blurViewForModal, delegate;
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];

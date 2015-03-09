@@ -10,8 +10,6 @@
 
 @implementation GoogleResult
 
-@synthesize title, location, address;
-
 - (id)initWithTitle:(NSString*)name address:(NSString*)locationAddress location:(CLLocation*)locationCoordinates {
     if ((self = [super init])) {
         self.title = name;

@@ -16,8 +16,6 @@
 
 @implementation ActivityVC
 
-@synthesize typeOfActivityView, userForActivities;
-
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     

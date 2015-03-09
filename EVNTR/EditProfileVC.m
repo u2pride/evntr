@@ -44,13 +44,6 @@
 
 @implementation EditProfileVC
 
-@synthesize nameCell, hometownCell, usernameCell, bioCell, profileImageCell, socialTwitterCell, socialFacebookCell;
-
-@synthesize realNameTextField, hometownTextField, usernameTextField, bioTextField, profileImageView;
-
-@synthesize username, realName, hometown, pictureData, bio, delegate;
-
-@synthesize userInputtedValues;
 
 
 - (void)viewDidLoad {

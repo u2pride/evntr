@@ -34,8 +34,6 @@
 
 @implementation InitialScreenVC
 
-@synthesize loginButton, registerButton, customTransitionDelegate, logoView, backgroundImageView, darkBlurEffectView, detailsFromFBRegistration;
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     

@@ -16,13 +16,11 @@
 
 @implementation PictureFullScreenVC
 
-@synthesize eventPhotoView, fileOfEventPhoto;
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.eventPhotoView.image = [UIImage imageNamed:@"EventsTabIcon"];
-    self.eventPhotoView.file = fileOfEventPhoto;
+    self.eventPhotoView.file = self.fileOfEventPhoto;
     [self.eventPhotoView loadInBackground];
     
     //Tap to dismiss.

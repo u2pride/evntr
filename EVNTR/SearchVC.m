@@ -21,8 +21,6 @@
 
 @implementation SearchVC
 
-@synthesize searchController, searchResultsTable, searchResultsArray;
-
 
 //TODO: Support iOS7 for searching.
 

@@ -11,13 +11,13 @@
 #import "UIColor+EVNColors.h"
 
 @interface GuestWelcomeVC ()
+
 @property (weak, nonatomic) IBOutlet UIButton *continueButton;
 
 @end
 
 @implementation GuestWelcomeVC
 
-@synthesize continueButton;
 
 - (void)viewDidLoad {
     [super viewDidLoad];

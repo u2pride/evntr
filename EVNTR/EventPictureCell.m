@@ -10,6 +10,5 @@
 
 @implementation EventPictureCell
 
-@synthesize eventPictureView;
 
 @end

@@ -817,20 +817,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
-					"&",
-					Libaries/FacebookSDK,
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
-					"&",
-					"Libaries/parse-library-1.6.2",
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
-					"&",
-					"Libaries/parse-library-1.6.2",
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -849,20 +835,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
-					"&",
-					Libaries/FacebookSDK,
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
-					"&",
-					"Libaries/parse-library-1.6.2",
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
-					"&",
-					"Libaries/parse-library-1.6.2",
-					/Users/U2Pride/Documents/iOS,
-					Development/APIs,
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

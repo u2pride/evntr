@@ -50,8 +50,6 @@
 
 @implementation ProfileVC
 
-@synthesize profileImageView, nameLabel, twitterLabel, instagramLabel, numberEventsLabel, numberFollowersLabel, numberFollowingLabel, userNameForProfileView, userForProfileView, followButton, isComingFromEditProfile, editProfileButton, navigationItemWithSettingsBarItem, scrollView;
-
 
 //TODO: note: this is called before you would programmatically set variables in prepareforsegue when creating this viewcontroller.
 - (id)initWithCoder:(NSCoder*)aDecoder
@@ -89,7 +87,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
+    self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -131,9 +129,9 @@
         
     //Query Parse for the User.
     PFQuery *usernameQuery = [PFUser query];
-    [usernameQuery whereKey:@"username" equalTo:userNameForProfileView];
+    [usernameQuery whereKey:@"username" equalTo:self.userNameForProfileView];
     [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        userForProfileView = (PFUser *)object;
+        self.userForProfileView = (PFUser *)object;
         
         //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
         //TODO: Separate out what actually needs to be updated from database instead of updating all with updateUIWithUser
@@ -142,7 +140,7 @@
         
 
         
-        if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+        if ([self.userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
             profileType = CURRENT_USER_PROFILE;
             
             //Register for Notifications when Current User Creates a New Event
@@ -181,7 +179,7 @@
         PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
         [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
         [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-        [followActivity whereKey:@"to" equalTo:userForProfileView];
+        [followActivity whereKey:@"to" equalTo:self.userForProfileView];
         [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             //TODO - Does this make sense?
             
@@ -200,7 +198,7 @@
     
     //Update Following / Followers Counts
     PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowersQuery whereKey:@"to" equalTo:userForProfileView];
+    [countFollowersQuery whereKey:@"to" equalTo:self.userForProfileView];
     [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         NSLog(@"Current Followers Value: %@ and new count number: %d", self.numberFollowersLabel.text, number);
@@ -211,7 +209,7 @@
     }];
     
     PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowingQuery whereKey:@"from" equalTo:userForProfileView];
+    [countFollowingQuery whereKey:@"from" equalTo:self.userForProfileView];
     [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         NSLog(@"Current Following Value: %@ and new count number: %d", self.numberFollowingLabel.text, number);
@@ -228,7 +226,7 @@
     switch (profileType) {
         case CURRENT_USER_PROFILE: {
             //hide follow and set picture button
-            followButton.hidden = YES;
+            self.followButton.hidden = YES;
             
             self.editProfileButton.hidden = NO;
             self.title = @"Profile";
@@ -239,16 +237,16 @@
         case OTHER_USER_PROFILE: {
             
             //setup follow state and set picture button
-            followButton.hidden = NO;
+            self.followButton.hidden = NO;
             self.editProfileButton.hidden = YES;
             
-            self.title = userForProfileView[@"username"];
+            self.title = self.userForProfileView[@"username"];
             
             //Determine whether the current user is following this user
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
             [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
             [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [followActivity whereKey:@"to" equalTo:userForProfileView];
+            [followActivity whereKey:@"to" equalTo:self.userForProfileView];
             [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 //TODO - Does this make sense?
                 
@@ -279,7 +277,7 @@
     
     
     //Populate Profile Page with Details from Parse
-    PFFile *profilePictureFromParse = userForProfileView[@"profilePicture"];
+    PFFile *profilePictureFromParse = self.userForProfileView[@"profilePicture"];
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
             userPictureData = data;
@@ -288,10 +286,10 @@
     }];
     
     
-    self.nameLabel.text = userForProfileView[@"username"];
+    self.nameLabel.text = self.userForProfileView[@"username"];
 
     //If Social Media Handles Exist, Setup with Handles and Tap Gestures
-    if (userForProfileView[@"twitterHandle"]) {
+    if (self.userForProfileView[@"twitterHandle"]) {
         
         self.twitterIcon.userInteractionEnabled = YES;
         self.twitterIcon.tag = 1;
@@ -313,7 +311,7 @@
         //self.twitterLabel.text = @"Not Connected";
     }
     
-    if (userForProfileView[@"instagramHandle"]) {
+    if (self.userForProfileView[@"instagramHandle"]) {
         
         
         self.instagramIcon.userInteractionEnabled = YES;
@@ -352,20 +350,20 @@
 
     
     PFQuery *countEventsQuery = [PFQuery queryWithClassName:@"Events"];
-    [countEventsQuery whereKey:@"parent" equalTo:userForProfileView];
+    [countEventsQuery whereKey:@"parent" equalTo:self.userForProfileView];
     [countEventsQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", number];
     }];
     
     PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowersQuery whereKey:@"to" equalTo:userForProfileView];
+    [countFollowersQuery whereKey:@"to" equalTo:self.userForProfileView];
     [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
     }];
     
     PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowingQuery whereKey:@"from" equalTo:userForProfileView];
+    [countFollowingQuery whereKey:@"from" equalTo:self.userForProfileView];
     [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
@@ -393,14 +391,14 @@
     //do i need to distinguish between my profile and another user's profile?
     //eventVC.typeOfEventTableView = 2;
     
-    if ([userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+    if ([self.userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
         NSLog(@"Current user events from profile page");
         eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
         eventVC.userForEventsQuery = [PFUser currentUser];
     } else {
         NSLog(@"Other user events from profile page");
         eventVC.typeOfEventTableView = OTHER_USER_EVENTS;
-        eventVC.userForEventsQuery = userForProfileView;
+        eventVC.userForEventsQuery = self.userForProfileView;
     }
     
     //What is this for? - need to set userNameForProfileView in navigation controller.
@@ -421,7 +419,7 @@
     PeopleVC *viewFollowersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
     viewFollowersVC.typeOfUsers = VIEW_FOLLOWERS;
-    viewFollowersVC.profileUsername = userForProfileView;
+    viewFollowersVC.profileUsername = self.userForProfileView;
     
     NSLog(@"Heading over to View this Profile's Followers:  %d and %@", viewFollowersVC.typeOfUsers, viewFollowersVC.profileUsername);
     
@@ -436,7 +434,7 @@
     PeopleVC *viewFollowingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
     viewFollowingVC.typeOfUsers = VIEW_FOLLOWING;
-    viewFollowingVC.profileUsername = userForProfileView;
+    viewFollowingVC.profileUsername = self.userForProfileView;
     
     [self.navigationController pushViewController:viewFollowingVC animated:YES];
 
@@ -465,7 +463,7 @@
     
     NSLog(@"Clicked Follow User");
     
-    if ([followButton.titleLabel.text isEqualToString:@"Follow"]) {
+    if ([self.followButton.titleLabel.text isEqualToString:@"Follow"]) {
         
         NSLog(@"Follow the User");
         
@@ -473,7 +471,7 @@
         
         newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
         newFollowActivity[@"from"] = [PFUser currentUser];
-        newFollowActivity[@"to"] = userForProfileView;
+        newFollowActivity[@"to"] = self.userForProfileView;
         
         [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 
@@ -492,7 +490,7 @@
         
 
         
-    } else if ([followButton.titleLabel.text isEqualToString:@"Following"]) {
+    } else if ([self.followButton.titleLabel.text isEqualToString:@"Following"]) {
         
         NSLog(@"Unfollow the User");
         
@@ -500,7 +498,7 @@
         
         [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
         [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
-        [findFollowActivity whereKey:@"to" equalTo:userForProfileView];
+        [findFollowActivity whereKey:@"to" equalTo:self.userForProfileView];
         
         [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
@@ -546,8 +544,8 @@
     
     switch (tag) {
         case 1: {
-            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", userForProfileView[@"twitterHandle"]];
-            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", userForProfileView[@"twitterHandle"]];
+            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", self.userForProfileView[@"twitterHandle"]];
+            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", self.userForProfileView[@"twitterHandle"]];
             
             if(![[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterNativeURLString]])
             {
@@ -556,8 +554,8 @@
             break;
         }
         case 2: {
-            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", userForProfileView[@"instagramHandle"]];
-            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", userForProfileView[@"instagramHandle"]];
+            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", self.userForProfileView[@"instagramHandle"]];
+            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", self.userForProfileView[@"instagramHandle"]];
             
             if (![[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramNativeURLString]])
             {

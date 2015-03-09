@@ -32,8 +32,6 @@
 
 @implementation HomeScreenVC
 
-@synthesize userForEventsQuery, typeOfEventTableView, isGuestUser;
-
 //Question:  What's best to do in initWithCoder v. ViewDidLoad?
 // anything related to view goes into viewdidload.
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -115,8 +113,8 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    NSString *yesString = [standardDefaults objectForKey:@"MYKEY"];
+    //NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    //NSString *yesString = [standardDefaults objectForKey:@"MYKEY"];
     
     
     /*
@@ -228,7 +226,7 @@
     
     PFQuery *eventsQuery = [PFQuery queryWithClassName:@"Events"];
     
-    switch (typeOfEventTableView) {
+    switch (self.typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
 
             NSLog(@"before everything");
@@ -263,14 +261,14 @@
         }
         case CURRENT_USER_EVENTS: {
             
-            [eventsQuery whereKey:@"parent" equalTo:userForEventsQuery];
+            [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
             [eventsQuery orderByAscending:@"Title"];
             
             break;
         }
         case OTHER_USER_EVENTS: {
 
-            [eventsQuery whereKey:@"parent" equalTo:userForEventsQuery];
+            [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
             NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
             [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
             [eventsQuery orderByAscending:@"Title"];

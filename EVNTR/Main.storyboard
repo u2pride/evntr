@@ -1771,15 +1771,6 @@ Click continue when you're ready.</string>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zZX-of-hmj">
-                                                <rect key="frame" x="161" y="483" width="95" height="30"/>
-                                                <state key="normal" title="Upload Photo">
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="uploadPhotoFromEvent:" destination="9xw-Ai-RPd" eventType="touchUpInside" id="h1I-pz-GZ4"/>
-                                                </connections>
-                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yz9-9S-wgt">
                                                 <rect key="frame" x="136" y="456" width="155" height="30"/>
                                                 <state key="normal" title="View People Attending">
@@ -1922,7 +1913,6 @@ Click continue when you're ready.</string>
                         <outlet property="pictureCollectionView" destination="bih-gX-yVA" id="gQb-MJ-v5K"/>
                         <outlet property="rsvpButton" destination="Lzv-La-u3a" id="GFf-rN-hIb"/>
                         <outlet property="standbyUsersCollectionView" destination="Bfu-kw-HWs" id="SI2-jp-zLx"/>
-                        <outlet property="uploadPhotoFromEvent" destination="zZX-of-hmj" id="vwD-hw-YRO"/>
                         <outlet property="viewAttendingButton" destination="Yz9-9S-wgt" id="g4S-Te-Axt"/>
                         <segue destination="bz5-ND-8x1" kind="unwind" identifier="EventDetailToInitial" unwindAction="logOutUnwindSegue:" id="peG-wK-7Ki"/>
                     </connections>
@@ -2728,7 +2718,7 @@ Click continue when you're ready.</string>
         </scene>
     </scenes>
     <resources>
-        <image name="CustomBackButton" width="33" height="52"/>
+        <image name="CustomBackButton" width="24" height="24"/>
         <image name="LoginBackground" width="2509" height="1673"/>
         <image name="LoginBackground2" width="2164" height="1440"/>
         <image name="SettingsIcon" width="32" height="32"/>
