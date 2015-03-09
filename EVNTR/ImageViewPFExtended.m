@@ -18,7 +18,7 @@
     UIImage *newImage = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
     
     [super setImage:newImage];
-    
+        
 }
 
 @end

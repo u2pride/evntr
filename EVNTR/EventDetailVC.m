@@ -17,9 +17,13 @@
 #import "PictureFullScreenVC.h"
 #import "IDTransitioningDelegate.h"
 #import <AddressBookUI/AddressBookUI.h>
+#import "StandbyCollectionViewCell.h"
+#import "ImageViewPFExtended.h"
+
 
 @interface EventDetailVC () {
     NSMutableArray *picturesFromEvent;
+    NSMutableArray *usersOnStandby;
 }
 
 
@@ -28,10 +32,10 @@
 @property (strong, nonatomic) IBOutlet UIButton *inviteButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewAttendingButton;
 @property (weak, nonatomic) IBOutlet UICollectionView *pictureCollectionView;
+@property (strong, nonatomic) IBOutlet UICollectionView *standbyUsersCollectionView;
 
 @property (nonatomic, strong) UIImage *navBarBackground;
 @property (nonatomic, strong) UIImage *navbarShadow;
-@property (weak, nonatomic) IBOutlet UIButton *uploadPhotoFromEvent;
 @property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
 
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
@@ -41,7 +45,6 @@
 - (IBAction)inviteFriends:(id)sender;
 - (IBAction)rsvpForEvent:(id)sender;
 - (IBAction)viewEventAttenders:(id)sender;
-- (IBAction)uploadPhotoFromEvent:(id)sender;
 
 @end
 
@@ -59,6 +62,7 @@
     self.pictureCollectionView.delegate = self;
     self.pictureCollectionView.dataSource = self;
     self.pictureCollectionView.backgroundColor = [UIColor whiteColor];
+    self.pictureCollectionView.tag = 3;
     picturesFromEvent = [[NSMutableArray alloc] init];
     
     [self startSearchForEventPhotos];
@@ -256,6 +260,36 @@
 
     [super viewDidAppear:animated];
     
+    
+    //Find Users on Standby For the Event - Query on Activities Table
+    PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
+    [queryForStandbyUsers whereKey:@"activityContent" equalTo:self.eventObject];
+    [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
+    [queryForStandbyUsers includeKey:@"from"];
+    [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
+        
+        if (!usersOnStandby) {
+            usersOnStandby = [[NSMutableArray alloc] init];
+        }
+        
+        for (PFObject *activity in standbyActivities) {
+            
+            PFUser *userOnStandby = activity[@"from"];
+            
+            [usersOnStandby addObject:userOnStandby];
+            
+            NSLog(@"USERS ON STANDBY: %@", usersOnStandby);
+            
+        }
+        
+        //Reload Table
+        [self.standbyUsersCollectionView reloadData];
+
+        
+    }];
+    
+    
+    
     if (isGuestUser) {
         
     } else {
@@ -301,17 +335,6 @@
     NSString *localDateString = [dateForm stringFromDate:dateFromParse];
     
     
-    //Determing the Location Name - Use the Coordinates if name is "current location"
-    NSString *locationName = eventObject[@"nameOfLocation"];
-    
-    if ([locationName isEqualToString:@"Current Location"]) {
-        //use the coordinate positions in place of the name.
-        locationName = @"Use Coordinates Instead";
-    }
-    
-    self.eventLocationNameLabel.text = locationName;
-    
-    
     //Find the event address based on the pfgeopoint.
     PFGeoPoint *locationOfEventPF = eventObject[@"locationOfEvent"];
     CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
@@ -332,6 +355,22 @@
         
         
     }];
+    
+    //Determing the Location Name - Use the Coordinates if name is "current location"
+    NSString *locationName = eventObject[@"nameOfLocation"];
+    
+    NSLog(@"LocationName ------------------ %@", locationName);
+    
+    if (!locationName) {
+        locationName = @"Custom Location";
+    } else if ([locationName isEqualToString:@"Current Location"]) {
+        locationName = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
+        
+    }
+    
+    
+    
+    self.eventLocationNameLabel.text = locationName;
     
     //NSString *locationText = [NSString stringWithFormat:@"Lat: %.02f Long: %.02f", locationOfEvent.latitude, locationOfEvent.longitude];
     //eventLocationLabel.text = locationText;
@@ -383,15 +422,45 @@
 #pragma mark CollectionView Delegate and DataSource Methods
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 2;
+    
+    NSLog(@"collection view tag: %ld", (long)collectionView.tag);
+    
+    //Picture Collection View
+    if (collectionView.tag == 3) {
+        
+        return 2;
+        
+    //Standby List TableView
+    } else {
+        
+        NSLog(@"number 1");
+        return 1;
+        
+    }
+    
+    
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    if (section == 0) {
-        return 1;
+    NSLog(@"collection view tag: %ld", (long)collectionView.tag);
+
+    
+    //Picture Collection View
+    if (collectionView.tag == 3) {
+        if (section == 0) {
+            return 1;
+        } else {
+            return [picturesFromEvent count];
+        }
+    
+    //Standby List TableView
     } else {
-        return [picturesFromEvent count];
+        
+        NSLog(@"number 2 - %lu", (unsigned long)[usersOnStandby count]);
+
+        return [usersOnStandby count];
+
     }
     
 }
@@ -399,112 +468,160 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"CALLED");
+    NSLog(@"collection view tag: %ld", (long)collectionView.tag);
+
     
-    static NSString *cellIdentifier  = @"EventPhotoCell";
-    
-    EventPictureCell *cell = (EventPictureCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    
-    switch (indexPath.section) {
-        case 0: {
-            
-            cell.eventPictureView.image = [UIImage imageNamed:@"FollowIcon"];
+    //Picture Collection View
+    if (collectionView.tag == 3) {
         
-            break;
-        }
-        case 1: {
-            
-            cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
-            
-            PFFile *currentPictureFile = [picturesFromEvent objectAtIndex:indexPath.row];
-            
-            cell.eventPictureView.file = currentPictureFile;
-            [cell.eventPictureView loadInBackground];
+        NSLog(@"CALLED");
         
-            break;
+        static NSString *cellIdentifier  = @"EventPhotoCell";
+        
+        EventPictureCell *cell = (EventPictureCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+        
+        switch (indexPath.section) {
+            case 0: {
+                
+                cell.eventPictureView.image = [UIImage imageNamed:@"FollowIcon"];
+                
+                break;
+            }
+            case 1: {
+                
+                cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
+                
+                PFFile *currentPictureFile = [picturesFromEvent objectAtIndex:indexPath.row];
+                
+                cell.eventPictureView.file = currentPictureFile;
+                [cell.eventPictureView loadInBackground];
+                
+                break;
+            }
+            default:
+                break;
         }
-        default:
-            break;
+        
+        return cell;
+        
+        
+    //Standby List Collection View
+    } else {
+        
+        NSLog(@"number 3");
+        
+        static NSString *standbyCellID = @"StandbyUserCell";
+        
+        StandbyCollectionViewCell *cell = (StandbyCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:standbyCellID forIndexPath:indexPath];
+        
+        PFUser *currentUser = [usersOnStandby objectAtIndex:indexPath.row];
+        
+        cell.profilePictureOfStandbyUser.image = [UIImage imageNamed:@"PersonDefault"];
+        cell.profilePictureOfStandbyUser.file = currentUser[@"profilePicture"];
+        [cell.profilePictureOfStandbyUser loadInBackground];
+        
+        
+        cell.profilePictureOfStandbyUser.objectForImageView = currentUser;
+        
+        NSLog(@"number 3 cell - %@", cell);
+
+        return cell;
+        
     }
     
-    return cell;
     
 }
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    switch (indexPath.section) {
-        case 0: {
-            
-            [self uploadPhotoFromEvent:self];
-            
-            
-            break;
+    // Picture Collection View
+    if (collectionView.tag == 3) {
+        
+        
+        switch (indexPath.section) {
+            case 0: {
+                
+                [self uploadPhotoFromEvent:self];
+                
+                
+                break;
+            }
+            case 1: {
+                
+                //TODO: For all blur effects, move initialization to top and in these methods just change alpha values.  no need to recreate each time.
+                UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+                self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+                self.blurEffectForModals.alpha = 0;
+                self.blurEffectForModals.frame = self.view.bounds;
+                [self.view addSubview:self.blurEffectForModals];
+                
+                UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
+                UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+                [vibrancyEffectView setFrame:self.view.bounds];
+                
+                [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
+                
+                [UIView animateWithDuration:0.5 animations:^{
+                    self.blurEffectForModals.alpha = 0.9;
+                } completion:^(BOOL finished) {
+                    
+                    NSLog(@"Finished");
+                    
+                }];
+                
+                /* animate screenshot of view
+                 [UIView animateWithDuration:0.5 animations:^{
+                 self.view.transform = CGAffineTransformMakeScale(1.4, 1.4);
+                 }];
+                 */
+                
+                PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
+                
+                displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+                displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
+                displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[picturesFromEvent objectAtIndex:indexPath.row];
+                displayFullScreenPhoto.delegate = self;
+                
+                [UIView animateWithDuration:0.5 animations:^{
+                    
+                    self.navigationController.navigationBar.alpha = 0;
+                    self.tabBarController.tabBar.alpha = 0;
+                    
+                } completion:^(BOOL finished) {
+                    
+                    self.navigationController.navigationBar.hidden = finished;
+                    self.tabBarController.tabBar.hidden = finished;
+                    
+                }];
+                
+                [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
+                /*
+                 ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
+                 resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+                 resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
+                 resetPasswordModal.delegate = self;
+                 */
+                
+                
+                break;
+            }
+            default:
+                break;
         }
-        case 1: {
-            
-            //TODO: For all blur effects, move initialization to top and in these methods just change alpha values.  no need to recreate each time.
-            UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-            self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-            self.blurEffectForModals.alpha = 0;
-            self.blurEffectForModals.frame = self.view.bounds;
-            [self.view addSubview:self.blurEffectForModals];
-            
-            UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
-            UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-            [vibrancyEffectView setFrame:self.view.bounds];
-            
-            [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
-            
-            [UIView animateWithDuration:0.5 animations:^{
-                self.blurEffectForModals.alpha = 0.9;
-            } completion:^(BOOL finished) {
-                
-                NSLog(@"Finished");
-                
-            }];
-            
-            /* animate screenshot of view
-             [UIView animateWithDuration:0.5 animations:^{
-             self.view.transform = CGAffineTransformMakeScale(1.4, 1.4);
-             }];
-             */
-            
-            PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
-            
-            displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-            displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
-            displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[picturesFromEvent objectAtIndex:indexPath.row];
-            displayFullScreenPhoto.delegate = self;
-            
-            [UIView animateWithDuration:0.5 animations:^{
-                
-                self.navigationController.navigationBar.alpha = 0;
-                self.tabBarController.tabBar.alpha = 0;
-                
-            } completion:^(BOOL finished) {
-                
-                self.navigationController.navigationBar.hidden = finished;
-                self.tabBarController.tabBar.hidden = finished;
-                
-            }];
-            
-            [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
-            /*
-             ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
-             resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-             resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
-             resetPasswordModal.delegate = self;
-             */
-            
-            
-            break;
-        }
-        default:
-            break;
+
+        
+    //Standby List Collection View
+    } else {
+        
+        //extract username from object object.
+        //push on a profile view.
+        
+        
+        
+        
+        
     }
-    
     
 
     
@@ -542,7 +659,7 @@
 #pragma mark -
 #pragma mark - Upload Picture From Event
 
-- (IBAction)uploadPhotoFromEvent:(id)sender {
+- (void) uploadPhotoFromEvent:(id)sender {
     
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
