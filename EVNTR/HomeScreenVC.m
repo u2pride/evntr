@@ -25,6 +25,7 @@
 }
 
 @property BOOL isGuestUser;
+@property (strong, nonatomic) IBOutlet UITableView *eventsTableView;
 
 @end
 
@@ -33,6 +34,7 @@
 @synthesize userForEventsQuery, typeOfEventTableView, isGuestUser;
 
 //Question:  What's best to do in initWithCoder v. ViewDidLoad?
+// anything related to view goes into viewdidload.
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
@@ -44,6 +46,7 @@
         self.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         self.userForEventsQuery = [PFUser currentUser];
         self.tabBarController.hidesBottomBarWhenPushed = YES;
+        //self.navigationController.hidesBarsOnSwipe = YES;
         NSLog(@"INITWITHCODER OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
         
         //Get isGuest Object
@@ -57,6 +60,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    //probably already wired up.    
+    self.tableView.delegate = self;
     
     NSLog(@"VIEWDIDLOAD OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
 
@@ -101,6 +108,9 @@
     
     
 }
+
+
+
 
 - (void) viewWillAppear:(BOOL)animated {
     

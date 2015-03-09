@@ -17,6 +17,7 @@
 @interface PeopleVC ()
 
 @property (nonatomic, strong) NSArray *selectedPeople;
+@property (nonatomic, strong) NSMutableArray *selectedIndexes;
 
 @end
 
@@ -33,6 +34,8 @@
     //self.typeOfUsers = VIEW_ALL_PEOPLE;
     //self.profileUsername = nil;
     //[self findUsersOnParse];
+    
+    self.selectedIndexes = [[NSMutableArray alloc] init];
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -263,20 +266,40 @@
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
 
         PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        
         PFUser *currentUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
         
-        NSLog(@"Current User: %@", currentUser);
-        NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
-
-        [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-            [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
-                NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
-                
+        //already selected - deselect
+        if ([self.selectedIndexes containsObject:indexPath]) {
+            
+            [self.selectedIndexes removeObject:indexPath];
+            
+            [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+                cell.personTitle.text = object[@"username"];
+                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                    cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+                    
+                }];
             }];
-        }];
+            
+            
+        } else {
+            //Not Selected - Now Select
+            
+            [self.selectedIndexes addObject:indexPath];
+            
+            [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                    cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
+                    NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+                    
+                }];
+            }];
+            
+            
+        }
+        
         
     
         //FOR SOME REASON, using the masking with the current image in cell.profileImage.image comes back null.  Maybe because the image is already masked???????

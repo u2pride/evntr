@@ -1699,6 +1699,9 @@ Click continue when you're ready.</string>
                     </tableView>
                     <navigationItem key="navigationItem" title="Events" id="7VE-ia-yHI"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="eventsTableView" destination="hYe-MP-1yh" id="f3N-yn-CbH"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="v2U-9A-0p2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1713,30 +1716,30 @@ Click continue when you're ready.</string>
                         <viewControllerLayoutGuide type="bottom" id="r39-zp-FVe"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="3BY-zL-Tby">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="860"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fXh-Of-N5Z">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="860"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9B5-qw-1QG">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="700"/>
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9B5-qw-1QG">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="860"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bda-Oz-hMR" customClass="PFImageView">
                                                 <rect key="frame" x="-1" y="0.0" width="320" height="168"/>
                                             </imageView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="429-cp-IMw" customClass="PFImageView">
-                                                <rect key="frame" x="24" y="183" width="101" height="102"/>
+                                                <rect key="frame" x="37" y="438" width="69" height="66"/>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Creator" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CeH-mV-5d8">
-                                                <rect key="frame" x="40" y="295" width="154" height="37"/>
+                                                <rect key="frame" x="43" y="500" width="154" height="37"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Description" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lu-8u-jfO">
-                                                <rect key="frame" x="142" y="183" width="118" height="49"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Description" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lu-8u-jfO">
+                                                <rect key="frame" x="32" y="176" width="280" height="75"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -1746,14 +1749,15 @@ Click continue when you're ready.</string>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="date of the event is this total event" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5hW-kd-qt7">
-                                                <rect key="frame" x="8" y="340" width="309" height="33"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Date" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5hW-kd-qt7">
+                                                <rect key="frame" x="5" y="297" width="309" height="33"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lzv-La-u3a">
-                                                <rect key="frame" x="70" y="424" width="179" height="30"/>
+                                                <rect key="frame" x="70" y="259" width="179" height="30"/>
+                                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <state key="normal" title="I want to go">
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
@@ -1761,23 +1765,14 @@ Click continue when you're ready.</string>
                                                     <action selector="rsvpForEvent:" destination="9xw-Ai-RPd" eventType="touchUpInside" id="iLB-t3-yfM"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yz9-9S-wgt">
-                                                <rect key="frame" x="85" y="454" width="155" height="30"/>
-                                                <state key="normal" title="View People Attending">
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="viewEventAttenders:" destination="9xw-Ai-RPd" eventType="touchUpInside" id="7Jd-aK-e4S"/>
-                                                </connections>
-                                            </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Event Location" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2OV-TK-qk5">
-                                                <rect key="frame" x="19" y="358" width="280" height="63"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Location Address" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2OV-TK-qk5">
+                                                <rect key="frame" x="20" y="367" width="280" height="63"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zZX-of-hmj">
-                                                <rect key="frame" x="159" y="240" width="95" height="30"/>
+                                                <rect key="frame" x="112" y="545" width="95" height="30"/>
                                                 <state key="normal" title="Upload Photo">
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
@@ -1786,7 +1781,7 @@ Click continue when you're ready.</string>
                                                 </connections>
                                             </button>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" bounces="NO" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="bih-gX-yVA">
-                                                <rect key="frame" x="19" y="502" width="280" height="63"/>
+                                                <rect key="frame" x="20" y="588" width="280" height="63"/>
                                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="hxh-32-2c5">
                                                     <size key="itemSize" width="57" height="58"/>
                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -1813,6 +1808,31 @@ Click continue when you're ready.</string>
                                                     </collectionViewCell>
                                                 </cells>
                                             </collectionView>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yz9-9S-wgt">
+                                                <rect key="frame" x="136" y="456" width="155" height="30"/>
+                                                <state key="normal" title="View People Attending">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="viewEventAttenders:" destination="9xw-Ai-RPd" eventType="touchUpInside" id="7Jd-aK-e4S"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U2K-8t-Wd7">
+                                                <rect key="frame" x="103" y="259" width="112" height="30"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="Invite Friends">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="inviteFriends:" destination="9xw-Ai-RPd" eventType="touchUpInside" id="4Ar-WE-QfV"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Location Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5gf-Hr-Hhc">
+                                                <rect key="frame" x="101" y="343" width="117" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -1853,7 +1873,8 @@ Click continue when you're ready.</string>
                             <constraint firstItem="fXh-Of-N5Z" firstAttribute="top" secondItem="3BY-zL-Tby" secondAttribute="top" id="saB-35-Gic"/>
                         </constraints>
                     </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="860"/>
                     <connections>
                         <outlet property="creatorName" destination="CeH-mV-5d8" id="EBV-Q4-ER9"/>
                         <outlet property="creatorPhoto" destination="429-cp-IMw" id="xPI-vY-GFw"/>
@@ -1861,7 +1882,9 @@ Click continue when you're ready.</string>
                         <outlet property="eventCoverPhoto" destination="bda-Oz-hMR" id="opx-VD-GDD"/>
                         <outlet property="eventDescription" destination="8lu-8u-jfO" id="l2Y-4b-mfq"/>
                         <outlet property="eventLocationLabel" destination="2OV-TK-qk5" id="k1R-IQ-7Ae"/>
+                        <outlet property="eventLocationNameLabel" destination="5gf-Hr-Hhc" id="cFj-Sj-Fjk"/>
                         <outlet property="eventTitle" destination="WEQ-g4-QdZ" id="66p-53-51R"/>
+                        <outlet property="inviteButton" destination="U2K-8t-Wd7" id="P67-AV-EwZ"/>
                         <outlet property="pictureCollectionView" destination="bih-gX-yVA" id="gQb-MJ-v5K"/>
                         <outlet property="rsvpButton" destination="Lzv-La-u3a" id="GFf-rN-hIb"/>
                         <outlet property="uploadPhotoFromEvent" destination="zZX-of-hmj" id="vwD-hw-YRO"/>
@@ -1872,7 +1895,7 @@ Click continue when you're ready.</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OjH-ZA-Wlw" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="bz5-ND-8x1" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2049" y="-1215"/>
+            <point key="canvasLocation" x="2049" y="-1194"/>
         </scene>
         <!--Picture Full ScreenVC-->
         <scene sceneID="48A-1v-YfH">

@@ -16,13 +16,16 @@
 #import "EventPictureCell.h"
 #import "PictureFullScreenVC.h"
 #import "IDTransitioningDelegate.h"
+#import <AddressBookUI/AddressBookUI.h>
 
 @interface EventDetailVC () {
     NSMutableArray *picturesFromEvent;
 }
 
+
 @property (nonatomic, strong) PFUser *eventUser;
 @property (weak, nonatomic) IBOutlet UIButton *rsvpButton;
+@property (strong, nonatomic) IBOutlet UIButton *inviteButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewAttendingButton;
 @property (weak, nonatomic) IBOutlet UICollectionView *pictureCollectionView;
 
@@ -35,6 +38,7 @@
 
 @property BOOL isGuestUser;
 
+- (IBAction)inviteFriends:(id)sender;
 - (IBAction)rsvpForEvent:(id)sender;
 - (IBAction)viewEventAttenders:(id)sender;
 - (IBAction)uploadPhotoFromEvent:(id)sender;
@@ -120,9 +124,9 @@
     
  
 
-
     //TODO: move network tasks to viewDidAppear and add activity indicator
     self.title = eventObject[@"title"];
+    [self.inviteButton setTitle:@"Invite Friends" forState:UIControlStateNormal];
     
     if (isGuestUser) {
         
@@ -130,6 +134,8 @@
         [self.viewAttendingButton setTitle:@"Sign Up to View People Going" forState:UIControlStateNormal];
         
     } else {
+        
+        
         
         //Update Event Detail view based on Event Type
         int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];
@@ -263,6 +269,11 @@
         
         if ([user.objectId isEqualToString:[PFUser currentUser].objectId]) {
             self.rsvpButton.hidden = YES;
+            self.inviteButton.hidden = NO;
+        } else  {
+            self.rsvpButton.hidden = NO;
+            self.inviteButton.hidden = YES;
+            
         }
         
         creatorName.text = user[@"username"];
@@ -276,13 +287,52 @@
     
     NSDate *dateFromParse = (NSDate *)eventObject[@"dateOfEvent"];
     
-    NSDateFormatter *df_local = [[NSDateFormatter alloc] init];
-    [df_local setTimeZone:[NSTimeZone systemTimeZone]];
-    [df_local setDateFormat:@"MM/dd 'at' hh:mm a"];
+    //NSDateFormatter *df_local = [[NSDateFormatter alloc] init];
+    //[df_local setTimeZone:[NSTimeZone systemTimeZone]];
+    //[df_local setDateFormat:@"MM/dd 'at' hh:mm a"];
     
-    NSString *localDateString = [df_local stringFromDate:dateFromParse];
+    //NSString *localDateString = [df_local stringFromDate:dateFromParse];
     
-    //PFGeoPoint *locationOfEvent = eventObject[@"locationOfEvent"];
+    NSDateFormatter *dateForm = [[NSDateFormatter alloc] init];
+    dateForm.doesRelativeDateFormatting = YES;
+    dateForm.locale = [NSLocale currentLocale];
+    dateForm.dateStyle = NSDateFormatterShortStyle;
+    dateForm.timeStyle = NSDateFormatterShortStyle;
+    NSString *localDateString = [dateForm stringFromDate:dateFromParse];
+    
+    
+    //Determing the Location Name - Use the Coordinates if name is "current location"
+    NSString *locationName = eventObject[@"nameOfLocation"];
+    
+    if ([locationName isEqualToString:@"Current Location"]) {
+        //use the coordinate positions in place of the name.
+        locationName = @"Use Coordinates Instead";
+    }
+    
+    self.eventLocationNameLabel.text = locationName;
+    
+    
+    //Find the event address based on the pfgeopoint.
+    PFGeoPoint *locationOfEventPF = eventObject[@"locationOfEvent"];
+    CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
+    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+    [geoCoder reverseGeocodeLocation:locationOfEvent completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        if (!error && placemarks.count > 0) {
+            
+            CLPlacemark *placemark = [placemarks firstObject];
+            //ADDRESS AVAILABLE HERE.
+            self.eventLocationLabel.text = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO)];
+            
+        } else {
+            
+            //just use the latitude and longitude - embed with the name.
+            
+        }
+        
+        
+    }];
+    
     //NSString *locationText = [NSString stringWithFormat:@"Lat: %.02f Long: %.02f", locationOfEvent.latitude, locationOfEvent.longitude];
     //eventLocationLabel.text = locationText;
     
@@ -333,86 +383,130 @@
 #pragma mark CollectionView Delegate and DataSource Methods
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [picturesFromEvent count];
+    
+    if (section == 0) {
+        return 1;
+    } else {
+        return [picturesFromEvent count];
+    }
+    
 }
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    static NSString *cellIdentifier = @"EventPhotoCell";
+    NSLog(@"CALLED");
+    
+    static NSString *cellIdentifier  = @"EventPhotoCell";
     
     EventPictureCell *cell = (EventPictureCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
-    
-    PFFile *currentPictureFile = [picturesFromEvent objectAtIndex:indexPath.row];
-    
-    cell.eventPictureView.file = currentPictureFile;
-    [cell.eventPictureView loadInBackground];
+    switch (indexPath.section) {
+        case 0: {
+            
+            cell.eventPictureView.image = [UIImage imageNamed:@"FollowIcon"];
+        
+            break;
+        }
+        case 1: {
+            
+            cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
+            
+            PFFile *currentPictureFile = [picturesFromEvent objectAtIndex:indexPath.row];
+            
+            cell.eventPictureView.file = currentPictureFile;
+            [cell.eventPictureView loadInBackground];
+        
+            break;
+        }
+        default:
+            break;
+    }
     
     return cell;
+    
 }
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    //TODO: For all blur effects, move initialization to top and in these methods just change alpha values.  no need to recreate each time.
-    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-    self.blurEffectForModals.alpha = 0;
-    self.blurEffectForModals.frame = self.view.bounds;
-    [self.view addSubview:self.blurEffectForModals];
+    switch (indexPath.section) {
+        case 0: {
+            
+            [self uploadPhotoFromEvent:self];
+            
+            
+            break;
+        }
+        case 1: {
+            
+            //TODO: For all blur effects, move initialization to top and in these methods just change alpha values.  no need to recreate each time.
+            UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+            self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+            self.blurEffectForModals.alpha = 0;
+            self.blurEffectForModals.frame = self.view.bounds;
+            [self.view addSubview:self.blurEffectForModals];
+            
+            UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
+            UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+            [vibrancyEffectView setFrame:self.view.bounds];
+            
+            [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                self.blurEffectForModals.alpha = 0.9;
+            } completion:^(BOOL finished) {
+                
+                NSLog(@"Finished");
+                
+            }];
+            
+            /* animate screenshot of view
+             [UIView animateWithDuration:0.5 animations:^{
+             self.view.transform = CGAffineTransformMakeScale(1.4, 1.4);
+             }];
+             */
+            
+            PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
+            
+            displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+            displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
+            displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[picturesFromEvent objectAtIndex:indexPath.row];
+            displayFullScreenPhoto.delegate = self;
+            
+            [UIView animateWithDuration:0.5 animations:^{
+                
+                self.navigationController.navigationBar.alpha = 0;
+                self.tabBarController.tabBar.alpha = 0;
+                
+            } completion:^(BOOL finished) {
+                
+                self.navigationController.navigationBar.hidden = finished;
+                self.tabBarController.tabBar.hidden = finished;
+                
+            }];
+            
+            [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
+            /*
+             ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
+             resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+             resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
+             resetPasswordModal.delegate = self;
+             */
+            
+            
+            break;
+        }
+        default:
+            break;
+    }
     
-    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
-    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-    [vibrancyEffectView setFrame:self.view.bounds];
     
-    [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
-    
-    [UIView animateWithDuration:0.5 animations:^{
-        self.blurEffectForModals.alpha = 0.9;
-    } completion:^(BOOL finished) {
-        
-        NSLog(@"Finished");
-        
-    }];
-    
-    /* animate screenshot of view
-    [UIView animateWithDuration:0.5 animations:^{
-        self.view.transform = CGAffineTransformMakeScale(1.4, 1.4);
-    }];
-    */
-    
-    PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
-    
-    displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
-    displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[picturesFromEvent objectAtIndex:indexPath.row];
-    displayFullScreenPhoto.delegate = self;
-    
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        self.navigationController.navigationBar.alpha = 0;
-        self.tabBarController.tabBar.alpha = 0;
-        
-    } completion:^(BOOL finished) {
-       
-        self.navigationController.navigationBar.hidden = finished;
-        self.tabBarController.tabBar.hidden = finished;
-        
-    }];
-    
-    [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
-    /*
-    ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
-    resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
-    resetPasswordModal.delegate = self;
-     */
+
     
 }
 
@@ -496,7 +590,20 @@
             [self.eventObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
                 if (succeeded) {
+                    
+                    if (!picturesFromEvent) {
+                        picturesFromEvent = [[NSMutableArray alloc] init];
+                    }
+                    
+                    NSLog(@"PICTURESFROMEVENT: %@", picturesFromEvent);
+                    
+                    [picturesFromEvent addObject:profilePictureFile];
+                    
+                    NSLog(@"PICTURESFROMEVENT: %@", picturesFromEvent);
+
                     [self.pictureCollectionView reloadData];
+                    
+                    //[NSTimer scheduledTimerWithTimeInterval:2.0 target:self.pictureCollectionView selector:@selector(reloadData) userInfo:nil repeats:NO];
                 }
                 
             }];
@@ -572,6 +679,49 @@
     
 }
 
+- (IBAction)inviteFriends:(id)sender {
+    
+    PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
+    invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
+    invitePeopleVC.profileUsername = [PFUser currentUser];
+    invitePeopleVC.delegate = self;
+    
+    [self.navigationController pushViewController:invitePeopleVC animated:YES];
+    
+}
+
+- (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    for (PFUser *user in selectedPeople) {
+        
+        //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
+        //if (publicPrivateSwitch.on) {
+        //[invitedRelation addObject:user];
+        //}
+        
+        PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
+        
+        newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
+        newInvitationActivity[@"from"] = [PFUser currentUser];
+        newInvitationActivity[@"to"] = user;
+        newInvitationActivity[@"activityContent"] = self.eventObject;
+        
+        //save the invitation activities
+        [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            if (succeeded) {
+                NSLog(@"Saved");
+            } else {
+                NSLog(@"Error in Saved");
+            }
+        }];
+    }
+
+    
+}
+
 /*
  #pragma mark - Navigation
  
@@ -586,6 +736,8 @@
 //Current: User is added to the event as a Relation.  No information about the activity is stored (ie timestamp)
 //Update:  User is added to the event as a Relation and an entry in the activity table is created - will be used for Activity/Notifications View.
 //Long-Term:  Is this the best solution?
+
+
 - (IBAction)rsvpForEvent:(id)sender {
     
     int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];

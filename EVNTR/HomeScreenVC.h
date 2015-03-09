@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 
-@interface HomeScreenVC : PFQueryTableViewController
+@interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate>
 
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) PFUser *userForEventsQuery;

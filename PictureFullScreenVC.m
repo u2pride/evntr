@@ -25,6 +25,9 @@
     self.eventPhotoView.file = fileOfEventPhoto;
     [self.eventPhotoView loadInBackground];
     
+    //Tap to dismiss.
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToEvent:)];
+    [self.eventPhotoView.superview addGestureRecognizer:tapgr];
     
 }
 
