@@ -17,8 +17,24 @@ extern NSString *const kAppName;
 #define TAB_ACTIVITY 2
 #define TAB_PROFILE 3
 
+#pragma mark - Notification Names
+extern NSString *const kNotificationNewFollow;
+extern NSString *const kNotificationRemovedFollow;
+extern NSString *const kFollowActivity;
+extern NSString *const kEventCreated;
 
-#pragma mark - Events Pull and Details
+
+#pragma mark - User Management
+extern NSString *const kIsGuest;
+
+#pragma mark - Default Button Attributes
+#define BUTTON_BORDER_WIDTH 1.5f
+#define BUTTON_CORNER_RADIUS 8
+
+
+
+
+#pragma mark - Type of Event TableView
 
 #define ALL_PUBLIC_EVENTS 1
 #define CURRENT_USER_EVENTS 2
@@ -30,7 +46,7 @@ extern NSString *const kNOTRSVPedForEvent;
 extern NSString *const kGrantedAccessToEvent;
 
 
-#pragma mark - Activities Pull and Details
+#pragma mark - Type of Activites TableView
 
 #define ACTIVITIES_ALL 1
 #define ACTIVITIES_INVITES 2
@@ -41,6 +57,7 @@ extern NSString *const kGrantedAccessToEvent;
 
 extern NSString *const kGrantAccess;
 extern NSString *const kRevokeAccess;
+
 
 
 
@@ -57,6 +74,11 @@ extern NSString *const kRevokeAccess;
 #define CURRENT_USER_PROFILE 1
 #define OTHER_USER_PROFILE 2
 #define SPONSORED_PROFILE 3
+
+
+
+
+
 
 #pragma mark - Activity Types
 
@@ -84,19 +106,11 @@ extern NSString *const kNumberOfNotifications;
 extern NSString *const kLastBackgroundFetchTimeStamp;
 
 
-#pragma mark - Default Button Attributes
-#define BUTTON_BORDER_WIDTH 1.5f
-#define BUTTON_CORNER_RADIUS 8
-
-#pragma mark - Notification Names
-extern NSString *const kNotificationNewFollow;
-extern NSString *const kNotificationRemovedFollow;
-extern NSString *const kFollowActivity;
-extern NSString *const kEventCreated;
 
 
-#pragma mark - User Management 
-extern NSString *const kIsGuest;
+
+
+
 
 // Time Type From To Content
 // Alex followed Ben - 8 m ago

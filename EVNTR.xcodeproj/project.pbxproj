@@ -25,7 +25,6 @@
 		A41563451A76E15100565BB6 /* EventAddVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A41563441A76E15100565BB6 /* EventAddVC.m */; };
 		A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A415634B1A76EF3A00565BB6 /* ProfileVC.m */; };
 		A418129B1AA0BFA200317B0C /* GuestWelcomeVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */; };
-		A418129D1AA0CA6600317B0C /* busy.gif in Resources */ = {isa = PBXBuildFile; fileRef = A418129C1AA0CA6600317B0C /* busy.gif */; };
 		A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */; };
 		A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */; };
 		A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7F11A9BFF0900DF9ABE /* SearchVC.m */; };
@@ -132,7 +131,6 @@
 		A415634B1A76EF3A00565BB6 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
 		A41812991AA0BFA200317B0C /* GuestWelcomeVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuestWelcomeVC.h; sourceTree = "<group>"; };
 		A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuestWelcomeVC.m; sourceTree = "<group>"; };
-		A418129C1AA0CA6600317B0C /* busy.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = busy.gif; sourceTree = "<group>"; };
 		A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+NVTimeAgo.h"; sourceTree = "<group>"; };
 		A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+NVTimeAgo.m"; sourceTree = "<group>"; };
 		A423F7EC1A9BC46600DF9ABE /* UIButtonPFExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonPFExtended.h; sourceTree = "<group>"; };
@@ -272,14 +270,12 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
+				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Tabs */,
 				A4F2E9A61A7A806A00614412 /* Navigation - Utilities */,
-				A4C4EDC71A94E862000BC3AD /* Transitioning Delegate */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
-				A418129C1AA0CA6600317B0C /* busy.gif */,
-				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
 			);
 			path = EVNTR;
@@ -337,16 +333,7 @@
 			path = EVNTR;
 			sourceTree = "<group>";
 		};
-		A423F7E81A9B860900DF9ABE /* Custom Table Cells */ = {
-			isa = PBXGroup;
-			children = (
-				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
-				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
-			);
-			name = "Custom Table Cells";
-			sourceTree = "<group>";
-		};
-		A423F7EF1A9BC4D800DF9ABE /* Custom ImageView and Button */ = {
+		A423F7EF1A9BC4D800DF9ABE /* Custom UI Elements */ = {
 			isa = PBXGroup;
 			children = (
 				A41352531A81B80200034222 /* ImageViewPFExtended.h */,
@@ -354,48 +341,15 @@
 				A423F7EC1A9BC46600DF9ABE /* UIButtonPFExtended.h */,
 				A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */,
 			);
-			name = "Custom ImageView and Button";
-			sourceTree = "<group>";
-		};
-		A456C10C1A93E6B3009426AB /* Custom Table Cells */ = {
-			isa = PBXGroup;
-			children = (
-				A4F2E9B01A7ABDF400614412 /* PersonCell.h */,
-				A4F2E9B11A7ABDF400614412 /* PersonCell.m */,
-				A4F6C4BC1AA620C1001C68BA /* EventPictureCell.h */,
-				A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */,
-			);
-			name = "Custom Table Cells";
+			name = "Custom UI Elements";
 			sourceTree = "<group>";
 		};
 		A474306B1A8155C700CF3B8F /* Events */ = {
 			isa = PBXGroup;
 			children = (
-				A423F7F01A9BFF0900DF9ABE /* SearchVC.h */,
-				A423F7F11A9BFF0900DF9ABE /* SearchVC.m */,
-				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
-				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
-				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
-				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
-				A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */,
-				A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */,
-				A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */,
-				A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */,
-				A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */,
-				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
-				A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */,
-				A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */,
-				A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */,
-				A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */,
-				A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */,
-				A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */,
-				A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */,
-				A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */,
-				A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */,
-				A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */,
-				A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */,
-				A4BEB5FE1AA938110024D731 /* Archive */,
-				A4F2E9A51A7A805800614412 /* Custom Table Cells */,
+				A49A9E301AAE48CF00358D65 /* All Events */,
+				A49A9E2F1AAE48A300358D65 /* Event Details */,
+				A49A9E2D1AAE484400358D65 /* Add Event */,
 			);
 			name = Events;
 			sourceTree = "<group>";
@@ -405,11 +359,12 @@
 			children = (
 				A415634A1A76EF3A00565BB6 /* ProfileVC.h */,
 				A415634B1A76EF3A00565BB6 /* ProfileVC.m */,
-				A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */,
-				A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */,
 				A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */,
 				A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */,
-				A456C10C1A93E6B3009426AB /* Custom Table Cells */,
+				A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */,
+				A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */,
+				A4F2E9B01A7ABDF400614412 /* PersonCell.h */,
+				A4F2E9B11A7ABDF400614412 /* PersonCell.m */,
 			);
 			name = People;
 			sourceTree = "<group>";
@@ -419,8 +374,9 @@
 			children = (
 				A47430651A81556C00CF3B8F /* ActivityVC.h */,
 				A47430661A81556C00CF3B8F /* ActivityVC.m */,
-				A423F7E81A9B860900DF9ABE /* Custom Table Cells */,
-				A423F7EF1A9BC4D800DF9ABE /* Custom ImageView and Button */,
+				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
+				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
+				A423F7EF1A9BC4D800DF9ABE /* Custom UI Elements */,
 			);
 			name = Activities;
 			sourceTree = "<group>";
@@ -428,11 +384,89 @@
 		A49A9E2A1AAE456C00358D65 /* Main Tabs */ = {
 			isa = PBXGroup;
 			children = (
-				A474306C1A8155CC00CF3B8F /* People */,
 				A474306B1A8155C700CF3B8F /* Events */,
 				A474306E1A81563400CF3B8F /* Activities */,
+				A474306C1A8155CC00CF3B8F /* People */,
 			);
 			name = "Main Tabs";
+			sourceTree = "<group>";
+		};
+		A49A9E2B1AAE479300358D65 /* Third Party Utilties */ = {
+			isa = PBXGroup;
+			children = (
+				A463633A1A9D00F100AD461D /* UIImageEffects.h */,
+				A463633B1A9D00F100AD461D /* UIImageEffects.m */,
+				A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */,
+				A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */,
+			);
+			name = "Third Party Utilties";
+			sourceTree = "<group>";
+		};
+		A49A9E2C1AAE47D400358D65 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				A41563401A76ACC000565BB6 /* LogInVC.h */,
+				A41563411A76ACC000565BB6 /* LogInVC.m */,
+				A4C4EDC81A94EB0E000BC3AD /* ResetPasswordModalVC.h */,
+				A4C4EDC91A94EB0E000BC3AD /* ResetPasswordModalVC.m */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
+		A49A9E2D1AAE484400358D65 /* Add Event */ = {
+			isa = PBXGroup;
+			children = (
+				A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */,
+				A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */,
+				A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */,
+				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
+				A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */,
+				A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */,
+				A49A9E2E1AAE487D00358D65 /* Location */,
+			);
+			name = "Add Event";
+			sourceTree = "<group>";
+		};
+		A49A9E2E1AAE487D00358D65 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */,
+				A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */,
+				A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */,
+				A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */,
+				A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */,
+				A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */,
+				A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */,
+			);
+			name = Location;
+			sourceTree = "<group>";
+		};
+		A49A9E2F1AAE48A300358D65 /* Event Details */ = {
+			isa = PBXGroup;
+			children = (
+				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
+				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
+				A4F6C4BC1AA620C1001C68BA /* EventPictureCell.h */,
+				A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */,
+				A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */,
+				A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */,
+				A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */,
+				A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */,
+			);
+			name = "Event Details";
+			sourceTree = "<group>";
+		};
+		A49A9E301AAE48CF00358D65 /* All Events */ = {
+			isa = PBXGroup;
+			children = (
+				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
+				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
+				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
+				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
+				A423F7F01A9BFF0900DF9ABE /* SearchVC.h */,
+				A423F7F11A9BFF0900DF9ABE /* SearchVC.m */,
+			);
+			name = "All Events";
 			sourceTree = "<group>";
 		};
 		A4BEB5FE1AA938110024D731 /* Archive */ = {
@@ -446,7 +480,7 @@
 			name = Archive;
 			sourceTree = "<group>";
 		};
-		A4C4EDC71A94E862000BC3AD /* Transitioning Delegate */ = {
+		A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				A4D72FB31AAA175E00488D8D /* IDTransitionControllerTab.h */,
@@ -456,7 +490,7 @@
 				A4C4EDC31A94E85D000BC3AD /* IDTransitioningDelegate.h */,
 				A4C4EDC41A94E85D000BC3AD /* IDTransitioningDelegate.m */,
 			);
-			name = "Transitioning Delegate";
+			name = "Transitioning Controllers";
 			sourceTree = "<group>";
 		};
 		A4C4EDD31A95119C000BC3AD /* Resources */ = {
@@ -472,32 +506,24 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		A4F2E9A51A7A805800614412 /* Custom Table Cells */ = {
-			isa = PBXGroup;
-			children = (
-				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
-				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
-			);
-			name = "Custom Table Cells";
-			sourceTree = "<group>";
-		};
 		A4F2E9A61A7A806A00614412 /* Navigation - Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				A463633A1A9D00F100AD461D /* UIImageEffects.h */,
-				A463633B1A9D00F100AD461D /* UIImageEffects.m */,
-				A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */,
-				A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */,
-				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
-				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
-				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
-				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
 				A4F2E9B31A7AF5CF00614412 /* EVNUtility.h */,
 				A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */,
 				A4F2E9B61A7AF65800614412 /* EVNConstants.h */,
 				A4F2E9B71A7AF65800614412 /* EVNConstants.m */,
+				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
+				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
+				A43760FB1AA50CF4000F544D /* EVNCustomButton.h */,
+				A43760FC1AA50CF4000F544D /* EVNCustomButton.m */,
 				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
 				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
+				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
+				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
+				A4BEB5FE1AA938110024D731 /* Archive */,
+				A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */,
+				A49A9E2B1AAE479300358D65 /* Third Party Utilties */,
 			);
 			name = "Navigation - Utilities";
 			sourceTree = "<group>";
@@ -507,18 +533,13 @@
 			children = (
 				A4C4EDD41A95186A000BC3AD /* InitialScreenVC.h */,
 				A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */,
-				A41563401A76ACC000565BB6 /* LogInVC.h */,
-				A41563411A76ACC000565BB6 /* LogInVC.m */,
+				A49A9E2C1AAE47D400358D65 /* Login */,
 				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
 				A415633E1A769FDE00565BB6 /* SignUpVC.m */,
 				A41812991AA0BFA200317B0C /* GuestWelcomeVC.h */,
 				A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */,
 				A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */,
 				A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */,
-				A43760FB1AA50CF4000F544D /* EVNCustomButton.h */,
-				A43760FC1AA50CF4000F544D /* EVNCustomButton.m */,
-				A4C4EDC81A94EB0E000BC3AD /* ResetPasswordModalVC.h */,
-				A4C4EDC91A94EB0E000BC3AD /* ResetPasswordModalVC.m */,
 			);
 			name = "Login Flow";
 			sourceTree = "<group>";
@@ -617,7 +638,6 @@
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
-				A418129D1AA0CA6600317B0C /* busy.gif in Resources */,
 				A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
 			);

@@ -12,6 +12,7 @@
 
 @interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate>
 
+//Customize an Event Table - All Events, Curent User Events, Other User Events (specified in userForEventsQuery)
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) PFUser *userForEventsQuery;
 

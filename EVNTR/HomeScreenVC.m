@@ -6,19 +6,20 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
+#import "EVNConstants.h"
 #import "EventDetailVC.h"
 #import "EventTableCell.h"
 #import "HomeScreenVC.h"
-#import "ProfileVC.h"
-#import <Parse/Parse.h>
-#import <ParseUI/ParseUI.h>
-#import "EVNConstants.h"
-#import "AppDelegate.h"
-#import <ParseFacebookUtils/PFFacebookUtils.h>
-#import <FacebookSDK/FacebookSDK.h>
-#import "SearchVC.h"
 #import "NSDate+NVTimeAgo.h"
+#import "ProfileVC.h"
+#import "SearchVC.h"
 #import "UIImageEffects.h"
+
+#import <FacebookSDK/FacebookSDK.h>
+#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseUI/ParseUI.h>
 
 @interface HomeScreenVC () {
     PFGeoPoint *currentLocation;
