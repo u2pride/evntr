@@ -19,10 +19,8 @@
 
 @end
 
-@implementation SearchVC
-
-
 //TODO: Support iOS7 for searching.
+@implementation SearchVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,26 +42,18 @@
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
 
 
 #pragma mark -
 #pragma mark - UISearchResultsUpdating Delegate Method
 
 - (void) updateSearchResultsForSearchController:(UISearchController *)searchController {
-    
-    NSLog(@"UpdateSearchResultsForSearchController");
-    
 
     PFQuery *searchQuery = [PFQuery queryWithClassName:@"Events"];
     [searchQuery whereKey:@"title" containsString:self.searchController.searchBar.text];
-    //Add constraint for event type
     [searchQuery whereKey:@"typeOfEvent" notEqualTo:[NSNumber numberWithInt:PRIVATE_EVENT_TYPE]];
     [searchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        NSLog(@"Results of Search: %@", objects);
         self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
         [self.searchResultsTable reloadData];
     }];
@@ -74,11 +64,13 @@
 
 #pragma mark -
 #pragma mark - Search Results Table View Delegate and DataSource Methods
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *reuseIdentifier = @"searchResultsCell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseIdentifier];
+    
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     }
@@ -112,21 +104,10 @@
     EventDetailVC *eventVC = (EventDetailVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
     eventVC.eventObject = selectedObject;
     
-
-    
     [self.navigationController pushViewController:eventVC animated:YES];
     
 }
 
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

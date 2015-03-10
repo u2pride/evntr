@@ -63,6 +63,7 @@
     
 }
 
+//TODO - Remove blur and replace with Progress Indicator
 - (IBAction)createEvent:(id)sender {
     
     PFObject *newEvent = [PFObject objectWithClassName:@"Events"];

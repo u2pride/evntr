@@ -45,6 +45,7 @@
 		A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A463633B1A9D00F100AD461D /* UIImageEffects.m */; };
 		A46472C91A9688E200D93401 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A46472C81A9688E200D93401 /* FacebookSDK.framework */; };
 		A46472CB1A9688EA00D93401 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A46472CA1A9688EA00D93401 /* ParseFacebookUtils.framework */; };
+		A46DB25C1AAE7B0500208973 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A46DB25B1AAE7B0500208973 /* MBProgressHUD.m */; };
 		A47430671A81556C00CF3B8F /* ActivityVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A47430661A81556C00CF3B8F /* ActivityVC.m */; };
 		A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A47430691A8155AD00CF3B8F /* ActivityTableCell.m */; };
 		A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A488B35B1A801FE800738B4F /* MapKit.framework */; };
@@ -150,6 +151,8 @@
 		A463633B1A9D00F100AD461D /* UIImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageEffects.m; sourceTree = "<group>"; };
 		A46472C81A9688E200D93401 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		A46472CA1A9688EA00D93401 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
+		A46DB25A1AAE7B0500208973 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		A46DB25B1AAE7B0500208973 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		A47430651A81556C00CF3B8F /* ActivityVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityVC.h; sourceTree = "<group>"; };
 		A47430661A81556C00CF3B8F /* ActivityVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityVC.m; sourceTree = "<group>"; };
 		A47430681A8155AD00CF3B8F /* ActivityTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityTableCell.h; sourceTree = "<group>"; };
@@ -521,6 +524,8 @@
 				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
 				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
+				A46DB25A1AAE7B0500208973 /* MBProgressHUD.h */,
+				A46DB25B1AAE7B0500208973 /* MBProgressHUD.m */,
 				A4BEB5FE1AA938110024D731 /* Archive */,
 				A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */,
 				A49A9E2B1AAE479300358D65 /* Third Party Utilties */,
@@ -687,6 +692,7 @@
 				A4E5D4C51AA909BD00E86410 /* UserLocationTableCell.m in Sources */,
 				A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
+				A46DB25C1AAE7B0500208973 /* MBProgressHUD.m in Sources */,
 				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */,

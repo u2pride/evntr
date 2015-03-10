@@ -12,16 +12,5 @@
 
 @property (nonatomic, strong) NSDictionary *informationFromFB;
 
-@property (weak, nonatomic) IBOutlet UITextField *usernameField;
-@property (weak, nonatomic) IBOutlet UITextField *emailField;
-@property (weak, nonatomic) IBOutlet UITextField *nameField;
-@property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
-
-@property (weak, nonatomic) NSString *urlForProfilePicture;
-@property (strong, nonatomic) NSString *facebookID;
-@property (strong, nonatomic) NSString *firstName;
-@property (strong, nonatomic) NSString *location;
-
-- (IBAction)registerWithFBInformation:(id)sender;
 
 @end

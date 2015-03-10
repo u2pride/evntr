@@ -13,13 +13,11 @@
 
 - (void)awakeFromNib {
     // Initialization code
-    //eventCoverImage.image = [UIImage imageNamed:@"EventLoading"];
     
     self.backgroundColor = [UIColor clearColor];
     
     self.eventTitle.textColor = [UIColor whiteColor];
     
-       
     self.roundedContaingView.layer.cornerRadius = 10;
 }
 

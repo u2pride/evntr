@@ -11,12 +11,13 @@
 @implementation GoogleResult
 
 - (id)initWithTitle:(NSString*)name address:(NSString*)locationAddress location:(CLLocation*)locationCoordinates {
+    
     if ((self = [super init])) {
-        self.title = name;
-        self.address = locationAddress;
-        self.location = locationCoordinates;
-        
+        _title = name;
+        _address = locationAddress;
+        _location = locationCoordinates;
     }
+    
     return self;
 }
 

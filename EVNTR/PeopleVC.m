@@ -6,48 +6,44 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "PeopleVC.h"
-#import <Parse/Parse.h>
-#import "PersonCell.h"
-#import <CoreGraphics/CoreGraphics.h>
-#import "EVNUtility.h"
 #import "EVNConstants.h"
+#import "EVNUtility.h"
+#import "PeopleVC.h"
+#import "PersonCell.h"
 #import "ProfileVC.h"
+
+#import <CoreGraphics/CoreGraphics.h>
+#import <Parse/Parse.h>
+
 
 @interface PeopleVC ()
 
 @property (nonatomic, strong) NSArray *selectedPeople;
 @property (nonatomic, strong) NSMutableArray *selectedIndexes;
 
+@property (nonatomic, strong) NSMutableArray *usersMutableArray;
+@property (nonatomic, strong) NSArray *usersArray;
+
 @end
+
 
 @implementation PeopleVC
 
-#pragma mark -
-#pragma mark Init
-
 - (void) viewDidLoad {
     [super viewDidLoad];
+    
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
+    self.navigationController.view.backgroundColor = [UIColor whiteColor];
+    
+    
     //Maybe this is the part of the problem.
     //self.typeOfUsers = VIEW_ALL_PEOPLE;
     //self.profileUsername = nil;
     //[self findUsersOnParse];
     
     self.selectedIndexes = [[NSMutableArray alloc] init];
-    
-    //Remove text for back button used in navigation
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self.navigationItem setBackBarButtonItem:backButtonItem];
-    
-    //Minor UI Adjustments
-    self.navigationController.view.backgroundColor = [UIColor whiteColor];
-    
-    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.loadingSpinner.hidesWhenStopped = YES;
-    self.loadingSpinner.center = self.view.center;
-    [self.view addSubview:self.loadingSpinner];
-    [self.loadingSpinner startAnimating];
-    
     
     switch (self.typeOfUsers) {
         case VIEW_ALL_PEOPLE: {
@@ -78,8 +74,22 @@
             UIButton *doneSelectingInvitationsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
             [doneSelectingInvitationsButton addTarget:self action:@selector(doneSelectingPeopleToInvite) forControlEvents:UIControlEventTouchUpInside];
             [doneSelectingInvitationsButton setTitle:@"DONE" forState:UIControlStateNormal];
-            doneSelectingInvitationsButton.frame = CGRectMake(0, 400, 100, 50);
             [self.view addSubview:doneSelectingInvitationsButton];
+            doneSelectingInvitationsButton.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            NSLayoutConstraint *constraint1 = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0f constant:-80.f];
+            
+            [self.view addConstraint:constraint1];
+            
+            NSLayoutConstraint *constraint2 = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0.0f];
+            
+            [self.view addConstraint:constraint2];
+            
+            NSLayoutConstraint *constraint3 = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem: nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0f constant:200.0f];
+            
+            [self.view addConstraint:constraint3];
+            
+            
             
             self.collectionView.allowsMultipleSelection = YES;
             
@@ -97,22 +107,16 @@
         }
     }
     
-
-    
     //Start Looking for Users
     [self findUsersOnParse];
 
 }
 
-- (void) didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-}
-
 
 - (void)findUsersOnParse {
     
-    usersArray = [[NSArray alloc] init];
-    usersMutableArray = [[NSMutableArray alloc] init];
+    self.usersArray = [[NSArray alloc] init];
+    self.usersMutableArray = [[NSMutableArray alloc] init];
     
     switch (self.typeOfUsers) {
         case VIEW_ALL_PEOPLE: {
@@ -122,7 +126,7 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
-                usersArray = [[NSArray alloc] initWithArray:usersFound];
+                self.usersArray = [[NSArray alloc] initWithArray:usersFound];
                 [self.collectionView reloadData];
                 
             }];
@@ -139,15 +143,11 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
-                NSLog(@"RESULTS OF VIEW_FOLLOWERS QUERY: %@", usersFound);
-                
                 for (PFObject *object in usersFound) {
-                    [usersMutableArray addObject:object[@"from"]];
+                    [self.usersMutableArray addObject:object[@"from"]];
                 }
-                usersArray = usersMutableArray;
                 
-                NSLog(@"Results Given to UICollectionView: %@", usersArray);
-
+                self.usersArray = self.usersMutableArray;
                 
                 [self.collectionView reloadData];
             }];
@@ -164,12 +164,10 @@
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
                 for (PFObject *object in usersFound) {
-                    [usersMutableArray addObject:object[@"to"]];
+                    [self.usersMutableArray addObject:object[@"to"]];
                 }
                 
-                usersArray = usersMutableArray;
-                
-                NSLog(@"Results Given to UICollectionView: %@", usersArray);
+                self.usersArray = self.usersMutableArray;
                 
                 [self.collectionView reloadData];
             }];
@@ -187,12 +185,10 @@
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
                 for (PFObject *object in usersFound) {
-                    [usersMutableArray addObject:object[@"to"]];
+                    [self.usersMutableArray addObject:object[@"to"]];
                 }
                 
-                usersArray = usersMutableArray;
-                
-                NSLog(@"Results Given to UICollectionView: %@", usersArray);
+                self.usersArray = self.usersMutableArray;
                 
                 [self.collectionView reloadData];
             }];
@@ -206,7 +202,7 @@
             PFQuery *queryForAttenders = [attendingRelation query];
             [queryForAttenders findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                usersArray = objects;
+                self.usersArray = objects;
                 [self.collectionView reloadData];
                 
             }];
@@ -218,7 +214,6 @@
             break;
     }
     
-    [self.loadingSpinner stopAnimating];
 }
 
 #pragma mark -
@@ -229,7 +224,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [usersArray count];
+    return [self.usersArray count];
 }
 
 
@@ -239,9 +234,7 @@
     
     PersonCell *cell = (PersonCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    PFUser *currentUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
-    
-    NSLog(@"Current User: %@", currentUser);
+    PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
     
     //Default Profile Pic Until User Information is Fetched in Background
     cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
@@ -264,7 +257,7 @@
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
 
         PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        PFUser *currentUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
+        PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
         
         //already selected - deselect
         if ([self.selectedIndexes containsObject:indexPath]) {
@@ -298,41 +291,11 @@
             
         }
         
-        
-    
-        //FOR SOME REASON, using the masking with the current image in cell.profileImage.image comes back null.  Maybe because the image is already masked???????
-        
-        //PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        //UIImage *cellProfileImage = cell.profileImage.image;
-        //cell.profileImage.image = nil;
-        
-        //NSLog(@"MY CELL: %@ and its Image: %@", cell, cellProfileImage);
-        
-        //UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:cell.bounds];
-        //backgroundView.image = [EVNUtility maskImage:cell.profileImage.image withMask:[UIImage imageNamed:@"MaskImage"]];
-        //backgroundView.image = cell.profileImage.image;
-        //UIImage *imageReturned = [self maskImage:cell.profileImage.image withMask:[UIImage imageNamed:@"MaskImageSelected"]];
-        //backgroundView.image = imageReturned;
-        
-        //cell.profileImage.alpha = 0.2;
-        
-        //NSLog(@"DEBUG ALL.  cell frame: %@ bckview frame: %@ and image: %@", NSStringFromCGRect(cell.frame), NSStringFromCGRect(backgroundView.frame), imageReturned);
-        
-        //cell.selectedBackgroundView = backgroundView;
-        //cell.selectedBackgroundView.backgroundColor = [UIColor greenColor];
-        
-        
-        //UIImageView *maskView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"MaskImageSelected"]];
-        //cell.profileImage.layer.mask = maskView.layer;
-        //[cell.profileImage setNeedsDisplay];
-
-        
     } else {
         
-        PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
+        PFUser *selectedUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
         
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-        NSLog(@"username of current user %@ but passing this username from peoplevc %@", [[PFUser currentUser] objectForKey:@"username"], selectedUser[@"username"]);
         viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
         viewUserProfileVC.hidesBottomBarWhenPushed = YES;
         
@@ -343,36 +306,29 @@
 
 
 
-
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
 
         PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
         
-        PFUser *currentUser = (PFUser *)[usersArray objectAtIndex:indexPath.row];
-        
-        NSLog(@"Current User: %@", currentUser);
-        NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+        PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
         
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             cell.profileImage.file = (PFFile *)object[@"profilePicture"];
             [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                 cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
-                NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
                 
             }];
         }];
-    } else {
-        
     }
 }
 
 
 
-#pragma mark -
 #pragma mark - EventAddVCDelegate Methods
 
+//TODO - Test this for large lists with scrolling.
 - (void)doneSelectingPeopleToInvite {
     
     NSMutableArray *selectedPeople = [[NSMutableArray alloc] init];
@@ -380,7 +336,7 @@
     
     for (int i = 0; i < indexPaths.count; i++) {
         NSIndexPath *currentIndex = indexPaths[i];
-        PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:currentIndex.row];
+        PFUser *selectedUser = (PFUser *)[self.usersArray objectAtIndex:currentIndex.row];
         [selectedPeople addObject:selectedUser];
     }
     
@@ -391,30 +347,6 @@
     }
     
 }
-
-
-
-
-
-
-/*
-- (NSArray *)finishedSelectingInvitations {
-    
-    NSMutableArray *selectedPeople = [[NSMutableArray alloc] init];
-    NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
-    
-    for (int i = 0; i < indexPaths.count; i++) {
-        NSIndexPath *currentIndex = indexPaths[i];
-        PFUser *selectedUser = (PFUser *)[usersArray objectAtIndex:currentIndex.row];
-        [selectedPeople addObject:selectedUser];
-    }
-    
-    return selectedPeople;
-    
-    
-}
-
-*/
 
 
 @end

@@ -10,7 +10,6 @@
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 
-//TODO:  should this be PFIMAGEVIEW?
 @interface ImageViewPFExtended : PFImageView
 
 @property (nonatomic, strong) PFObject *objectForImageView;

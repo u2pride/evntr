@@ -11,8 +11,6 @@
 
 @implementation ActivityTableCell
 
-
-//TODO: Clean up.
 - (void)setActivityContentTextLabel:(UILabel *)activityContentTextLabel {
     
     //custom tasks here..

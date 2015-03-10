@@ -6,22 +6,24 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EventDetailVC.h"
-#import <Parse/Parse.h>
 #import "EVNConstants.h"
-#import "PeopleVC.h"
 #import "EVNUtility.h"
-#import "UIImageEffects.h"
-#import "UIColor+EVNColors.h"
+#import "EventDetailVC.h"
 #import "EventPictureCell.h"
-#import "PictureFullScreenVC.h"
 #import "IDTransitioningDelegate.h"
-#import <AddressBookUI/AddressBookUI.h>
-#import "StandbyCollectionViewCell.h"
 #import "ImageViewPFExtended.h"
+#import "PeopleVC.h"
+#import "PictureFullScreenVC.h"
+#import "StandbyCollectionViewCell.h"
+#import "UIColor+EVNColors.h"
+#import "UIImageEffects.h"
+
+#import <AddressBookUI/AddressBookUI.h>
+#import <Parse/Parse.h>
 
 
-@interface EventDetailVC () {
+@interface EventDetailVC ()
+{
     NSMutableArray *picturesFromEvent;
     NSMutableArray *usersOnStandby;
 }
@@ -33,6 +35,16 @@
 @property (weak, nonatomic) IBOutlet UIButton *viewAttendingButton;
 @property (weak, nonatomic) IBOutlet UICollectionView *pictureCollectionView;
 @property (strong, nonatomic) IBOutlet UICollectionView *standbyUsersCollectionView;
+@property (weak, nonatomic) IBOutlet UILabel *eventTitle;
+@property (weak, nonatomic) IBOutlet PFImageView *eventCoverPhoto;
+@property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
+@property (weak, nonatomic) IBOutlet UILabel *creatorName;
+@property (weak, nonatomic) IBOutlet UILabel *eventDescription;
+@property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
+@property (strong, nonatomic) IBOutlet UILabel *eventLocationNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *eventLocationLabel;
+
+@property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
 
 @property (nonatomic, strong) UIImage *navBarBackground;
 @property (nonatomic, strong) UIImage *navbarShadow;
@@ -805,7 +817,7 @@
 }
 
 - (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
-    
+        
     [self.navigationController popViewControllerAnimated:YES];
     
     for (PFUser *user in selectedPeople) {

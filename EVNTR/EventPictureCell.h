@@ -13,5 +13,4 @@
 
 @property (weak, nonatomic) IBOutlet PFImageView *eventPictureView;
 
-
 @end

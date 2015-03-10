@@ -6,24 +6,23 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNConstants.h"
 #import "FacebookSDK/FacebookSDK.h"
 #import "HomeScreenVC.h"
 #import "IDTransitioningDelegate.h"
 #import "LogInVC.h"
+#import "MBProgressHUD.h"
 #import "ParseFacebookUtils/PFFacebookUtils.h"
 #import "ResetPasswordModalVC.h"
+#import "SignUpVC.h"
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
+
 #import <Parse/Parse.h>
 #import <QuartzCore/QuartzCore.h>
-#import "SignUpVC.h"
-#import "EVNConstants.h"
+
 
 @interface LogInVC ()
-{
-    BOOL isNewUserFromFacebook;
-    BOOL viewIsPulledUpForTextInput;
-}
 
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegateForModal;
 
@@ -31,7 +30,12 @@
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
 @property (weak, nonatomic) IBOutlet UILabel *textSeparator;
+
 @property (nonatomic, strong) UIVisualEffectView *blurViewForModal;
+@property (nonatomic, strong) UIVisualEffectView *blurOutLogInScreen;
+@property (nonatomic) BOOL isNewUserFromFacebook;
+@property (nonatomic) BOOL viewIsPulledUpForTextInput;
+@property (nonatomic, strong) MBProgressHUD *HUD;
 
 - (IBAction)resetUserPassword:(id)sender;
 
@@ -46,8 +50,8 @@
     [super viewDidLoad];
 
     //Initializing Variables and Objects
-    isNewUserFromFacebook = NO;
-    viewIsPulledUpForTextInput = NO;
+    self.isNewUserFromFacebook = NO;
+    self.viewIsPulledUpForTextInput = NO;
     self.transitioningDelegateForModal = [[IDTransitioningDelegate alloc] init];
     
     self.usernameField.delegate = self;
@@ -67,20 +71,6 @@
     
     self.loginButton.backgroundColor = [UIColor orangeThemeColor];
 
-
-    //background video code
-    //NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Polygon" ofType:@"gif"];
-    //NSData *gif = [NSData dataWithContentsOfFile:filePath];
-    //backgroundVideo.frame = self.view.frame;
-    //[backgroundVideo loadData:gif MIMEType:@"image/gif" textEncodingName:nil baseURL:nil];
-    //backgroundVideo.userInteractionEnabled = NO;
-    
-    
-}
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
 }
 
 
@@ -90,66 +80,46 @@
 //Normal User Login with Username and Password
 - (void)login:(id)sender {
     
+    [self blurViewDuringLoginWithMessage:@"Logging you in..."];
+    
     [PFUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         if (user) {
-            
-            //Animation For Logging In
-            UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-            UIVisualEffectView *blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-            blurOutLogInScreen.alpha = 0;
-            blurOutLogInScreen.frame = self.view.bounds;
-            [self.view addSubview:blurOutLogInScreen];
-            //[self.view bringSubviewToFront:blurOutLogInScreen];
-            
-            UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
-            loginInTextLabel.alpha = 0;
-            loginInTextLabel.text = @"Logging you in...";
-            loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
-            loginInTextLabel.textAlignment = NSTextAlignmentCenter;
-            loginInTextLabel.textColor = [UIColor whiteColor];
-            loginInTextLabel.center = self.view.center;
-            [self.view addSubview:loginInTextLabel];
             
             //Set isGuest Object
             NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
             [standardDefaults setBool:NO forKey:kIsGuest];
             [standardDefaults synchronize];
             
-            [UIView animateWithDuration:2.0 animations:^{
-                blurOutLogInScreen.alpha = 1;
-                loginInTextLabel.alpha = 1;
-            } completion:^(BOOL finished) {
-                
-                NSLog(@"Finished");
-                [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+            //Segue to Main View
+            [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
 
-            }];
-            
             
         } else {
-            
             //Failed to Login
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Username or Password Does Not Exist" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
             
             [errorAlert show];
-            
-            NSLog(@"PFUser Login Error: %@", error);
         }
+        
+        self.blurOutLogInScreen.alpha = 0;
+        [self.blurOutLogInScreen removeFromSuperview];
+        
     }];
     
     
 }
 
+
 //Logging In with Parse and Facebook Integration
 - (IBAction)loginWithFacebook:(id)sender {
+    
+    [self blurViewDuringLoginWithMessage:@"Logging you in..."];
     
     // TODO:  Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
     // Login PFUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-        
-        //TODO: Stop Activity Indicator
         
         if (!user) {
             NSString *errorMessage = nil;
@@ -173,68 +143,22 @@
                 
                 [self grabUserDetailsFromFacebook];
                 
-                /*
-                isNewUserFromFacebook = YES;
-                
-                //Create a Sign Up page and populate it with Facebook Details.  Have the user verify.  Also helps funnel users through onboading. Maybe have guests go through onboarding as well? yeah.
-                SignUpVC *signUpVC = (SignUpVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SignUpViewController"];
-                [self presentViewController:signUpVC animated:YES completion:nil];
-                
-                id<NewUserFacebookDelegate> strongDelegate = self.delegate;
-                
-                if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetails:)]) {
-                    
-                    [strongDelegate createFBRegisterVCWithDetails:nil];
-                }
-                 */
-                
-                
             } else {
                 NSLog(@"User with facebook logged in!");
-                
-                UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
-                loginInTextLabel.alpha = 0;
-                loginInTextLabel.text = @"WELCOME to EVNTR";
-                loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:26];
-                loginInTextLabel.textAlignment = NSTextAlignmentCenter;
-                loginInTextLabel.textColor = [UIColor whiteColor];
-                loginInTextLabel.center = self.view.center;
-                [self.view addSubview:loginInTextLabel];
                 
                 //Set isGuest Object
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];
                 [standardDefaults synchronize];
-                
-                [UIView animateWithDuration:0.64 animations:^{
-                    loginInTextLabel.alpha = 1;
-                } completion:^(BOOL finished) {
                     
-                    NSLog(@"Finished");
-                    [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
-                    
-                }];
+                [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+
             }
             
-
-            
         }
-    }];
-    
-    // TODO: Start Activity Indicator
-    
-    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    UIVisualEffectView *blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-    blurOutLogInScreen.alpha = 0;
-    blurOutLogInScreen.frame = self.view.bounds;
-    [self.view addSubview:blurOutLogInScreen];
-    //[self.view bringSubviewToFront:blurOutLogInScreen];
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        blurOutLogInScreen.alpha = 1;
-    } completion:^(BOOL finished) {
         
-        NSLog(@"Finished");
+        self.blurOutLogInScreen.alpha = 0;
+        [self.blurOutLogInScreen removeFromSuperview];
         
     }];
     
@@ -245,9 +169,17 @@
 
 - (void) grabUserDetailsFromFacebook {
     
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.hidesWhenStopped = YES;
+    [self.view addSubview:activityIndicator];
+    [activityIndicator startAnimating];
+    
     FBRequest *request = [FBRequest requestForMe];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
+            
+            [activityIndicator stopAnimating];
+            
             // result is a dictionary with the user's Facebook data
             NSDictionary *userData = (NSDictionary *)result;
             NSLog(@"FB User Data: %@", result);
@@ -275,6 +207,33 @@
 }
 
 
+- (void) blurViewDuringLoginWithMessage:(NSString *)message {
+    
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    self.blurOutLogInScreen.alpha = 0;
+    self.blurOutLogInScreen.frame = self.view.bounds;
+    [self.view addSubview:self.blurOutLogInScreen];
+    
+    UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    loginInTextLabel.alpha = 0;
+    loginInTextLabel.text = message;
+    loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    loginInTextLabel.textAlignment = NSTextAlignmentCenter;
+    loginInTextLabel.textColor = [UIColor whiteColor];
+    loginInTextLabel.center = self.view.center;
+    [self.view addSubview:loginInTextLabel];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        self.blurOutLogInScreen.alpha = 1;
+        loginInTextLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+}
+
+
 #pragma mark - Reset User Password Modal
 
 //Present Modal View for Resetting Password
@@ -297,7 +256,7 @@
         self.blurViewForModal.alpha = 1;
     }];
     
-    /* Swift Example
+     /* Swift Example
      let visuaEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
      visuaEffectView.frame = self.view.bounds
      visuaEffectView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
@@ -314,8 +273,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    if ([textField isEqual:self.usernameField])
-    {
+    if ([textField isEqual:self.usernameField]) {
         [self.passwordField becomeFirstResponder];
     } else {
         [textField resignFirstResponder];
@@ -327,7 +285,7 @@
 //Adjust View When The User Starts Inputting Credentials
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
  
-    if (!viewIsPulledUpForTextInput) {
+    if (!self.viewIsPulledUpForTextInput) {
         [self moveLoginFieldsWithKeyboard:YES];
     }
 
@@ -336,7 +294,7 @@
  
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
  
-    if ([textField isEqual:self.passwordField] && viewIsPulledUpForTextInput) {
+    if ([textField isEqual:self.passwordField] && self.viewIsPulledUpForTextInput) {
         [self moveLoginFieldsWithKeyboard:NO];
     }
     
@@ -359,7 +317,7 @@
         self.loginButton.alpha = (up ? 0 : 1);
         
     } completion:^(BOOL finished) {
-        viewIsPulledUpForTextInput = (up ? YES : NO);
+        self.viewIsPulledUpForTextInput = (up ? YES : NO);
 
     }];
 
@@ -368,11 +326,10 @@
 
 //Allow user to dismiss keyboard by tapping the View
 //TODO: Implement for all Use Cases of Tapping and Entering Return on Keyboard
-
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
-    if (viewIsPulledUpForTextInput) {
-        viewIsPulledUpForTextInput = NO;
+    if (self.viewIsPulledUpForTextInput) {
+        self.viewIsPulledUpForTextInput = NO;
         [self.usernameField resignFirstResponder];
         [self.passwordField resignFirstResponder];
         [self moveLoginFieldsWithKeyboard:NO];
@@ -428,17 +385,6 @@
 }
 
 
-#pragma mark - Navigation
- 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-     
-    if ([segue.identifier isEqualToString:@"LoginToHomeView"]) {
-        TabNavigationVC *tabController = (TabNavigationVC *)[segue destinationViewController];
-        //tabController.isNewUserWithFacebookLogin = isNewUserFromFacebook;
-    }
-     
-}
 
 
 @end

@@ -6,17 +6,17 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "ActivityVC.h"
 #import "ActivityTableCell.h"
+#import "ActivityVC.h"
 #import "EVNConstants.h"
-#import "ProfileVC.h"
 #import "EventDetailVC.h"
 #import "NSDate+NVTimeAgo.h"
+#import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
 @implementation ActivityVC
 
-
+//TODO: move to viewDidLoad? - Doesn't depend on view though.
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
@@ -25,10 +25,10 @@
         self.parseClassName = @"Activities";
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
-        //self.isComingFromNavigation = NO;
         self.userForActivities = [PFUser currentUser];
         self.typeOfActivityView = ACTIVITIES_ALL;
     }
+    
     return self;
     
 }
@@ -42,55 +42,60 @@
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
-
-
-}
-
-- (void) viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];
-    
-    //TODO: should be done in viewDidLoad
     switch (self.typeOfActivityView) {
         case ACTIVITIES_ALL: {
             self.navigationItem.title = @"Notifications";
-            
             break;
         }
         case ACTIVITIES_INVITES: {
             self.navigationItem.title = @"Invites";
-
             break;
         }
         case ACTIVITIES_REQUESTS_TO_ME: {
             self.navigationItem.title = @"Access Requests";
-            
             break;
         }
         case ACTIVITIES_ATTENDED: {
             self.navigationItem.title = @"Events Attended";
-
             break;
         }
         case ACTIVITIES_MY_REQUESTS_STATUS: {
             self.navigationItem.title = @"Access Responses";
-            
             break;
         }
         default:
-
             
             break;
     }
+
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    //TODO:  ONLY FOR ALL ACTIVITIES
+    NSNumber *noNewActivities = 0;
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setObject:noNewActivities forKey:kNumberOfNotifications];
+    [standardDefaults synchronize];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
 }
 
 
+#pragma mark - New Follow Notiification
+
+//Method that gets called when a new follow notification is posted
+//Used to update whether the current user is following/not following in the notification table.
+//TODO:  only reloads follow activities - eventually the notification should contain the username and the tableview should only update that one cell.  Need to add for requests maybe
 - (void)newFollowActivity:(NSNotification *)notification {
     
     if ([notification.object isEqual:self]) {
         NSLog(@"Notification is sent from myself - ignore");
+    
     } else {
+        
         [self loadObjects];
         NSLog(@"Re-loading Objects in tableview");
         
@@ -109,29 +114,17 @@
          */
     }
     
-
-    
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    //TODO:  ONLY FOR ALL ACTIVITIES
-    NSNumber *noNewActivities = 0;
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    [standardDefaults setObject:noNewActivities forKey:kNumberOfNotifications];
-    [standardDefaults synchronize];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
 
-}
 
+#pragma mark - Parse UITableView Methods
 
 - (PFQuery *)queryForTable {
     
     PFQuery *queryForActivities = [PFQuery queryWithClassName:@"Activities"];
     
-    NSLog(@"self.typeOfActivityView = %d", self.typeOfActivityView);
-    
+    //Build the query for the table
     switch (self.typeOfActivityView) {
         case ACTIVITIES_ALL: {
             //[queryForActivities whereKey:@"type" notEqualTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
@@ -150,8 +143,6 @@
         case ACTIVITIES_REQUESTS_TO_ME: {
             //list of people that want access to your events
             //query activities where
-            
-            NSLog(@"Building Query for Activities Requests");
             
             //Get all events by User
             PFQuery *innerQueryForAuthor = [PFQuery queryWithClassName:@"Events"];
@@ -182,7 +173,6 @@
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
             [queryForActivities orderByDescending:@"updatedAt"];
             
-            
             break;
         }
         default:
@@ -192,8 +182,6 @@
             break;
     }
     
-
-    NSLog(@"Returning this query: %@", queryForActivities);
     return queryForActivities;
     
 }
@@ -206,9 +194,6 @@
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
     
-    NSLog(@"RETURNED ACTIVITIES: %@", self.objects);
-    
-    
 }
 
 
@@ -220,10 +205,7 @@
     ActivityTableCell *activityCell = (ActivityTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
     int activityType = (int) [[object objectForKey:@"type"] integerValue];
-    //NSLog(@"-------OBJECT: %@ for Row: %ld", object, (long)indexPath.row);
-    //NSLog(@"activity type : %d", activityType);
-    
-    
+
     if (activityType == FOLLOW_ACTIVITY) {
         NSLog(@"Follow Activity");
     } else if (activityType == INVITE_ACTIVITY) {
@@ -244,8 +226,6 @@
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
             
-            NSLog(@"Follow Activity SWITCH");
-            
             PFUser *userWhoFollowedCurrentProfile = object[@"from"];
             
             //TODO - Use includeKey: in original query. Therefore you don't need to do fetchIfNeeded a ton.
@@ -255,8 +235,6 @@
                 
                 //Create Content for the Cell
                 NSString *username = user[@"username"];
-                //Using the AccessibilityHint property to carry the username for taps.
-                //activityCell.leftSideImageView.accessibilityHint = user[@"username"];
                 activityCell.leftSideImageView.userInteractionEnabled = YES;
                 activityCell.leftSideImageView.objectForImageView = userWhoFollowed;
                 UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
@@ -265,7 +243,6 @@
                 NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", username];
                 activityCell.activityContentTextLabel.text = textForActivityCell;
                 
-                
                 //configure view button on right side
                 UIButtonPFExtended *followButton = activityCell.actionButton;
                 followButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
@@ -273,8 +250,6 @@
                 activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
                 activityCell.actionButton.backgroundColor = [UIColor clearColor];
                 
-
-            
                 //Grab the profile pic of the user and set it to the left image
                 PFFile *profilePictureFromParse = user[@"profilePicture"];
                 [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
@@ -309,8 +284,6 @@
         }
         case INVITE_ACTIVITY: {
             
-            NSLog(@"Invite Activity SWITCH");
-
             PFUser *userWhoInvitedCurrentProfile = object[@"from"];
             __block NSString *username;
 
@@ -365,26 +338,13 @@
                         [errorAlert show];
                     }
                     
-                    
-                    
-                    
-                    //activityCell.rightSideImageView.userInteractionEnabled = YES;
-                    //activityCell.rightSideImageView.objectForImageView = event;
-                    //UITapGestureRecognizer *viewEventGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvent:)];
-                    //[activityCell.rightSideImageView addGestureRecognizer:viewEventGR];
-                    
                 }];
                 
             }];
             
-            
-
-            
             break;
         }
         case REQUEST_ACCESS_ACTIVITY: {
-            
-            NSLog(@"REQUEST ACCESS ACTIVITY FOUND");
             
             PFUser *userRequestedAccess = object[@"from"];
 
@@ -434,16 +394,12 @@
                     
                 }];
                 
-
-                
-                
             }];
             
             break;
         }
         case ATTENDING_ACTIVITY: {
             
-            //you are attending {eventName} view button
             PFFile *profilePicture = [[PFUser currentUser] objectForKey:@"profilePicture"];
             [profilePicture getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                 if (!error) {
@@ -462,7 +418,7 @@
                     NSDate *currentDate = [NSDate date];
                     NSComparisonResult dateComparison = [currentDate compare:dateOfEvent];
                     
-                    
+                    //Build the description string based off Time of Event and User
                     if ([self.userForActivities.objectId isEqualToString:[PFUser currentUser].objectId] ) {
                     
                         if (dateComparison == NSOrderedAscending) {
@@ -490,11 +446,8 @@
                         
                     }
 
-                    
-
                     activityCell.activityContentTextLabel.text = activityDescriptionString;
                     
-                    activityCell.actionButton.eventToView = object;
                     
                     //configure view button on right side
                     [activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
@@ -502,21 +455,15 @@
                     activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
                     activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
                     activityCell.actionButton.backgroundColor = [UIColor clearColor];
+                    activityCell.actionButton.eventToView = object;
                     [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
                 }
                 
-                
             }];
-            
-            
-            
-            
             
             break;
         }
         case ACCESS_GRANTED_ACTIVITY: {
-            
-            NSLog(@"ACCESS GRANTED ACTIVITY FOUND");
             
             PFUser *userThatGrantedAccess = object[@"from"];
             
@@ -550,20 +497,14 @@
                     
                 }];
                 
-                
-                
-                
             }];
 
-            
             break;
         }
         default:
             
             NSLog(@"DEFAULT Activity SWITCH");
 
-            //NSLog(@"UNKNOWN TYPE OF ACTIVITY");
-            //NSLog(@"WITH OBJECT: %@", object);
             break;
     }
     
@@ -580,7 +521,6 @@
 - (void)viewProfile:(UITapGestureRecognizer *)tapgr {
     
     ImageViewPFExtended *tappedImage = (ImageViewPFExtended *)tapgr.view;
-    NSLog(@"Username: %@", tappedImage.objectForImageView);
     NSString *username = [tappedImage.objectForImageView objectForKey:@"username"];
     
     ProfileVC *followerProfileVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
@@ -690,7 +630,7 @@
         
                     
                 } else {
-                    NSLog(@"Error Deletin Follow Activity");
+                    NSLog(@"Error Deleting Follow Activity");
                 }
                 
                 //Re-Enable Button
@@ -698,7 +638,6 @@
                 
             }];
         }];
-        
         
     } else {
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];

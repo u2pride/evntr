@@ -38,6 +38,8 @@
     
     self = [super initWithCoder:aDecoder];
     if (self) {
+        
+        //TODO - SHOULD NOT BE DOING THIS self.____ is not for init.
         self.title = @"Events";
         self.parseClassName = @"Events";
         self.pullToRefreshEnabled = YES;
@@ -60,12 +62,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
     //probably already wired up.    
     self.tableView.delegate = self;
-    
-    NSLog(@"VIEWDIDLOAD OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
-
     
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SearchIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySearchController)];
     self.navigationItem.rightBarButtonItem = searchButton;
@@ -110,44 +108,9 @@
 
 
 
-
 - (void) viewWillAppear:(BOOL)animated {
     
-    //NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    //NSString *yesString = [standardDefaults objectForKey:@"MYKEY"];
-    
-    
-    /*
-    if ([yesString isEqualToString:@"Yes"]) {
-    
-        UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        UIVisualEffectView *darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-        darkBlurEffectView.alpha = 1.0;
-        darkBlurEffectView.frame = [UIScreen mainScreen].bounds;
-        [self.tabBarController.view addSubview:darkBlurEffectView];
-        
-        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
-        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-        [vibrancyEffectView setFrame:self.view.bounds];
-        
-        [[darkBlurEffectView contentView] addSubview:vibrancyEffectView];
-        
-        
-        [UIView animateWithDuration:1.0 animations:^{
-            darkBlurEffectView.alpha = 0.0;
-            
-        } completion:^(BOOL finished) {
-        
-            NSString *noString = @"No";
-            [standardDefaults setObject:noString forKey:@"MYKEY"];
-            [standardDefaults synchronize];
-        }];
-        
-    }
-     
-     */
-    
-
+    [super viewWillAppear:animated];
 }
 
 
@@ -198,8 +161,6 @@
 }
 
 
-
-
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     
@@ -219,7 +180,6 @@
 #pragma mark - PFTableView Data & Custom Cells
 
 - (PFQuery *)queryForTable {
-    
     
     //Return All Events for the Basic All Events View
     //Return a Specific Username's events when you are viewing someone's events.
@@ -346,15 +306,6 @@
                 break;
         }
         
-        
-        
-        /*
-        UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-        
-        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-        effectView.frame = CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height);
-        [cell.eventCoverImage addSubview:effectView];
-        */
     }
     
     return cell;
@@ -380,7 +331,6 @@
         //PFObject *selectedObject = [self objectAtIndexPath:indexPath];
 
         eventDetailVC.eventObject = event;
-        NSLog(@"PERFORMSEGUE OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
 
         
     } else if ([[segue identifier] isEqualToString:@"AddNewEvent"]) {
@@ -391,59 +341,7 @@
 }
 
 
-//- (void)returnToProfile {
 
-//    [self dismissViewControllerAnimated:YES completion:nil];
-
-//}
-
-//using app delegate for location updates... need to pair with pfgeopointinbackground
-/*
- NSLog(@"before the if then check");
- 
- //Make sure location services are enabled before requesting the location
- if([CLLocationManager locationServicesEnabled]){
- 
- NSLog(@"inside the if then check");
- 
- 
- AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
- CLLocation *currentLocationFromAppDelegate = appDelegate.currentLocation;
- 
- currentLocation = [PFGeoPoint geoPointWithLocation:currentLocationFromAppDelegate];
- 
- NSLog(@"Current Location: %@", currentLocation);
- 
- if (currentLocation.latitude == 0 || currentLocation.longitude == 0) {
- UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"No Location From App Delegate - Maybe start a timer to ask for location in a couple of secs?" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
- 
- [errorAlert show];
- }
- 
- }
- 
- UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(returnToProfile)];
- 
- self.navigationItem.rightBarButtonItem = cancelButton;
- */
-
-// TODO - THIS IS NOT GETTING CALLED WHEN USING THE NAVIGATION, but otherwise is getting called.
-// Nevermind it is getting called, just after the queryForTable function... hmmm.  queryForTable is to determine the query. not where I should be checking locaiton.
-
-//Fail safe for when we don't have a current location.
-/*
- if (currentLocation.latitude == 0 || currentLocation.longitude == 0) {
- NSLog(@"QueryForTableView... no currentLocation");
- 
- [NSTimer timerWithTimeInterval:5 target:self selector:@selector(lookForLocationNow) userInfo:nil repeats:NO];
- 
- return;
- }
- 
- //Add the location to the query.
- [self.queryForTable whereKey:@"locationOfEvent" nearGeoPoint:currentLocation];
- 
- */
 
 
 @end

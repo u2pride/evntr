@@ -13,6 +13,4 @@
 
 @interface InitialScreenVC : UIViewController <NewUserFacebookDelegate, NewUserFacebookSignUpDelegate>
 
-- (IBAction)loginButtonTouchDownTrial:(id)sender;
-- (IBAction)loginButtonTouchUpInsideExample:(id)sender;
 @end

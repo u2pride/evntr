@@ -11,23 +11,21 @@
 #import "UserLocationTableCell.h"
 #import <AddressBookUI/AddressBookUI.h>
 
+#define kGOOGLE_API_KEY @"AIzaSyDbbFOj98Z6G6lUskNuUlDr0uYPvrR-cZo"
 
 @interface LocationSearchVC ()
-{
-    NSMutableArray *locationSearchResults;
-    CLGeocoder *geoCoder;
-    CLLocation *locationCurrent;
-    
-    NSNumber *latitude;
-    NSNumber *longitude;
-    
-    BOOL isEnteringCustomLocation;
-}
+
+@property (weak, nonatomic) IBOutlet UITableView *searchResultsTable;
 
 @property (nonatomic, strong) UserLocationTableCell *customUserLocationCell;
-
 @property (nonatomic, strong) UISearchController *searchController;
-@property (weak, nonatomic) IBOutlet UITableView *searchResultsTable;
+@property (nonatomic, strong) NSMutableArray *locationSearchResults;
+@property (nonatomic, strong) CLGeocoder *geoCoder;
+@property (nonatomic, strong) CLLocation *locationCurrent;
+@property (nonatomic, strong) NSNumber *latitude;
+@property (nonatomic, strong) NSNumber *longitude;
+@property (nonatomic) BOOL isEnteringCustomLocation;
+
 
 - (IBAction)cancelLocationSearch:(id)sender;
 - (IBAction)getCurrentLocation:(id)sender;
@@ -40,20 +38,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeColor];
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
-    isEnteringCustomLocation = NO;
-    
-    
-    [self.searchResultsTable registerNib:[UINib nibWithNibName:@"UserLocationTableCell" bundle:nil]forCellReuseIdentifier:@"CustomLocationCell"];
-    
     //Set up Search TableView and Controller
-    locationSearchResults = [[NSMutableArray alloc] init];
+    self.locationSearchResults = [[NSMutableArray alloc] init];
     self.searchResultsTable.delegate = self;
     self.searchResultsTable.dataSource = self;
         
@@ -67,49 +59,42 @@
     [self.searchController.searchBar sizeToFit];
     self.searchResultsTable.tableHeaderView = self.searchController.searchBar;
     
+    [self.searchResultsTable registerNib:[UINib nibWithNibName:@"UserLocationTableCell" bundle:nil]forCellReuseIdentifier:@"CustomLocationCell"];
+    
+    
+    //Initialization
     self.definesPresentationContext = YES;
-    
-    
-    geoCoder = [[CLGeocoder alloc] init];
+    self.isEnteringCustomLocation = NO;
+    self.geoCoder = [[CLGeocoder alloc] init];
     
     
     //Grab current User Location Before Appearing - Right now just use what is stored in NSUserDefaults
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *currentLocation = [userDefaults objectForKey:@"userLocation"];
 
-    latitude = [currentLocation objectForKey:@"latitude"];
-    longitude = [currentLocation objectForKey:@"longitude"];
+    self.latitude = [currentLocation objectForKey:@"latitude"];
+    self.longitude = [currentLocation objectForKey:@"longitude"];
     
-    CLLocationDegrees lat = [latitude doubleValue];
-    CLLocationDegrees lng = [longitude doubleValue];
+    CLLocationDegrees lat = [self.latitude doubleValue];
+    CLLocationDegrees lng = [self.longitude doubleValue];
     
-    locationCurrent = [[CLLocation alloc] initWithLatitude:lat longitude:lng];
-    
-    NSLog(@"CURRENT LOCATION : %@ - %@", latitude, longitude);
+    self.locationCurrent = [[CLLocation alloc] initWithLatitude:lat longitude:lng];
     
 }
+
+
+#pragma mark - Search Controller Perform Search on Google
 
 - (void) updateSearchResultsForSearchController:(UISearchController *)searchController {
     
     //reset search results
-    [locationSearchResults removeAllObjects];
-    isEnteringCustomLocation = NO;
-    
-    //this is where we geocode and display search results in tableview.
-    //[geoCoder geocodeAddressString:self.searchController.searchBar.text completionHandler:^(NSArray *placemarks, NSError *error) {
-       
-        //NSLog(@"RESULTS: %@", placemarks);
-        //[locationSearchResults addObjectsFromArray:placemarks];
-        //[self.searchResultsTable reloadData];
-
-    //}];
+    [self.locationSearchResults removeAllObjects];
+    self.isEnteringCustomLocation = NO;
     
     NSString *keyword = self.searchController.searchBar.text;
 
     // Build the url string to send to Google - Searching for Places with Keyword rankedby distance to user's current location.
-    NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?location=%@,%@&rankby=distance&keyword=%@&sensor=true&key=%@", latitude, longitude, keyword, kGOOGLE_API_KEY];
-    
-    NSLog(@"STRING: %@", url);
+    NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?location=%@,%@&rankby=distance&keyword=%@&sensor=true&key=%@", self.latitude, self.longitude, keyword, kGOOGLE_API_KEY];
     
     url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     //Formulate the string as a URL object.
@@ -127,7 +112,6 @@
     });
     
     
-    
 }
 
 
@@ -137,8 +121,6 @@
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
     
     NSArray *places = [json objectForKey:@"results"];
-    
-    NSLog(@"Data from GoogleError: %@  : %@", error, places);
     
     for (int i = 0; i < [places count]; i++) {
         
@@ -152,32 +134,30 @@
         
         GoogleResult *newSearchResult = [[GoogleResult alloc] initWithTitle:name address:vicinity location:locationPoint];
         
-        [locationSearchResults addObject:newSearchResult];
+        [self.locationSearchResults addObject:newSearchResult];
         
     }
     
     //Reload new search results data into table.
     [self.searchResultsTable reloadData];
     
-    
 }
 
 
+#pragma mark - TableView Data Source and Delegate Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (isEnteringCustomLocation) {
+    if (self.isEnteringCustomLocation) {
         return 3;
     } else {
-        return locationSearchResults.count;
+        return self.locationSearchResults.count;
     }
     
     
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"HERE IN CELLFORROWATENDPATH");
     
     static NSString *reuseIdentifier = @"basicSearchResultsCell";
     static NSString *reuseIdentifierCustom = @"CustomSearchResultsCell";
@@ -189,17 +169,15 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
     }
     
-    if (isEnteringCustomLocation) {
+    if (self.isEnteringCustomLocation) {
         
         switch (indexPath.row) {
             case 0: {
                 
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifierCustom];
                 cell.textLabel.text = @"Custom User Location";
-                //return self.customLocationHeaderCell;
                 
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
                 
                 break;
             }
@@ -234,9 +212,9 @@
         
     } else {
         
-        if (locationSearchResults.count > 0) {
+        if (self.locationSearchResults.count > 0) {
             
-            GoogleResult *resultOfSearch = [locationSearchResults objectAtIndex:indexPath.row];
+            GoogleResult *resultOfSearch = [self.locationSearchResults objectAtIndex:indexPath.row];
             
             NSString *locationTitle = resultOfSearch.title;
             NSString *address = resultOfSearch.address;
@@ -252,11 +230,7 @@
             
         }
 
-        
-        
     }
-    
-    
     
     return cell;
     
@@ -265,7 +239,7 @@
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if (indexPath.row == 1 && isEnteringCustomLocation) {
+    if (indexPath.row == 1 && self.isEnteringCustomLocation) {
         return 155.0f;
     } else {
         return 60.0f;
@@ -279,7 +253,7 @@
     //grab the name of the location and the coordinates.  save the coordinates to parse and location name too.
     //call delegate that search has finished.
     
-    if (isEnteringCustomLocation) {
+    if (self.isEnteringCustomLocation) {
         
         switch (indexPath.row) {
             case 0: {
@@ -297,7 +271,7 @@
                 
                 UserLocationTableCell *locationCell = (UserLocationTableCell *) [tableView cellForRowAtIndexPath:locationInfoIndexPath];
                 
-                [geoCoder geocodeAddressString:locationCell.locationAddressTextView.text completionHandler:^(NSArray *placemarks, NSError *error) {
+                [self.geoCoder geocodeAddressString:locationCell.locationAddressTextView.text completionHandler:^(NSArray *placemarks, NSError *error) {
                     
                     
                     if (!error && placemarks.count > 0) {
@@ -305,8 +279,6 @@
                         CLPlacemark *placemark = [placemarks firstObject];
                         
                         GoogleResult *customLocation = [[GoogleResult alloc] initWithTitle:locationCell.locationNameTextField.text address:locationCell.locationAddressTextView.text location:placemark.location];
-                        
-                        NSLog(@"%@ - %@ ", locationCell.locationAddressTextView.text, locationCell.locationNameTextField.text);
                         
                         NSString *locationTitle = customLocation.title;
                         CLLocation *coordinates = customLocation.location;
@@ -318,18 +290,12 @@
                     } else {
                         
                         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Not a valid address." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
-                        
                         [errorAlert show];
                         
-                        
                     }
-                    
-                    
-                    
+                
                 }];
                 
-                
-
                 break;
             }
             default:
@@ -339,29 +305,21 @@
         
     } else {
         
-        NSLog(@"SELECTED ROW");
-        
-        GoogleResult *selectedLocation = [locationSearchResults objectAtIndex:indexPath.row];
+        GoogleResult *selectedLocation = [self.locationSearchResults objectAtIndex:indexPath.row];
         
         NSString *locationTitle = selectedLocation.title;
-        
         CLLocation *coordinates = selectedLocation.location;
         
         id<EventLocationSearch> strongDelegate = self.delegate;
         
         [strongDelegate locationSelectedWithCoordinates:coordinates andName:locationTitle];
         
-        
-        
     }
     
-    
- 
 }
 
 
-#pragma mark - TableView Delegate
-
+#pragma mark - UITextField Delegate
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text {
@@ -378,42 +336,23 @@
 
 
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+#pragma mark - Button Actions
 
 - (IBAction)cancelLocationSearch:(id)sender {
-    
-    NSLog(@"CANCELING LOCATION SEARCH");
     
     id<EventLocationSearch> strongDelegate = self.delegate;
     
     if ([strongDelegate respondsToSelector:@selector(locationSearchDidCancel)]) {
         
-        NSLog(@"CANCELING LOCATION SEARCH - INSIDE");
-
         [strongDelegate locationSearchDidCancel];
     }
 }
 
 - (IBAction)getCurrentLocation:(id)sender {
     
-    isEnteringCustomLocation = YES;
+    self.isEnteringCustomLocation = YES;
     
-    [geoCoder reverseGeocodeLocation:locationCurrent completionHandler:^(NSArray *placemarks, NSError *error) {
+    [self.geoCoder reverseGeocodeLocation:self.locationCurrent completionHandler:^(NSArray *placemarks, NSError *error) {
         if (error) {
             NSLog(@"Error with Location");
         } else {

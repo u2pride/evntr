@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 
 @protocol ProfileEditDelegate;
-//@class ProfileVC;
+
 
 @interface EditProfileVC : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
@@ -24,6 +24,7 @@
 @property (nonatomic, strong) NSData *pictureData;
 
 @end
+
 
 @protocol ProfileEditDelegate <NSObject>
 

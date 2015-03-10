@@ -9,13 +9,11 @@
 #import "AddEventPrimaryVC.h"
 #import "AddEventSecondaryVC.h"
 #import "CustomEventTypeButton.h"
-#import <Parse/Parse.h>
 #import "UIColor+EVNColors.h"
 
-@interface AddEventPrimaryVC () {
-    PFFile *coverPhotoFile;
-    int selectedEventType;
-}
+#import <Parse/Parse.h>
+
+@interface AddEventPrimaryVC ()
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UITextField *eventTitleField;
@@ -25,6 +23,9 @@
 @property (weak, nonatomic) IBOutlet UIImageView *eventCoverPhotoView;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 
+@property (nonatomic, strong) PFFile *coverPhotoFile;
+@property (nonatomic) int selectedEventType;
+
 
 - (IBAction)nextButtonPressed:(id)sender;
 - (IBAction)selectedPublicType:(id)sender;
@@ -32,25 +33,29 @@
 - (IBAction)selectedPrivateType:(id)sender;
 - (IBAction)canceledEventCreation:(id)sender;
 
-
 @end
+
 
 @implementation AddEventPrimaryVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
+    //Change Navigation Bar Color to Theme
+    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+
+    
     // Initialize button states & event type
     self.publicButton.selected = YES;
     self.privateButton.selected = NO;
     self.publicApprovedButton.selected = NO;
-    selectedEventType = PUBLIC_EVENT_TYPE;
+    self.selectedEventType = PUBLIC_EVENT_TYPE;
     
     // Initialize ImageView & Attach Tap Gesture
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
@@ -59,41 +64,25 @@
     tapgr.delegate = self;
     [self.eventCoverPhotoView addGestureRecognizer:tapgr];
     
-    //Change Navigation Bar Color to Theme
-    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-
     //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
     self.eventTitleField.delegate = self;
 }
 
+
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // Initialize button states & event type
+    // TODO: Use same as what was selected before selecting photo
     self.publicButton.selected = YES;
     self.privateButton.selected = NO;
     self.publicApprovedButton.selected = NO;
-    
-    //TODO: Remove this line - used for testing
-    NSData *dataTest = [[NSData alloc] init];
-    coverPhotoFile = [PFFile fileWithData:dataTest];
-    
-
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
 
-//Triggered when user taps UIImageView to pick an image
+#pragma mark - Selecting Cover Photo
+
 - (void) selectEventPhoto {
-    
-    NSLog(@"HERERERE");
     
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
@@ -131,26 +120,11 @@
 }
 
 
-- (IBAction)nextButtonPressed:(id)sender {
-    
-    if (self.eventTitleField.text.length > 3 && coverPhotoFile) {
-        
-        [self performSegueWithIdentifier:@"AddEventNextStep" sender:self];
-        
-        
-    } else {
-        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please upload a photo or select a title that is greater than 3 characters." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
-        
-        [errorAlert show];
-    }
-    
-    
-    
-}
+#pragma mark - Selecting Buttons for Event Type & Next Button
 
 - (IBAction)selectedPublicType:(id)sender {
     
-    selectedEventType = PUBLIC_EVENT_TYPE;
+    self.selectedEventType = PUBLIC_EVENT_TYPE;
     self.publicButton.selected = YES;
     self.publicApprovedButton.selected = NO;
     self.privateButton.selected = NO;
@@ -159,7 +133,7 @@
 
 - (IBAction)selectedPublicApprovedType:(id)sender {
     
-    selectedEventType = PUBLIC_APPROVED_EVENT_TYPE;
+    self.selectedEventType = PUBLIC_APPROVED_EVENT_TYPE;
     self.publicButton.selected = NO;
     self.publicApprovedButton.selected = YES;
     self.privateButton.selected = NO;
@@ -167,24 +141,28 @@
 
 - (IBAction)selectedPrivateType:(id)sender {
     
-    selectedEventType = PRIVATE_EVENT_TYPE;
+    self.selectedEventType = PRIVATE_EVENT_TYPE;
     self.publicButton.selected = NO;
     self.publicApprovedButton.selected = NO;
     self.privateButton.selected = YES;
 }
 
-- (IBAction)canceledEventCreation:(id)sender {
-    
-    id<EventModalProtocol> strongDelegate = self.delegate;
-    
-    if ([strongDelegate respondsToSelector:@selector(canceledEventCreation)]) {
+- (IBAction)nextButtonPressed:(id)sender {
+
+    if (self.eventTitleField.text.length > 3 && self.coverPhotoFile) {
         
-        [strongDelegate canceledEventCreation];
+        [self performSegueWithIdentifier:@"AddEventNextStep" sender:self];
+        
+    } else {
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please upload a photo or select a title that is greater than 3 characters." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+        [errorAlert show];
     }
+
 }
 
 
-#pragma mark - Delegate Methods for ImagePicker
+
+#pragma mark - Delegate Methods for ImagePicker & TextField
 
 //create a PFFile From the Image
 - (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -196,10 +174,9 @@
     self.eventCoverPhotoView.image = chosenImage;
     
     NSData *pictureData = UIImageJPEGRepresentation(chosenImage, 0.5);
-    coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
+    self.coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
     
-
-    //Restore eventTitle and button state That the User Has Inputted
+    //TODO: Restore eventTitle and button state That the User Has Inputted
 
 }
 
@@ -217,6 +194,7 @@
 }
 
 
+
 #pragma mark - Navigation
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -227,36 +205,29 @@
     
     nextStepVC.title = self.eventTitleField.text;
     nextStepVC.eventTitle = self.eventTitleField.text;
-    nextStepVC.eventType = selectedEventType;
-    nextStepVC.eventCoverImage = coverPhotoFile;
+    nextStepVC.eventType = self.selectedEventType;
+    nextStepVC.eventCoverImage = self.coverPhotoFile;
     nextStepVC.delegate = self;
-    
-    NSLog(@"%@ ---- %d ----- %@", self.eventTitleField.text, selectedEventType, coverPhotoFile);
-    
     
 }
 
 
-#pragma mark - delegate methods for EventCreation
+#pragma mark - Delegate Methods for EventCreation
 
 - (void) eventCreationComplete:(UIVisualEffectView *)darkBlur {
-    
-    NSLog(@"EVENT CREATION COMPLETED");
-        
+            
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventTitleField.text = @"";
     self.publicButton.selected = YES;
     self.publicApprovedButton.selected = YES;
     self.privateButton.selected = YES;
 
-    coverPhotoFile = nil;
+    self.coverPhotoFile = nil;
     
     id<EventModalProtocol> strongDelegate = self.delegate;
     
     if ([strongDelegate respondsToSelector:@selector(completedEventCreation:)]) {
-        
-        NSLog(@"FOUND STRONG DELEGATE 2");
-        
+    
         [strongDelegate completedEventCreation:darkBlur];
     }
 
@@ -265,15 +236,13 @@
 
 - (void) eventCreationCanceled {
     
-    NSLog(@"EVENT CREATION CANCELED");
-    
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventTitleField.text = @"";
     self.publicButton.selected = YES;
     self.publicApprovedButton.selected = YES;
     self.privateButton.selected = YES;
     
-    coverPhotoFile = nil;
+    self.coverPhotoFile = nil;
     
     id<EventModalProtocol> strongDelegate = self.delegate;
         
@@ -281,17 +250,20 @@
             
         [strongDelegate canceledEventCreation];
     }
-        
     
+}
+
+- (IBAction)canceledEventCreation:(id)sender {
+    
+    id<EventModalProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(canceledEventCreation)]) {
+        
+        [strongDelegate canceledEventCreation];
+    }
 }
 
 
 @end
-
-
-
-/*
-
-*/
 
 

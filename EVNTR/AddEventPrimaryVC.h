@@ -14,20 +14,7 @@
 
 @interface AddEventPrimaryVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, EventCreationCompleted>
 
-// create outlets to event title, event type buttons, and cameraimageview.
-// on click of next button,
-// check to see if event title > 3 chars
-// an event type button is selected (by default its' public)
-// self.imageData has data.  so basically create self.imageData = alloc init - whenever you return from picture.  this way you can check if it's null on next button press.
-// pass the title, type of event (use EVENT_TYPE_PRIVATE constants), and imageData
-
-//create logic for buttons - default one is on.  click disables others and enables the one.  just change text color from gray to orange.
-
-
-//eye candy:  custom buttons with click animation
-
 @property (nonatomic, strong) id <EventModalProtocol> delegate;
-
 
 @end
 

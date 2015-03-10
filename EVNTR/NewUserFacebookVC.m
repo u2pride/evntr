@@ -14,6 +14,18 @@
 @interface NewUserFacebookVC ()
 
 @property (weak, nonatomic) IBOutlet UIButton *continueButton;
+@property (weak, nonatomic) IBOutlet UITextField *usernameField;
+@property (weak, nonatomic) IBOutlet UITextField *emailField;
+@property (weak, nonatomic) IBOutlet UITextField *nameField;
+@property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
+
+@property (weak, nonatomic) NSString *urlForProfilePicture;
+@property (strong, nonatomic) NSString *facebookID;
+@property (strong, nonatomic) NSString *firstName;
+@property (strong, nonatomic) NSString *location;
+@property (strong, nonatomic) UIVisualEffectView *blurOutLogInScreen;
+
+- (IBAction)registerWithFBInformation:(id)sender;
 
 @end
 
@@ -21,7 +33,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.usernameField.delegate = self;
@@ -32,11 +43,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
-    NSLog(@"dictionary: %@", self.informationFromFB);
-    
 
-    
     self.usernameField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"firstName"]];
     self.emailField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"email"]];
     self.nameField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"realName"]];
@@ -44,9 +51,6 @@
     self.firstName = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"firstName"]];
     self.location = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"location"]];
     //lesson learned... need to cast it or wrap it through a class method.  otherwise it's just an id type and doesn't work in other things.
-    
-    NSLog(@"Facebook ID in VIEWWILLAPPEAR: %@ and %@", [self.informationFromFB objectForKey:@"ID"], self.facebookID);
-
 
 }
 
@@ -54,19 +58,9 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    
-    NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", self.facebookID]];
-
     NSString *urlString = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"profilePictureURL"]];
     NSURL *url = [NSURL URLWithString:urlString];
     
-    NSLog(@"MY NSURL: %@", url);
-    
-    //grab profile picture and put in UIImageView
-    //NSURL *pictureURL = [NSURL URLWithString:[self.informationFromFB objectForKey:@"profilePictureURL"]];
-    
-    NSLog(@"url: %@ and URL: %@", url, pictureURL);
-
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
     [NSURLConnection sendAsynchronousRequest:urlRequest
                                        queue:[NSOperationQueue mainQueue]
@@ -85,19 +79,13 @@
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
 
 - (IBAction)registerWithFBInformation:(id)sender {
     
-
-    NSLog(@"ID: %@ and firstName: %@", self.facebookID, self.firstName);
-    
     __block PFUser *currentUser = [PFUser currentUser];
     
-    NSLog(@"CURRENT USER: %@", currentUser);
+    [self blurViewDuringLoginWithMessage:@"Registering..."];
     
     //Validate that the user has submitted a user name and password
     if (self.usernameField.text.length > 3 && self.nameField.text.length > 3 && self.emailField.text.length > 0) {
@@ -107,6 +95,7 @@
         PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureDataForParse];
         
         [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        
             if (succeeded){
                 currentUser[@"profilePicture"] = profilePictureFile;
                 
@@ -137,10 +126,11 @@
                     
                 }];
             }
+            
+            self.blurOutLogInScreen.alpha = 0;
+            [self.blurOutLogInScreen removeFromSuperview];
+            
         }];
-        
-        
-        
         
         
     } else {
@@ -150,13 +140,38 @@
         [errorAlert show];
     }
     
-    
 
+}
+
+
+- (void) blurViewDuringLoginWithMessage:(NSString *)message {
     
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    self.blurOutLogInScreen.alpha = 0;
+    self.blurOutLogInScreen.frame = self.view.bounds;
+    [self.view addSubview:self.blurOutLogInScreen];
+    
+    UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    loginInTextLabel.alpha = 0;
+    loginInTextLabel.text = message;
+    loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    loginInTextLabel.textAlignment = NSTextAlignmentCenter;
+    loginInTextLabel.textColor = [UIColor whiteColor];
+    loginInTextLabel.center = self.view.center;
+    [self.view addSubview:loginInTextLabel];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        self.blurOutLogInScreen.alpha = 1;
+        loginInTextLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        
+    }];
     
 }
 
 
+#pragma mark - UITextFieldDelegate
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
     [textField resignFirstResponder];
@@ -165,17 +180,5 @@
 }
 
 @end
-
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 

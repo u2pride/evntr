@@ -9,15 +9,16 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-#define kGOOGLE_API_KEY @"AIzaSyDbbFOj98Z6G6lUskNuUlDr0uYPvrR-cZo"
 
 @protocol EventLocationSearch;
+
 
 @interface LocationSearchVC : UIViewController <UISearchBarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) id<EventLocationSearch> delegate;
 
 @end
+
 
 @protocol EventLocationSearch <NSObject>
 

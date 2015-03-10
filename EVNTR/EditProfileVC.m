@@ -6,13 +6,17 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EditProfileVC.h"
-#import <Parse/Parse.h>
 #import "EVNUtility.h"
-#import <Accounts/Accounts.h>
+#import "EditProfileVC.h"
 #import "UIColor+EVNColors.h"
 
+#import <Accounts/Accounts.h>
+#import <Parse/Parse.h>
+
 @interface EditProfileVC ()
+
+//For TextField Persistnce
+@property (nonatomic, strong) NSDictionary *userInputtedValues;
 
 //Custom Cells
 @property (weak, nonatomic) IBOutlet UITableViewCell *nameCell;
@@ -20,7 +24,6 @@
 @property (weak, nonatomic) IBOutlet UITableViewCell *usernameCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *bioCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *profileImageCell;
-
 @property (weak, nonatomic) IBOutlet UITableViewCell *socialTwitterCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *socialFacebookCell;
 
@@ -31,28 +34,29 @@
 @property (weak, nonatomic) IBOutlet UITextField *bioTextField;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 
-//Actions to Cancel And Finish Editing
+@property (strong, nonatomic) IBOutlet UIButton *connectWithTwitterButton;
+@property (strong, nonatomic) IBOutlet UIButton *connectWithFacebookButton;
+
 - (IBAction)cancelEditProfile:(id)sender;
 - (IBAction)finishedEditProfile:(id)sender;
-
-//For TextField Persistnce
-@property (nonatomic, strong) NSDictionary *userInputtedValues;
-
 - (IBAction)connectWithTwitter:(id)sender;
 
 @end
 
+
+
 @implementation EditProfileVC
-
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //Change Navigation Bar Color to Theme
+    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+    self.navigationController.navigationBar.translucent = YES;
+
     //change font color of title to white
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
 
-    
     //default profile image
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.profileImageView.userInteractionEnabled = YES;
@@ -60,11 +64,6 @@
     //Add Tap Gesture Recognizer to UIImageView to Update Profile Picture
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(updateProfilePicture)];
     [self.profileImageView addGestureRecognizer:tapgr];
-    
-    //Change Navigation Bar Color to Theme
-    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    self.navigationController.navigationBar.translucent = YES;
-
     
     //Populate Edit Profile Screen with Values Passed From Profile VC
     self.realNameTextField.text = self.realName;
@@ -74,19 +73,6 @@
     
     self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"]];
     
-}
-
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-
-    
-}
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -117,7 +103,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    
     if (indexPath.section == 0) {
         switch (indexPath.row) {
             case 0: {
@@ -141,7 +126,7 @@
                 break;
             }
             default:
-                NSLog(@"Returned thru default");
+                NSLog(@"Returned default");
                 return self.nameCell;
                 break;
         }
@@ -170,7 +155,7 @@
 }
 
 
-#pragma mark - Update Profile Picture
+#pragma mark - Image Picker & Delegates
 
 - (void)updateProfilePicture {
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
@@ -206,13 +191,13 @@
     [pictureOptionsMenu addAction:cancelAction];
     
     
-    //Store Current User Inputs From Each Text Field
+    //Store Current User Inputs From Each Text Field for persistence
     self.userInputtedValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
+    
     
     [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
     
 }
-
 
 
 #pragma mark - Delegate Methods for UIImagePickerController
@@ -285,9 +270,6 @@
 
 - (IBAction)finishedEditProfile:(id)sender {
     
-    //Image Data is in self.pictureData
-    //Package up new string values in NSDictionary
-    
     [[PFUser currentUser] setUsername:self.usernameTextField.text];
     [[PFUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
     [[PFUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
@@ -319,24 +301,13 @@
 }
 
 
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
-
+//TODO: Add connection with instagram - just use textfield. On viewDidLoad, check for existing Connections.
+//TODO: Update profile images based on if connection was established.
 //Assumes only one twitter account for the user.
 - (IBAction)connectWithTwitter:(id)sender {
     
-    
     ACAccountStore *accountStore = [[ACAccountStore alloc] init];
     ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    
     
     //TODO: Remove - this is only because I have already given access to my Twitter Account.
     NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
@@ -353,11 +324,11 @@
             
             if ([accountsArray count] > 0) {
                 ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
-                NSLog(@"%@",twitterAccount.username);
-                NSLog(@"%@",twitterAccount.accountType);
                 
                 [PFUser currentUser][@"twitterHandle"] = twitterAccount.username;
                 [[PFUser currentUser] saveInBackground];
+                
+                self.connectWithTwitterButton.titleLabel.text = @"Connected With Twitter";
                 
             }
         }

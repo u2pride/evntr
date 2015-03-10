@@ -6,14 +6,14 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "SignUpVC.h"
-#import <Parse/Parse.h>
+#import "EVNConstants.h"
 #import "EVNUtility.h"
+#import "LogInVC.h"
+#import "SignUpVC.h"
 #import "UIColor+EVNColors.h"
 #import <FacebookSDK/FacebookSDK.h>
+#import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
-#import "LogInVC.h"
-#import "EVNConstants.h"
 
 
 @interface SignUpVC ()
@@ -30,10 +30,12 @@
 //Users Picture Data
 @property (nonatomic, strong) NSData *pictureData;
 
+@property (strong, nonatomic) UIVisualEffectView *blurOutLogInScreen;
+
+
 - (IBAction)signUpWithFacebook:(id)sender;
 
 @end
-
 
 
 @implementation SignUpVC
@@ -65,29 +67,24 @@
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    
     if ([self.presentingViewController isKindOfClass:[LogInVC class]]) {
-        NSLog(@"facebook presentation");
         
         [self grabUserDetailsFromFacebook];
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    
-    [super didReceiveMemoryWarning];
-
-}
 
 
 - (IBAction)signUpWithFacebook:(id)sender {
+    
+    [self blurViewDuringLoginWithMessage:@"Signing Up..."];
     
     // TODO:  Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
     // Login PFUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-        
-        //TODO: Stop Activity Indicator
         
         if (!user) {
             NSString *errorMessage = nil;
@@ -134,46 +131,34 @@
                     loginInTextLabel.alpha = 1;
                 } completion:^(BOOL finished) {
                     
-                    NSLog(@"Finished");
                     [self performSegueWithIdentifier:@"SignUpToHomeView" sender:self];
                     
                 }];
             }
             
-            
-            
         }
-    }];
-    
-    // TODO: Start Activity Indicator
-    
-    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    UIVisualEffectView *blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-    blurOutLogInScreen.alpha = 0;
-    blurOutLogInScreen.frame = self.view.bounds;
-    [self.view addSubview:blurOutLogInScreen];
-    //[self.view bringSubviewToFront:blurOutLogInScreen];
-    
-    [UIView animateWithDuration:1.0 animations:^{
-        blurOutLogInScreen.alpha = 1;
-    } completion:^(BOOL finished) {
         
-        NSLog(@"Finished");
+        self.blurOutLogInScreen.alpha = 0;
+        [self.blurOutLogInScreen removeFromSuperview];
         
     }];
-    
 
     
-    
-
 }
 
-
 - (void) grabUserDetailsFromFacebook {
+    
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    activityIndicator.hidesWhenStopped = YES;
+    [self.view addSubview:activityIndicator];
+    [activityIndicator startAnimating];
     
     FBRequest *request = [FBRequest requestForMe];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {
+            
+            [activityIndicator stopAnimating];
+            
             // result is a dictionary with the user's Facebook data
             NSDictionary *userData = (NSDictionary *)result;
             NSLog(@"FB User Data: %@", result);
@@ -204,6 +189,8 @@
 
 - (void)signUp:(id)sender {
     
+    [self blurViewDuringLoginWithMessage:@"Signing Up..."];
+    
     PFUser *newUser = [PFUser user];
     newUser.username = self.usernameField.text;
     newUser.password = self.passwordField.text;
@@ -213,6 +200,7 @@
     if (self.usernameField.text.length > 3 && self.passwordField.text.length > 3 && self.emailField.text.length > 0) {
         
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
             if (!error) {
                 UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle:@"Signed Up" message:@"Welcome to EVNTR." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                 
@@ -235,14 +223,19 @@
                 
                 [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
                 
+                
             } else {
                 
                 //TODO : Incoporate Error Checking to Give User Better Idea of Problem Signing Up
                 UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Already Taken" message:@"Please choose another username" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                 
                 [failureAlert show];
-                
             }
+            
+            self.blurOutLogInScreen.alpha = 0;
+            [self.blurOutLogInScreen removeFromSuperview];
+
+            
         }];
         
     } else {
@@ -252,6 +245,32 @@
         [errorAlert show];
     }
 
+}
+
+- (void) blurViewDuringLoginWithMessage:(NSString *)message {
+    
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    self.blurOutLogInScreen.alpha = 0;
+    self.blurOutLogInScreen.frame = self.view.bounds;
+    [self.view addSubview:self.blurOutLogInScreen];
+    
+    UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    loginInTextLabel.alpha = 0;
+    loginInTextLabel.text = message;
+    loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    loginInTextLabel.textAlignment = NSTextAlignmentCenter;
+    loginInTextLabel.textColor = [UIColor whiteColor];
+    loginInTextLabel.center = self.view.center;
+    [self.view addSubview:loginInTextLabel];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        self.blurOutLogInScreen.alpha = 1;
+        loginInTextLabel.alpha = 1;
+    } completion:^(BOOL finished) {
+        
+    }];
+    
 }
 
 
@@ -316,7 +335,6 @@
 }
 
 
-
 #pragma mark - UITextFieldDelegate Methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -334,84 +352,6 @@
     return CGRectContainsPoint(self.profileImageView.frame, touchSpot);
 }
 
-
-
-
-
-
-
-
-
-
-/*
- - (void)grabUserDetailsFromFacebook {
- 
- FBRequest *request = [FBRequest requestForMe];
- [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
- if (!error) {
- // result is a dictionary with the user's Facebook data
- NSDictionary *userData = (NSDictionary *)result;
- 
- NSLog(@"FB User Data: %@", result);
- 
- NSString *facebookID = userData[@"id"];
- NSString *name = userData[@"name"];
- NSString *location = userData[@"location"][@"name"];
- NSString *firstName = userData[@"first_name"];
- //NSString *gender = userData[@"gender"];
- //NSString *birthday = userData[@"birthday"];
- // NSString *relationship = userData[@"relationship_status"];
- 
- 
- NSLog(@"%@", [NSString stringWithFormat:@"ID: %@ - Name: %@ - Location: %@ - firstName: %@", facebookID, name, location, firstName]);
- 
- NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
- NSURLRequest *urlRequest = [NSURLRequest requestWithURL:pictureURL];
- [NSURLConnection sendAsynchronousRequest:urlRequest
- queue:[NSOperationQueue mainQueue]
- completionHandler:
- ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
- if (connectionError == nil && data != nil) {
- 
- UIImage *profileImage2 = [UIImage imageWithData:data];
- 
- NSLog(@"ABOUT TO GET THE PROFILE IMAGE DATA with data - %@", data);
- 
- NSData *pictureData = UIImageJPEGRepresentation(profileImage2, 0.5);
- 
- PFFile *profileImage = [PFFile fileWithName:@"profilepic.jpg" data:pictureData];
- [profileImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
- if (succeeded) {
- NSLog(@"YAY");
- [[PFUser currentUser] setValue:profileImage forKey:@"profilePicture"];
- }
- 
- }];
- }
- 
- [[PFUser currentUser] setObject:firstName forKey:@"username"];
- [[PFUser currentUser] setObject:facebookID forKey:@"facebookID"];
- [[PFUser currentUser] setObject:name forKey:@"realName"];
- [[PFUser currentUser] setObject:location forKey:@"hometown"];
- 
- //Update UI with FB Details
- //self.usernameField.text = firstName;
- //self.passwordField.text
- 
- 
- //Save User Details to Parse
- [[PFUser currentUser] saveInBackground];
- 
- 
- }];
- 
- 
- 
- }
- }];
- 
- }
- */
 
 
 @end

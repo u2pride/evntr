@@ -14,6 +14,7 @@
 @interface PictureFullScreenVC : UIViewController
 
 @property (weak, nonatomic) IBOutlet PFImageView *eventPhotoView;
+
 @property (nonatomic, strong) PFFile *fileOfEventPhoto;
 @property (nonatomic, weak) id<PictureViewerDelegate> delegate;
 

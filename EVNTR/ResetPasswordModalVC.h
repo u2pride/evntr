@@ -8,7 +8,6 @@
 
 @protocol ResetPasswordDelegate;
 
-
 #import <UIKit/UIKit.h>
 
 @interface ResetPasswordModalVC : UIViewController <UITextFieldDelegate>
@@ -16,6 +15,7 @@
 @property (nonatomic, weak) id<ResetPasswordDelegate> delegate;
 
 @end
+
 
 @protocol ResetPasswordDelegate <NSObject>
 

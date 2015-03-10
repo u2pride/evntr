@@ -11,25 +11,24 @@
 
 
 @interface AddEventSecondVC ()
-{
-    NSDate *selectedDate;
-    PFGeoPoint *selectedLocationGeoPoint;
-    NSString *selectedLocationTitle;
-}
+
 @property (weak, nonatomic) IBOutlet UITextView *eventDescriptionText;
 @property (weak, nonatomic) IBOutlet UILabel *locationButton;
 @property (weak, nonatomic) IBOutlet UIDatePicker *eventDatePicker;
+
+@property (nonatomic, strong) NSDate *selectedDate;
+@property (nonatomic, strong) PFGeoPoint *selectedLocationGeoPoint;
+@property (nonatomic, strong) NSString *selectedLocationTitle;
 
 - (IBAction)createEvent:(id)sender;
 
 @end
 
-@implementation AddEventSecondVC
 
+@implementation AddEventSecondVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -39,46 +38,18 @@
     [self.eventDatePicker addTarget:self action:@selector(newDate:) forControlEvents:UIControlEventValueChanged];
     
     //initialize date
-    selectedDate = [NSDate date];
+    self.selectedDate = [NSDate date];
     
-    //setting delegates
+    //Event Description Setup
     self.eventDescriptionText.delegate = self;
     self.eventDescriptionText.text = @"Add details about your event...";
     [self.eventDescriptionText setTextColor:[UIColor lightGrayColor]];
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void) newDate:(id)sender {
-    
-    UIDatePicker *datePicker = (UIDatePicker *)sender;
-    selectedDate = datePicker.date;
-    
-}
-
-- (void)textViewDidBeginEditing:(UITextView *)textView
-{
-    if ([textView.text isEqualToString:@"Add details about your event..."]) {
-        textView.text = @"";
-        textView.textColor = [UIColor blackColor]; //optional
-    }
-    [textView becomeFirstResponder];
-}
-
-- (void)textViewDidEndEditing:(UITextView *)textView
-{
-    if ([textView.text isEqualToString:@""]) {
-        textView.text = @"Add details about your event...";
-        textView.textColor = [UIColor lightGrayColor]; //optional
-    }
-    [textView resignFirstResponder];
-}
 
 
+#pragma mark - Create Event Button
 
 - (IBAction)createEvent:(id)sender {
     
@@ -88,10 +59,12 @@
     newEvent[@"description"] = self.eventDescriptionText.text;
     newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:self.eventType];
     newEvent[@"parent"] = [PFUser currentUser];
-    newEvent[@"dateOfEvent"] = selectedDate;
-    newEvent[@"locationOfEvent"] = selectedLocationGeoPoint;
-    newEvent[@"nameOfLocation"] = selectedLocationTitle;
+    newEvent[@"dateOfEvent"] = self.selectedDate;
+    newEvent[@"locationOfEvent"] = self.selectedLocationGeoPoint;
+    newEvent[@"nameOfLocation"] = self.selectedLocationTitle;
     
+    
+    //Transition Blur
     UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     UIVisualEffectView *darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
     darkBlurEffectView.alpha = 0;
@@ -110,7 +83,6 @@
     savingEvent.center = self.view.center;
     [[darkBlurEffectView contentView] addSubview:savingEvent];
     
-    
     [UIView animateWithDuration:3.0 animations:^{
         darkBlurEffectView.alpha = 1.0;
         
@@ -128,7 +100,7 @@
                     
                     if (succeeded) {
                         
-                        //Notify VCs of new event creation - updates profile view.
+                        //Notify VCs of new event creation - TODO: updates profile view.
                         [[NSNotificationCenter defaultCenter] postNotificationName:kEventCreated object:nil userInfo:nil];
                         
                         [self.navigationController popViewControllerAnimated:NO];
@@ -151,9 +123,7 @@
                         id<EventCreationCompleted> strongDelegate = self.delegate;
                         
                         if ([strongDelegate respondsToSelector:@selector(eventCreationCanceled)]) {
-                            
-                            NSLog(@"FOUND STRONG DELEGATE 1");
-                            
+                                                        
                             [strongDelegate eventCreationCanceled];
                         }
                     }
@@ -184,6 +154,57 @@
 }
 
 
+
+
+
+#pragma mark - Location Search Delegate Methods
+
+- (void) locationSearchDidCancel {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+
+- (void) locationSelectedWithCoordinates:(CLLocation *)location andName:(NSString *)name {
+    
+    self.selectedLocationGeoPoint = [PFGeoPoint geoPointWithLocation:location];
+    self.selectedLocationTitle = name;
+    
+    self.locationButton.text = name;
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    
+}
+
+#pragma mark - Date Picker & TextView Delegates
+
+- (void) newDate:(id)sender {
+    UIDatePicker *datePicker = (UIDatePicker *)sender;
+    self.selectedDate = datePicker.date;
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:@"Add details about your event..."]) {
+        textView.text = @"";
+        textView.textColor = [UIColor blackColor]; //optional
+    }
+    
+    [textView becomeFirstResponder];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:@""]) {
+        textView.text = @"Add details about your event...";
+        textView.textColor = [UIColor lightGrayColor]; //optional
+    }
+    
+    [textView resignFirstResponder];
+}
+
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text {
     
@@ -198,33 +219,7 @@
 }
 
 
-#pragma mark - Location Search Delegate Methods
-
-- (void) locationSearchDidCancel {
-    
-    NSLog(@"Location Search Canceled");
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-}
-
-
-- (void) locationSelectedWithCoordinates:(CLLocation *)location andName:(NSString *)name {
-    
-    NSLog(@"Returned with Location Data %@ %@", location, name);
-    
-    selectedLocationGeoPoint = [PFGeoPoint geoPointWithLocation:location];
-    selectedLocationTitle = name;
-    
-    self.locationButton.text = name;
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    
-}
-
-
-#pragma mark - Table view data source
+#pragma mark - Table View Data Source & Delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 4;
@@ -246,10 +241,7 @@
 
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
     
     UINavigationController *navController = (UINavigationController *) [segue destinationViewController];
     
@@ -266,78 +258,3 @@
 @end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
-    
-    // Configure the cell...
-    
-    return cell;
-}
-*/
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-//@end

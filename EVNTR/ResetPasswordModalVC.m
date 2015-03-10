@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "IDTransitioningDelegate.h"
 #import "ResetPasswordModalVC.h"
 #import <Parse/Parse.h>
-#import "IDTransitioningDelegate.h"
 
 @interface ResetPasswordModalVC ()
 
@@ -31,14 +31,9 @@
     
 }
 
-- (void)didReceiveMemoryWarning {
-    
-    [super didReceiveMemoryWarning];
 
-}
+#pragma mark - Reset Password
 
-
-#pragma mark - Allow the User to Reset Their Password
 - (IBAction)resetPasswordButton:(id)sender {
     
     //Check to see that the user has entered a password

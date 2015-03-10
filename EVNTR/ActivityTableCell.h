@@ -17,5 +17,4 @@
 @property (weak, nonatomic) IBOutlet UILabel *timestampActivity;
 @property (weak, nonatomic) IBOutlet UIButtonPFExtended *actionButton;
 
-//instead of custom button and image views, can attach pfuser and pfobjects to table cell maybe?
 @end

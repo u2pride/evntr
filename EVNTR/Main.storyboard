@@ -107,8 +107,6 @@
                                     </mask>
                                 </variation>
                                 <connections>
-                                    <action selector="loginButtonTouchDownTrial:" destination="xaR-eF-GqN" eventType="touchDown" id="8Zd-vx-G69"/>
-                                    <action selector="loginButtonTouchUpInsideExample:" destination="xaR-eF-GqN" eventType="touchUpInside" id="qNq-Wi-pnu"/>
                                     <segue destination="5DD-Kt-92r" kind="custom" identifier="InitialToLogin" id="bcK-hb-Uzf"/>
                                 </connections>
                             </button>
@@ -183,6 +181,7 @@
                         <outlet property="loginButton" destination="xJN-uG-fCS" id="M2t-GQ-TBs"/>
                         <outlet property="logoView" destination="GJo-Jy-t8s" id="gzc-aU-N9G"/>
                         <outlet property="registerButton" destination="q3U-Nf-Gaw" id="r5O-Na-E4O"/>
+                        <outlet property="skipLoginButton" destination="Q6f-MP-XFO" id="h2Q-xy-cv8"/>
                         <segue destination="o8p-62-GhP" kind="custom" identifier="NewUserFacebook" id="zA2-0p-EGp"/>
                     </connections>
                 </viewController>
@@ -1178,6 +1177,8 @@ Click continue when you're ready.</string>
                     <connections>
                         <outlet property="bioCell" destination="gsR-nb-DSz" id="0y4-pt-w1J"/>
                         <outlet property="bioTextField" destination="g00-ji-NSo" id="KmU-6i-faa"/>
+                        <outlet property="connectWithFacebookButton" destination="J0S-BX-WlA" id="smG-ff-UvN"/>
+                        <outlet property="connectWithTwitterButton" destination="s5Q-M5-8Ft" id="bga-UI-rib"/>
                         <outlet property="hometownCell" destination="lTc-N1-66M" id="xTt-JS-QJD"/>
                         <outlet property="hometownTextField" destination="Z8W-SX-13R" id="v3I-R8-vqB"/>
                         <outlet property="nameCell" destination="xNz-Od-FEU" id="mBu-Fe-Ldc"/>
@@ -1985,7 +1986,7 @@ Click continue when you're ready.</string>
         <!--PeopleVC-->
         <scene sceneID="aBq-cW-q7e">
             <objects>
-                <collectionViewController storyboardIdentifier="viewUsersCollection" id="nYp-Rm-lnp" customClass="PeopleVC" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="viewUsersCollection" hidesBottomBarWhenPushed="YES" id="nYp-Rm-lnp" customClass="PeopleVC" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="f4j-4Z-VmU">
                         <rect key="frame" x="0.0" y="64" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -2732,8 +2733,8 @@ Click continue when you're ready.</string>
         <image name="twitter" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="13j-NK-EMa"/>
         <segue reference="hsO-YW-5Lp"/>
-        <segue reference="XMT-eB-l88"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

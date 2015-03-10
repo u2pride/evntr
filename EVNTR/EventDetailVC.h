@@ -14,18 +14,6 @@
 
 @interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PictureViewerDelegate, PeopleVCDelegate>
 
-@property (weak, nonatomic) IBOutlet UILabel *eventTitle;
-@property (weak, nonatomic) IBOutlet PFImageView *eventCoverPhoto;
-@property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
-@property (weak, nonatomic) IBOutlet UILabel *creatorName;
-@property (weak, nonatomic) IBOutlet UILabel *eventDescription;
-@property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
-@property (strong, nonatomic) IBOutlet UILabel *eventLocationNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *eventLocationLabel;
-
-@property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
 @property (nonatomic, strong) PFObject *eventObject;
-
-
 
 @end
