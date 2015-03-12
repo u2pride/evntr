@@ -24,7 +24,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
     self.title = @"Search";
     self.searchResultsArray = [[NSMutableArray alloc] init];
     self.hidesBottomBarWhenPushed = YES;
@@ -39,6 +39,10 @@
     //self.searchController.delegate = self;
     [self.searchController.searchBar sizeToFit];
     self.searchResultsTable.tableHeaderView = self.searchController.searchBar;
+    
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
     
 }
 
