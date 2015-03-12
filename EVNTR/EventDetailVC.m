@@ -6,14 +6,17 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNConstants.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
 #import "EventPictureCell.h"
 #import "IDTransitioningDelegate.h"
 #import "ImageViewPFExtended.h"
+#import "MBProgressHUD.h"
 #import "PeopleVC.h"
 #import "PictureFullScreenVC.h"
+#import "ProfileVC.h"
 #import "StandbyCollectionViewCell.h"
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
@@ -23,36 +26,47 @@
 
 
 @interface EventDetailVC ()
-{
-    NSMutableArray *picturesFromEvent;
-    NSMutableArray *usersOnStandby;
-}
 
-
+@property BOOL isGuestUser;
 @property (nonatomic, strong) PFUser *eventUser;
+
+//Buttons
 @property (weak, nonatomic) IBOutlet UIButton *rsvpButton;
 @property (strong, nonatomic) IBOutlet UIButton *inviteButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewAttendingButton;
-@property (weak, nonatomic) IBOutlet UICollectionView *pictureCollectionView;
-@property (strong, nonatomic) IBOutlet UICollectionView *standbyUsersCollectionView;
+
+//Labels
 @property (weak, nonatomic) IBOutlet UILabel *eventTitle;
-@property (weak, nonatomic) IBOutlet PFImageView *eventCoverPhoto;
-@property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
 @property (weak, nonatomic) IBOutlet UILabel *eventDescription;
 @property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
-@property (strong, nonatomic) IBOutlet UILabel *eventLocationNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *eventLocationLabel;
 
-@property (nonatomic, strong) UIActivityIndicatorView *loadingSpinner;
+//Images
+@property (weak, nonatomic) IBOutlet PFImageView *eventCoverPhoto;
+@property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
 
+//CollectionViews & DataSources
+@property (weak, nonatomic) IBOutlet UICollectionView *pictureCollectionView;
+@property (strong, nonatomic) IBOutlet UICollectionView *standbyUsersCollectionView;
+@property (nonatomic, strong) NSMutableArray *picturesFromEvent;
+@property (nonatomic, strong) NSMutableArray *usersOnStandby;
+
+//UI & Transitions
 @property (nonatomic, strong) UIImage *navBarBackground;
 @property (nonatomic, strong) UIImage *navbarShadow;
 @property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
-
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
-@property BOOL isGuestUser;
+//Loading Helpers
+@property (nonatomic) int numNetworkCallsComplete;
+@property (nonatomic, strong) MBProgressHUD *HUD;
+
+//Mapping Location
+@property (strong, nonatomic) IBOutlet MKMapView *mapView;
+@property (strong, nonatomic) IBOutlet UILabel *eventLocationNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *eventLocationLabel;
+
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
 
 - (IBAction)inviteFriends:(id)sender;
 - (IBAction)rsvpForEvent:(id)sender;
@@ -60,53 +74,62 @@
 
 @end
 
+
 @implementation EventDetailVC
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
-    
-    //UICollectionView
-    self.pictureCollectionView.delegate = self;
-    self.pictureCollectionView.dataSource = self;
-    self.pictureCollectionView.backgroundColor = [UIColor whiteColor];
-    self.pictureCollectionView.tag = 3;
-    picturesFromEvent = [[NSMutableArray alloc] init];
-    
-    [self startSearchForEventPhotos];
-    
-    //self.navigationBarOriginal = [[UINavigationBar alloc] init];
-    
-    //Get isGuest Object
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
-    
-    NSLog(@"VIEWDIDLOAD OF EVENTDETAIL: %@", [NSNumber numberWithBool:self.isGuestUser]);
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
-    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.loadingSpinner.hidesWhenStopped = YES;
-    self.loadingSpinner.center = self.view.center;
-    [self.view addSubview:self.loadingSpinner];
-    [self.loadingSpinner startAnimating];
+    //Configuring UIScrollView
+    self.automaticallyAdjustsScrollViewInsets = NO;
     
-    //[self startLoadingAnimationAndBlur];
+    //UICollectionView
+    self.pictureCollectionView.delegate = self;
+    self.pictureCollectionView.dataSource = self;
+    self.pictureCollectionView.backgroundColor = [UIColor orangeThemeColor];
+    self.pictureCollectionView.tag = 1;
+    UICollectionViewFlowLayout *collectionViewLayout = (UICollectionViewFlowLayout*)self.pictureCollectionView.collectionViewLayout;
+    collectionViewLayout.minimumInteritemSpacing = 20;
+    collectionViewLayout.minimumLineSpacing = 20;
     
-
+    self.picturesFromEvent = [[NSMutableArray alloc] init];
     
-    // Do any additional setup after loading the view.
+    self.standbyUsersCollectionView.delegate = self;
+    self.standbyUsersCollectionView.dataSource = self;
+    self.standbyUsersCollectionView.backgroundColor = [UIColor orangeThemeColor];
+    self.standbyUsersCollectionView.tag = 2;
+    UICollectionViewFlowLayout *collectionViewLayout2 = (UICollectionViewFlowLayout*)self.standbyUsersCollectionView.collectionViewLayout;
+    collectionViewLayout2.minimumInteritemSpacing = 20;
+    collectionViewLayout2.minimumLineSpacing = 20;
+    
+    //Get isGuest Object
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
+    
+    
+    self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
     self.creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
     self.eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
+    self.title = @""; //self.eventObject[@"title"];
+    
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
+    self.creatorPhoto.userInteractionEnabled = YES;
+    [self.creatorPhoto addGestureRecognizer:tapgr];
     
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
+    
+    self.numNetworkCallsComplete = 0;
+
     
     //Transparent Navigation Bar
     self.navbarShadow = self.navigationController.navigationBar.shadowImage;
@@ -128,17 +151,67 @@
             self.navigationController.navigationBar.alpha = 1;
             
         } completion:^(BOOL finished) {
-            
-
+        
         }];
+    }];
+    
+    self.HUD = [[MBProgressHUD alloc] init];
+    self.HUD.center = self.view.center;
+    [self.view addSubview:self.HUD];
+    [self.view bringSubviewToFront:self.HUD];
+    self.HUD.labelText = @"Event Details Loading";
+    [self.HUD show:YES];
+    
 
+    
+}
+
+
+- (void)viewDidAppear:(BOOL)animated {
+
+    [super viewDidAppear:animated];
+    
+    
+    ////////////////
+    //Event Pictures
+    ////////////////
+    
+    self.picturesFromEvent = [NSMutableArray arrayWithArray:self.eventObject[@"eventImages"]];
+    [self.pictureCollectionView reloadData];
+    
+    ///////////////////////
+    //Find Users on Standby
+    ///////////////////////
+    
+    PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
+    [queryForStandbyUsers whereKey:@"activityContent" equalTo:self.eventObject];
+    [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
+    [queryForStandbyUsers includeKey:@"from"];
+    [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
+        
+        if (!self.usersOnStandby) {
+            self.usersOnStandby = [[NSMutableArray alloc] init];
+        }
+        
+        for (PFObject *activity in standbyActivities) {
+            
+            PFUser *userOnStandby = activity[@"from"];
+            [self.usersOnStandby addObject:userOnStandby];
+            
+        }
+        
+        [self.standbyUsersCollectionView reloadData];
+        
+        [self networkCallComplete]; //1
         
     }];
     
- 
-
-    //TODO: move network tasks to viewDidAppear and add activity indicator
-    self.title = self.eventObject[@"title"];
+    
+    
+    ////////////////////////////
+    //Configuring Action Buttons
+    ////////////////////////////
+    
     [self.inviteButton setTitle:@"Invite Friends" forState:UIControlStateNormal];
     
     if (self.isGuestUser) {
@@ -147,8 +220,6 @@
         [self.viewAttendingButton setTitle:@"Sign Up to View People Going" forState:UIControlStateNormal];
         
     } else {
-        
-        
         
         //Update Event Detail view based on Event Type
         int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];
@@ -160,15 +231,18 @@
                 PFQuery *attendingQuery = [eventAttendersRelation query];
                 [attendingQuery whereKey:@"username" equalTo:username];
                 [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    NSLog(@"Result of Query: %@", object);
                     if (object) {
-                        NSLog(@"Currently Attending Event");
                         [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
                     } else {
-                        NSLog(@"Not Currently Attending Event");
                         [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
                     }
+                    
+                    [self networkCallComplete]; //2
+
                 }];
+                
+                //Hide Collection View for Standby Users
+                self.standbyUsersCollectionView.hidden = YES;
                 
                 break;
             }
@@ -182,13 +256,18 @@
                 [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                     NSLog(@"Result of Query: %@", object);
                     if (object) {
-                        NSLog(@"Currently Attending Event");
                         [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
                     } else {
-                        NSLog(@"Not Currently Attending Event");
                         [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
                     }
+                    
+                    [self networkCallComplete]; //2
+
                 }];
+                
+                //Hide Collection View for Standby Users
+                self.standbyUsersCollectionView.hidden = YES;
+
                 
                 break;
             }
@@ -199,28 +278,24 @@
                 
                 //User has not requested Access to Event
                 [self.rsvpButton setTitle:kNOTRSVPedForEvent forState:UIControlStateNormal];
-
+                
                 PFQuery *requestedAccessQuery = [PFQuery queryWithClassName:@"Activities"];
                 [requestedAccessQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
                 [requestedAccessQuery whereKey:@"from" equalTo:[PFUser currentUser]];
                 [requestedAccessQuery whereKey:@"activityContent" equalTo:self.eventObject];
                 [requestedAccessQuery findObjectsInBackgroundWithBlock:^(NSArray *requestedActivityObjects, NSError *error) {
-                   
-                    NSLog(@"FoundObjects for RequestedAccessQuery: %@", requestedActivityObjects);
                     
                     if (requestedActivityObjects.count > 0) {
                         
                         //User has requested Access to Event
                         [self.rsvpButton setTitle:kRSVPedForEvent forState:UIControlStateNormal];
-
+                        
                         //Now Query For Access Granted
                         PFQuery *accessGrantedQuery = [PFQuery queryWithClassName:@"Activities"];
                         [accessGrantedQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
                         [accessGrantedQuery whereKey:@"to" equalTo:[PFUser currentUser]];
                         [accessGrantedQuery whereKey:@"activityContent" equalTo:self.eventObject];
                         [accessGrantedQuery findObjectsInBackgroundWithBlock:^(NSArray *accessActivityObjects, NSError *error) {
-                            
-                            NSLog(@"FoundObjects for ACCESSGRANTED: %@", accessActivityObjects);
                             
                             if (accessActivityObjects.count > 0) {
                                 
@@ -229,10 +304,10 @@
                             }
                             
                         }];
-                        
-                        
                     }
                     
+                    [self networkCallComplete]; //2
+
                 }];
                 
                 break;
@@ -241,74 +316,92 @@
                 break;
             }
         }
-        
-  
     }
     
     
+    //////////////////
+    //Configuring Date
+    //////////////////
     
+    NSDate *dateFromParse = (NSDate *)self.eventObject[@"dateOfEvent"];
+    
+    NSDateFormatter *dateForm = [[NSDateFormatter alloc] init];
+    dateForm.doesRelativeDateFormatting = YES;
+    dateForm.locale = [NSLocale currentLocale];
+    dateForm.dateStyle = NSDateFormatterShortStyle;
+    dateForm.timeStyle = NSDateFormatterShortStyle;
+    NSString *localDateString = [dateForm stringFromDate:dateFromParse];
+    
+    
+    //////////////////////
+    //Configuring Location
+    //////////////////////
 
-    
-    
-    /*
-    //Determine if the user is Attending Event Already
-    PFQuery *queryForCurrentAttendingStatus = [PFQuery queryWithClassName:@"Events"];
-    [queryForCurrentAttendingStatus whereKey:@"attenders" containsAllObjectsInArray:@[[PFUser currentUser]]];
-    
-    [queryForCurrentAttendingStatus getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+    //Location Address
+    PFGeoPoint *locationOfEventPF = self.eventObject[@"locationOfEvent"];
+    CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
+    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+    [geoCoder reverseGeocodeLocation:locationOfEvent completionHandler:^(NSArray *placemarks, NSError *error) {
         
-
-        
-    }];
-    
-    */
-    
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-
-    [super viewDidAppear:animated];
-    
-    
-    //Find Users on Standby For the Event - Query on Activities Table
-    PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
-    [queryForStandbyUsers whereKey:@"activityContent" equalTo:self.eventObject];
-    [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-    [queryForStandbyUsers includeKey:@"from"];
-    [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
-        
-        if (!usersOnStandby) {
-            usersOnStandby = [[NSMutableArray alloc] init];
-        }
-        
-        for (PFObject *activity in standbyActivities) {
+        if (!error && placemarks.count > 0) {
             
-            PFUser *userOnStandby = activity[@"from"];
+            CLPlacemark *placemark = [placemarks firstObject];
+            self.eventLocationLabel.text = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO)];
             
-            [usersOnStandby addObject:userOnStandby];
+        } else {
             
-            NSLog(@"USERS ON STANDBY: %@", usersOnStandby);
+            self.eventLocationLabel.text = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
             
         }
         
-        //Reload Table
-        [self.standbyUsersCollectionView reloadData];
-
-        
+        [self networkCallComplete]; //3
+    
     }];
     
-    
-    
-    if (self.isGuestUser) {
+    //Location Name
+    NSString *locationName = self.eventObject[@"nameOfLocation"];
         
-    } else {
+    if (!locationName) {
+        locationName = @"Custom Location";
+    } else if ([locationName isEqualToString:@"Current Location"]) {
+        locationName = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
         
     }
+    
+    
+    //MKMapView
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    CLLocation *currentLocation = [[appDelegate locationManager] location];
+    CLLocationDirection distance = [locationOfEvent distanceFromLocation:currentLocation];
+    
+    locationName = [NSString stringWithFormat:@"%.1f miles away", distance * 0.000621371];
+    
+    //Setting up Map to Current Location
+    MKCoordinateRegion region = MKCoordinateRegionMake(locationOfEvent.coordinate, MKCoordinateSpanMake(0.05, 0.05));
+    
+    [self.mapView setRegion:region animated:YES];
+    
+    
+    
+    ////////////////////////////
+    //Configuring User Interface
+    ////////////////////////////
+    
+    self.eventLocationNameLabel.text = locationName;
+    self.eventTitle.text = self.eventObject[@"title"];
+    self.dateOfEventLabel.text = localDateString;
+    self.eventDescription.text = self.eventObject[@"description"];
+    self.eventCoverPhoto.file = (PFFile *)self.eventObject[@"coverPhoto"];
+    [self.eventCoverPhoto loadInBackground:^(UIImage *image, NSError *error) {
+        
+        [self setBackgroundOfEventViewWithImage:image];
+        [self networkCallComplete]; //4
+        
+    }];
     
     self.eventUser = (PFUser *)self.eventObject[@"parent"];
     [self.eventUser fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
-        
-        NSLog(@"User ObjectID: %@ and current user id: %@", user.objectId, [PFUser currentUser].objectId);
         
         if ([user.objectId isEqualToString:[PFUser currentUser].objectId]) {
             self.rsvpButton.hidden = YES;
@@ -320,129 +413,92 @@
         }
         
         self.creatorName.text = user[@"username"];
+
         self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
             self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+            [self networkCallComplete]; //5
         }];
-    }];
-    
-    NSLog(@"Event: %@ and User: %@", self.eventObject, self.eventUser);
-    
-    NSDate *dateFromParse = (NSDate *)self.eventObject[@"dateOfEvent"];
-    
-    //NSDateFormatter *df_local = [[NSDateFormatter alloc] init];
-    //[df_local setTimeZone:[NSTimeZone systemTimeZone]];
-    //[df_local setDateFormat:@"MM/dd 'at' hh:mm a"];
-    
-    //NSString *localDateString = [df_local stringFromDate:dateFromParse];
-    
-    NSDateFormatter *dateForm = [[NSDateFormatter alloc] init];
-    dateForm.doesRelativeDateFormatting = YES;
-    dateForm.locale = [NSLocale currentLocale];
-    dateForm.dateStyle = NSDateFormatterShortStyle;
-    dateForm.timeStyle = NSDateFormatterShortStyle;
-    NSString *localDateString = [dateForm stringFromDate:dateFromParse];
-    
-    
-    //Find the event address based on the pfgeopoint.
-    PFGeoPoint *locationOfEventPF = self.eventObject[@"locationOfEvent"];
-    CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
-    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
-    [geoCoder reverseGeocodeLocation:locationOfEvent completionHandler:^(NSArray *placemarks, NSError *error) {
         
-        if (!error && placemarks.count > 0) {
-            
-            CLPlacemark *placemark = [placemarks firstObject];
-            //ADDRESS AVAILABLE HERE.
-            self.eventLocationLabel.text = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(placemark.addressDictionary, NO)];
-            
-        } else {
-            
-            //just use the latitude and longitude - embed with the name.
-            
-        }
-        
+        [self networkCallComplete]; //6
         
     }];
     
-    //Determing the Location Name - Use the Coordinates if name is "current location"
-    NSString *locationName = self.eventObject[@"nameOfLocation"];
     
-    NSLog(@"LocationName ------------------ %@", locationName);
+    ////////////////////////////
+    //Additional UI Enhancements
+    ////////////////////////////
     
-    if (!locationName) {
-        locationName = @"Custom Location";
-    } else if ([locationName isEqualToString:@"Current Location"]) {
-        locationName = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
+    self.eventDescription.layer.borderWidth = 1.0f;
+    self.eventDescription.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+    
+    
+    
+}
+
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    //self.scrollViewTopConstraint.constant -= 1.0f;
+    //NSLog(@"ScrollView frame: %@ and bounds: %@", NSStringFromCGRect(scrollView.frame), NSStringFromCGRect(scrollView.bounds));
+    
+}
+
+- (void) networkCallComplete {
+    
+    NSLog(@"NumNetworkCallsComplete: %d", self.numNetworkCallsComplete);
+    self.numNetworkCallsComplete = self.numNetworkCallsComplete + 1;
+    
+    if (self.numNetworkCallsComplete == 5) {
         
+        [self.HUD hide:YES afterDelay:0.5];
     }
     
-    
-    
-    self.eventLocationNameLabel.text = locationName;
-    
-    //NSString *locationText = [NSString stringWithFormat:@"Lat: %.02f Long: %.02f", locationOfEvent.latitude, locationOfEvent.longitude];
-    //eventLocationLabel.text = locationText;
-    
-    self.eventTitle.text = self.eventObject[@"title"];
-    self.dateOfEventLabel.text = localDateString;
-    self.eventDescription.text = self.eventObject[@"description"];
-    self.eventCoverPhoto.file = (PFFile *)self.eventObject[@"coverPhoto"];
-    [self.eventCoverPhoto loadInBackground:^(UIImage *image, NSError *error) {
-        
-        [self setBackgroundOfEventViewWithImage:image];
-        
-    }];
-    
-    [self.loadingSpinner stopAnimating];
-    
-    
-    
-    
-    
-    
+}
 
+
+- (void) viewCreatorProfile {
     
+    ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    //TODO: change this from not using uilabel
+    viewUserProfileVC.userNameForProfileView = self.creatorName.text;
+    viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:viewUserProfileVC animated:YES];
     
 }
 
 
-- (void) startSearchForEventPhotos {
-    
-    NSLog(@"What eventImages contains: %@", self.eventObject[@"eventImages"]);
-    
-    picturesFromEvent = self.eventObject[@"eventImages"];
-    
-    
-    
-    //see what eventObject[@"eventImages"] returns.
-    
-    //Grab the array 'eventImages' from the event table. // set it to picturesFromEvent;
-    //it's a list of pffiles.
-    //this array of pffiles can be used for datasource methods of the uicollection view.  count should be good.
-    //Next assign a default image for each cell created (number of pffiles stored on parse)
-    //Use a PFImageView and assign the pffile to the imageview.
-    //need to create a custom cell.
-    
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = self.navbarShadow;
+    self.navigationController.navigationBar.translucent = YES;
     
 }
 
-#pragma mark -
+
+- (void) setBackgroundOfEventViewWithImage:(UIImage *)image {
+    //Set Background to Blurred Cover Photo Image
+    UIImage *blurredCoverPhotoForBackground = [UIImageEffects imageByApplyingDarkEffectToImage:image];
+    self.view.backgroundColor = [UIColor colorWithPatternImage:blurredCoverPhotoForBackground];
+}
+
+
+
 #pragma mark CollectionView Delegate and DataSource Methods
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
-    NSLog(@"collection view tag: %ld", (long)collectionView.tag);
-    
     //Picture Collection View
-    if (collectionView.tag == 3) {
+    if (collectionView.tag == 1) {
         
         return 2;
         
     //Standby List TableView
     } else {
         
-        NSLog(@"number 1");
         return 1;
         
     }
@@ -452,23 +508,20 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSLog(@"collection view tag: %ld", (long)collectionView.tag);
-
-    
     //Picture Collection View
-    if (collectionView.tag == 3) {
+    if (collectionView.tag == 1) {
         if (section == 0) {
             return 1;
         } else {
-            return [picturesFromEvent count];
+            NSLog(@"self.pictures count - %lu", (unsigned long)self.picturesFromEvent.count);
+
+            return [self.picturesFromEvent count];
         }
     
     //Standby List TableView
     } else {
         
-        NSLog(@"number 2 - %lu", (unsigned long)[usersOnStandby count]);
-
-        return [usersOnStandby count];
+        return [self.usersOnStandby count];
 
     }
     
@@ -477,13 +530,9 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"collection view tag: %ld", (long)collectionView.tag);
-
     
     //Picture Collection View
-    if (collectionView.tag == 3) {
-        
-        NSLog(@"CALLED");
+    if (collectionView.tag == 1) {
         
         static NSString *cellIdentifier  = @"EventPhotoCell";
         
@@ -500,7 +549,7 @@
                 
                 cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
                 
-                PFFile *currentPictureFile = [picturesFromEvent objectAtIndex:indexPath.row];
+                PFFile *currentPictureFile = [self.picturesFromEvent objectAtIndex:indexPath.row];
                 
                 cell.eventPictureView.file = currentPictureFile;
                 [cell.eventPictureView loadInBackground];
@@ -517,13 +566,11 @@
     //Standby List Collection View
     } else {
         
-        NSLog(@"number 3");
-        
         static NSString *standbyCellID = @"StandbyUserCell";
         
         StandbyCollectionViewCell *cell = (StandbyCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:standbyCellID forIndexPath:indexPath];
         
-        PFUser *currentUser = [usersOnStandby objectAtIndex:indexPath.row];
+        PFUser *currentUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
         cell.profilePictureOfStandbyUser.image = [UIImage imageNamed:@"PersonDefault"];
         cell.profilePictureOfStandbyUser.file = currentUser[@"profilePicture"];
@@ -532,12 +579,9 @@
         
         cell.profilePictureOfStandbyUser.objectForImageView = currentUser;
         
-        NSLog(@"number 3 cell - %@", cell);
-
         return cell;
         
     }
-    
     
 }
 
@@ -545,7 +589,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     // Picture Collection View
-    if (collectionView.tag == 3) {
+    if (collectionView.tag == 1) {
         
         
         switch (indexPath.section) {
@@ -558,38 +602,13 @@
             }
             case 1: {
                 
-                //TODO: For all blur effects, move initialization to top and in these methods just change alpha values.  no need to recreate each time.
-                UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-                self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-                self.blurEffectForModals.alpha = 0;
-                self.blurEffectForModals.frame = self.view.bounds;
-                [self.view addSubview:self.blurEffectForModals];
-                
-                UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
-                UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-                [vibrancyEffectView setFrame:self.view.bounds];
-                
-                [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
-                
-                [UIView animateWithDuration:0.5 animations:^{
-                    self.blurEffectForModals.alpha = 0.9;
-                } completion:^(BOOL finished) {
-                    
-                    NSLog(@"Finished");
-                    
-                }];
-                
-                /* animate screenshot of view
-                 [UIView animateWithDuration:0.5 animations:^{
-                 self.view.transform = CGAffineTransformMakeScale(1.4, 1.4);
-                 }];
-                 */
+                [self animateBackgroundDarkBlur];
                 
                 PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
                 
                 displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
                 displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
-                displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[picturesFromEvent objectAtIndex:indexPath.row];
+                displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[self.picturesFromEvent objectAtIndex:indexPath.row];
                 displayFullScreenPhoto.delegate = self;
                 
                 [UIView animateWithDuration:0.5 animations:^{
@@ -605,13 +624,6 @@
                 }];
                 
                 [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
-                /*
-                 ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
-                 resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-                 resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
-                 resetPasswordModal.delegate = self;
-                 */
-                
                 
                 break;
             }
@@ -623,23 +635,49 @@
     //Standby List Collection View
     } else {
         
-        //extract username from object object.
-        //push on a profile view.
+        PFUser *selectedUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
+        ProfileVC *profileView = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+        profileView.userNameForProfileView = selectedUser[@"username"];
         
-        
-        
+        [self.navigationController pushViewController:profileView animated:YES];
         
     }
     
+}
 
+
+- (void) animateBackgroundDarkBlur {
+    
+    if (!self.blurEffectForModals) {
+        
+        UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+        self.blurEffectForModals.alpha = 0;
+        self.blurEffectForModals.frame = self.view.bounds;
+        [self.view addSubview:self.blurEffectForModals];
+        
+        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
+        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+        [vibrancyEffectView setFrame:self.view.bounds];
+        
+        [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
+        
+    }
+    
+    self.blurEffectForModals.alpha = 0;
+    self.blurEffectForModals.hidden = NO;
+    [UIView animateWithDuration:0.5 animations:^{
+        self.blurEffectForModals.alpha = 0.9;
+    } completion:^(BOOL finished) {
+        
+    }];
+    
     
 }
 
 
 - (void)returnToEvent {
-    
-    NSLog(@"IS THIS BEING CALLED");
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -648,24 +686,20 @@
     
     [UIView animateWithDuration:0.5 animations:^{
         
+        self.blurEffectForModals.alpha = 0;
         self.navigationController.navigationBar.alpha = 1;
         self.tabBarController.tabBar.alpha = 1;
         
     } completion:^(BOOL finished) {
         
-    }];
-    
-    [UIView animateWithDuration:1.0 animations:^{
-        self.blurEffectForModals.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self.blurEffectForModals removeFromSuperview];
-        self.blurEffectForModals = nil;
-        NSLog(@"Finished");
+        self.blurEffectForModals.hidden = YES;
         
     }];
+
 }
 
-#pragma mark -
+
+
 #pragma mark - Upload Picture From Event
 
 - (void) uploadPhotoFromEvent:(id)sender {
@@ -717,16 +751,12 @@
                 
                 if (succeeded) {
                     
-                    if (!picturesFromEvent) {
-                        picturesFromEvent = [[NSMutableArray alloc] init];
+                    if (!self.picturesFromEvent) {
+                        self.picturesFromEvent = [[NSMutableArray alloc] init];
                     }
                     
-                    NSLog(@"PICTURESFROMEVENT: %@", picturesFromEvent);
+                    [self.picturesFromEvent addObject:profilePictureFile];
                     
-                    [picturesFromEvent addObject:profilePictureFile];
-                    
-                    NSLog(@"PICTURESFROMEVENT: %@", picturesFromEvent);
-
                     [self.pictureCollectionView reloadData];
                     
                     //[NSTimer scheduledTimerWithTimeInterval:2.0 target:self.pictureCollectionView selector:@selector(reloadData) userInfo:nil repeats:NO];
@@ -747,63 +777,7 @@
 
 
 
-- (void) viewWillDisappear:(BOOL)animated {
-    
-    [super viewWillDisappear:animated];
-    
-    NSLog(@"AHHHAHHHAHAHHAHHHAHAHAH");
-    
-    [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = self.navbarShadow;
-    self.navigationController.navigationBar.translucent = YES;
-    
-    //self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    //self.navigationController.navigationBar.translucent = YES;
-
-    
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
-
-- (void) setBackgroundOfEventViewWithImage:(UIImage *)image {
-    //Set Background to Blurred Cover Photo Image
-    UIImage *blurredCoverPhotoForBackground = [UIImageEffects imageByApplyingDarkEffectToImage:image];
-    self.view.backgroundColor = [UIColor colorWithPatternImage:blurredCoverPhotoForBackground];
-}
-
-
-#pragma mark -
-#pragma mark - Loading View
-- (void)startLoadingAnimationAndBlur {
-    NSLog(@"Blur");
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    NSLog(@"Frame W: %f", visualEffectView.frame.size.width);
-    NSLog(@"Frame H: %f", visualEffectView.frame.size.height);
-    NSLog(@"Frame X: %f", visualEffectView.frame.origin.x);
-    NSLog(@"Frame Y: %f", visualEffectView.frame.origin.y);
-
-    [visualEffectView setFrame:self.view.bounds];
-    
-    NSLog(@"Frame W: %f", visualEffectView.frame.size.width);
-    NSLog(@"Frame H: %f", visualEffectView.frame.size.height);
-    NSLog(@"Frame X: %f", visualEffectView.frame.origin.x);
-    NSLog(@"Frame Y: %f", visualEffectView.frame.origin.y);
-    
-    
-    [self.view addSubview:visualEffectView];
-    
-}
-
-- (void)stopLoadingAnimationAndBlur {
-    
-}
+#pragma mark - Profile Actions
 
 - (IBAction)inviteFriends:(id)sender {
     
@@ -816,53 +790,9 @@
     
 }
 
-- (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
-        
-    [self.navigationController popViewControllerAnimated:YES];
-    
-    for (PFUser *user in selectedPeople) {
-        
-        //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
-        //if (publicPrivateSwitch.on) {
-        //[invitedRelation addObject:user];
-        //}
-        
-        PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
-        
-        newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
-        newInvitationActivity[@"from"] = [PFUser currentUser];
-        newInvitationActivity[@"to"] = user;
-        newInvitationActivity[@"activityContent"] = self.eventObject;
-        
-        //save the invitation activities
-        [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            if (succeeded) {
-                NSLog(@"Saved");
-            } else {
-                NSLog(@"Error in Saved");
-            }
-        }];
-    }
-
-    
-}
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
-
-
 //Current: User is added to the event as a Relation.  No information about the activity is stored (ie timestamp)
 //Update:  User is added to the event as a Relation and an entry in the activity table is created - will be used for Activity/Notifications View.
 //Long-Term:  Is this the best solution?
-
 
 - (IBAction)rsvpForEvent:(id)sender {
     
@@ -961,8 +891,6 @@
             
         } else {
             
-            NSLog(@"Creating a New Entry in the Activity Table");
-            
             //Disable Button
             self.rsvpButton.enabled = NO;
             
@@ -1013,6 +941,42 @@
     }
     
 
+    
+}
+
+
+
+#pragma mark - Delegate Method for Inviting Users to Event
+
+- (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
+    
+    [self.navigationController popViewControllerAnimated:YES];
+    
+    for (PFUser *user in selectedPeople) {
+        
+        //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
+        //if (publicPrivateSwitch.on) {
+        //[invitedRelation addObject:user];
+        //}
+        
+        PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
+        
+        newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
+        newInvitationActivity[@"from"] = [PFUser currentUser];
+        newInvitationActivity[@"to"] = user;
+        newInvitationActivity[@"activityContent"] = self.eventObject;
+        
+        //save the invitation activities
+        [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            if (succeeded) {
+                NSLog(@"Saved");
+            } else {
+                NSLog(@"Error in Saved");
+            }
+        }];
+    }
+    
     
 }
 

@@ -24,6 +24,10 @@
 @property (nonatomic, strong) NSMutableArray *usersMutableArray;
 @property (nonatomic, strong) NSArray *usersArray;
 
+
+//TODO: Delete. Use for testing.
+@property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
+
 @end
 
 
@@ -77,9 +81,9 @@
             [self.view addSubview:doneSelectingInvitationsButton];
             doneSelectingInvitationsButton.translatesAutoresizingMaskIntoConstraints = NO;
             
-            NSLayoutConstraint *constraint1 = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0f constant:-80.f];
+            self.bottomConstraint = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0f constant:-80.f];
             
-            [self.view addConstraint:constraint1];
+            [self.view addConstraint:self.bottomConstraint];
             
             NSLayoutConstraint *constraint2 = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0.0f];
             
@@ -110,6 +114,26 @@
     //Start Looking for Users
     [self findUsersOnParse];
 
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self.view layoutIfNeeded];
+    
+    self.bottomConstraint.constant = -160;
+    
+    [UIView animateWithDuration:2.0 animations:^{
+        
+        [self.view layoutIfNeeded];
+        
+    } completion:^(BOOL finished) {
+        
+        NSLog(@"DONE UPDATING");
+        
+    }];
+    
 }
 
 

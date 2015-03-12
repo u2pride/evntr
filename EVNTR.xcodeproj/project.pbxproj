@@ -65,6 +65,8 @@
 		A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */; };
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
+		A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */; };
+		A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */; };
 		A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */ = {isa = PBXBuildFile; fileRef = A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */; };
 		A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */; };
 		A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */; };
@@ -185,6 +187,12 @@
 		A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabNavigationVC.m; sourceTree = "<group>"; };
 		A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileVC.h; sourceTree = "<group>"; };
 		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileVC.m; sourceTree = "<group>"; };
+		A4CEF7531AB1DB11002F02C8 /* FBShimmering-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBShimmering-Prefix.pch"; sourceTree = "<group>"; };
+		A4CEF7541AB1DB11002F02C8 /* FBShimmering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmering.h; sourceTree = "<group>"; };
+		A4CEF7551AB1DB11002F02C8 /* FBShimmeringLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringLayer.h; sourceTree = "<group>"; };
+		A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShimmeringLayer.m; sourceTree = "<group>"; };
+		A4CEF7571AB1DB11002F02C8 /* FBShimmeringView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringView.h; sourceTree = "<group>"; };
+		A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShimmeringView.m; sourceTree = "<group>"; };
 		A4D72FB31AAA175E00488D8D /* IDTransitionControllerTab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitionControllerTab.h; sourceTree = "<group>"; };
 		A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDTransitionControllerTab.m; sourceTree = "<group>"; };
 		A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewUserFacebookVC.h; sourceTree = "<group>"; };
@@ -397,6 +405,7 @@
 		A49A9E2B1AAE479300358D65 /* Third Party Utilties */ = {
 			isa = PBXGroup;
 			children = (
+				A4CEF7521AB1DB11002F02C8 /* FBShimmering */,
 				A463633A1A9D00F100AD461D /* UIImageEffects.h */,
 				A463633B1A9D00F100AD461D /* UIImageEffects.m */,
 				A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */,
@@ -507,6 +516,19 @@
 				A4F615411A8D4E5C005E2F26 /* railway.gif */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		A4CEF7521AB1DB11002F02C8 /* FBShimmering */ = {
+			isa = PBXGroup;
+			children = (
+				A4CEF7531AB1DB11002F02C8 /* FBShimmering-Prefix.pch */,
+				A4CEF7541AB1DB11002F02C8 /* FBShimmering.h */,
+				A4CEF7551AB1DB11002F02C8 /* FBShimmeringLayer.h */,
+				A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */,
+				A4CEF7571AB1DB11002F02C8 /* FBShimmeringView.h */,
+				A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */,
+			);
+			path = FBShimmering;
 			sourceTree = "<group>";
 		};
 		A4F2E9A61A7A806A00614412 /* Navigation - Utilities */ = {
@@ -696,6 +718,7 @@
 				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */,
+				A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */,
 				A41562C71A767D3A00565BB6 /* main.m in Sources */,
 				A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */,
 				A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */,
@@ -704,6 +727,7 @@
 				A44661191AA758B600E6C3C6 /* AddEventSecondaryVC.m in Sources */,
 				A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */,
 				A43760FD1AA50CF4000F544D /* EVNCustomButton.m in Sources */,
+				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

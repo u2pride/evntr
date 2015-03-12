@@ -11,8 +11,9 @@
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 #import "PeopleVC.h"
+#import <MapKit/MapKit.h>
 
-@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PictureViewerDelegate, PeopleVCDelegate>
+@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PictureViewerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate>
 
 @property (nonatomic, strong) PFObject *eventObject;
 

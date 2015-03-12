@@ -51,7 +51,26 @@
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    //Visual Effect View - Blur
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    self.darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    self.darkBlurEffectView.alpha = 0;
+    self.darkBlurEffectView.frame = self.view.bounds;
+    [self.view addSubview:self.darkBlurEffectView];
+    
+    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
+    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+    [vibrancyEffectView setFrame:self.view.bounds];
+    
+    [[self.darkBlurEffectView contentView] addSubview:vibrancyEffectView];
+}
 
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    NSLog(@"ViewWillAppear - only called once");
     
 }
 
@@ -60,76 +79,24 @@
 
 - (IBAction) logOutUnwindSegue:(UIStoryboardSegue *)unwindSegue {
     
-    [UIView animateWithDuration:0.5 animations:^{
-        self.backgroundImageView.transform = CGAffineTransformMakeScale(1, 1);
-        self.darkBlurEffectView.alpha = 0;
-        self.logoView.alpha = 1;
-        self.loginButton.alpha = 1;
-        self.registerButton.alpha = 1;
-        self.skipLoginButton.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-        
-        if (finished) {
-            [self.darkBlurEffectView removeFromSuperview];
-        }
-        
-    }];
+    [self returningTransitionAnimations];
     
 }
 
 //Unwind Segue from Register or Login Pages - Via Back Button (or Cancel from FB Page - TODO)
 - (IBAction) backToLoginSignUpScreen:(UIStoryboardSegue *)unwindSegue {
     
-    [UIView animateWithDuration:0.5 animations:^{
-        self.backgroundImageView.transform = CGAffineTransformMakeScale(1, 1);
-        self.darkBlurEffectView.alpha = 0;
-        self.logoView.alpha = 1;
-        self.loginButton.alpha = 1;
-        self.registerButton.alpha = 1;
-        self.skipLoginButton.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-        
-        if (finished) {
-            [self.darkBlurEffectView removeFromSuperview];
-        }
-        
-    }];
+    [self returningTransitionAnimations];
     
 }
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
+    NSLog(@"Prepare for Segue Called");
     
-    //Visual Effect View - Blur
-    UIBlurEffect *lightBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    self.darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:lightBlur];
-    self.darkBlurEffectView.alpha = 0;
-    self.darkBlurEffectView.frame = self.view.bounds;
-    [self.view addSubview:self.darkBlurEffectView];
-    
-    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:lightBlur];
-    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-    [vibrancyEffectView setFrame:self.view.bounds];
-    
-    [[self.darkBlurEffectView contentView] addSubview:vibrancyEffectView];
-    
-    [UIView animateWithDuration:0.65 animations:^{
-        self.darkBlurEffectView.alpha = 0.76;
-        self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
-        self.logoView.alpha = 0;
-        self.loginButton.alpha = 0;
-        self.registerButton.alpha = 0;
-        self.skipLoginButton.alpha = 0;
-        
-    } completion:^(BOOL finished) {
-        
-    }];
-    
-    
-    
+    [self leavingTransitionAnimations];
+
     if ([segue.identifier isEqualToString:@"InitialToLogin"]) {
         
         LogInVC *loginVC = (LogInVC *) [segue destinationViewController];
@@ -167,6 +134,57 @@
         
     }
     
+    
+}
+
+- (void) viewDidDisappear:(BOOL)animated {
+    
+    [self viewDidDisappear:animated];
+    
+    NSLog(@"ViewDidDisappear - not called");
+    
+    //Reset View to Original State
+    self.darkBlurEffectView.alpha = 0;
+    self.backgroundImageView.transform = CGAffineTransformIdentity;
+    self.logoView.alpha = 1;
+    self.loginButton.alpha = 1;
+    self.registerButton.alpha = 1;
+    self.skipLoginButton.alpha = 1;
+    
+    
+}
+
+
+- (void) leavingTransitionAnimations {
+    
+    [UIView animateWithDuration:0.65 animations:^{
+        self.darkBlurEffectView.alpha = 0.76;
+        self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
+        self.logoView.alpha = 0;
+        self.loginButton.alpha = 0;
+        self.registerButton.alpha = 0;
+        self.skipLoginButton.alpha = 0;
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+}
+
+
+- (void) returningTransitionAnimations {
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.backgroundImageView.transform = CGAffineTransformMakeScale(1, 1);
+        self.darkBlurEffectView.alpha = 0;
+        self.logoView.alpha = 1;
+        self.loginButton.alpha = 1;
+        self.registerButton.alpha = 1;
+        self.skipLoginButton.alpha = 1;
+        
+    } completion:^(BOOL finished) {
+        
+    }];
     
 }
 

@@ -10,6 +10,7 @@
 #import "FacebookSDK/FacebookSDK.h"
 #import "HomeScreenVC.h"
 #import "IDTransitioningDelegate.h"
+#import "FBShimmeringView.h"
 #import "LogInVC.h"
 #import "MBProgressHUD.h"
 #import "ParseFacebookUtils/PFFacebookUtils.h"
@@ -33,6 +34,8 @@
 
 @property (nonatomic, strong) UIVisualEffectView *blurViewForModal;
 @property (nonatomic, strong) UIVisualEffectView *blurOutLogInScreen;
+@property (nonatomic, strong) UILabel *blurMessage;
+@property (nonatomic, strong) FBShimmeringView *shimmerView;
 @property (nonatomic) BOOL isNewUserFromFacebook;
 @property (nonatomic) BOOL viewIsPulledUpForTextInput;
 @property (nonatomic, strong) MBProgressHUD *HUD;
@@ -90,8 +93,13 @@
             [standardDefaults setBool:NO forKey:kIsGuest];
             [standardDefaults synchronize];
             
-            //Segue to Main View
-            [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+            
+            double delayInSeconds = 3.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+                [self cleanUpBeforeTransition];
+            });
 
             
         } else {
@@ -99,10 +107,10 @@
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Username or Password Does Not Exist" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
             
             [errorAlert show];
+            
+            [self cleanUpBeforeTransition];
         }
-        
-        self.blurOutLogInScreen.alpha = 0;
-        [self.blurOutLogInScreen removeFromSuperview];
+
         
     }];
     
@@ -130,6 +138,9 @@
                 NSLog(@"Uh oh. An error occurred: %@", error);
                 errorMessage = [error localizedDescription];
             }
+            
+            [self cleanUpBeforeTransition];
+            
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error"
                                                             message:errorMessage
                                                            delegate:nil
@@ -141,7 +152,13 @@
             if (user.isNew) {
                 NSLog(@"User with facebook signed up and logged in!");
                 
-                [self grabUserDetailsFromFacebook];
+                double delayInSeconds = 3.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self grabUserDetailsFromFacebook];
+                    [self cleanUpBeforeTransition];
+
+                });
                 
             } else {
                 NSLog(@"User with facebook logged in!");
@@ -150,15 +167,21 @@
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];
                 [standardDefaults synchronize];
+                
+                double delayInSeconds = 3.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
+                    [self cleanUpBeforeTransition];
+
+                });
                     
-                [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
 
             }
             
         }
         
-        self.blurOutLogInScreen.alpha = 0;
-        [self.blurOutLogInScreen removeFromSuperview];
+
         
     }];
     
@@ -201,7 +224,16 @@
                 [strongDelegate createFBRegisterVCWithDetails:userDetailsForFBRegistration];
             }
             
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to retrieve user details" delegate:self cancelButtonTitle:@"Cmon" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
         }
+        
+        [self cleanUpBeforeTransition];
+        
     }];
     
 }
@@ -215,20 +247,27 @@
     self.blurOutLogInScreen.frame = self.view.bounds;
     [self.view addSubview:self.blurOutLogInScreen];
     
-    UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
-    loginInTextLabel.alpha = 0;
-    loginInTextLabel.text = message;
-    loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
-    loginInTextLabel.textAlignment = NSTextAlignmentCenter;
-    loginInTextLabel.textColor = [UIColor whiteColor];
-    loginInTextLabel.center = self.view.center;
-    [self.view addSubview:loginInTextLabel];
+    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    self.blurMessage.alpha = 0;
+    self.blurMessage.text = message;
+    self.blurMessage.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    self.blurMessage.textAlignment = NSTextAlignmentCenter;
+    self.blurMessage.textColor = [UIColor whiteColor];
+    self.blurMessage.center = self.view.center;
+    //[self.view addSubview:self.blurMessage];
     
-    [UIView animateWithDuration:1.0 animations:^{
+    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:self.shimmerView];
+
+    self.shimmerView.contentView = self.blurMessage;
+    self.shimmerView.shimmering = YES;
+    
+    [UIView animateWithDuration:0.8 animations:^{
         self.blurOutLogInScreen.alpha = 1;
-        loginInTextLabel.alpha = 1;
+        self.blurMessage.alpha = 1;
     } completion:^(BOOL finished) {
         
+
     }];
     
 }
@@ -382,6 +421,16 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
 
+}
+
+#pragma mark - private methods
+
+- (void) cleanUpBeforeTransition {
+    
+    [self.blurMessage removeFromSuperview];
+    [self.blurOutLogInScreen removeFromSuperview];
+    [self.shimmerView removeFromSuperview];
+    
 }
 
 

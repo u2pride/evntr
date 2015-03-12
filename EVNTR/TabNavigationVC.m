@@ -36,7 +36,7 @@
 
     self.transitionController = [[IDTransitionControllerTab alloc] init];
     self.delegate = self;
-    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 
     //Determine If Guest User
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -96,7 +96,10 @@
     UINavigationController *navController = (UINavigationController *)[self.childViewControllers objectAtIndex:2];
     self.activityItem = navController.tabBarItem;
     
-    self.activityItem.badgeValue = [NSString stringWithFormat:@"%@", num];
+    if (num.intValue != 0) {
+        self.activityItem.badgeValue = [NSString stringWithFormat:@"%@", num];
+    }
+    
     
 }
 

@@ -388,10 +388,6 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
                 
                 [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
-
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"DELETED" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                    
-                    [errorAlert show];
                 
                 self.followButton.enabled = YES;
             }];

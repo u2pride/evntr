@@ -45,6 +45,8 @@
         }
     }
     
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
     //Enabling Local Notifications.
     UIUserNotificationType notificationTypes = UIUserNotificationTypeBadge | UIUserNotificationTypeAlert;
     UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
