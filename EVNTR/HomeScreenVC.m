@@ -10,6 +10,7 @@
 #import "EVNConstants.h"
 #import "EventDetailVC.h"
 #import "EventTableCell.h"
+#import "FilterEventsVC.h"
 #import "HomeScreenVC.h"
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
@@ -21,12 +22,13 @@
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <ParseUI/ParseUI.h>
 
-@interface HomeScreenVC () {
-    PFGeoPoint *currentLocation;
-}
+@interface HomeScreenVC ()
 
 @property BOOL isGuestUser;
 @property (strong, nonatomic) IBOutlet UITableView *eventsTableView;
+
+@property (nonatomic, strong) PFGeoPoint *currentUserLocation;
+@property (nonatomic) int searchRadius;
 
 @end
 
@@ -68,6 +70,9 @@
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SearchIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySearchController)];
     self.navigationItem.rightBarButtonItem = searchButton;
     
+    UIBarButtonItem *filterButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"FilterIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displayFilterView)];
+    self.navigationItem.leftBarButtonItem = filterButton;
+    
     //Subscribe to Location Updates
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedLocation:) name:@"newLocationNotif" object:nil];
     
@@ -86,22 +91,32 @@
         case CURRENT_USER_EVENTS: {
             NSLog(@"EventsView - My Events");
             [self.navigationItem setTitle:@"My Events"];
-            //remove search icon
+            //remove search icon and filter
             self.navigationItem.rightBarButtonItems = nil;
-            
+            self.navigationItem.leftBarButtonItems = nil;
+
             break;
         }
         case OTHER_USER_EVENTS: {
             NSLog(@"EventsView - User Events");
             [self.navigationItem setTitle:@"User's Public Events"];
-            //remove search icon
+            //remove search icon and filter
             self.navigationItem.rightBarButtonItems = nil;
+            self.navigationItem.leftBarButtonItems = nil;
             
             break;
         }
         default:
             break;
     }
+    
+    
+    //Observe Changes in the Filter Radius Distance
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter addObserver:self selector:@selector(newFilterApplied:) name:@"FilterApplied" object:nil];
+    
+    //Default Search Radius
+    self.searchRadius = 10;
     
     
 }
@@ -136,16 +151,39 @@
     
 }
 
+- (void) displayFilterView {
+        
+    FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
+    filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    filterVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    
+    [self.tabBarController presentViewController:filterVC animated:YES completion:nil];
+    
+    
+}
+
+- (void) newFilterApplied:(NSNotification *)notification {
+    
+    [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
+    
+    UIButton *buttonPressedToFilter = (UIButton *)notification.object;
+    self.searchRadius = [buttonPressedToFilter.titleLabel.text intValue];
+    
+    //Reload Table View with New Search Radius
+    [self loadObjects];
+    
+}
+
 
 - (void) updatedLocation:(NSNotification *)notification {
-    if (!currentLocation) {
+    if (!self.currentUserLocation) {
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
-        currentLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
+        self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
         [self loadObjects];
         
     } else {
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
-        currentLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
+        self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
     }
 }
 
@@ -156,7 +194,7 @@
     AppDelegate *appDelegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
     CLLocation *currentLocationFromAppDelegate=appDelegate.locationManager.location;
 
-    NSLog(@"current location: %@", currentLocationFromAppDelegate);
+    NSLog(@"Current Location From AppDelegate: %@", currentLocationFromAppDelegate);
     
 }
 
@@ -164,13 +202,14 @@
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     
-    NSLog(@"---------------------------------------------------------");
-    NSLog(@"currentLocation lat and long %f and %f:", currentLocation.latitude, currentLocation.longitude);
+    NSLog(@"Location Used for Search: %f and %f:", self.currentUserLocation.latitude, self.currentUserLocation.longitude);
     
+    /*
     for (PFObject *newEvent in self.objects) {
         PFGeoPoint *location = [newEvent objectForKey:@"locationOfEvent"];
         NSLog(@"eventLocation lat and long %f and %f:", location.latitude, location.longitude);
     }
+     */
 
 }
 
@@ -188,26 +227,24 @@
     
     switch (self.typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
-
-            NSLog(@"before everything");
+            
             //One Way to Do It
             AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            currentLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManager.location];
+            self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManager.location];
             
-            NSLog(@"after app delegate method");
+            //Ends up Grabbing the Last Location Stored if No Location in Location Manager
             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
             NSDictionary *userLocationDictionary = [userDefaults objectForKey:@"userLocation"];
             
             NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
             NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
-            NSLog(@"after userDefaults method");
 
             if (userLocationDictionary) {
                 NSLog(@"Got the User Location from UserDefaults");
-                currentLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+                self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
             }
             
-            if (!currentLocation) {
+            if (!self.currentUserLocation) {
                 NSLog(@"Returning nil");
                 return nil;
             }
@@ -215,7 +252,7 @@
             NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
 
             [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
-            [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:currentLocation];
+            [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:self.searchRadius];
             
             break;
         }

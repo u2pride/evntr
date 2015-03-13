@@ -44,6 +44,7 @@ extern NSString *const kNotAttendingEvent;
 extern NSString *const kRSVPedForEvent;
 extern NSString *const kNOTRSVPedForEvent;
 extern NSString *const kGrantedAccessToEvent;
+#define SEARCH_RADIUS_DEFAULT 10
 
 
 #pragma mark - Type of Activites TableView
