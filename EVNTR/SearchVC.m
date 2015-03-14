@@ -83,17 +83,18 @@
         self.isSearchingEvents = YES;
         self.searchTypeSelectionView.eventLabel.textColor = [UIColor orangeColor];
         self.searchTypeSelectionView.peopleLabel.textColor = [UIColor blackColor];
-        
-        self.searchController.searchBar.text = @"";
+
     } else {
         self.isSearchingEvents = NO;
         self.searchTypeSelectionView.eventLabel.textColor = [UIColor blackColor];
         self.searchTypeSelectionView.peopleLabel.textColor = [UIColor orangeColor];
-        
-        self.searchController.searchBar.text = @"";
+
     }
     
+    self.searchController.searchBar.text = @"";
+    self.searchResultsArray = [[NSMutableArray alloc] init];
     [self.searchResultsTable reloadData];
+    
 
 }
 
@@ -116,7 +117,8 @@
     } else {
         
         PFQuery *peopleSearchQuery = [PFUser query];
-        [peopleSearchQuery whereKey:@"username" containsString:self.searchController.searchBar.text];
+        [peopleSearchQuery whereKey:@"username" matchesRegex:self.searchController.searchBar.text modifiers:@"i"];
+        //[peopleSearchQuery whereKey:@"username" containsString:self.searchController.searchBar.text];
         //[peopleSearchQuery whereKey:@"realName" containsString:self.searchController.searchBar.text];
         [peopleSearchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             self.searchResultsArray = [NSMutableArray arrayWithArray:objects];

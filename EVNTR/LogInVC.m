@@ -61,12 +61,10 @@
     self.passwordField.delegate = self;
     
     //Stying Elements
-    self.usernameField.text = @"EVNTR";
     self.usernameField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     self.usernameField.layer.borderWidth = 1.0f;
     self.usernameField.placeholder = @"username";
     
-    self.passwordField.text = @"eventkey";
     self.passwordField.placeholder = @"password";
     self.passwordField.secureTextEntry = YES;
     self.passwordField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
@@ -93,14 +91,12 @@
             [standardDefaults setBool:NO forKey:kIsGuest];
             [standardDefaults synchronize];
             
-            
             double delayInSeconds = 3.0;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 [self performSegueWithIdentifier:@"LoginToHomeView" sender:self];
                 [self cleanUpBeforeTransition];
             });
-
             
         } else {
             //Failed to Login
@@ -283,7 +279,10 @@
     resetPasswordModal.transitioningDelegate = self.transitioningDelegateForModal;
     resetPasswordModal.delegate = self;
     
+    [self blurViewDuringLoginWithMessage:@""];
+     
     //Add Blur Effect
+    /*
     self.view.backgroundColor = [UIColor clearColor];
     UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     self.blurViewForModal = [[UIVisualEffectView alloc] initWithEffect:blur];
@@ -295,13 +294,14 @@
         self.blurViewForModal.alpha = 1;
     }];
     
-     /* Swift Example
+     Swift Example
      let visuaEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
      visuaEffectView.frame = self.view.bounds
      visuaEffectView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
      visuaEffectView.setTranslatesAutoresizingMaskIntoConstraints(true)
      self.view.addSubview(visuaEffectView)
-     */
+     
+    */
     
     [self presentViewController:resetPasswordModal animated:YES completion:nil];
     
@@ -386,11 +386,7 @@
     
     NSLog(@"Success");
     
-    [UIView animateWithDuration:1.0f animations:^{
-        self.blurViewForModal.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self.blurViewForModal removeFromSuperview];        
-    }];
+    [self cleanUpBeforeTransition];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -399,11 +395,7 @@
     
     NSLog(@"Failed Reset");
 
-    [UIView animateWithDuration:1.0f animations:^{
-        self.blurViewForModal.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self.blurViewForModal removeFromSuperview];
-    }];
+    [self cleanUpBeforeTransition];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -413,11 +405,15 @@
     
     NSLog(@"Canceled Reset");
 
+    [self cleanUpBeforeTransition];
+
+    /*
     [UIView animateWithDuration:1.0f animations:^{
         self.blurViewForModal.alpha = 0;
     } completion:^(BOOL finished) {
         [self.blurViewForModal removeFromSuperview];
     }];
+     */
     
     [self dismissViewControllerAnimated:YES completion:nil];
 
@@ -427,9 +423,20 @@
 
 - (void) cleanUpBeforeTransition {
     
-    [self.blurMessage removeFromSuperview];
-    [self.blurOutLogInScreen removeFromSuperview];
-    [self.shimmerView removeFromSuperview];
+    [UIView animateWithDuration:1.0 animations:^{
+        
+        self.blurMessage.alpha = 0;
+        self.blurOutLogInScreen.alpha = 0;
+        self.shimmerView.alpha = 0;
+        
+    } completion:^(BOOL finished) {
+        
+        [self.blurMessage removeFromSuperview];
+        [self.blurOutLogInScreen removeFromSuperview];
+        [self.shimmerView removeFromSuperview];
+        
+    }];
+    
     
 }
 

@@ -8,12 +8,25 @@
 
 #import "EVNConstants.h"
 #import "EVNUtility.h"
+#import "FBShimmeringView.h"
 #import "LogInVC.h"
 #import "SignUpVC.h"
 #import "UIColor+EVNColors.h"
+
 #import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
+
+
+typedef enum {
+    TBParseError_InvalidEmailAddress = 125, // The email address was invalid.
+    TBParseError_UserEmailMissing = 204, // The email is missing, and must be specified
+    TBParseError_UserEmailTaken = 203, // Email has already been taken
+    TBParseError_UsernameMissing = 200, // Username is missing or empty
+    TBParseError_UsernameTaken = 202, // Username has already been taken
+    TBParseError_UserPasswordMissing = 201, // Password is missing or empty
+    
+} TBParseError;
 
 
 @interface SignUpVC ()
@@ -31,6 +44,8 @@
 @property (nonatomic, strong) NSData *pictureData;
 
 @property (strong, nonatomic) UIVisualEffectView *blurOutLogInScreen;
+@property (nonatomic, strong) UILabel *blurMessage;
+@property (nonatomic, strong) FBShimmeringView *shimmerView;
 
 
 - (IBAction)signUpWithFacebook:(id)sender;
@@ -95,6 +110,9 @@
                 NSLog(@"Uh oh. An error occurred: %@", error);
                 errorMessage = [error localizedDescription];
             }
+            
+            [self cleanUpBeforeTransition];
+
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error"
                                                             message:errorMessage
                                                            delegate:nil
@@ -106,13 +124,19 @@
             if (user.isNew) {
                 NSLog(@"User with facebook signed up and logged in!");
                 
-                [self grabUserDetailsFromFacebook];
-                
+                double delayInSeconds = 3.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self grabUserDetailsFromFacebook];
+                    [self cleanUpBeforeTransition];
+                    
+                });
                 
             } else {
                 NSLog(@"User with facebook logged in!");
                 NSLog(@"User is already signed up, send them to home page.");
                 
+                /*
                 UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
                 loginInTextLabel.alpha = 0;
                 loginInTextLabel.text = @"WELCOME to EVNTR";
@@ -121,25 +145,24 @@
                 loginInTextLabel.textColor = [UIColor whiteColor];
                 loginInTextLabel.center = self.view.center;
                 [self.view addSubview:loginInTextLabel];
-                
+                */
                 //Set isGuest Object
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];
                 [standardDefaults synchronize];
                 
-                [UIView animateWithDuration:1.0 animations:^{
-                    loginInTextLabel.alpha = 1;
-                } completion:^(BOOL finished) {
-                    
+                double delayInSeconds = 3.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                     [self performSegueWithIdentifier:@"SignUpToHomeView" sender:self];
+                    [self cleanUpBeforeTransition];
                     
-                }];
+                });
+                
+                
             }
             
         }
-        
-        self.blurOutLogInScreen.alpha = 0;
-        [self.blurOutLogInScreen removeFromSuperview];
         
     }];
 
@@ -197,14 +220,11 @@
     newUser.email = self.emailField.text;
     
     //Validate that the user has submitted a user name and password
-    if (self.usernameField.text.length > 3 && self.passwordField.text.length > 3 && self.emailField.text.length > 0) {
+    if (self.usernameField.text.length > 3 && self.passwordField.text.length > 3 && self.emailField.text.length > 0 && self.pictureData) {
         
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
             if (!error) {
-                UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle:@"Signed Up" message:@"Welcome to EVNTR." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                
-                [successAlert show];
                 
                 //Create user then save profile picture and other information.
                 PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
@@ -221,19 +241,76 @@
                 [standardDefaults setBool:NO forKey:kIsGuest];
                 [standardDefaults synchronize];
                 
-                [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
+                double delayInSeconds = 2.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
+                    [self cleanUpBeforeTransition];
+                });
+
                 
                 
             } else {
                 
-                //TODO : Incoporate Error Checking to Give User Better Idea of Problem Signing Up
-                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Already Taken" message:@"Please choose another username" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                switch ((TBParseError)error.code) {
+                        
+                    case TBParseError_InvalidEmailAddress: {
+                        
+                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another email address." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [failureAlert show];
+                        
+                        break;
+                    }
+                    case TBParseError_UserEmailMissing: {
+                        
+                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose an email." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [failureAlert show];
+                        
+                        break;
+                    }
+                    case TBParseError_UserEmailTaken: {
+                        
+                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another email." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [failureAlert show];
+                        
+                        break;
+                    }
+                    case TBParseError_UsernameMissing: {
+                        
+                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a username." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [failureAlert show];
+                        
+                        break;
+                    }
+                    case TBParseError_UsernameTaken: {
+                        
+                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another username." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [failureAlert show];
+                        
+                        break;
+                    }
+                    case TBParseError_UserPasswordMissing: {
+                        
+                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a password." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [failureAlert show];
+                        
+                        break;
+                    }
+                    default:
+                        break;
+                }
                 
-                [failureAlert show];
+                
+                [self cleanUpBeforeTransition];
+
             }
             
-            self.blurOutLogInScreen.alpha = 0;
-            [self.blurOutLogInScreen removeFromSuperview];
 
             
         }];
@@ -243,9 +320,13 @@
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Information" message:@"Make sure to fill in all fields and that your username and password are greater than three characters." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
         
         [errorAlert show];
+        
+        [self cleanUpBeforeTransition];
+
     }
 
 }
+
 
 - (void) blurViewDuringLoginWithMessage:(NSString *)message {
     
@@ -255,19 +336,26 @@
     self.blurOutLogInScreen.frame = self.view.bounds;
     [self.view addSubview:self.blurOutLogInScreen];
     
-    UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
-    loginInTextLabel.alpha = 0;
-    loginInTextLabel.text = message;
-    loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
-    loginInTextLabel.textAlignment = NSTextAlignmentCenter;
-    loginInTextLabel.textColor = [UIColor whiteColor];
-    loginInTextLabel.center = self.view.center;
-    [self.view addSubview:loginInTextLabel];
+    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    self.blurMessage.alpha = 0;
+    self.blurMessage.text = message;
+    self.blurMessage.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    self.blurMessage.textAlignment = NSTextAlignmentCenter;
+    self.blurMessage.textColor = [UIColor whiteColor];
+    self.blurMessage.center = self.view.center;
+    //[self.view addSubview:self.blurMessage];
     
-    [UIView animateWithDuration:1.0 animations:^{
+    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:self.shimmerView];
+    
+    self.shimmerView.contentView = self.blurMessage;
+    self.shimmerView.shimmering = YES;
+    
+    [UIView animateWithDuration:0.8 animations:^{
         self.blurOutLogInScreen.alpha = 1;
-        loginInTextLabel.alpha = 1;
+        self.blurMessage.alpha = 1;
     } completion:^(BOOL finished) {
+        
         
     }];
     
@@ -352,6 +440,28 @@
     return CGRectContainsPoint(self.profileImageView.frame, touchSpot);
 }
 
+
+#pragma mark - private methods
+
+- (void) cleanUpBeforeTransition {
+    
+
+    [UIView animateWithDuration:1.0 animations:^{
+        
+        self.blurMessage.alpha = 0;
+        self.blurOutLogInScreen.alpha = 0;
+        self.shimmerView.alpha = 0;
+        
+    } completion:^(BOOL finished) {
+        
+        [self.blurMessage removeFromSuperview];
+        [self.blurOutLogInScreen removeFromSuperview];
+        [self.shimmerView removeFromSuperview];
+        
+    }];
+    
+    
+}
 
 
 @end
