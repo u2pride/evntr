@@ -18,13 +18,14 @@
         
         self.clipsToBounds = NO;
         
-        self.backgroundColor = [UIColor orangeThemeColor];
-        
         [self.layer setShadowOffset:CGSizeZero];
         [self.layer setShadowColor:[[UIColor blackColor] CGColor]];
         [self.layer setShadowRadius:10.0];
         [self.layer setShadowOpacity:0.7];
         [self.layer setCornerRadius:10.0f];
+        
+        self.backgroundColor = [UIColor orangeThemeColor];
+        
     }
     
     return self;
@@ -41,10 +42,8 @@
         self.titleLabel.textColor = [UIColor whiteColor];
     }
     
-
-
 }
- */
+*/
 
 /*
 // Only override drawRect: if you perform custom drawing.

@@ -215,7 +215,9 @@
                 [useLocation.titleLabel setFont:[UIFont fontWithName:@"Lato-Light" size:16]];
                 [useLocation.titleLabel setTextAlignment:NSTextAlignmentCenter];
                 
-                //useLocation.frame = cell.frame;
+                useLocation.clipsToBounds = NO;
+                
+                useLocation.backgroundColor = [UIColor orangeThemeColor];
                 
                 [cell addSubview:useLocation];
                 useLocation.translatesAutoresizingMaskIntoConstraints = NO;
@@ -434,6 +436,7 @@
     }];
     
     [self.searchResultsTable reloadData];
+    
     
     
 }

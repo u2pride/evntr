@@ -74,6 +74,25 @@
 
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor] }];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
+    
+    if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor] }];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
+    
+    
+}
+
 
 
 #pragma mark - Login Requests

@@ -11,12 +11,13 @@
 #import "UIColor+EVNColors.h"
 #import "EVNCustomButton.h"
 #import "EVNDefaultButton.h"
+#import "EVNLocationButton.h"
 
 @interface AddEventSecondVC ()
 
 @property (weak, nonatomic) IBOutlet UITextView *eventDescriptionText;
 @property (weak, nonatomic) IBOutlet UIDatePicker *eventDatePicker;
-@property (strong, nonatomic) IBOutlet EVNDefaultButton *setLocationButton;
+@property (strong, nonatomic) IBOutlet EVNLocationButton *setLocationButton;
 
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) PFGeoPoint *selectedLocationGeoPoint;
@@ -185,6 +186,7 @@
     
     [self.setLocationButton setTitle:name forState:UIControlStateNormal];
     [self.setLocationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    self.setLocationButton.backgroundColor = [UIColor orangeThemeColor];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
