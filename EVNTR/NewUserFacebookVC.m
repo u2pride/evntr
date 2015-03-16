@@ -7,6 +7,7 @@
 //
 
 #import "EVNUtility.h"
+#import "FBShimmeringView.h"
 #import "NewUserFacebookVC.h"
 #import <Parse/Parse.h>
 #import "EVNConstants.h"
@@ -23,7 +24,11 @@
 @property (strong, nonatomic) NSString *facebookID;
 @property (strong, nonatomic) NSString *firstName;
 @property (strong, nonatomic) NSString *location;
+
 @property (strong, nonatomic) UIVisualEffectView *blurOutLogInScreen;
+@property (nonatomic, strong) UILabel *blurMessage;
+@property (nonatomic, strong) FBShimmeringView *shimmerView;
+
 
 - (IBAction)registerWithFBInformation:(id)sender;
 
@@ -44,6 +49,20 @@
     
     [super viewWillAppear:animated];
 
+    NSLog(@"Passed informationFromFB: %@", self.informationFromFB);
+    
+    self.usernameField.text = ([self.informationFromFB objectForKey:@"firstName"]) ? (NSString *)[self.informationFromFB objectForKey:@"firstName"] : @"";
+    self.emailField.text = ([self.informationFromFB objectForKey:@"email"]) ? (NSString *)[self.informationFromFB objectForKey:@"email"] : @"";
+    self.nameField.text = ([self.informationFromFB objectForKey:@"realName"]) ? (NSString *)[self.informationFromFB objectForKey:@"realName"] : @"";
+    
+    self.facebookID = ([self.informationFromFB objectForKey:@"ID"]) ? (NSString *)[self.informationFromFB objectForKey:@"ID"] : @"";
+    self.firstName = ([self.informationFromFB objectForKey:@"firstName"]) ? (NSString *)[self.informationFromFB objectForKey:@"firstName"] : @"";
+    self.location = ([self.informationFromFB objectForKey:@"location"]) ? (NSString *)[self.informationFromFB objectForKey:@"location"] : @"";
+
+    
+    NSLog(@"%@ - %@ - %@ - %@ - %@ - %@", self.usernameField.text, self.emailField.text, self.nameField.text, self.facebookID, self.firstName, self.location);
+    
+    /*
     self.usernameField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"firstName"]];
     self.emailField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"email"]];
     self.nameField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"realName"]];
@@ -51,32 +70,36 @@
     self.firstName = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"firstName"]];
     self.location = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"location"]];
     //lesson learned... need to cast it or wrap it through a class method.  otherwise it's just an id type and doesn't work in other things.
-
+     */
+     
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    NSString *urlString = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"profilePictureURL"]];
-    NSURL *url = [NSURL URLWithString:urlString];
-    
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
-    [NSURLConnection sendAsynchronousRequest:urlRequest
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler: ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               
-                               if (connectionError == nil && data != nil) {
-                                   NSLog(@"got an image");
-                                   UIImage *profileImageFromData = [UIImage imageWithData:data];
-                                   self.profileImageView.image = [EVNUtility maskImage:profileImageFromData withMask:[UIImage imageNamed:@"MaskImage"]];
+    if ([self.informationFromFB objectForKey:@"profilePictureURL"]) {
+        
+        NSString *urlString = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"profilePictureURL"]];
+        NSURL *url = [NSURL URLWithString:urlString];
+        
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
+        [NSURLConnection sendAsynchronousRequest:urlRequest
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler: ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                    
-                                   
-                               } else {
-                                   NSLog(@"ERROR");
-                               }
-                           }];
-    
+                                   if (connectionError == nil && data != nil) {
+                                       NSLog(@"got a fb profile image");
+                                       UIImage *profileImageFromData = [UIImage imageWithData:data];
+                                       self.profileImageView.image = [EVNUtility maskImage:profileImageFromData withMask:[UIImage imageNamed:@"MaskImage"]];
+                                       
+                                       
+                                   } else {
+                                       NSLog(@"didnt get a fb profile image");
+                                   }
+                               }];
+        
+    }
 }
 
 
@@ -127,13 +150,14 @@
                 }];
             }
             
-            self.blurOutLogInScreen.alpha = 0;
-            [self.blurOutLogInScreen removeFromSuperview];
+            [self cleanUpBeforeTransition];
             
         }];
         
         
     } else {
+        
+        [self cleanUpBeforeTransition];
         
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Information" message:@"Make sure to fill in all fields and that your username and password are greater than three characters." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
         
@@ -152,19 +176,26 @@
     self.blurOutLogInScreen.frame = self.view.bounds;
     [self.view addSubview:self.blurOutLogInScreen];
     
-    UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
-    loginInTextLabel.alpha = 0;
-    loginInTextLabel.text = message;
-    loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
-    loginInTextLabel.textAlignment = NSTextAlignmentCenter;
-    loginInTextLabel.textColor = [UIColor whiteColor];
-    loginInTextLabel.center = self.view.center;
-    [self.view addSubview:loginInTextLabel];
+    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    self.blurMessage.alpha = 0;
+    self.blurMessage.text = message;
+    self.blurMessage.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    self.blurMessage.textAlignment = NSTextAlignmentCenter;
+    self.blurMessage.textColor = [UIColor whiteColor];
+    self.blurMessage.center = self.view.center;
+    //[self.view addSubview:self.blurMessage];
     
-    [UIView animateWithDuration:1.0 animations:^{
+    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:self.shimmerView];
+    
+    self.shimmerView.contentView = self.blurMessage;
+    self.shimmerView.shimmering = YES;
+    
+    [UIView animateWithDuration:0.8 animations:^{
         self.blurOutLogInScreen.alpha = 1;
-        loginInTextLabel.alpha = 1;
+        self.blurMessage.alpha = 1;
     } completion:^(BOOL finished) {
+        
         
     }];
     
@@ -177,6 +208,28 @@
     [textField resignFirstResponder];
     
     return YES;
+}
+
+#pragma mark - private methods
+
+- (void) cleanUpBeforeTransition {
+    
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        
+        self.blurMessage.alpha = 0;
+        self.blurOutLogInScreen.alpha = 0;
+        self.shimmerView.alpha = 0;
+        
+    } completion:^(BOOL finished) {
+        
+        [self.blurMessage removeFromSuperview];
+        [self.blurOutLogInScreen removeFromSuperview];
+        [self.shimmerView removeFromSuperview];
+        
+    }];
+    
+    
 }
 
 @end

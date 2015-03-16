@@ -18,11 +18,13 @@
         
         [self addTarget:self action:@selector(buttonTapped:withEvent:) forControlEvents:UIControlEventTouchDown];
         self.clipsToBounds = YES;
+        
     }
     
     return self;
     
 }
+
 
 - (void)buttonTapped:(EVNCustomButton *)sender withEvent:(UIEvent *)event {
     
@@ -92,6 +94,10 @@
     //self.layer.backgroundColor = [UIColor purpleColor].CGColor;
     
 }
+
+
+
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

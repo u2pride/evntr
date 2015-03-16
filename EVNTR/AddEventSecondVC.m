@@ -8,19 +8,22 @@
 
 #import "AddEventSecondVC.h"
 #import "LocationSearchVC.h"
-
+#import "UIColor+EVNColors.h"
+#import "EVNCustomButton.h"
+#import "EVNDefaultButton.h"
 
 @interface AddEventSecondVC ()
 
 @property (weak, nonatomic) IBOutlet UITextView *eventDescriptionText;
-@property (weak, nonatomic) IBOutlet UILabel *locationButton;
 @property (weak, nonatomic) IBOutlet UIDatePicker *eventDatePicker;
+@property (strong, nonatomic) IBOutlet EVNDefaultButton *setLocationButton;
 
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) PFGeoPoint *selectedLocationGeoPoint;
 @property (nonatomic, strong) NSString *selectedLocationTitle;
 
 - (IBAction)createEvent:(id)sender;
+- (IBAction)setLocation:(id)sender;
 
 @end
 
@@ -153,13 +156,21 @@
     
 }
 
-
-
+- (IBAction)setLocation:(id)sender {
+    
+    [self performSegueWithIdentifier:@"PresentLocationSearch" sender:nil];
+    
+}
 
 
 #pragma mark - Location Search Delegate Methods
 
 - (void) locationSearchDidCancel {
+    
+    if ([self.setLocationButton.titleLabel.text isEqualToString:@"Set Location"]) {
+        [self.setLocationButton setSelected:NO];
+        [self.setLocationButton setHighlighted:NO];
+    }
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -171,7 +182,9 @@
     self.selectedLocationGeoPoint = [PFGeoPoint geoPointWithLocation:location];
     self.selectedLocationTitle = name;
     
-    self.locationButton.text = name;
+    
+    [self.setLocationButton setTitle:name forState:UIControlStateNormal];
+    [self.setLocationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -233,7 +246,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 1) {
-        [self performSegueWithIdentifier:@"PresentLocationSearch" sender:nil];
+        //[self performSegueWithIdentifier:@"PresentLocationSearch" sender:nil];
     }
     
 }

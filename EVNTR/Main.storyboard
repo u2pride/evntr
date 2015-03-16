@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xaR-eF-GqN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xaR-eF-GqN">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -55,7 +55,6 @@
             <string>Lato-Light</string>
         </mutableArray>
         <mutableArray key="Lato-Regular.ttf">
-            <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
@@ -676,7 +675,7 @@ Click continue when you're ready.</string>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jok-PH-l5H">
                                 <rect key="frame" x="99" y="419" width="123" height="55"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
                                 <state key="normal" title="Got It">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -753,7 +752,7 @@ Click continue when you're ready.</string>
                                                     <constraint firstAttribute="height" constant="21" id="IuP-8X-Mv5"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="twitter handle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vTy-2Q-5yV">
@@ -763,7 +762,7 @@ Click continue when you're ready.</string>
                                                     <constraint firstAttribute="height" constant="21" id="r1p-2M-LuK"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vWi-da-iV5">
@@ -892,7 +891,7 @@ Click continue when you're ready.</string>
                                                     <constraint firstAttribute="width" constant="168" id="cea-kw-Ea7"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="28"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jjw-9d-nCf">
@@ -1085,7 +1084,7 @@ Click continue when you're ready.</string>
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="A4D-jR-6tv">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <sections>
                             <tableViewSection headerTitle="Profile Information" id="pXa-5W-JkD">
                                 <cells>
@@ -1097,7 +1096,7 @@ Click continue when you're ready.</string>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZUv-Dd-DoL">
                                                     <rect key="frame" x="30" y="11" width="46" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dMO-sP-8g8">
@@ -1116,7 +1115,7 @@ Click continue when you're ready.</string>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Hometown" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7a-4G-Sm6">
                                                     <rect key="frame" x="30" y="11" width="84" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="hometown" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z8W-SX-13R">
@@ -1135,7 +1134,7 @@ Click continue when you're ready.</string>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Username" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9fE-6e-7Qj">
                                                     <rect key="frame" x="29" y="11" width="79" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BUa-BQ-sN6">
@@ -1159,7 +1158,7 @@ Click continue when you're ready.</string>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Bio" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o54-V1-x8F">
                                                     <rect key="frame" x="30" y="11" width="26" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -1176,7 +1175,7 @@ Click continue when you're ready.</string>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tap to Edit" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fqX-is-Ni0">
                                                     <rect key="frame" x="170" y="46" width="110" height="39"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -1191,8 +1190,8 @@ Click continue when you're ready.</string>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vot-pP-Wa1" id="5Kh-fz-LKq">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s5Q-M5-8Ft">
-                                                    <rect key="frame" x="90" y="7" width="141" height="30"/>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s5Q-M5-8Ft">
+                                                    <rect key="frame" x="117" y="7" width="141" height="30"/>
                                                     <state key="normal" title="Connect with Twitter">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -1201,6 +1200,10 @@ Click continue when you're ready.</string>
                                                     </connections>
                                                 </button>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerY" secondItem="s5Q-M5-8Ft" secondAttribute="centerY" id="O3k-gL-cSV"/>
+                                                <constraint firstAttribute="centerX" secondItem="s5Q-M5-8Ft" secondAttribute="centerX" id="VML-vG-Id3"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="BE7-Kl-b4b">
@@ -1292,7 +1295,7 @@ Click continue when you're ready.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Testing Links" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QAu-f7-vkv">
                                 <rect key="frame" x="38" y="102" width="100" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pDi-WK-VqZ">
@@ -1361,7 +1364,7 @@ Click continue when you're ready.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ready to Join the Party?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clS-50-gO5">
                                 <rect key="frame" x="33" y="86" width="254" height="52"/>
                                 <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -1390,7 +1393,7 @@ Click continue when you're ready.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Welcome to EVNTR" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LGh-KQ-J22">
                                 <rect key="frame" x="85" y="123" width="151" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pwP-yv-Bso">
@@ -1587,7 +1590,7 @@ Click continue when you're ready.</string>
                                             <constraint firstAttribute="width" constant="99" id="WuH-mE-qSh"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -2069,10 +2072,10 @@ Click continue when you're ready.</string>
                                                     <constraint firstAttribute="height" constant="37" id="z6P-Qm-ChQ"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lzv-La-u3a">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lzv-La-u3a" customClass="EVNDefaultButton">
                                                 <rect key="frame" x="70" y="91" width="179" height="30"/>
                                                 <color key="backgroundColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
@@ -2101,7 +2104,7 @@ Click continue when you're ready.</string>
                                                     <action selector="viewEventAttenders:" destination="9xw-Ai-RPd" eventType="touchUpInside" id="7Jd-aK-e4S"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U2K-8t-Wd7">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U2K-8t-Wd7" customClass="EVNDefaultButton">
                                                 <rect key="frame" x="103" y="91" width="112" height="30"/>
                                                 <color key="backgroundColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
@@ -2187,7 +2190,7 @@ Click continue when you're ready.</string>
                                                     <constraint firstAttribute="height" constant="54" id="wUP-LQ-Fte"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="14"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lu-8u-jfO">
@@ -2196,7 +2199,7 @@ Click continue when you're ready.</string>
                                                     <constraint firstAttribute="height" constant="75" id="4ew-u5-TME"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="15"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Bfu-kw-HWs">
@@ -2306,12 +2309,18 @@ Click continue when you're ready.</string>
                                             </mask>
                                         </variation>
                                     </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MDS-UN-c76">
+                                        <rect key="frame" x="16" y="154" width="286" height="181"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
+                                    <constraint firstItem="MDS-UN-c76" firstAttribute="centerY" secondItem="6M0-lW-Yd3" secondAttribute="centerY" id="4fp-Tk-Q4j"/>
                                     <constraint firstAttribute="bottom" secondItem="9B5-qw-1QG" secondAttribute="bottom" constant="-175" id="8Lo-u6-oNN"/>
                                     <constraint firstAttribute="centerX" secondItem="9B5-qw-1QG" secondAttribute="centerX" constant="1" id="Bv1-9K-Phn"/>
                                     <constraint firstAttribute="trailing" secondItem="9B5-qw-1QG" secondAttribute="trailing" id="Ck9-a0-YXE"/>
+                                    <constraint firstItem="MDS-UN-c76" firstAttribute="height" secondItem="6M0-lW-Yd3" secondAttribute="height" id="FRJ-eE-uth"/>
                                     <constraint firstAttribute="trailing" secondItem="9B5-qw-1QG" secondAttribute="trailing" id="KYv-yP-jaD"/>
                                     <constraint firstAttribute="trailing" secondItem="9B5-qw-1QG" secondAttribute="trailing" id="Nrs-PF-5jU"/>
                                     <constraint firstItem="9B5-qw-1QG" firstAttribute="centerX" secondItem="fXh-Of-N5Z" secondAttribute="centerX" id="Owl-nv-qkc"/>
@@ -2326,8 +2335,10 @@ Click continue when you're ready.</string>
                                     <constraint firstItem="9B5-qw-1QG" firstAttribute="top" secondItem="fXh-Of-N5Z" secondAttribute="top" id="oHv-vH-Knt"/>
                                     <constraint firstAttribute="bottom" secondItem="9B5-qw-1QG" secondAttribute="bottom" id="oyu-6n-O3P"/>
                                     <constraint firstAttribute="trailing" secondItem="9B5-qw-1QG" secondAttribute="trailing" constant="2" id="q0l-8y-iMN"/>
+                                    <constraint firstItem="MDS-UN-c76" firstAttribute="width" secondItem="6M0-lW-Yd3" secondAttribute="width" id="s5u-mx-Yep"/>
                                     <constraint firstAttribute="bottom" secondItem="9B5-qw-1QG" secondAttribute="bottom" constant="-175" id="tdm-JI-yZe"/>
                                     <constraint firstItem="9B5-qw-1QG" firstAttribute="leading" secondItem="fXh-Of-N5Z" secondAttribute="leading" id="vup-gn-TP3"/>
+                                    <constraint firstItem="MDS-UN-c76" firstAttribute="centerX" secondItem="6M0-lW-Yd3" secondAttribute="centerX" id="xhc-el-cQP"/>
                                     <constraint firstAttribute="trailing" secondItem="9B5-qw-1QG" secondAttribute="trailing" id="xoj-Cp-vlP"/>
                                     <constraint firstItem="9B5-qw-1QG" firstAttribute="leading" secondItem="fXh-Of-N5Z" secondAttribute="leading" id="zAd-dl-BXQ"/>
                                     <constraint firstItem="9B5-qw-1QG" firstAttribute="leading" secondItem="fXh-Of-N5Z" secondAttribute="leading" id="zxZ-QG-Wba"/>
@@ -2407,6 +2418,7 @@ Click continue when you're ready.</string>
                         <outlet property="rsvpButton" destination="Lzv-La-u3a" id="GFf-rN-hIb"/>
                         <outlet property="scrollViewTopConstraint" destination="saB-35-Gic" id="kbf-fY-EpT"/>
                         <outlet property="standbyUsersCollectionView" destination="Bfu-kw-HWs" id="SI2-jp-zLx"/>
+                        <outlet property="transparentTouchView" destination="MDS-UN-c76" id="Eoe-vz-pT6"/>
                         <outlet property="viewAttendingButton" destination="Yz9-9S-wgt" id="g4S-Te-Axt"/>
                         <segue destination="bz5-ND-8x1" kind="unwind" identifier="EventDetailToInitial" unwindAction="logOutUnwindSegue:" id="peG-wK-7Ki"/>
                     </connections>
@@ -2547,7 +2559,7 @@ Click continue when you're ready.</string>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jyi-dG-yUW">
                                             <rect key="frame" x="59" y="10" width="160" height="50"/>
                                             <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XQJ-hi-0aw">
@@ -2659,13 +2671,13 @@ Click continue when you're ready.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VSn-3H-4Ob">
                                 <rect key="frame" x="37" y="88" width="33" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Description" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F9R-Kh-LCZ">
                                 <rect key="frame" x="37" y="125" width="88" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Qfn-L5-l8V">
@@ -2699,7 +2711,7 @@ Click continue when you're ready.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="current latitude" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="95f-0i-Zgg">
                                 <rect key="frame" x="132" y="210" width="161" height="81"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mBu-5H-P6w">
@@ -2747,13 +2759,13 @@ Click continue when you're ready.</string>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="p-a" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EK1-Mu-st5">
                                 <rect key="frame" x="37" y="169" width="27" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="private" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HeE-X3-Ge2">
                                 <rect key="frame" x="180" y="169" width="53" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -2962,7 +2974,7 @@ Click continue when you're ready.</string>
                                 <action selector="cancelLocationSearch:" destination="Izt-Iv-8tg" id="OL2-oV-Yzv"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="Qm0-Q4-wKS">
+                        <barButtonItem key="rightBarButtonItem" image="Current Location" id="Qm0-Q4-wKS">
                             <connections>
                                 <action selector="getCurrentLocation:" destination="Izt-Iv-8tg" id="CKU-QK-vUN"/>
                             </connections>
@@ -3136,7 +3148,7 @@ Click continue when you're ready.</string>
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="gY1-Qs-tvA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                         <sections>
                             <tableViewSection headerTitle="Description" id="ba2-qR-hHe">
                                 <cells>
@@ -3166,20 +3178,26 @@ Click continue when you're ready.</string>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mJx-4L-cJV" id="prK-Ev-BwK">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Set Location" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ySp-0X-Lgf">
-                                                    <rect key="frame" x="8" y="8" width="304" height="28"/>
-                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
-                                                    <color key="textColor" red="0.94106498569999997" green="0.33236954000000002" blue="0.195366663" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L6B-fQ-qld" customClass="EVNDefaultButton">
+                                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="44" id="S3K-DT-5mm"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Set Location">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="setLocation:" destination="lTc-MJ-RxB" eventType="touchUpInside" id="1D8-Ka-9j9"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottomMargin" secondItem="ySp-0X-Lgf" secondAttribute="bottom" id="Bpl-u5-BBk"/>
-                                                <constraint firstItem="ySp-0X-Lgf" firstAttribute="top" secondItem="prK-Ev-BwK" secondAttribute="topMargin" id="JJO-XS-2nz"/>
-                                                <constraint firstItem="ySp-0X-Lgf" firstAttribute="leading" secondItem="prK-Ev-BwK" secondAttribute="leadingMargin" id="Y04-uL-8yr"/>
-                                                <constraint firstItem="ySp-0X-Lgf" firstAttribute="trailing" secondItem="prK-Ev-BwK" secondAttribute="trailingMargin" id="ddz-WK-me4"/>
-                                                <constraint firstAttribute="centerY" secondItem="ySp-0X-Lgf" secondAttribute="centerY" id="qdp-eh-8he"/>
-                                                <constraint firstAttribute="centerX" secondItem="ySp-0X-Lgf" secondAttribute="centerX" id="sEt-0N-i2H"/>
+                                                <constraint firstItem="L6B-fQ-qld" firstAttribute="top" secondItem="prK-Ev-BwK" secondAttribute="top" id="Iq3-BT-C23"/>
+                                                <constraint firstAttribute="trailing" secondItem="L6B-fQ-qld" secondAttribute="trailing" id="MEV-MP-yQe"/>
+                                                <constraint firstAttribute="centerY" secondItem="L6B-fQ-qld" secondAttribute="centerY" id="eSf-pr-hAB"/>
+                                                <constraint firstAttribute="centerX" secondItem="L6B-fQ-qld" secondAttribute="centerX" id="g0t-iM-sof"/>
+                                                <constraint firstAttribute="bottom" secondItem="L6B-fQ-qld" secondAttribute="bottom" id="nHi-xK-5pB"/>
+                                                <constraint firstItem="L6B-fQ-qld" firstAttribute="leading" secondItem="prK-Ev-BwK" secondAttribute="leading" id="zc7-e6-JxX"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -3273,7 +3291,7 @@ Click continue when you're ready.</string>
                     <connections>
                         <outlet property="eventDatePicker" destination="wtl-KW-zGJ" id="PXF-6I-2L8"/>
                         <outlet property="eventDescriptionText" destination="2pF-Bo-MzO" id="YC3-gZ-iKu"/>
-                        <outlet property="locationButton" destination="ySp-0X-Lgf" id="LSJ-pG-uxg"/>
+                        <outlet property="setLocationButton" destination="L6B-fQ-qld" id="yjS-hi-U54"/>
                         <segue destination="N1H-ct-sUa" kind="presentation" identifier="PresentLocationSearch" id="5ih-Mb-LfT"/>
                     </connections>
                 </tableViewController>
@@ -3301,6 +3319,7 @@ Click continue when you're ready.</string>
         </scene>
     </scenes>
     <resources>
+        <image name="Current Location" width="25" height="25"/>
         <image name="CustomBackButton" width="24" height="24"/>
         <image name="LoginBackground" width="2509" height="1673"/>
         <image name="LoginBackground2" width="2164" height="1440"/>

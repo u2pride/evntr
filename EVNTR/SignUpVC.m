@@ -184,24 +184,50 @@ typedef enum {
             
             // result is a dictionary with the user's Facebook data
             NSDictionary *userData = (NSDictionary *)result;
+            
+            NSMutableDictionary *userDetailsForFBRegistration = [[NSMutableDictionary alloc] init];
+            
             NSLog(@"FB User Data: %@", result);
             
             NSString *facebookID = userData[@"id"];
-            NSString *name = userData[@"name"];
-            NSString *location = userData[@"location"][@"name"];
-            NSString *firstName = userData[@"first_name"];
-            NSString *email = userData[@"email"];
+            //NSString *name = userData[@"name"];
+            //NSString *location = userData[@"location"][@"name"];
+            //NSString *firstName = userData[@"first_name"];
+            //NSString *email = userData[@"email"];
             NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
             
-            NSDictionary *userDetailsForFBRegistration = [NSDictionary dictionaryWithObjectsAndKeys:facebookID, @"ID", name, @"realName", location, @"location", firstName, @"firstName", email, @"email", pictureURL, @"profilePictureURL", nil];
+            if (userData[@"id"]) {
+                [userDetailsForFBRegistration setObject:userData[@"id"] forKey:@"ID"];
+            }
+            
+            if (userData[@"name"]) {
+                [userDetailsForFBRegistration setObject:userData[@"name"] forKey:@"realName"];
+            }
+            
+            if (userData[@"location"][@"name"]) {
+                [userDetailsForFBRegistration setObject:userData[@"location"] forKey:@"location"];
+            }
+            
+            if (userData[@"first_name"]) {
+                [userDetailsForFBRegistration setObject:userData[@"first_name"] forKey:@"firstName"];
+            }
+            
+            if (userData[@"email"]) {
+                [userDetailsForFBRegistration setObject:userData[@"email"] forKey:@"email"];
+            }
+            
+            if (userData[@"id"]) {
+                [userDetailsForFBRegistration setObject:pictureURL forKey:@"profilePictureURL"];
+            }
             
             
             id<NewUserFacebookSignUpDelegate> strongDelegate = self.delegate;
             
             if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetailsFromSignUp:)]) {
                 
-                [strongDelegate createFBRegisterVCWithDetailsFromSignUp:userDetailsForFBRegistration];
+                [strongDelegate createFBRegisterVCWithDetailsFromSignUp:[NSDictionary dictionaryWithDictionary:userDetailsForFBRegistration]];
             }
+            
             
         }
     }];

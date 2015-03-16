@@ -9,6 +9,8 @@
 #import "LocationSearchVC.h"
 #import "GoogleResult.h"
 #import "UserLocationTableCell.h"
+#import "EVNDefaultButton.h"
+#import "UIColor+EVNColors.h"
 #import <AddressBookUI/AddressBookUI.h>
 
 #define kGOOGLE_API_KEY @"AIzaSyDbbFOj98Z6G6lUskNuUlDr0uYPvrR-cZo"
@@ -40,7 +42,7 @@
     [super viewDidLoad];
     
     //Change Navigation Bar Color to Theme
-    self.navigationController.navigationBar.barTintColor = [UIColor orangeColor];
+    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
@@ -176,6 +178,8 @@
                 
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifierCustom];
                 cell.textLabel.text = @"Custom User Location";
+                cell.textLabel.textAlignment = NSTextAlignmentCenter;
+                cell.textLabel.font = [UIFont fontWithName:@"Lato-Regular" size:19];
                 
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 
@@ -200,8 +204,39 @@
             case 2: {
                 
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifierCustom];
-                cell.textLabel.text = @"Use This Location";
+ 
+                cell.textLabel.text = @"";
                 //return self.customLocationSaveCell;
+                
+                
+                EVNDefaultButton *useLocation = [[EVNDefaultButton alloc] init];
+                [useLocation setTitle:@"Use Location" forState:UIControlStateNormal];
+                [useLocation setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                [useLocation.titleLabel setFont:[UIFont fontWithName:@"Lato-Light" size:16]];
+                [useLocation.titleLabel setTextAlignment:NSTextAlignmentCenter];
+                
+                //useLocation.frame = cell.frame;
+                
+                [cell addSubview:useLocation];
+                useLocation.translatesAutoresizingMaskIntoConstraints = NO;
+                
+                NSLayoutConstraint *constraintCenterX = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0.0f];
+                
+                [cell addConstraint:constraintCenterX];
+                
+                NSLayoutConstraint *constraintCenterY = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:0.0f];
+                
+                [cell addConstraint:constraintCenterY];
+                
+                NSLayoutConstraint *constraintHeight = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeHeight multiplier:0.72f constant:0.0f];
+                
+                [cell addConstraint:constraintHeight];
+                
+                NSLayoutConstraint *constraintWidth = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeWidth multiplier:0.72f constant:0.0f];
+                
+                [cell addConstraint:constraintWidth];
+                
+                [useLocation addTarget:self action:@selector(tappedUseLocation) forControlEvents:UIControlEventTouchUpInside];
                 
                 break;
             }
@@ -233,6 +268,41 @@
     }
     
     return cell;
+    
+}
+
+
+- (void) tappedUseLocation {
+        
+    NSIndexPath *locationInfoIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
+    
+    UserLocationTableCell *locationCell = (UserLocationTableCell *) [self.searchResultsTable cellForRowAtIndexPath:locationInfoIndexPath];
+    
+    [self.geoCoder geocodeAddressString:locationCell.locationAddressTextView.text completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        
+        if (!error && placemarks.count > 0) {
+            
+            CLPlacemark *placemark = [placemarks firstObject];
+            
+            GoogleResult *customLocation = [[GoogleResult alloc] initWithTitle:locationCell.locationNameTextField.text address:locationCell.locationAddressTextView.text location:placemark.location];
+            
+            NSString *locationTitle = customLocation.title;
+            CLLocation *coordinates = customLocation.location;
+            
+            id<EventLocationSearch> strongDelegate = self.delegate;
+            
+            [strongDelegate locationSelectedWithCoordinates:coordinates andName:locationTitle];
+            
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Not a valid address." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            [errorAlert show];
+            
+        }
+        
+    }];
+
     
 }
 
