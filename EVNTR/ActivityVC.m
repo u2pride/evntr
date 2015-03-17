@@ -244,11 +244,11 @@
                 activityCell.activityContentTextLabel.text = textForActivityCell;
                 
                 //configure view button on right side
-                UIButtonPFExtended *followButton = activityCell.actionButton;
-                followButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-                activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-                activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-                activityCell.actionButton.backgroundColor = [UIColor clearColor];
+                //UIButtonPFExtended *followButton = activityCell.actionButton;
+                //followButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+                //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+                //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+                //activityCell.actionButton.backgroundColor = [UIColor clearColor];
                 
                 //Grab the profile pic of the user and set it to the left image
                 PFFile *profilePictureFromParse = user[@"profilePicture"];
@@ -267,10 +267,11 @@
                     //TODO - Does this make sense?
                     
                     if (!objects || !objects.count) {
-                        [activityCell.actionButton setTitle:@"Follow" forState:UIControlStateNormal];
+                        activityCell.actionButton.titleText = @"Follow";
                         activityCell.actionButton.personToFollow = userWhoFollowed;
                     } else {
-                        [activityCell.actionButton setTitle:@"Unfollow" forState:UIControlStateNormal];
+                        activityCell.actionButton.titleText = @"Following";
+                        [activityCell.actionButton setIsSelected:YES];
                         activityCell.actionButton.personToFollow = userWhoFollowed;
                     }
                     
@@ -302,7 +303,8 @@
                 [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
                 
                 //configure view button on right side
-                [activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
+                activityCell.actionButton.titleText = @"View";
+                //[activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
                 activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
                 activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
                 activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
@@ -377,9 +379,12 @@
                     [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                         
                         if (!objects || !objects.count) {
-                            [activityCell.actionButton setTitle:kGrantAccess forState:UIControlStateNormal];
+                            activityCell.actionButton.titleText = kGrantAccess;
+                            //[activityCell.actionButton setTitle:kGrantAccess forState:UIControlStateNormal];
                         } else {
-                            [activityCell.actionButton setTitle:kRevokeAccess forState:UIControlStateNormal];
+                            activityCell.actionButton.titleText = kRevokeAccess;
+                            [activityCell.actionButton setIsSelected:YES];
+                            //[activityCell.actionButton setTitle:kRevokeAccess forState:UIControlStateNormal];
                         }
                         
                         [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
@@ -450,12 +455,14 @@
                     
                     
                     //configure view button on right side
-                    [activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
+                    activityCell.actionButton.titleText = @"View";
+                    //[activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
                     activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
                     activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
                     activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
                     activityCell.actionButton.backgroundColor = [UIColor clearColor];
                     activityCell.actionButton.eventToView = object;
+                    
                     [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
                 }
                 
@@ -487,7 +494,8 @@
                 
                 [eventGivenAccessTo fetchInBackgroundWithBlock:^(PFObject *event, NSError *error) {
                     
-                    [activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
+                    activityCell.actionButton.titleText = @"View";
+                    //[activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
                     [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
                     
                     activityCell.actionButton.eventToView = event;
@@ -526,6 +534,7 @@
     ProfileVC *followerProfileVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
     followerProfileVC.userNameForProfileView = username;
     [self.navigationController pushViewController:followerProfileVC animated:YES];
+
 }
 
 - (void)viewEvent:(id)sender {
@@ -537,15 +546,18 @@
     eventDetailsVC.eventObject = eventToView;
     [self.navigationController pushViewController:eventDetailsVC animated:YES];
     
+    [viewButton endedTask];
+    [viewButton setIsSelected:NO];
+    
 }
 
 - (void)grantAccess:(id)sender {
     
     UIButtonPFExtended *grantButton = (UIButtonPFExtended *)sender;
-    
+    [grantButton startedTask];
     grantButton.enabled = NO;
     
-    NSString *grantState = grantButton.titleLabel.text;
+    NSString *grantState = grantButton.titleText;
     
     //Grant Access to User or Revoke Access to User Depending on Current Button State
     if ([grantState isEqualToString:kRevokeAccess]) {
@@ -564,7 +576,8 @@
             [previousGrantActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
                 if (succeeded){
-                    [grantButton setTitle:kGrantAccess forState:UIControlStateNormal];
+                    grantButton.titleText = kGrantAccess;
+                    //[grantButton setTitle:kGrantAccess forState:UIControlStateNormal];
                     
                 } else {
                     NSLog(@"Error Deleting Grant Access Activity");
@@ -572,6 +585,7 @@
                 
                 //Re-Enable Button
                 grantButton.enabled = YES;
+                [grantButton endedTask];
                 
             }];
         }];
@@ -585,13 +599,16 @@
         newActivity[@"activityContent"] = grantButton.eventToGrantAccess;
         [newActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-                [grantButton setTitle:kRevokeAccess forState:UIControlStateNormal];
+                
+                grantButton.titleText = kRevokeAccess;
                 
             } else {
                 NSLog(@"Error Saving New Grant Access Activity: %@", error);
             }
             
             grantButton.enabled = YES;
+            [grantButton endedTask];
+
         }];
         
     }
@@ -601,14 +618,15 @@
 - (void)tappedFollowButton:(id)sender {
     
     UIButtonPFExtended *followButton = (UIButtonPFExtended *)sender;
+    [followButton startedTask];
     PFUser *userToChangeFollowState = followButton.personToFollow;
     
     followButton.enabled = NO;
     
-    NSString *followState = followButton.titleLabel.text;
+    NSString *followState = followButton.titleText;
     
     //Follow User or Unfollow User Depending on Current Button State
-    if ([followState isEqualToString:@"Unfollow"]) {
+    if ([followState isEqualToString:@"Following"]) {
 
         //Find and Delete Old Follow Activity
         PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
@@ -623,7 +641,8 @@
             [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 
                 if (succeeded){
-                    [followButton setTitle:@"Follow" forState:UIControlStateNormal];
+                    followButton.titleText = @"Follow";
+                    //[followButton setTitle:@"Follow" forState:UIControlStateNormal];
                     
                     //Notify Profile View of Update
                     [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
@@ -635,6 +654,7 @@
                 
                 //Re-Enable Button
                 followButton.enabled = YES;
+                [followButton endedTask];
                 
             }];
         }];
@@ -646,8 +666,9 @@
         newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
         [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
-                [followButton setTitle:@"Unfollow" forState:UIControlStateNormal];
-                
+                followButton.titleText = @"Following";
+                //[followButton setTitle:@"Following" forState:UIControlStateNormal];
+                [followButton endedTask];
                 //Notify Profile View of Update
                 [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
                 
@@ -657,6 +678,7 @@
             
             //Re-Enable Button
             followButton.enabled = YES;
+            [followButton endedTask];
             
         }];
     }

@@ -8,6 +8,7 @@
 
 #import "EVNConstants.h"
 #import "LocationSearchVC.h"
+#import "NewEventModel.h"
 
 #import <Parse/Parse.h>
 #import <UIKit/UIKit.h>
@@ -17,9 +18,8 @@
 
 @interface AddEventSecondVC : UITableViewController <UITextViewDelegate, EventLocationSearch>
 
-@property (nonatomic, strong) NSString *eventTitle;
-@property (nonatomic, assign) int eventType;
-@property (nonatomic, strong) PFFile *eventCoverImage;
+@property (nonatomic, strong) NewEventModel *eventToCreate;
+
 @property (nonatomic, strong) id <EventCreationCompleted> delegate;
 
 @end

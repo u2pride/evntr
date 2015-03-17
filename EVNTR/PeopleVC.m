@@ -167,6 +167,8 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
+                NSLog(@"Objects Found: %@", usersFound);
+                
                 for (PFObject *object in usersFound) {
                     [self.usersMutableArray addObject:object[@"from"]];
                 }
@@ -187,6 +189,8 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
+                NSLog(@"Objects Found: %@", usersFound);
+
                 for (PFObject *object in usersFound) {
                     [self.usersMutableArray addObject:object[@"to"]];
                 }

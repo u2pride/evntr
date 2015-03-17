@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNButton.h"
 #import "EVNConstants.h"
 #import "GuestWelcomeVC.h"
 #import "IDTransitioningDelegate.h"
@@ -21,9 +22,8 @@
 @interface InitialScreenVC ()
 
 @property (nonatomic, strong) NSDictionary *detailsFromFBRegistration;
-
-@property (weak, nonatomic) IBOutlet UIButton *loginButton;
-@property (weak, nonatomic) IBOutlet UIButton *registerButton;
+@property (strong, nonatomic) IBOutlet EVNButton *loginButton;
+@property (strong, nonatomic) IBOutlet EVNButton *registerButton;
 @property (weak, nonatomic) IBOutlet UILabel *logoView;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (strong, nonatomic) IBOutlet UIButton *skipLoginButton;
@@ -44,9 +44,22 @@
     //for testing purposes
     [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor redColor];
 
-    //Setting Colors
-    self.loginButton.backgroundColor = [UIColor orangeThemeColor];
-    self.registerButton.backgroundColor = [UIColor orangeThemeColor];
+    //Setting Up Custom Buttons
+    self.loginButton.buttonColor = [UIColor orangeThemeColor];
+    self.loginButton.titleText = @"login";
+    self.loginButton.isRounded = NO;
+    self.loginButton.tag = 1;
+    self.loginButton.isSelected = YES;
+    self.loginButton.font = [UIFont fontWithName:@"Lato-Light" size:20.0];
+    self.loginButton.isStateless = YES;
+    
+    self.registerButton.buttonColor = [UIColor orangeThemeColor];
+    self.registerButton.titleText = @"register";
+    self.registerButton.isRounded = NO;
+    self.registerButton.tag = 2;
+    self.registerButton.isSelected = YES;
+    self.registerButton.font = [UIFont fontWithName:@"Lato-Light" size:20.0];
+    self.registerButton.isStateless = YES;
     
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
     
@@ -64,6 +77,45 @@
     [vibrancyEffectView setFrame:self.view.bounds];
     
     [[self.darkBlurEffectView contentView] addSubview:vibrancyEffectView];
+    
+    
+    //Adding Tap Gestures To Custom Buttons
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(continueIntoTheApp:)];
+    UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(continueIntoTheApp:)];
+    
+    //Note:  Appear to be unneccessary.
+    tapgr.cancelsTouchesInView = NO;
+    tapgr2.cancelsTouchesInView = NO;
+    
+    [self.registerButton addGestureRecognizer:tapgr];
+    [self.loginButton addGestureRecognizer:tapgr2];
+    
+}
+
+
+- (void)continueIntoTheApp:(UIGestureRecognizer *)gr {
+    
+    NSLog(@"Gesture Recognized");
+    
+    NSInteger tag = gr.view.tag;
+    
+    EVNButton *button = (EVNButton *)gr.view;
+    [button startedTask];
+    
+    //Login Button
+    if (tag == 1) {
+        
+        [self performSegueWithIdentifier:@"InitialToLogin" sender:self];
+        [self.loginButton endedTask];
+        
+    //Register Button
+    } else {
+        
+        [self performSegueWithIdentifier:@"InitialToSignUp" sender:self];
+        self.registerButton.isSelected = YES;
+        [self.registerButton endedTask];
+    }
+    
 }
 
 

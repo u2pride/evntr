@@ -7,8 +7,10 @@
 //
 
 #import "AddEventPrimaryVC.h"
-#import "AddEventSecondaryVC.h"
+#import "AddEventSecondVC.h"
 #import "CustomEventTypeButton.h"
+#import "EVNButton.h"
+#import "NewEventModel.h"
 #import "UIColor+EVNColors.h"
 
 #import <Parse/Parse.h>
@@ -17,9 +19,11 @@
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UITextField *eventTitleField;
-@property (weak, nonatomic) IBOutlet CustomEventTypeButton *publicButton;
-@property (weak, nonatomic) IBOutlet CustomEventTypeButton *publicApprovedButton;
-@property (weak, nonatomic) IBOutlet CustomEventTypeButton *privateButton;
+
+@property (strong, nonatomic) IBOutlet EVNButton *publicButton;
+@property (strong, nonatomic) IBOutlet EVNButton *publicApprovedButton;
+@property (strong, nonatomic) IBOutlet EVNButton *privateButton;
+
 @property (weak, nonatomic) IBOutlet UIImageView *eventCoverPhotoView;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;
 
@@ -28,10 +32,12 @@
 
 
 - (IBAction)nextButtonPressed:(id)sender;
-- (IBAction)selectedPublicType:(id)sender;
-- (IBAction)selectedPublicApprovedType:(id)sender;
-- (IBAction)selectedPrivateType:(id)sender;
 - (IBAction)canceledEventCreation:(id)sender;
+
+- (IBAction)selectedPublic:(id)sender;
+- (IBAction)selectedPublicApproved:(id)sender;
+- (IBAction)selectedPrivate:(id)sender;
+
 
 @end
 
@@ -51,10 +57,14 @@
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
 
     
-    // Initialize button states & event type
-    self.publicButton.selected = YES;
-    self.privateButton.selected = NO;
-    self.publicApprovedButton.selected = NO;
+    //Configuring Buttons
+    self.publicButton.titleText = @"Public";
+    self.publicApprovedButton.titleText = @"Public-Approved";
+    self.privateButton.titleText = @"Private";
+    
+    [self.publicApprovedButton sizeToFit];
+    
+    
     self.selectedEventType = PUBLIC_EVENT_TYPE;
     
     // Initialize ImageView & Attach Tap Gesture
@@ -66,16 +76,15 @@
     
     //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
     self.eventTitleField.delegate = self;
+    
+    self.publicButton.isSelected = YES;
+
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // TODO: Use same as what was selected before selecting photo
-    self.publicButton.selected = YES;
-    self.privateButton.selected = NO;
-    self.publicApprovedButton.selected = NO;
 }
 
 
@@ -122,30 +131,30 @@
 
 #pragma mark - Selecting Buttons for Event Type & Next Button
 
-- (IBAction)selectedPublicType:(id)sender {
+- (IBAction)selectedPublic:(id)sender {
     
     self.selectedEventType = PUBLIC_EVENT_TYPE;
-    self.publicButton.selected = YES;
-    self.publicApprovedButton.selected = NO;
-    self.privateButton.selected = NO;
+    self.publicApprovedButton.isSelected = NO;
+    self.privateButton.isSelected = NO;
     
 }
 
-- (IBAction)selectedPublicApprovedType:(id)sender {
+- (IBAction)selectedPublicApproved:(id)sender {
     
     self.selectedEventType = PUBLIC_APPROVED_EVENT_TYPE;
-    self.publicButton.selected = NO;
-    self.publicApprovedButton.selected = YES;
-    self.privateButton.selected = NO;
+    self.publicButton.isSelected = NO;
+    self.privateButton.isSelected = NO;
+    
 }
 
-- (IBAction)selectedPrivateType:(id)sender {
+- (IBAction)selectedPrivate:(id)sender {
     
     self.selectedEventType = PRIVATE_EVENT_TYPE;
-    self.publicButton.selected = NO;
-    self.publicApprovedButton.selected = NO;
-    self.privateButton.selected = YES;
+    self.publicApprovedButton.isSelected = NO;
+    self.publicButton.isSelected = NO;
+    
 }
+
 
 - (IBAction)nextButtonPressed:(id)sender {
 
@@ -201,12 +210,14 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     
-    AddEventSecondaryVC *nextStepVC = (AddEventSecondaryVC *) [segue destinationViewController];
+    AddEventSecondVC *nextStepVC = (AddEventSecondVC *) [segue destinationViewController];
+    
+    NewEventModel *eventInProgress = [[NewEventModel alloc] initWithTitle:self.eventTitleField.text eventType:self.selectedEventType coverImage:self.coverPhotoFile];
     
     nextStepVC.title = self.eventTitleField.text;
-    nextStepVC.eventTitle = self.eventTitleField.text;
-    nextStepVC.eventType = self.selectedEventType;
-    nextStepVC.eventCoverImage = self.coverPhotoFile;
+
+    nextStepVC.eventToCreate = eventInProgress;
+    
     nextStepVC.delegate = self;
     
 }
@@ -262,6 +273,10 @@
         [strongDelegate canceledEventCreation];
     }
 }
+
+
+
+
 
 
 @end

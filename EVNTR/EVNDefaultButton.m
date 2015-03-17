@@ -8,9 +8,11 @@
 
 #import "EVNDefaultButton.h"
 #import "UIColor+EVNColors.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation EVNDefaultButton
 
+//CALLED WHEN INITIALIZED FROM STORYBOARD
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
@@ -18,19 +20,30 @@
         
         self.clipsToBounds = NO;
         
-        [self.layer setShadowOffset:CGSizeZero];
-        [self.layer setShadowColor:[[UIColor blackColor] CGColor]];
-        [self.layer setShadowRadius:10.0];
-        [self.layer setShadowOpacity:0.7];
-        [self.layer setCornerRadius:10.0f];
-        
         self.backgroundColor = [UIColor orangeThemeColor];
+        self.titleLabel.textColor = [UIColor whiteColor];
         
     }
     
     return self;
     
 }
+
+- (void) awakeFromNib {
+    [super awakeFromNib];
+    
+    [self.layer setShadowOffset:CGSizeZero];
+    [self.layer setShadowColor:[[UIColor blackColor] CGColor]];
+    [self.layer setShadowRadius:10.0];
+    [self.layer setShadowOpacity:0.7];
+    [self.layer setCornerRadius:10.0f];
+    
+    
+}
+
+
+
+
 
 /*
 - (void) setHighlighted:(BOOL)highlighted {

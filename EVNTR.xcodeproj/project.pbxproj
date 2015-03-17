@@ -56,6 +56,8 @@
 		A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */; };
 		A4AE41AD1AB796CB006270E2 /* EVNLocationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
+		A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B2BC5E1AB870370004B084 /* EVNButton.m */; };
+		A4B2BC621AB8C7D40004B084 /* NewEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B2BC611AB8C7D40004B084 /* NewEventModel.m */; };
 		A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B6FB1A1AB349950033A3A1 /* FilterEventsVC.m */; };
 		A4B6FB1E1AB365C80033A3A1 /* SearchHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */; };
 		A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */; };
@@ -178,6 +180,10 @@
 		A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNLocationButton.m; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
+		A4B2BC5D1AB870370004B084 /* EVNButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNButton.h; sourceTree = "<group>"; };
+		A4B2BC5E1AB870370004B084 /* EVNButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNButton.m; sourceTree = "<group>"; };
+		A4B2BC601AB8C7D40004B084 /* NewEventModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewEventModel.h; sourceTree = "<group>"; };
+		A4B2BC611AB8C7D40004B084 /* NewEventModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewEventModel.m; sourceTree = "<group>"; };
 		A4B6FB191AB349940033A3A1 /* FilterEventsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterEventsVC.h; sourceTree = "<group>"; };
 		A4B6FB1A1AB349950033A3A1 /* FilterEventsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilterEventsVC.m; sourceTree = "<group>"; };
 		A4B6FB1C1AB365C80033A3A1 /* SearchHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchHeaderView.h; sourceTree = "<group>"; };
@@ -447,6 +453,8 @@
 				A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */,
 				A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */,
 				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
+				A4B2BC601AB8C7D40004B084 /* NewEventModel.h */,
+				A4B2BC611AB8C7D40004B084 /* NewEventModel.m */,
 				A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */,
 				A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */,
 				A49A9E2E1AAE487D00358D65 /* Location */,
@@ -565,6 +573,8 @@
 				A43760FC1AA50CF4000F544D /* EVNCustomButton.m */,
 				A45795EF1AB74DE4004C7088 /* EVNDefaultButton.h */,
 				A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */,
+				A4B2BC5D1AB870370004B084 /* EVNButton.h */,
+				A4B2BC5E1AB870370004B084 /* EVNButton.m */,
 				A4AE41AB1AB796CB006270E2 /* EVNLocationButton.h */,
 				A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */,
 				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
@@ -712,11 +722,13 @@
 				A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
+				A4B2BC621AB8C7D40004B084 /* NewEventModel.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
 				A418129B1AA0BFA200317B0C /* GuestWelcomeVC.m in Sources */,
 				A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */,
 				A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */,
 				A45795F11AB74DE4004C7088 /* EVNDefaultButton.m in Sources */,
+				A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */,
 				A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
 				A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */,

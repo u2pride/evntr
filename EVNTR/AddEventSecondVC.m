@@ -19,10 +19,6 @@
 @property (weak, nonatomic) IBOutlet UIDatePicker *eventDatePicker;
 @property (strong, nonatomic) IBOutlet EVNLocationButton *setLocationButton;
 
-@property (nonatomic, strong) NSDate *selectedDate;
-@property (nonatomic, strong) PFGeoPoint *selectedLocationGeoPoint;
-@property (nonatomic, strong) NSString *selectedLocationTitle;
-
 - (IBAction)createEvent:(id)sender;
 - (IBAction)setLocation:(id)sender;
 
@@ -42,7 +38,7 @@
     [self.eventDatePicker addTarget:self action:@selector(newDate:) forControlEvents:UIControlEventValueChanged];
     
     //initialize date
-    self.selectedDate = [NSDate date];
+    self.eventToCreate.eventDate = [NSDate date];
     
     //Event Description Setup
     self.eventDescriptionText.delegate = self;
@@ -57,103 +53,115 @@
 
 - (IBAction)createEvent:(id)sender {
     
-    PFObject *newEvent = [PFObject objectWithClassName:@"Events"];
-    
-    newEvent[@"title"] = self.eventTitle;
-    newEvent[@"description"] = self.eventDescriptionText.text;
-    newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:self.eventType];
-    newEvent[@"parent"] = [PFUser currentUser];
-    newEvent[@"dateOfEvent"] = self.selectedDate;
-    newEvent[@"locationOfEvent"] = self.selectedLocationGeoPoint;
-    newEvent[@"nameOfLocation"] = self.selectedLocationTitle;
-    
-    
-    //Transition Blur
-    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    UIVisualEffectView *darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-    darkBlurEffectView.alpha = 0;
-    darkBlurEffectView.frame = [UIScreen mainScreen].bounds;
-    [self.navigationController.view addSubview:darkBlurEffectView];
-    
-    UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
-    UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-    [vibrancyEffectView setFrame:self.view.bounds];
-    
-    [[darkBlurEffectView contentView] addSubview:vibrancyEffectView];
-    
-    UILabel *savingEvent = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
-    savingEvent.text = @"Creating your event...";
-    savingEvent.textColor = [UIColor whiteColor];
-    savingEvent.center = self.view.center;
-    [[darkBlurEffectView contentView] addSubview:savingEvent];
-    
-    [UIView animateWithDuration:3.0 animations:^{
-        darkBlurEffectView.alpha = 1.0;
+    if (self.eventToCreate.eventDescription && self.eventToCreate.eventLocationName) {
         
-    } completion:^(BOOL finished) {
+        PFObject *newEvent = [PFObject objectWithClassName:@"Events"];
         
-        //Save Cover image to parse
-        [self.eventCoverImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        newEvent[@"title"] = self.eventToCreate.eventTitle;
+        newEvent[@"description"] = self.eventDescriptionText.text;
+        newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:self.eventToCreate.eventType];
+        newEvent[@"parent"] = [PFUser currentUser];
+        newEvent[@"dateOfEvent"] = self.eventToCreate.eventDate;
+        newEvent[@"locationOfEvent"] = self.eventToCreate.eventCoordinates;
+        newEvent[@"nameOfLocation"] = self.eventToCreate.eventLocationName;
+        
+        
+        //Transition Blur
+        UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        UIVisualEffectView *darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+        darkBlurEffectView.alpha = 0;
+        darkBlurEffectView.frame = [UIScreen mainScreen].bounds;
+        [self.navigationController.view addSubview:darkBlurEffectView];
+        
+        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
+        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
+        [vibrancyEffectView setFrame:self.view.bounds];
+        
+        [[darkBlurEffectView contentView] addSubview:vibrancyEffectView];
+        
+        UILabel *savingEvent = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
+        savingEvent.text = @"Creating your event...";
+        savingEvent.textColor = [UIColor whiteColor];
+        savingEvent.center = self.view.center;
+        [[darkBlurEffectView contentView] addSubview:savingEvent];
+        
+        [UIView animateWithDuration:3.0 animations:^{
+            darkBlurEffectView.alpha = 1.0;
             
-            if (succeeded) {
+        } completion:^(BOOL finished) {
+            
+            //Save Cover image to parse
+            [self.eventToCreate.eventCoverImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
-                newEvent[@"coverPhoto"] = self.eventCoverImage;
-                
-                //Now Save Event to Parse
-                [newEvent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
                     
-                    if (succeeded) {
+                    newEvent[@"coverPhoto"] = self.eventToCreate.eventCoverImage;
+                    
+                    //Now Save Event to Parse
+                    [newEvent saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         
-                        //Notify VCs of new event creation - TODO: updates profile view.
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kEventCreated object:nil userInfo:nil];
-                        
-                        [self.navigationController popViewControllerAnimated:NO];
-                        
-                        id<EventCreationCompleted> strongDelegate = self.delegate;
-                        
-                        if ([strongDelegate respondsToSelector:@selector(eventCreationComplete:)]) {
+                        if (succeeded) {
                             
-                            [strongDelegate eventCreationComplete:darkBlurEffectView];
+                            //Notify VCs of new event creation - TODO: updates profile view.
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kEventCreated object:nil userInfo:nil];
+                            
+                            [self.navigationController popViewControllerAnimated:NO];
+                            
+                            id<EventCreationCompleted> strongDelegate = self.delegate;
+                            
+                            if ([strongDelegate respondsToSelector:@selector(eventCreationComplete:)]) {
+                                
+                                [strongDelegate eventCreationComplete:darkBlurEffectView];
+                            }
+                            
+                            
+                        } else {
+                            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error saving event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+                            
+                            [errorAlert show];
+                            
+                            [self.navigationController popViewControllerAnimated:NO];
+                            
+                            id<EventCreationCompleted> strongDelegate = self.delegate;
+                            
+                            if ([strongDelegate respondsToSelector:@selector(eventCreationCanceled)]) {
+                                
+                                [strongDelegate eventCreationCanceled];
+                            }
                         }
                         
+                    }];
+                    
+                } else {
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error saving event cover image" delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
+                    
+                    id<EventCreationCompleted> strongDelegate = self.delegate;
+                    
+                    if ([strongDelegate respondsToSelector:@selector(eventCreationCanceled)]) {
                         
-                    } else {
-                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error saving event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
-                        
-                        [errorAlert show];
-                        
-                        [self.navigationController popViewControllerAnimated:NO];
-                        
-                        id<EventCreationCompleted> strongDelegate = self.delegate;
-                        
-                        if ([strongDelegate respondsToSelector:@selector(eventCreationCanceled)]) {
-                                                        
-                            [strongDelegate eventCreationCanceled];
-                        }
+                        [strongDelegate eventCreationCanceled];
                     }
                     
-                }];
-                
-            } else {
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error saving event cover image" delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
-                
-                [errorAlert show];
-                
-                id<EventCreationCompleted> strongDelegate = self.delegate;
-                
-                if ([strongDelegate respondsToSelector:@selector(eventCreationCanceled)]) {
-                    
-                    [strongDelegate eventCreationCanceled];
+                    //TOOD - allow user to go back and update the cover image.
                 }
                 
-                //TOOD - allow user to go back and update the cover image.
-            }
+                
+            }];
             
             
         }];
+
         
         
-    }];
+    } else  {
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Event Details Missing" message:@"Make sure to pick an event location and add a description to the event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+        
+        [errorAlert show];
+    }
+    
+    
     
 }
 
@@ -180,8 +188,8 @@
 
 - (void) locationSelectedWithCoordinates:(CLLocation *)location andName:(NSString *)name {
     
-    self.selectedLocationGeoPoint = [PFGeoPoint geoPointWithLocation:location];
-    self.selectedLocationTitle = name;
+    self.eventToCreate.eventCoordinates = [PFGeoPoint geoPointWithLocation:location];
+    self.eventToCreate.eventLocationName = name;
     
     
     [self.setLocationButton setTitle:name forState:UIControlStateNormal];
@@ -197,7 +205,7 @@
 
 - (void) newDate:(id)sender {
     UIDatePicker *datePicker = (UIDatePicker *)sender;
-    self.selectedDate = datePicker.date;
+    self.eventToCreate.eventDate = datePicker.date;
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
@@ -215,6 +223,8 @@
     if ([textView.text isEqualToString:@""]) {
         textView.text = @"Add details about your event...";
         textView.textColor = [UIColor lightGrayColor]; //optional
+        
+        self.eventToCreate.eventDescription = textView.text;
     }
     
     [textView resignFirstResponder];

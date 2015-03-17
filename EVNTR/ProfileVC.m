@@ -7,6 +7,7 @@
 //
 
 #import "ActivityVC.h"
+#import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUtility.h"
 #import "EditProfileVC.h"
@@ -38,7 +39,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *twitterIcon;
 
 //Buttons For Actions On Profile
-@property (weak, nonatomic) IBOutlet UIButton *followButton;
+@property (strong, nonatomic) IBOutlet EVNButton *followButton;
 @property (weak, nonatomic) IBOutlet UIButton *editProfileButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewEventsAttendedButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewInvitesButton;
@@ -164,9 +165,12 @@
                 //TODO - Does this make sense?
                 
                 if (!objects || !objects.count) {
-                    [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+                    self.followButton.titleText = @"Follow";
+                    
                 } else {
-                    [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+                    self.followButton.titleText = @"Following";
+                    self.followButton.isSelected = YES;
+    
                 }
             }];
             
@@ -304,6 +308,7 @@
 
 }
 
+
 - (IBAction)viewEventsAttending:(id)sender {
     
     ActivityVC *eventsAttended = (ActivityVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
@@ -342,11 +347,12 @@
 
 #pragma mark - Follow User
 
+
 - (IBAction)followUser:(id)sender {
     
     self.followButton.enabled = NO;
     
-    if ([self.followButton.titleLabel.text isEqualToString:@"Follow"]) {
+    if ([self.followButton.titleText isEqualToString:@"Follow"]) {
         
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
         
@@ -355,23 +361,24 @@
         newFollowActivity[@"to"] = self.userForProfileView;
         
         [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-
+            
             if (succeeded) {
                 
-                [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
+                self.followButton.titleText = @"Following";
 
+                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
+                
             } else {
                 NSLog(@"Error in Saved");
             }
             
             self.followButton.enabled = YES;
-
+            
         }];
         
-
         
-    } else if ([self.followButton.titleLabel.text isEqualToString:@"Following"]) {
+        
+    } else if ([self.followButton.titleText isEqualToString:@"Following"]) {
         
         PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
         
@@ -387,7 +394,7 @@
                 //Notify View Controllers of a New Follow
                 [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
                 
-                [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+                self.followButton.titleText = @"Follow";
                 
                 self.followButton.enabled = YES;
             }];
@@ -400,7 +407,6 @@
         NSLog(@"Weird error - need to notify user");
         self.followButton.enabled = YES;
     }
-         
     
 }
 
@@ -523,9 +529,9 @@
             //TODO - Does this make sense?
             
             if (!objects || !objects.count) {
-                [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+                self.followButton.titleText = @"Follow";
             } else {
-                [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+                self.followButton.titleText = @"Following";
             }
         }];
     }
