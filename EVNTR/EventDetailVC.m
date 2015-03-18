@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
@@ -14,6 +15,7 @@
 #import "IDTransitioningDelegate.h"
 #import "ImageViewPFExtended.h"
 #import "FullMapVC.h"
+#import "MapForEventView.h"
 #import "MBProgressHUD.h"
 #import "PeopleVC.h"
 #import "PictureFullScreenVC.h"
@@ -42,6 +44,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
 @property (weak, nonatomic) IBOutlet UILabel *eventDescription;
 @property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
+@property (strong, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 
 //Images
 @property (weak, nonatomic) IBOutlet PFImageView *eventCoverPhoto;
@@ -63,13 +66,20 @@
 @property (nonatomic) int numNetworkCallsComplete;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
-//Mapping Location
-@property (strong, nonatomic) IBOutlet MKMapView *mapView;
-@property (strong, nonatomic) IBOutlet UILabel *eventLocationNameLabel;
-@property (weak, nonatomic) IBOutlet UILabel *eventLocationLabel;
+//Mapping Location Component
+@property (strong, nonatomic) IBOutlet MapForEventView *entireMapView;
 @property (strong, nonatomic) IBOutlet UIView *transparentTouchView;
 @property (strong, nonatomic) CLLocation *locationOfEvent;
 @property (strong, nonatomic) CLPlacemark *locationPlacemark;
+
+
+//Picture Component
+@property (strong, nonatomic) IBOutlet UIImageView *backgroundForPictureSection;
+@property (strong, nonatomic) IBOutlet UILabel *numberOfPicturesLabel;
+@property (strong, nonatomic) IBOutlet EVNButton *viewPicturesButton;
+
+
+
 
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
 
@@ -114,10 +124,9 @@
     
     
     //Disable Interaction with Map View
-    self.mapView.userInteractionEnabled = NO;
     UITapGestureRecognizer *tapMapView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchedMap)];
     [self.transparentTouchView addGestureRecognizer:tapMapView];
-    self.transparentTouchView.alpha = 0.1;
+    self.transparentTouchView.backgroundColor = [UIColor clearColor];
     
     //Get isGuest Object
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -131,6 +140,18 @@
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
     self.creatorPhoto.userInteractionEnabled = YES;
     [self.creatorPhoto addGestureRecognizer:tapgr];
+    
+    
+    //Map Component
+    self.entireMapView.mapView.userInteractionEnabled = NO;
+    
+    //Picture Component
+    self.viewPicturesButton.titleText = @"View";
+    self.viewPicturesButton.isStateless = YES;
+    self.viewPicturesButton.isSelected = NO;
+    self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];
+    
+    self.numberOfPicturesLabel.textColor = [UIColor whiteColor];
     
 }
 
@@ -174,7 +195,7 @@
     [self.HUD show:YES];
     
 
-    [self setBackgroundOfEventViewWithImage:[UIImage imageNamed:@"EventDefault"]];
+    [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
     
 }
 
@@ -346,9 +367,13 @@
     NSDateFormatter *dateForm = [[NSDateFormatter alloc] init];
     dateForm.doesRelativeDateFormatting = YES;
     dateForm.locale = [NSLocale currentLocale];
-    dateForm.dateStyle = NSDateFormatterShortStyle;
-    dateForm.timeStyle = NSDateFormatterShortStyle;
+    dateForm.dateStyle = NSDateFormatterMediumStyle;
+    dateForm.timeStyle = NSDateFormatterNoStyle;
     NSString *localDateString = [dateForm stringFromDate:dateFromParse];
+    
+    dateForm.dateStyle = NSDateFormatterNoStyle;
+    dateForm.timeStyle = NSDateFormatterShortStyle;
+    NSString *localTimeString = [dateForm stringFromDate:dateFromParse];
     
     
     //////////////////////
@@ -358,17 +383,20 @@
     //Location Address
     PFGeoPoint *locationOfEventPF = self.eventObject[@"locationOfEvent"];
     self.locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
+    
+    self.entireMapView.eventLocation = self.locationOfEvent;
+    
     CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
     [geoCoder reverseGeocodeLocation:self.locationOfEvent completionHandler:^(NSArray *placemarks, NSError *error) {
         
         if (!error && placemarks.count > 0) {
             
             self.locationPlacemark = [placemarks firstObject];
-            self.eventLocationLabel.text = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(self.locationPlacemark.addressDictionary, NO)];
+            self.entireMapView.address = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(self.locationPlacemark.addressDictionary, NO)];
             
         } else {
             
-            self.eventLocationLabel.text = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
+            self.entireMapView.address = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
             
         }
         
@@ -393,28 +421,22 @@
     CLLocation *currentLocation = [[appDelegate locationManager] location];
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
     
-    locationName = [NSString stringWithFormat:@"%.1f miles away", distance * 0.000621371];
-    
-    //Setting up Map to Current Location
-    MKCoordinateRegion region = MKCoordinateRegionMake(self.locationOfEvent.coordinate, MKCoordinateSpanMake(0.05, 0.05));
-    
-    [self.mapView setRegion:region animated:YES];
-    
+    self.entireMapView.distanceAway = (float) distance * 0.000621371;
     
     
     ////////////////////////////
     //Configuring User Interface
     ////////////////////////////
     
-    self.eventLocationNameLabel.text = locationName;
     self.eventTitle.text = self.eventObject[@"title"];
     self.dateOfEventLabel.text = localDateString;
+    self.timeOfEventLabel.text = localTimeString;
     self.eventDescription.text = self.eventObject[@"description"];
     self.eventCoverPhoto.file = (PFFile *)self.eventObject[@"coverPhoto"];
     self.eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
     [self.eventCoverPhoto loadInBackground:^(UIImage *image, NSError *error) {
         
-        [self setBackgroundOfEventViewWithImage:image];
+        [self setBackgroundOfPictureSectionWithImage:image];
         [self networkCallComplete]; //4
         
     }];
@@ -431,8 +453,13 @@
             
         }
         
+        UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
+        
+        self.creatorName.textColor = [UIColor orangeThemeColor];
         self.creatorName.text = user[@"username"];
-
+        self.creatorName.userInteractionEnabled = YES;
+        [self.creatorName addGestureRecognizer:tapgr2];
+        
         self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
             self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
@@ -448,8 +475,8 @@
     //Additional UI Enhancements
     ////////////////////////////
     
-    self.eventDescription.layer.borderWidth = 1.0f;
-    self.eventDescription.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+    //self.eventDescription.layer.borderWidth = 1.0f;
+    //self.eventDescription.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     
     
     
@@ -498,9 +525,11 @@
 }
 
 
-- (void) setBackgroundOfEventViewWithImage:(UIImage *)image {
+- (void) setBackgroundOfPictureSectionWithImage:(UIImage *)image {
     //Set Background to Blurred Cover Photo Image
     UIImage *blurredCoverPhotoForBackground = [UIImageEffects imageByApplyingDarkEffectToImage:image];
+    
+    self.backgroundForPictureSection.image = blurredCoverPhotoForBackground;
     self.view.backgroundColor = [UIColor colorWithPatternImage:blurredCoverPhotoForBackground];
 }
 

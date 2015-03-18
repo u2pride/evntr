@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "MapForEventView.h"
+#import <QuartzCore/QuartzCore.h>
+
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "GuestWelcomeVC.h"
@@ -15,6 +18,7 @@
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
+
 
 #import <Parse/Parse.h>
 
@@ -89,6 +93,23 @@
     
     [self.registerButton addGestureRecognizer:tapgr];
     [self.loginButton addGestureRecognizer:tapgr2];
+    
+    
+    
+    MapForEventView *mapTest = [[MapForEventView alloc] init];
+    mapTest.frame = CGRectMake(0, 200, self.view.frame.size.width, 300);
+    mapTest.backgroundColor = [UIColor yellowColor];
+
+    [self.view addSubview:mapTest];
+    
+    mapTest.address = @"3315 Hopewell Chase Drive, Alpharetta, GA 300004";
+    mapTest.distanceAway = 230.7;
+    
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:86.8765 longitude:78.7865];
+    
+    mapTest.eventLocation = location;
+    
+
     
 }
 

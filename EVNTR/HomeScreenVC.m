@@ -298,6 +298,7 @@
         cell.eventCoverImage.file = (PFFile *)[object objectForKey:@"coverPhoto"];
         [cell.eventCoverImage loadInBackground:^(UIImage *image, NSError *error) {
             
+            NSLog(@"BACK FROM NETWORK");
             cell.eventCoverImage.image = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] saturationDeltaFactor:1.0 maskImage:nil];
             
             

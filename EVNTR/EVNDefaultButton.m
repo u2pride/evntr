@@ -35,7 +35,7 @@
     [self.layer setShadowOffset:CGSizeZero];
     [self.layer setShadowColor:[[UIColor blackColor] CGColor]];
     [self.layer setShadowRadius:10.0];
-    [self.layer setShadowOpacity:0.7];
+    [self.layer setShadowOpacity:0.3];
     [self.layer setCornerRadius:10.0f];
     
     

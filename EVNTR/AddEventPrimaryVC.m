@@ -23,13 +23,13 @@
 @property (strong, nonatomic) IBOutlet EVNButton *publicButton;
 @property (strong, nonatomic) IBOutlet EVNButton *publicApprovedButton;
 @property (strong, nonatomic) IBOutlet EVNButton *privateButton;
+@property (strong, nonatomic) IBOutlet EVNButton *nextButton;
 
 @property (weak, nonatomic) IBOutlet UIImageView *eventCoverPhotoView;
-@property (weak, nonatomic) IBOutlet UIButton *nextButton;
+
 
 @property (nonatomic, strong) PFFile *coverPhotoFile;
 @property (nonatomic) int selectedEventType;
-
 
 - (IBAction)nextButtonPressed:(id)sender;
 - (IBAction)canceledEventCreation:(id)sender;
@@ -61,6 +61,10 @@
     self.publicButton.titleText = @"Public";
     self.publicApprovedButton.titleText = @"Public-Approved";
     self.privateButton.titleText = @"Private";
+    self.nextButton.titleText = @"Next";
+    self.nextButton.isSelected = YES;
+    self.nextButton.isRounded = NO;
+    self.nextButton.isStateless = YES;
     
     [self.publicApprovedButton sizeToFit];
     
@@ -157,7 +161,7 @@
 
 
 - (IBAction)nextButtonPressed:(id)sender {
-
+    
     if (self.eventTitleField.text.length > 3 && self.coverPhotoFile) {
         
         [self performSegueWithIdentifier:@"AddEventNextStep" sender:self];
@@ -166,7 +170,6 @@
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please upload a photo or select a title that is greater than 3 characters." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
         [errorAlert show];
     }
-
 }
 
 
@@ -263,6 +266,8 @@
     }
     
 }
+
+
 
 - (IBAction)canceledEventCreation:(id)sender {
     

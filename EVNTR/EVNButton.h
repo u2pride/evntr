@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) NSString *titleText;
 @property (nonatomic, strong) UIColor *buttonColor;
+@property (nonatomic, strong) UIColor *buttonColorOpposing;
 @property (nonatomic, strong) UIFont *font;
 
 @property (nonatomic) BOOL isRounded;

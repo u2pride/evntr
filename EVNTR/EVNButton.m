@@ -25,6 +25,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         
+        _buttonColorOpposing = [UIColor whiteColor];
         _isStateless = NO;
         _font = [UIFont fontWithName:@"Lato-Regular" size:14.0];
         _isRounded = YES;
@@ -43,6 +44,7 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         
+        _buttonColorOpposing = [UIColor whiteColor];
         _isStateless = NO;
         _font = [UIFont fontWithName:@"Lato-Regular" size:14.0];
         _isRounded = YES;
@@ -71,6 +73,15 @@
     
 }
 
+- (void) setButtonColorOpposing:(UIColor *)buttonColorOpposing {
+    
+    if (!self.isSelected) {
+        self.backgroundColor = buttonColorOpposing;
+    }
+    
+    _buttonColorOpposing = buttonColorOpposing;
+}
+
 - (void) setIsSelected:(BOOL)isSelected {
     
     NSLog(@"set isselected");
@@ -93,7 +104,7 @@
         [UIView animateWithDuration:1.0 animations:^{
             
             self.titleTextLabel.alpha = 1;
-            self.backgroundColor = [UIColor whiteColor];
+            self.backgroundColor = self.buttonColorOpposing;
             self.titleTextLabel.textColor = self.buttonColor;
             
         } completion:^(BOOL finished) {
@@ -124,34 +135,34 @@
 
 - (void) setupButton {
     
-    self.layer.cornerRadius = (self.isRounded) ? 10 : 0;
+    self.layer.cornerRadius = (_isRounded) ? 10 : 0;
     self.clipsToBounds = YES;
     self.backgroundColor = [UIColor whiteColor];
     
-    self.titleTextLabel = [[UILabel alloc] init];
-    self.titleTextLabel.frame = CGRectMake(0, 0, 100, 50);
+    _titleTextLabel = [[UILabel alloc] init];
+    _titleTextLabel.frame = CGRectMake(0, 0, 100, 50);
     
-    self.titleTextLabel.text = self.titleText;
-    self.titleTextLabel.textAlignment = NSTextAlignmentCenter;
-    self.titleTextLabel.textColor = self.buttonColor;
-    self.titleTextLabel.backgroundColor = [UIColor clearColor];
-    self.titleTextLabel.font = self.font;
+    _titleTextLabel.text = self.titleText;
+    _titleTextLabel.textAlignment = NSTextAlignmentCenter;
+    _titleTextLabel.textColor = self.buttonColor;
+    _titleTextLabel.backgroundColor = [UIColor clearColor];
+    _titleTextLabel.font = self.font;
     
-    self.titleTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _titleTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addSubview:self.titleTextLabel];
+    [self addSubview:_titleTextLabel];
 
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
 
-    self.activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
-    self.activityIndicator.hidesWhenStopped = YES;
+    _activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
+    _activityIndicator.hidesWhenStopped = YES;
     
-    [self addSubview:self.activityIndicator];
+    [self addSubview:_activityIndicator];
     
     
     
     self.layer.borderWidth = 1.0f;
-    self.layer.borderColor = self.buttonColor.CGColor;
+    self.layer.borderColor = _buttonColor.CGColor;
     
 }
 

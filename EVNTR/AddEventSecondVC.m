@@ -8,6 +8,7 @@
 
 #import "AddEventSecondVC.h"
 #import "LocationSearchVC.h"
+#import "EVNButton.h"
 #import "UIColor+EVNColors.h"
 #import "EVNCustomButton.h"
 #import "EVNDefaultButton.h"
@@ -18,6 +19,8 @@
 @property (weak, nonatomic) IBOutlet UITextView *eventDescriptionText;
 @property (weak, nonatomic) IBOutlet UIDatePicker *eventDatePicker;
 @property (strong, nonatomic) IBOutlet EVNLocationButton *setLocationButton;
+@property (strong, nonatomic) IBOutlet EVNButton *createButton;
+
 
 - (IBAction)createEvent:(id)sender;
 - (IBAction)setLocation:(id)sender;
@@ -44,6 +47,9 @@
     self.eventDescriptionText.delegate = self;
     self.eventDescriptionText.text = @"Add details about your event...";
     [self.eventDescriptionText setTextColor:[UIColor lightGrayColor]];
+    
+    self.createButton.titleText = @"Create Event";
+    self.createButton.isRounded = NO;
     
 }
 
@@ -159,11 +165,14 @@
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Event Details Missing" message:@"Make sure to pick an event location and add a description to the event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
         
         [errorAlert show];
+        
+        [self.createButton setIsSelected:NO];
     }
     
     
     
 }
+
 
 - (IBAction)setLocation:(id)sender {
     
