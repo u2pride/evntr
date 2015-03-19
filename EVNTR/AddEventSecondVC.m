@@ -53,11 +53,20 @@
     
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    NSLog(@"self: %@", self);
+    
+}
 
 
 #pragma mark - Create Event Button
 
 - (IBAction)createEvent:(id)sender {
+    
+    NSLog(@"self.eventToCreate.eventDescription: %@ and eventLocationName: %@", self.eventToCreate.eventDescription, self.eventToCreate.eventLocationName);
     
     if (self.eventToCreate.eventDescription && self.eventToCreate.eventLocationName) {
         
@@ -232,9 +241,10 @@
     if ([textView.text isEqualToString:@""]) {
         textView.text = @"Add details about your event...";
         textView.textColor = [UIColor lightGrayColor]; //optional
-        
-        self.eventToCreate.eventDescription = textView.text;
+        NSLog(@"WE HERE");
     }
+    
+    self.eventToCreate.eventDescription = textView.text;
     
     [textView resignFirstResponder];
 }

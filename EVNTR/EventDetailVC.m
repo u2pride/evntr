@@ -24,14 +24,22 @@
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
 
+#import "EventPicturesVC.h"
+
 #import <AddressBookUI/AddressBookUI.h>
 #import <Parse/Parse.h>
 
 
-@interface EventDetailVC ()
+@interface EventDetailVC () {
+    
+    float latitudeSF;
+    float longitudeSF;
+    
+}
 
 @property BOOL isGuestUser;
 @property BOOL isCurrentUserAttending;
+@property BOOL isPublicApproved;
 @property (nonatomic, strong) PFUser *eventUser;
 
 //Buttons
@@ -47,13 +55,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 
 //Images
-@property (weak, nonatomic) IBOutlet PFImageView *eventCoverPhoto;
+@property (weak, nonatomic) PFImageView *eventCoverPhoto;
 @property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
 
 //CollectionViews & DataSources
-@property (weak, nonatomic) IBOutlet UICollectionView *pictureCollectionView;
 @property (strong, nonatomic) IBOutlet UICollectionView *standbyUsersCollectionView;
-@property (nonatomic, strong) NSMutableArray *picturesFromEvent;
 @property (nonatomic, strong) NSMutableArray *usersOnStandby;
 
 //UI & Transitions
@@ -86,6 +92,7 @@
 - (IBAction)inviteFriends:(id)sender;
 - (IBAction)rsvpForEvent:(id)sender;
 - (IBAction)viewEventAttenders:(id)sender;
+- (IBAction)viewEventPictures:(id)sender;
 
 @end
 
@@ -96,6 +103,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    latitudeSF = 37.749;
+    longitudeSF = -122.4167;
+    self.isPublicApproved = NO;
+    
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
@@ -104,16 +115,6 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     //UICollectionView
-    self.pictureCollectionView.delegate = self;
-    self.pictureCollectionView.dataSource = self;
-    self.pictureCollectionView.backgroundColor = [UIColor orangeThemeColor];
-    self.pictureCollectionView.tag = 1;
-    UICollectionViewFlowLayout *collectionViewLayout = (UICollectionViewFlowLayout*)self.pictureCollectionView.collectionViewLayout;
-    collectionViewLayout.minimumInteritemSpacing = 20;
-    collectionViewLayout.minimumLineSpacing = 20;
-    
-    self.picturesFromEvent = [[NSMutableArray alloc] init];
-    
     self.standbyUsersCollectionView.delegate = self;
     self.standbyUsersCollectionView.dataSource = self;
     self.standbyUsersCollectionView.backgroundColor = [UIColor orangeThemeColor];
@@ -194,7 +195,13 @@
     self.HUD.labelText = @"Event Details Loading";
     [self.HUD show:YES];
     
-
+    
+    NSMutableArray *pictureCount = [NSMutableArray arrayWithArray:self.eventObject[@"eventImages"]];
+    self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)pictureCount.count];
+    
+    
+    
+    
     [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
     
 }
@@ -203,14 +210,7 @@
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-    
-    
-    ////////////////
-    //Event Pictures
-    ////////////////
-    
-    self.picturesFromEvent = [NSMutableArray arrayWithArray:self.eventObject[@"eventImages"]];
-    [self.pictureCollectionView reloadData];
+
     
     ///////////////////////
     //Find Users on Standby
@@ -267,7 +267,6 @@
                     if (object) {
                         [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
                         self.isCurrentUserAttending = YES;
-                        [self.pictureCollectionView reloadData];
                     } else {
                         [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
                     }
@@ -293,7 +292,6 @@
                     if (object) {
                         [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
                         self.isCurrentUserAttending = YES;
-                        [self.pictureCollectionView reloadData];
                     } else {
                         [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
                     }
@@ -309,6 +307,8 @@
                 break;
             }
             case PUBLIC_APPROVED_EVENT_TYPE: {
+                
+                self.isPublicApproved = YES;
                 
                 //Determine the state of the user with the event
                 // Hasn't requested Accesss - Requested Access - Granted Acccess
@@ -339,14 +339,17 @@
                                 //User has Access to Event
                                 [self.rsvpButton setTitle:kGrantedAccessToEvent forState:UIControlStateNormal];
                                 self.isCurrentUserAttending = YES;
-                                [self.pictureCollectionView reloadData];
+                                
                             }
+                            
+
                             
                         }];
                     }
                     
-                    [self networkCallComplete]; //2
+                    [self networkCallComplete];
 
+                    
                 }];
                 
                 break;
@@ -380,11 +383,17 @@
     //Configuring Location
     //////////////////////
 
+
+    
     //Location Address
     PFGeoPoint *locationOfEventPF = self.eventObject[@"locationOfEvent"];
-    self.locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
     
+    
+
+    self.locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
     self.entireMapView.eventLocation = self.locationOfEvent;
+    
+    
     
     CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
     [geoCoder reverseGeocodeLocation:self.locationOfEvent completionHandler:^(NSArray *placemarks, NSError *error) {
@@ -392,7 +401,9 @@
         if (!error && placemarks.count > 0) {
             
             self.locationPlacemark = [placemarks firstObject];
+            
             self.entireMapView.address = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(self.locationPlacemark.addressDictionary, NO)];
+            
             
         } else {
             
@@ -421,7 +432,9 @@
     CLLocation *currentLocation = [[appDelegate locationManager] location];
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
     
+
     self.entireMapView.distanceAway = (float) distance * 0.000621371;
+    
     
     
     ////////////////////////////
@@ -429,8 +442,11 @@
     ////////////////////////////
     
     self.eventTitle.text = self.eventObject[@"title"];
+    
+
     self.dateOfEventLabel.text = localDateString;
     self.timeOfEventLabel.text = localTimeString;
+    
     self.eventDescription.text = self.eventObject[@"description"];
     self.eventCoverPhoto.file = (PFFile *)self.eventObject[@"coverPhoto"];
     self.eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
@@ -462,8 +478,10 @@
         
         self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
+            
             self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
             [self networkCallComplete]; //5
+
         }];
         
         [self networkCallComplete]; //6
@@ -483,6 +501,26 @@
 }
 
 
+- (void) recheckPublicApprovedAccess {
+    
+    NSLog(@"%@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending]);
+    
+    if (self.isPublicApproved && !self.isCurrentUserAttending) {
+        self.transparentTouchView.hidden = YES;
+        self.locationOfEvent = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
+        [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomLocation) userInfo:nil repeats:YES];
+        
+        self.entireMapView.address = [NSString stringWithFormat:@"Unknown"];
+        self.entireMapView.distanceAway = 0.0f;
+        self.dateOfEventLabel.text = @"Unknown";
+        self.timeOfEventLabel.text = @"Unknown";
+
+    }
+    
+    
+}
+
+
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
     
     //self.scrollViewTopConstraint.constant -= 1.0f;
@@ -497,6 +535,8 @@
     
     if (self.numNetworkCallsComplete == 5) {
         
+        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(recheckPublicApprovedAccess) userInfo:nil repeats:NO];
+                
         [self.HUD hide:YES afterDelay:0.5];
     }
     
@@ -572,91 +612,18 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    //Picture Collection View
-    if (collectionView.tag == 1) {
-        
-        //Picture View when User Is Attending
-        if (self.isCurrentUserAttending) {
-            
-            if (section == 0) {
-                NSLog(@"CHECK TWO");
-                return 1;
-            } else {
-                NSLog(@"self.pictures count - %lu", (unsigned long)self.picturesFromEvent.count);
-                
-                return [self.picturesFromEvent count];
-            }
-           
-        //Picture View when User is Not Attending
-        } else {
-            
-            return [self.picturesFromEvent count];
-        }
-        
-    //Standby List TableView
-    } else {
-        
-        return [self.usersOnStandby count];
 
-    }
+    return [self.usersOnStandby count];
+
     
 }
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    //Picture Collection View
-    if (collectionView.tag == 1) {
-        
-        static NSString *cellIdentifier = @"EventPhotoCell";
-        
-        EventPictureCell *cell = (EventPictureCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-        
-        if (self.isCurrentUserAttending) {
-            
-            NSLog(@"CHECK THREE");
-
-            
-            switch (indexPath.section) {
-                case 0: {
-                    
-                    NSLog(@"CHECK FOUR");
-
-                    cell.eventPictureView.image = [UIImage imageNamed:@"FollowIcon"];
-                    
-                    break;
-                }
-                case 1: {
-                    
-                    cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
-                    
-                    PFFile *currentPictureFile = [self.picturesFromEvent objectAtIndex:indexPath.row];
-                    
-                    cell.eventPictureView.file = currentPictureFile;
-                    [cell.eventPictureView loadInBackground];
-                    
-                    break;
-                }
-                default:
-                    break;
-            }
-            
-        } else {
-            
-            cell.eventPictureView.image = [UIImage imageNamed:@"EventsTabIcon"];
-            
-            PFFile *currentPictureFile = [self.picturesFromEvent objectAtIndex:indexPath.row];
-            
-            cell.eventPictureView.file = currentPictureFile;
-            [cell.eventPictureView loadInBackground];
-            
-        }
-        
-        return cell;
-        
+    
         
     //Standby List Collection View
-    } else {
         
         static NSString *standbyCellID = @"StandbyUserCell";
         
@@ -672,90 +639,15 @@
         cell.profilePictureOfStandbyUser.objectForImageView = currentUser;
         
         return cell;
-        
-    }
     
 }
 
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    // Picture Collection View
-    if (collectionView.tag == 1) {
-        
-        if (self.isCurrentUserAttending) {
-            
-            switch (indexPath.section) {
-                case 0: {
-                    
-                    [self uploadPhotoFromEvent:self];
-                    
-                    
-                    break;
-                }
-                case 1: {
-                    
-                    [self animateBackgroundDarkBlur];
-                    
-                    PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
-                    
-                    displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-                    displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
-                    displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[self.picturesFromEvent objectAtIndex:indexPath.row];
-                    displayFullScreenPhoto.delegate = self;
-                    
-                    [UIView animateWithDuration:0.5 animations:^{
-                        
-                        self.navigationController.navigationBar.alpha = 0;
-                        self.tabBarController.tabBar.alpha = 0;
-                        
-                    } completion:^(BOOL finished) {
-                        
-                        self.navigationController.navigationBar.hidden = finished;
-                        self.tabBarController.tabBar.hidden = finished;
-                        
-                    }];
-                    
-                    [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
-                    
-                    break;
-                }
-                default:
-                    break;
-            }
-            
-            
-        } else {
-            
-            [self animateBackgroundDarkBlur];
-            
-            PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
-            
-            displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-            displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
-            displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[self.picturesFromEvent objectAtIndex:indexPath.row];
-            displayFullScreenPhoto.delegate = self;
-            
-            [UIView animateWithDuration:0.5 animations:^{
-                
-                self.navigationController.navigationBar.alpha = 0;
-                self.tabBarController.tabBar.alpha = 0;
-                
-            } completion:^(BOOL finished) {
-                
-                self.navigationController.navigationBar.hidden = finished;
-                self.tabBarController.tabBar.hidden = finished;
-                
-            }];
-            
-            [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
-
-            
-        }
 
         
     //Standby List Collection View
-    } else {
         
         PFUser *selectedUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
@@ -763,8 +655,7 @@
         profileView.userNameForProfileView = selectedUser[@"username"];
         
         [self.navigationController pushViewController:profileView animated:YES];
-        
-    }
+    
     
 }
 
@@ -820,82 +711,6 @@
 
 }
 
-
-
-#pragma mark - Upload Picture From Event
-
-- (void) uploadPhotoFromEvent:(id)sender {
-    
-    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        
-        [self presentViewController:imagePicker animated:YES completion:nil];
-    }];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    
-    //Check to see if device has a camera
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [pictureOptionsMenu addAction:takePhoto];
-    }
-    
-    [pictureOptionsMenu addAction:cancelAction];
-    
-    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
-    
-    
-}
-
-
-#pragma mark - Delegate Methods for UIImagePickerController
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    
-    UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
-    
-    NSData *pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
-    PFFile *profilePictureFile = [PFFile fileWithName:@"eventPhoto.jpg" data:pictureData];
-    
-    //save picture as pffile to parse
-    [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded){
-            
-            //append pffile to eventImages array on event (PFObject)
-            [self.eventObject addObject:profilePictureFile forKey:@"eventImages"];
-            [self.eventObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                if (succeeded) {
-                    
-                    if (!self.picturesFromEvent) {
-                        self.picturesFromEvent = [[NSMutableArray alloc] init];
-                    }
-                    
-                    [self.picturesFromEvent addObject:profilePictureFile];
-                    
-                    [self.pictureCollectionView reloadData];
-                    
-                    //[NSTimer scheduledTimerWithTimeInterval:2.0 target:self.pictureCollectionView selector:@selector(reloadData) userInfo:nil repeats:NO];
-                }
-                
-            }];
-            
-        }
-    }];
-    
-    
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:YES completion:nil];
-    
-}
 
 
 
@@ -1000,7 +815,6 @@
                     if (succeeded) {
                         [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
                         self.isCurrentUserAttending = NO;
-                        [self.pictureCollectionView reloadData];
                         
                     } else {
                         NSLog(@"Failed to Delete Previous Activity");
@@ -1030,7 +844,6 @@
                     //if succeeded, change the title to reflect the RSVP event
                     [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
                     self.isCurrentUserAttending = YES;
-                    [self.pictureCollectionView reloadData];
                     
                 } else {
                     
@@ -1073,6 +886,27 @@
 }
 
 
+- (IBAction)viewEventPictures:(id)sender {
+    
+    UICollectionViewFlowLayout* flowLayout = [[UICollectionViewFlowLayout alloc]init];
+    [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
+    flowLayout.minimumInteritemSpacing = 10;
+    flowLayout.minimumLineSpacing = 10;
+    
+    EventPicturesVC *allEventPictures = [[EventPicturesVC alloc] initWithCollectionViewLayout:flowLayout];
+    
+    //Pass the Event
+    allEventPictures.eventObject = self.eventObject;
+    
+    //TODO: Add Logic Here about Who Is Allowed to Add Photos
+    allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
+    
+    [self.navigationController pushViewController:allEventPictures animated:YES];
+    
+    
+}
+
+
 
 #pragma mark - Delegate Method for Inviting Users to Event
 
@@ -1104,6 +938,36 @@
             }
         }];
     }
+    
+    
+}
+
+
+- (void) randomLocation {
+    
+    //float bigNumber = 85;
+    //float smallNumber = -85;
+
+    //float diff = bigNumber - smallNumber;
+    //float latitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
+    
+    //float longitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
+    
+    latitudeSF = latitudeSF + 0;
+    longitudeSF = longitudeSF + 1;
+    
+    if (longitudeSF > -84) {
+        longitudeSF = -122;
+    }
+    
+    NSLog(@"Lat: %f and Long: %f", latitudeSF, longitudeSF);
+    
+    CLLocation *randomLocation = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
+    
+    MKCoordinateRegion region = MKCoordinateRegionMake(randomLocation.coordinate, MKCoordinateSpanMake(10, 10));
+    
+    [self.entireMapView.mapView setRegion:region animated:YES];
+    
     
     
 }

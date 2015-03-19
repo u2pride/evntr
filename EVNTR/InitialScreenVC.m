@@ -93,22 +93,6 @@
     
     [self.registerButton addGestureRecognizer:tapgr];
     [self.loginButton addGestureRecognizer:tapgr2];
-    
-    
-    
-    MapForEventView *mapTest = [[MapForEventView alloc] init];
-    mapTest.frame = CGRectMake(0, 200, self.view.frame.size.width, 300);
-    mapTest.backgroundColor = [UIColor yellowColor];
-
-    [self.view addSubview:mapTest];
-    
-    mapTest.address = @"3315 Hopewell Chase Drive, Alpharetta, GA 300004";
-    mapTest.distanceAway = 230.7;
-    
-    CLLocation *location = [[CLLocation alloc] initWithLatitude:86.8765 longitude:78.7865];
-    
-    mapTest.eventLocation = location;
-    
 
     
 }

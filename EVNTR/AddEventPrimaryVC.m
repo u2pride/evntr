@@ -16,6 +16,9 @@
 #import <Parse/Parse.h>
 
 @interface AddEventPrimaryVC ()
+{
+    NSMutableDictionary *stateSnapshot;
+}
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
 @property (weak, nonatomic) IBOutlet UITextField *eventTitleField;
@@ -81,13 +84,50 @@
     //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
     self.eventTitleField.delegate = self;
     
-    self.publicButton.isSelected = YES;
+    self.selectedEventType = PUBLIC_EVENT_TYPE;
 
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+}
+
+
+- (void) setSelectedEventType:(int)selectedEventType {
+    
+    switch (selectedEventType) {
+        case PUBLIC_EVENT_TYPE: {
+            
+            self.publicButton.isSelected = YES;
+            self.publicApprovedButton.isSelected = NO;
+            self.privateButton.isSelected = NO;
+            
+            break;
+        }
+        case PRIVATE_EVENT_TYPE: {
+            
+            self.publicButton.isSelected = NO;
+            self.publicApprovedButton.isSelected = NO;
+            self.privateButton.isSelected = YES;
+            
+            break;
+        }
+        case PUBLIC_APPROVED_EVENT_TYPE: {
+            
+            self.publicButton.isSelected = NO;
+            self.publicApprovedButton.isSelected = YES;
+            self.privateButton.isSelected = NO;
+            
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    _selectedEventType = selectedEventType;
     
 }
 
@@ -128,6 +168,16 @@
     [pictureOptionsMenu addAction:choosePhoto];
     [pictureOptionsMenu addAction:cancelAction];
     
+    
+    if (!stateSnapshot) {
+        stateSnapshot = [[NSMutableDictionary alloc] init];
+    }
+    
+    NSLog(@"event text: %@", self.eventTitleField.text);
+    
+    [stateSnapshot setObject:self.eventTitleField.text forKey:@"kTitle"];
+    [stateSnapshot setObject:[NSNumber numberWithInt:self.selectedEventType] forKey:@"kType"];
+    
     [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
     
 }
@@ -138,24 +188,18 @@
 - (IBAction)selectedPublic:(id)sender {
     
     self.selectedEventType = PUBLIC_EVENT_TYPE;
-    self.publicApprovedButton.isSelected = NO;
-    self.privateButton.isSelected = NO;
     
 }
 
 - (IBAction)selectedPublicApproved:(id)sender {
     
     self.selectedEventType = PUBLIC_APPROVED_EVENT_TYPE;
-    self.publicButton.isSelected = NO;
-    self.privateButton.isSelected = NO;
     
 }
 
 - (IBAction)selectedPrivate:(id)sender {
     
     self.selectedEventType = PRIVATE_EVENT_TYPE;
-    self.publicApprovedButton.isSelected = NO;
-    self.publicButton.isSelected = NO;
     
 }
 
@@ -188,11 +232,17 @@
     NSData *pictureData = UIImageJPEGRepresentation(chosenImage, 0.5);
     self.coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
     
-    //TODO: Restore eventTitle and button state That the User Has Inputted
-
+    //Restore Selections
+    self.eventTitleField.text = [stateSnapshot objectForKey:@"kTitle"];
+    self.selectedEventType = [[stateSnapshot objectForKey:@"kType"] intValue];
+        
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    //Restore Selections
+    self.eventTitleField.text = [stateSnapshot objectForKey:@"kTitle"];
+    self.selectedEventType = [[stateSnapshot objectForKey:@"kType"] intValue];
     
     [picker dismissViewControllerAnimated:YES completion:nil];
 }

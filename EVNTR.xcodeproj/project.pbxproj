@@ -42,6 +42,7 @@
 		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
 		A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C61AB9B8AB009D3BCC /* MapForEventView.m */; };
+		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
 		A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */ = {isa = PBXBuildFile; fileRef = A456C10D1A93F0D5009426AB /* Polygon.gif */; };
 		A45795F11AB74DE4004C7088 /* EVNDefaultButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */; };
 		A4628CFA1AB77C4B00EBD959 /* FullMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4628CF91AB77C4B00EBD959 /* FullMapVC.m */; };
@@ -158,6 +159,8 @@
 		A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomEventTypeButton.m; sourceTree = "<group>"; };
 		A45638C51AB9B8AB009D3BCC /* MapForEventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapForEventView.h; sourceTree = "<group>"; };
 		A45638C61AB9B8AB009D3BCC /* MapForEventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapForEventView.m; sourceTree = "<group>"; };
+		A45638C81ABA2122009D3BCC /* EventPicturesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventPicturesVC.h; path = ../EventPicturesVC.h; sourceTree = "<group>"; };
+		A45638C91ABA2122009D3BCC /* EventPicturesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventPicturesVC.m; path = ../EventPicturesVC.m; sourceTree = "<group>"; };
 		A456C10D1A93F0D5009426AB /* Polygon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Polygon.gif; sourceTree = "<group>"; };
 		A45795EF1AB74DE4004C7088 /* EVNDefaultButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNDefaultButton.h; sourceTree = "<group>"; };
 		A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNDefaultButton.m; sourceTree = "<group>"; };
@@ -484,6 +487,8 @@
 			children = (
 				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
 				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
+				A45638C81ABA2122009D3BCC /* EventPicturesVC.h */,
+				A45638C91ABA2122009D3BCC /* EventPicturesVC.m */,
 				A4628CF81AB77C4B00EBD959 /* FullMapVC.h */,
 				A4628CF91AB77C4B00EBD959 /* FullMapVC.m */,
 				A45638C51AB9B8AB009D3BCC /* MapForEventView.h */,
@@ -774,6 +779,7 @@
 				A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */,
 				A44661191AA758B600E6C3C6 /* AddEventSecondaryVC.m in Sources */,
 				A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */,
+				A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */,
 				A43760FD1AA50CF4000F544D /* EVNCustomButton.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,

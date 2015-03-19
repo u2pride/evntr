@@ -50,7 +50,7 @@
     [inView addSubview:toView];
     
     CGFloat damping =  1.0;
-    NSTimeInterval duration = 1.0;
+    NSTimeInterval duration = 0.75;
     
     [toView setUserInteractionEnabled: true];
     [fromView setUserInteractionEnabled: false];
@@ -135,7 +135,7 @@
     [inView addSubview:toView];
     
     CGFloat damping =  1.0;
-    NSTimeInterval duration = 1.0;
+    NSTimeInterval duration = 0.75;
     
     [toView setUserInteractionEnabled: true];
     [fromView setUserInteractionEnabled: false];

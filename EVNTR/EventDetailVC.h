@@ -13,7 +13,8 @@
 #import "PeopleVC.h"
 #import <MapKit/MapKit.h>
 
-@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PictureViewerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate>
+//TODO - ensure all protocols are necessary
+@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate>
 
 @property (nonatomic, strong) PFObject *eventObject;
 

@@ -54,7 +54,7 @@
     
     _addressLabel = [[UILabel alloc] init];
     _addressLabel.textAlignment = NSTextAlignmentCenter;
-    _addressLabel.font = [UIFont fontWithName:@"Lato-Light" size:18];
+    _addressLabel.font = [UIFont fontWithName:@"Lato-Light" size:16];
     _addressLabel.textColor = [UIColor blackColor];
     _addressLabel.numberOfLines = 2;
     _addressLabel.text = _address;
@@ -71,6 +71,7 @@
     _milesAwayLabel.text = @"miles away";
     _milesAwayLabel.textAlignment = NSTextAlignmentCenter;
     _milesAwayLabel.font = [UIFont fontWithName:@"Lato-Regular" size:12];
+    _milesAwayLabel.textColor = [UIColor darkGrayColor];
     
     _mapView.translatesAutoresizingMaskIntoConstraints = NO;
     _addressLabel.translatesAutoresizingMaskIntoConstraints = NO;
