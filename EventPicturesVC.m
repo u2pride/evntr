@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "EventPicturesVC.h"
 #import "IDTransitioningDelegate.h"
+#import "UIColor+EVNColors.h"
 
 @interface EventPicturesVC ()
 
@@ -79,6 +80,8 @@ static NSString * const reuseIdentifier = @"Cell";
     }
     
     [pictureOptionsMenu addAction:cancelAction];
+    
+    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
     
     [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
 }

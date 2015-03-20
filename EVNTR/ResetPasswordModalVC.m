@@ -26,7 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.backgroundForModalPopup.layer.cornerRadius = 30;
+    self.backgroundForModalPopup.layer.cornerRadius = 20;
     self.emailTextField.delegate = self;
     
 }

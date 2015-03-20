@@ -45,24 +45,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //for testing purposes
+    //TODO: for testing purposes
     [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor redColor];
 
     //Setting Up Custom Buttons
     self.loginButton.buttonColor = [UIColor orangeThemeColor];
-    self.loginButton.titleText = @"login";
+    self.loginButton.titleText = @"Login";
     self.loginButton.isRounded = NO;
     self.loginButton.tag = 1;
     self.loginButton.isSelected = YES;
-    self.loginButton.font = [UIFont fontWithName:@"Lato-Light" size:20.0];
+    self.loginButton.font = [UIFont fontWithName:@"Lato-Regular" size:20.0];
     self.loginButton.isStateless = YES;
     
     self.registerButton.buttonColor = [UIColor orangeThemeColor];
-    self.registerButton.titleText = @"register";
+    self.registerButton.titleText = @"Register";
     self.registerButton.isRounded = NO;
     self.registerButton.tag = 2;
     self.registerButton.isSelected = YES;
-    self.registerButton.font = [UIFont fontWithName:@"Lato-Light" size:20.0];
+    self.registerButton.font = [UIFont fontWithName:@"Lato-Regular" size:20.0];
     self.registerButton.isStateless = YES;
     
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];

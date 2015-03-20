@@ -143,7 +143,7 @@
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
+        //imagePicker.allowsEditing = YES;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         
         [self presentViewController:imagePicker animated:YES completion:nil];
@@ -155,10 +155,18 @@
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
+        //imagePicker.allowsEditing = YES;
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.view.tintColor = [UIColor orangeThemeColor];
+        imagePicker.navigationBar.tintColor = [UIColor orangeThemeColor];
+        imagePicker.navigationController.navigationBar.tintColor = [UIColor orangeThemeColor];
+
         
-        [self presentViewController:imagePicker animated:YES completion:nil];
+        [self presentViewController:imagePicker animated:YES completion:^{
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+        
+        }];
         
     }];
     
@@ -168,6 +176,7 @@
     [pictureOptionsMenu addAction:choosePhoto];
     [pictureOptionsMenu addAction:cancelAction];
     
+    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
     
     if (!stateSnapshot) {
         stateSnapshot = [[NSMutableDictionary alloc] init];
@@ -223,9 +232,14 @@
 //create a PFFile From the Image
 - (void) imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        
+    }];
 
-    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    //UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    UIImage *chosenImage = info[UIImagePickerControllerOriginalImage];
     
     self.eventCoverPhotoView.image = chosenImage;
     
@@ -244,7 +258,11 @@
     self.eventTitleField.text = [stateSnapshot objectForKey:@"kTitle"];
     self.selectedEventType = [[stateSnapshot objectForKey:@"kType"] intValue];
     
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        
+    }];
 }
 
 

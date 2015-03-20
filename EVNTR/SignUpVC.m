@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUtility.h"
 #import "FBShimmeringView.h"
@@ -47,8 +48,12 @@ typedef enum {
 @property (nonatomic, strong) UILabel *blurMessage;
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
 
+@property (strong, nonatomic) IBOutlet EVNButton *registerButton;
+
+@property (nonatomic) BOOL viewIsPulledUpForTextInput;
 
 - (IBAction)signUpWithFacebook:(id)sender;
+- (IBAction)signUp:(id)sender;
 
 @end
 
@@ -70,22 +75,58 @@ typedef enum {
     self.emailField.placeholder = @"email";
     self.emailField.keyboardType = UIKeyboardTypeEmailAddress;
     
-    self.backgroundView.layer.cornerRadius = 30;
+    self.backgroundView.layer.cornerRadius = 20;
+    self.backgroundView.layer.borderWidth = 1.0f;
+    self.backgroundView.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     
     self.profileImageView.image = [EVNUtility maskImage:[UIImage imageNamed:@"PersonDefault"] withMask:[UIImage imageNamed:@"MaskImage"]];
     
     //Allow the User to Tap the Image View to Update their Photo
     UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
     tapToAddPhoto.delegate = self;
-    [self.backgroundView addGestureRecognizer:tapToAddPhoto];
+    self.profileImageView.userInteractionEnabled = YES;
+    [self.profileImageView addGestureRecognizer:tapToAddPhoto];
+    
+    
+    self.registerButton.titleText = @"Register";
+    self.registerButton.isSelected = YES;
+    self.registerButton.isStateless = YES;
+    self.registerButton.font = [UIFont fontWithName:@"Lato-Light" size:21];
+    self.registerButton.isRounded = NO;
+    
+    self.viewIsPulledUpForTextInput = NO;
+
+    
     
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    //TODO:  Needed?
     if ([self.presentingViewController isKindOfClass:[LogInVC class]]) {
         
         [self grabUserDetailsFromFacebook];
+    }
+    
+    if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:1.0 alpha:0.8] }];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
+    
+    if ([self.emailField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.emailField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:1.0 alpha:0.8] }];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
+    
+    if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:1.0 alpha:0.8] }];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
     }
 }
 
@@ -168,6 +209,7 @@ typedef enum {
 
     
 }
+
 
 - (void) grabUserDetailsFromFacebook {
     
@@ -391,7 +433,7 @@ typedef enum {
 #pragma mark - Upload Image Sheet
 
 - (void) presentProfileImageActions {
-
+    
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -408,8 +450,15 @@ typedef enum {
         imagePicker.delegate = self;
         imagePicker.allowsEditing = YES;
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        
-        [self presentViewController:imagePicker animated:YES completion:nil];
+        imagePicker.view.tintColor = [UIColor orangeThemeColor];
+
+        [self presentViewController:imagePicker animated:YES completion:^{
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+            
+            
+        }];
         
     }];
     
@@ -423,7 +472,11 @@ typedef enum {
     [pictureOptionsMenu addAction:choosePhoto];
     [pictureOptionsMenu addAction:cancelAction];
     
-    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
+    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:^{
+        //empt
+    }];
     
 }
 
@@ -433,7 +486,13 @@ typedef enum {
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    [picker dismissViewControllerAnimated:YES completion:nil];
+
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        
+    }];
     
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
@@ -444,27 +503,88 @@ typedef enum {
 
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+
+    [picker dismissViewControllerAnimated:YES completion:^{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        
+    }];
 
 }
 
 
-#pragma mark - UITextFieldDelegate Methods
+#pragma mark - UITextField Delegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
-    [textField resignFirstResponder];
+    if ([textField isEqual:self.usernameField]) {
+        [self.emailField becomeFirstResponder];
+    } else if ([textField isEqual:self.emailField]) {
+        [self.passwordField becomeFirstResponder];
+    } else {
+        [textField resignFirstResponder];
+    }
+    
+    return YES;
+}
+
+//Adjust View When The User Starts Inputting Credentials
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    
+    if (!self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsWithKeyboard:YES];
+    }
+    
+    return YES;
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    
+    if ([textField isEqual:self.passwordField] && self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsWithKeyboard:NO];
+    }
     
     return YES;
 }
 
 
-//Ensure that the ProfileImageView Receives Touch Events
-- (BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+- (void) moveLoginFieldsWithKeyboard:(BOOL)up {
     
-    CGPoint touchSpot = [touch locationInView:self.backgroundView];
-    return CGRectContainsPoint(self.profileImageView.frame, touchSpot);
+    //TODO : Adjust According to Keyboard of System
+    
+    int movement = (up ? -180 : 180);
+    
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        
+        self.view.frame = CGRectOffset(self.view.frame, 0, movement);
+        //self.fbLoginButton.alpha = (up ? 0 : 1);
+        //self.forgotPasswordButton.alpha = (up ? 0 : 1);
+        //self.textSeparator.alpha = (up ? 0 : 1);
+        //self.loginButton.alpha = (up ? 0 : 1);
+        
+    } completion:^(BOOL finished) {
+        //self.viewIsPulledUpForTextInput = (up ? YES : NO);
+        
+    }];
+    
 }
+
+
+//Allow user to dismiss keyboard by tapping the View
+//TODO: Implement for all Use Cases of Tapping and Entering Return on Keyboard
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if (self.viewIsPulledUpForTextInput) {
+        self.viewIsPulledUpForTextInput = NO;
+        [self.usernameField resignFirstResponder];
+        [self.passwordField resignFirstResponder];
+        [self moveLoginFieldsWithKeyboard:NO];
+    }
+    
+    
+}
+
 
 
 #pragma mark - private methods

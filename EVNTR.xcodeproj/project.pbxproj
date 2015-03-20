@@ -43,6 +43,7 @@
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
 		A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C61AB9B8AB009D3BCC /* MapForEventView.m */; };
 		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
+		A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */; };
 		A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */ = {isa = PBXBuildFile; fileRef = A456C10D1A93F0D5009426AB /* Polygon.gif */; };
 		A45795F11AB74DE4004C7088 /* EVNDefaultButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */; };
 		A4628CFA1AB77C4B00EBD959 /* FullMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4628CF91AB77C4B00EBD959 /* FullMapVC.m */; };
@@ -161,6 +162,8 @@
 		A45638C61AB9B8AB009D3BCC /* MapForEventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapForEventView.m; sourceTree = "<group>"; };
 		A45638C81ABA2122009D3BCC /* EventPicturesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventPicturesVC.h; path = ../EventPicturesVC.h; sourceTree = "<group>"; };
 		A45638C91ABA2122009D3BCC /* EventPicturesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventPicturesVC.m; path = ../EventPicturesVC.m; sourceTree = "<group>"; };
+		A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNNoResultsView.h; sourceTree = "<group>"; };
+		A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNNoResultsView.m; sourceTree = "<group>"; };
 		A456C10D1A93F0D5009426AB /* Polygon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Polygon.gif; sourceTree = "<group>"; };
 		A45795EF1AB74DE4004C7088 /* EVNDefaultButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNDefaultButton.h; sourceTree = "<group>"; };
 		A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNDefaultButton.m; sourceTree = "<group>"; };
@@ -414,6 +417,8 @@
 				A47430661A81556C00CF3B8F /* ActivityVC.m */,
 				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
 				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
+				A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */,
+				A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */,
 				A423F7EF1A9BC4D800DF9ABE /* Custom UI Elements */,
 			);
 			name = Activities;
@@ -757,6 +762,7 @@
 				A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */,
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
+				A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */,
 				A41563451A76E15100565BB6 /* EventAddVC.m in Sources */,
 				A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,

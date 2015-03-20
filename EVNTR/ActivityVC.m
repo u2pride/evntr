@@ -9,10 +9,17 @@
 #import "ActivityTableCell.h"
 #import "ActivityVC.h"
 #import "EVNConstants.h"
+#import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
+
+@interface ActivityVC ()
+
+@property (nonatomic) EVNNoResultsView *noResultsView;
+
+@end
 
 @implementation ActivityVC
 
@@ -190,11 +197,43 @@
     
     [super objectsDidLoad:error];
     
+    if (self.objects.count == 0) {
+        
+        [self showNoResultsView];
+        
+        NSLog(@"No Results - Add a No Results View");
+        
+    } else {
+        
+        self.noResultsView.hidden = YES;
+    }
+    
     //Reset App Badge and Tab Bar Badge
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
     
 }
+
+- (void) showNoResultsView {
+    
+    if (!self.noResultsView) {
+        self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+    }
+    
+    self.noResultsView.headerText = @"Where is Everyone?";
+    self.noResultsView.subHeaderText = @"Looks like there's no activity yet.  Once you start following your friends and attending events, you'll be able to view all your activity from here.";
+    
+    [self.view addSubview:self.noResultsView];
+    
+    
+}
+
+- (void) hideNoResultsView {
+    
+    [self.noResultsView removeFromSuperview];
+    
+}
+    
 
 
 

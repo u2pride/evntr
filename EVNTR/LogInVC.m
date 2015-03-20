@@ -7,6 +7,7 @@
 //
 
 #import "EVNConstants.h"
+#import "EVNButton.h"
 #import "FacebookSDK/FacebookSDK.h"
 #import "HomeScreenVC.h"
 #import "IDTransitioningDelegate.h"
@@ -28,7 +29,7 @@
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegateForModal;
 
 @property (weak, nonatomic) IBOutlet UIButton *fbLoginButton;
-@property (weak, nonatomic) IBOutlet UIButton *loginButton;
+@property (strong, nonatomic) IBOutlet EVNButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
 @property (weak, nonatomic) IBOutlet UILabel *textSeparator;
 
@@ -41,6 +42,7 @@
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
 - (IBAction)resetUserPassword:(id)sender;
+- (IBAction)login:(id)sender;
 
 @end
 
@@ -70,21 +72,27 @@
     self.passwordField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     self.passwordField.layer.borderWidth = 1.0f;
     
-    self.loginButton.backgroundColor = [UIColor orangeThemeColor];
+    self.loginButton.titleText = @"Login";
+    self.loginButton.font = [UIFont fontWithName:@"Lato-Light" size:21];
+    self.loginButton.isRounded = NO;
+    self.loginButton.isSelected = YES;
+    self.loginButton.isStateless = YES;
+    
+    
 
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor] }];
+        self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
     }
     
     if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor whiteColor] }];
+        self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
@@ -348,6 +356,7 @@
     [self presentViewController:resetPasswordModal animated:YES completion:nil];
     
 }
+
 
 
 #pragma mark - UITextField Delegate

@@ -175,8 +175,16 @@
         imagePicker.delegate = self;
         imagePicker.allowsEditing = YES;
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.view.tintColor = [UIColor orangeThemeColor];
+        imagePicker.navigationBar.tintColor = [UIColor orangeThemeColor];
+        imagePicker.navigationController.navigationBar.tintColor = [UIColor orangeThemeColor];
         
-        [self presentViewController:imagePicker animated:YES completion:nil];
+        [self presentViewController:imagePicker animated:YES completion:^{
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+            
+        }];
         
     }];
     
@@ -190,6 +198,7 @@
     [pictureOptionsMenu addAction:choosePhoto];
     [pictureOptionsMenu addAction:cancelAction];
     
+    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
     
     //Store Current User Inputs From Each Text Field for persistence
     self.userInputtedValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
@@ -204,7 +213,11 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        
+    }];
     
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
@@ -220,25 +233,22 @@
         }
     }];
     
-    
-    //Restore Values That the User Has Inputted
-    NSString *usernameStored = [self.userInputtedValues objectForKey:@"username"];
-    NSString *realNameStored = [self.userInputtedValues objectForKey:@"realName"];
-    NSString *hometownStored = [self.userInputtedValues objectForKey:@"hometown"];
-    NSString *bioStored = [self.userInputtedValues objectForKey:@"bio"];
-    
-    self.usernameTextField.text = usernameStored;
-    self.realNameTextField.text = realNameStored;
-    self.hometownTextField.text = hometownStored;
-    self.bioTextField.text = bioStored;
-    
-    NSLog(@"usernamed stored; %@", usernameStored);
-    
+    [self restoreSavedValues];
     
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    }];
+
+    [self restoreSavedValues];
+}
+
+
+- (void) restoreSavedValues {
     
     //Restore Values That the User Has Inputted
     NSString *usernameStored = [self.userInputtedValues objectForKey:@"username"];
@@ -250,7 +260,6 @@
     self.realNameTextField.text = realNameStored;
     self.hometownTextField.text = hometownStored;
     self.bioTextField.text = bioStored;
-    
 }
 
 
