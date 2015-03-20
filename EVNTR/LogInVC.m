@@ -41,6 +41,10 @@
 @property (nonatomic) BOOL viewIsPulledUpForTextInput;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
+@property (strong, nonatomic) IBOutlet UIView *separatorLineLeft;
+@property (strong, nonatomic) IBOutlet UIView *separatorLineRight;
+
+
 - (IBAction)resetUserPassword:(id)sender;
 - (IBAction)login:(id)sender;
 
@@ -84,6 +88,17 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    
+    //PlaceHolder Text Color Change
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
     } else {
@@ -98,6 +113,15 @@
         // TODO: Add fall-back code to set placeholder color.
     }
     
+    
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
 
@@ -373,15 +397,17 @@
 }
 
 //Adjust View When The User Starts Inputting Credentials
+/*
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
  
     if (!self.viewIsPulledUpForTextInput) {
-        [self moveLoginFieldsWithKeyboard:YES];
+        //[self moveLoginFieldsWithKeyboard:YES];
     }
 
     return YES;
 }
- 
+*/
+/*
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
  
     if ([textField isEqual:self.passwordField] && self.viewIsPulledUpForTextInput) {
@@ -390,13 +416,79 @@
     
     return YES;
 }
- 
- 
-- (void) moveLoginFieldsWithKeyboard:(BOOL)up {
+ */
 
-    //TODO : Adjust According to Keyboard of System
+- (void)keyboardWillShow:(NSNotification *)notification {
     
-    int movement = (up ? -180 : 180);
+    NSLog(@"KEYBOARDWILL SHOW");
+    
+    //NSValue * keyboardEndFrame;
+    CGRect    screenRect;
+    CGRect    windowRect;
+    CGRect    viewRect;
+    
+    // determine's keyboard height
+    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (!self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsUp:YES withKeyboardSize:movement];
+        
+    }
+    
+    
+    /*
+     NSTimeInterval  duration;
+     CGRect          frame;
+     
+     // determine length of animation
+     duration  = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+     
+     // resize the view
+     frame              = self.view.frame;
+     frame.size.height -= viewRect.size.height;
+     
+     // animate view resize with the keyboard movement
+     [UIView beginAnimations:nil context:NULL];
+     [UIView setAnimationBeginsFromCurrentState:YES];
+     [UIView setAnimationDuration:duration];
+     self.view.frame = frame;
+     [UIView commitAnimations];
+     */
+    
+}
+
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
+    NSLog(@"KEYBOARDWILL HIDE");
+    
+    //NSValue * keyboardEndFrame;
+    CGRect    screenRect;
+    CGRect    windowRect;
+    CGRect    viewRect;
+    
+    // determine's keyboard height
+    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsUp:NO withKeyboardSize:movement];
+        
+    }
+    
+}
+ 
+ 
+- (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
+
+    int movement = (up ? -distance : distance);
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         
@@ -405,11 +497,16 @@
         self.forgotPasswordButton.alpha = (up ? 0 : 1);
         self.textSeparator.alpha = (up ? 0 : 1);
         self.loginButton.alpha = (up ? 0 : 1);
-        
+        self.separatorLineLeft.alpha = (up ? 0 : 1);
+        self.separatorLineRight.alpha = (up ? 0 : 1);
+            
     } completion:^(BOOL finished) {
+        NSLog(@"self.viewIsPulledUP: %@", [NSNumber numberWithBool:self.viewIsPulledUpForTextInput]);
         self.viewIsPulledUpForTextInput = (up ? YES : NO);
+        NSLog(@"self.viewIsPulledUP: %@", [NSNumber numberWithBool:self.viewIsPulledUpForTextInput]);
 
     }];
+
 
 }
  
@@ -419,10 +516,11 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     if (self.viewIsPulledUpForTextInput) {
-        self.viewIsPulledUpForTextInput = NO;
+        //self.viewIsPulledUpForTextInput = NO;
         [self.usernameField resignFirstResponder];
         [self.passwordField resignFirstResponder];
-        [self moveLoginFieldsWithKeyboard:NO];
+        //[self moveLoginFieldsUp:NO withKeyboardSize:<#(int)#>]
+        //[self moveLoginFieldsWithKeyboard:NO];
     }
 
 

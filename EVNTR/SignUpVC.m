@@ -49,6 +49,7 @@ typedef enum {
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
 
 @property (strong, nonatomic) IBOutlet EVNButton *registerButton;
+@property (strong, nonatomic) IBOutlet UIButton *connectWithFacebookButton;
 
 @property (nonatomic) BOOL viewIsPulledUpForTextInput;
 
@@ -102,6 +103,16 @@ typedef enum {
 
 - (void) viewWillAppear:(BOOL)animated {
     
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
     //TODO:  Needed?
     if ([self.presentingViewController isKindOfClass:[LogInVC class]]) {
         
@@ -128,6 +139,14 @@ typedef enum {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
     }
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 
 
@@ -530,6 +549,7 @@ typedef enum {
 }
 
 //Adjust View When The User Starts Inputting Credentials
+/*
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
     
     if (!self.viewIsPulledUpForTextInput) {
@@ -547,24 +567,91 @@ typedef enum {
     
     return YES;
 }
+*/
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    NSLog(@"KEYBOARDWILL SHOW");
+    
+    //NSValue * keyboardEndFrame;
+    CGRect    screenRect;
+    CGRect    windowRect;
+    CGRect    viewRect;
+    
+    // determine's keyboard height
+    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (!self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsUp:YES withKeyboardSize:movement];
+        
+    }
+    
+    
+    /*
+     NSTimeInterval  duration;
+     CGRect          frame;
+     
+     // determine length of animation
+     duration  = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+     
+     // resize the view
+     frame              = self.view.frame;
+     frame.size.height -= viewRect.size.height;
+     
+     // animate view resize with the keyboard movement
+     [UIView beginAnimations:nil context:NULL];
+     [UIView setAnimationBeginsFromCurrentState:YES];
+     [UIView setAnimationDuration:duration];
+     self.view.frame = frame;
+     [UIView commitAnimations];
+     */
+    
+}
 
 
-- (void) moveLoginFieldsWithKeyboard:(BOOL)up {
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
+    NSLog(@"KEYBOARDWILL HIDE");
+    
+    //NSValue * keyboardEndFrame;
+    CGRect    screenRect;
+    CGRect    windowRect;
+    CGRect    viewRect;
+    
+    // determine's keyboard height
+    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsUp:NO withKeyboardSize:movement];
+        
+    }
+    
+}
+
+
+- (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
     
     //TODO : Adjust According to Keyboard of System
     
-    int movement = (up ? -180 : 180);
+    int movement = (up ? -distance : distance);
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
         
         self.view.frame = CGRectOffset(self.view.frame, 0, movement);
-        //self.fbLoginButton.alpha = (up ? 0 : 1);
-        //self.forgotPasswordButton.alpha = (up ? 0 : 1);
-        //self.textSeparator.alpha = (up ? 0 : 1);
-        //self.loginButton.alpha = (up ? 0 : 1);
+        self.registerButton.alpha = (up ? 0 : 1);
+        self.profileImageView.alpha = (up ? 0 : 1);
+        self.connectWithFacebookButton.alpha = (up ? 0 : 1);
         
     } completion:^(BOOL finished) {
-        //self.viewIsPulledUpForTextInput = (up ? YES : NO);
+        self.viewIsPulledUpForTextInput = (up ? YES : NO);
         
     }];
     
@@ -573,18 +660,19 @@ typedef enum {
 
 //Allow user to dismiss keyboard by tapping the View
 //TODO: Implement for all Use Cases of Tapping and Entering Return on Keyboard
+
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     if (self.viewIsPulledUpForTextInput) {
-        self.viewIsPulledUpForTextInput = NO;
+        //self.viewIsPulledUpForTextInput = NO;
         [self.usernameField resignFirstResponder];
         [self.passwordField resignFirstResponder];
-        [self moveLoginFieldsWithKeyboard:NO];
+        [self.emailField resignFirstResponder];
+        //[self moveLoginFieldsWithKeyboard:NO];
     }
     
     
 }
-
 
 
 #pragma mark - private methods

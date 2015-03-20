@@ -235,7 +235,7 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="enter your email address" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KBD-4U-6Cy">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KBD-4U-6Cy">
                                 <rect key="frame" x="70" y="280" width="459" height="40"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -624,6 +624,8 @@ Click continue when you're ready.</string>
                         <outlet property="forgotPasswordButton" destination="cap-rb-8gk" id="RpU-tV-ode"/>
                         <outlet property="loginButton" destination="F5P-eu-tmm" id="UEs-i1-ygS"/>
                         <outlet property="passwordField" destination="GhJ-Je-H5h" id="g5q-Sj-Qq8"/>
+                        <outlet property="separatorLineLeft" destination="VUW-lg-Xt3" id="VBP-iC-jG6"/>
+                        <outlet property="separatorLineRight" destination="pbd-qx-IKv" id="hfb-ep-QGl"/>
                         <outlet property="textSeparator" destination="OSt-mn-S5x" id="F6K-EL-i8y"/>
                         <outlet property="usernameField" destination="oaP-f5-UpO" id="grq-ay-EOY"/>
                         <segue destination="Hoa-x5-Et8" kind="presentation" identifier="LoginToHomeView" id="hsO-YW-5Lp"/>
@@ -1751,6 +1753,7 @@ Click continue when you're ready.</string>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="backgroundView" destination="ekM-Zk-pWu" id="We7-Jq-Ff2"/>
+                        <outlet property="connectWithFacebookButton" destination="uYO-wh-CD7" id="MFG-af-B8X"/>
                         <outlet property="emailField" destination="gWo-WQ-Nn8" id="2va-DW-5jO"/>
                         <outlet property="passwordField" destination="LXp-1A-m4w" id="1wN-TI-JkU"/>
                         <outlet property="profileImageView" destination="ip8-o7-UOQ" id="H2z-IM-Dnn"/>
@@ -3415,7 +3418,7 @@ Click continue when you're ready.</string>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="XMT-eB-l88"/>
-        <segue reference="vng-gU-3GQ"/>
+        <segue reference="hsO-YW-5Lp"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>
