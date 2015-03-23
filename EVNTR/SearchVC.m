@@ -189,10 +189,13 @@
     
     if (self.isSearchingEvents) {
         
-        PFObject *selectedObject = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
+        PFObject *object = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
         
         EventDetailVC *eventVC = (EventDetailVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
-        eventVC.eventObject = selectedObject;
+        
+        EVNEvent *selectedEvent = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
+        
+        eventVC.event = selectedEvent;
         
         [self.navigationController pushViewController:eventVC animated:YES];
         

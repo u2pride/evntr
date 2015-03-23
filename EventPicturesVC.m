@@ -46,6 +46,8 @@ static NSString * const reuseIdentifier = @"Cell";
     self.view.backgroundColor = [UIColor whiteColor];
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
+    
+    self.hidesBottomBarWhenPushed = YES;
 
 }
 

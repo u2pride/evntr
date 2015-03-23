@@ -40,7 +40,6 @@
 @property BOOL isGuestUser;
 @property BOOL isCurrentUserAttending;
 @property BOOL isPublicApproved;
-@property (nonatomic, strong) PFUser *eventUser;
 
 //Buttons
 @property (weak, nonatomic) IBOutlet UIButton *rsvpButton;
@@ -55,7 +54,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 
 //Images
-@property (weak, nonatomic) PFImageView *eventCoverPhoto;
 @property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
 
 //CollectionViews & DataSources
@@ -80,7 +78,7 @@
 
 
 //Picture Component
-@property (strong, nonatomic) IBOutlet UIImageView *backgroundForPictureSection;
+@property (strong, nonatomic) IBOutlet PFImageView *backgroundForPictureSection;
 @property (strong, nonatomic) IBOutlet UILabel *numberOfPicturesLabel;
 @property (strong, nonatomic) IBOutlet EVNButton *viewPicturesButton;
 
@@ -188,6 +186,7 @@
         }];
     }];
     
+    //Progress Indicator For Loading the View
     self.HUD = [[MBProgressHUD alloc] init];
     self.HUD.center = self.view.center;
     [self.view addSubview:self.HUD];
@@ -195,12 +194,7 @@
     self.HUD.labelText = @"Event Details Loading";
     [self.HUD show:YES];
     
-    
-    NSMutableArray *pictureCount = [NSMutableArray arrayWithArray:self.eventObject[@"eventImages"]];
-    self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%lu", (unsigned long)pictureCount.count];
-    
-    
-    
+    self.numberOfPicturesLabel.text = [self.event numberOfPhotos];
     
     [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
     
@@ -217,7 +211,7 @@
     ///////////////////////
     
     PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
-    [queryForStandbyUsers whereKey:@"activityContent" equalTo:self.eventObject];
+    [queryForStandbyUsers whereKey:@"activityContent" equalTo:self.event.backingObject];
     [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
     [queryForStandbyUsers includeKey:@"from"];
     [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
@@ -255,12 +249,12 @@
     } else {
         
         //Update Event Detail view based on Event Type
-        int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];
+        int eventType = [self.event.eventType intValue];
         switch (eventType) {
             case PUBLIC_EVENT_TYPE: {
                 NSString *username = [[PFUser currentUser] objectForKey:@"username"];
                 
-                PFRelation *eventAttendersRelation = [self.eventObject relationForKey:@"attenders"];
+                PFRelation *eventAttendersRelation = self.event.eventAttenders;
                 PFQuery *attendingQuery = [eventAttendersRelation query];
                 [attendingQuery whereKey:@"username" equalTo:username];
                 [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
@@ -284,7 +278,7 @@
                 
                 NSString *username = [[PFUser currentUser] objectForKey:@"username"];
                 
-                PFRelation *eventAttendersRelation = [self.eventObject relationForKey:@"attenders"];
+                PFRelation *eventAttendersRelation = self.event.eventAttenders;
                 PFQuery *attendingQuery = [eventAttendersRelation query];
                 [attendingQuery whereKey:@"username" equalTo:username];
                 [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
@@ -319,7 +313,7 @@
                 PFQuery *requestedAccessQuery = [PFQuery queryWithClassName:@"Activities"];
                 [requestedAccessQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
                 [requestedAccessQuery whereKey:@"from" equalTo:[PFUser currentUser]];
-                [requestedAccessQuery whereKey:@"activityContent" equalTo:self.eventObject];
+                [requestedAccessQuery whereKey:@"activityContent" equalTo:self.event.backingObject];
                 [requestedAccessQuery findObjectsInBackgroundWithBlock:^(NSArray *requestedActivityObjects, NSError *error) {
                     
                     if (requestedActivityObjects.count > 0) {
@@ -331,7 +325,7 @@
                         PFQuery *accessGrantedQuery = [PFQuery queryWithClassName:@"Activities"];
                         [accessGrantedQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
                         [accessGrantedQuery whereKey:@"to" equalTo:[PFUser currentUser]];
-                        [accessGrantedQuery whereKey:@"activityContent" equalTo:self.eventObject];
+                        [accessGrantedQuery whereKey:@"activityContent" equalTo:self.event.backingObject];
                         [accessGrantedQuery findObjectsInBackgroundWithBlock:^(NSArray *accessActivityObjects, NSError *error) {
                             
                             if (accessActivityObjects.count > 0) {
@@ -361,38 +355,17 @@
     }
     
     
-    //////////////////
-    //Configuring Date
-    //////////////////
-    
-    NSDate *dateFromParse = (NSDate *)self.eventObject[@"dateOfEvent"];
-    
-    NSDateFormatter *dateForm = [[NSDateFormatter alloc] init];
-    dateForm.doesRelativeDateFormatting = YES;
-    dateForm.locale = [NSLocale currentLocale];
-    dateForm.dateStyle = NSDateFormatterMediumStyle;
-    dateForm.timeStyle = NSDateFormatterNoStyle;
-    NSString *localDateString = [dateForm stringFromDate:dateFromParse];
-    
-    dateForm.dateStyle = NSDateFormatterNoStyle;
-    dateForm.timeStyle = NSDateFormatterShortStyle;
-    NSString *localTimeString = [dateForm stringFromDate:dateFromParse];
+
     
     
     //////////////////////
     //Configuring Location
     //////////////////////
-
-
     
     //Location Address
-    PFGeoPoint *locationOfEventPF = self.eventObject[@"locationOfEvent"];
     
-    
-
-    self.locationOfEvent = [[CLLocation alloc] initWithLatitude:locationOfEventPF.latitude longitude:locationOfEventPF.longitude];
+    self.locationOfEvent = [[CLLocation alloc] initWithLatitude:self.event.eventLocationGeoPoint.latitude longitude:self.event.eventLocationGeoPoint.longitude];
     self.entireMapView.eventLocation = self.locationOfEvent;
-    
     
     
     CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
@@ -407,7 +380,7 @@
             
         } else {
             
-            self.entireMapView.address = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
+            self.entireMapView.address = [NSString stringWithFormat:@"%.2f - %.2f", self.event.eventLocationGeoPoint.latitude, self.event.eventLocationGeoPoint.longitude];
             
         }
         
@@ -416,12 +389,12 @@
     }];
     
     //Location Name
-    NSString *locationName = self.eventObject[@"nameOfLocation"];
+    NSString *locationName = self.event.eventLocationName;
         
     if (!locationName) {
         locationName = @"Custom Location";
     } else if ([locationName isEqualToString:@"Current Location"]) {
-        locationName = [NSString stringWithFormat:@"%.2f - %.2f", locationOfEventPF.latitude, locationOfEventPF.longitude];
+        locationName = [NSString stringWithFormat:@"%.2f - %.2f", self.event.eventLocationGeoPoint.latitude, self.event.eventLocationGeoPoint.longitude];
         
     }
     
@@ -441,24 +414,29 @@
     //Configuring User Interface
     ////////////////////////////
     
-    self.eventTitle.text = self.eventObject[@"title"];
+    //////////////////
+    //Configuring Date
+    //////////////////
+    
+    self.eventTitle.text = self.event.eventTitle;
     
 
-    self.dateOfEventLabel.text = localDateString;
-    self.timeOfEventLabel.text = localTimeString;
+    self.dateOfEventLabel.text = [self.event eventDateShortStyle];
+    self.timeOfEventLabel.text = [self.event eventTimeShortStye];
     
-    self.eventDescription.text = self.eventObject[@"description"];
-    self.eventCoverPhoto.file = (PFFile *)self.eventObject[@"coverPhoto"];
-    self.eventCoverPhoto.image = [UIImage imageNamed:@"EventDefault"];
-    [self.eventCoverPhoto loadInBackground:^(UIImage *image, NSError *error) {
+    self.eventDescription.text = self.event.eventDescription;
+    self.backgroundForPictureSection.file = self.event.eventCoverPhoto;
+    self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
+    [self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
         
+        NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
+
         [self setBackgroundOfPictureSectionWithImage:image];
         [self networkCallComplete]; //4
         
     }];
     
-    self.eventUser = (PFUser *)self.eventObject[@"parent"];
-    [self.eventUser fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
+    [self.event.eventCreator fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         
         if ([user.objectId isEqualToString:[PFUser currentUser].objectId]) {
             self.rsvpButton.hidden = YES;
@@ -567,10 +545,15 @@
 
 - (void) setBackgroundOfPictureSectionWithImage:(UIImage *)image {
     //Set Background to Blurred Cover Photo Image
-    UIImage *blurredCoverPhotoForBackground = [UIImageEffects imageByApplyingDarkEffectToImage:image];
+    UIImage *darkBlurredImageForPicturesBackground = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithWhite:0.11 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
     
-    self.backgroundForPictureSection.image = blurredCoverPhotoForBackground;
-    self.view.backgroundColor = [UIColor colorWithPatternImage:blurredCoverPhotoForBackground];
+    self.backgroundForPictureSection.image = darkBlurredImageForPicturesBackground;
+
+    
+    UIImage *blurredBackgroundImage = [UIImageEffects imageByApplyingBlurToImage:image withRadius:100.0 tintColor:[UIColor colorWithWhite:0.08 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
+    
+    
+    self.view.backgroundColor = [UIColor colorWithPatternImage:blurredBackgroundImage];
 }
 
 
@@ -733,7 +716,7 @@
 
 - (IBAction)rsvpForEvent:(id)sender {
     
-    int eventType = [[self.eventObject objectForKey:@"typeOfEvent"] intValue];
+    int eventType = [self.event.eventType intValue];
     
     if (self.isGuestUser) {
         
@@ -750,9 +733,9 @@
             //RSVP User for Event
             PFObject *rsvpActivity = [PFObject objectWithClassName:@"Activities"];
             rsvpActivity[@"from"] = [PFUser currentUser];
-            rsvpActivity[@"to"] = self.eventUser;
+            rsvpActivity[@"to"] = self.event.eventCreator;
             rsvpActivity[@"type"] = [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY];
-            rsvpActivity[@"activityContent"] = self.eventObject;
+            rsvpActivity[@"activityContent"] = self.event.backingObject;
             
             [rsvpActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
@@ -768,7 +751,7 @@
     } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
         
         //ADDING USER VIA A RELATION
-        PFRelation *attendersRelation = [self.eventObject relationForKey:@"attenders"];
+        PFRelation *attendersRelation = self.event.eventAttenders;
         NSLog(@"PFRelation: %@", attendersRelation);
         
         if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
@@ -776,7 +759,7 @@
             NSLog(@"Removing PFRelation");
             
             [attendersRelation removeObject:[PFUser currentUser]];
-            [self.eventObject saveInBackground];
+            [self.event.backingObject saveInBackground];
             
             //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
             
@@ -786,7 +769,7 @@
             
             //Create New Relation and Add User to List of Attenders for Event
             [attendersRelation addObject:[PFUser currentUser]];
-            [self.eventObject saveInBackground];
+            [self.event.backingObject saveInBackground];
             
             //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
         }
@@ -806,7 +789,7 @@
             PFQuery *queryForRSVP = [PFQuery queryWithClassName:@"Activities"];
             [queryForRSVP whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
             [queryForRSVP whereKey:@"to" equalTo:[PFUser currentUser]];
-            [queryForRSVP whereKey:@"activityContent" equalTo:self.eventObject];
+            [queryForRSVP whereKey:@"activityContent" equalTo:self.event.backingObject];
             [queryForRSVP findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
                 PFObject *previousActivity = [objects firstObject];
@@ -837,7 +820,7 @@
             PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
             newAttendingActivity[@"to"] = [PFUser currentUser];
             newAttendingActivity[@"type"] = [NSNumber numberWithInt:ATTENDING_ACTIVITY];
-            newAttendingActivity[@"activityContent"] = self.eventObject;
+            newAttendingActivity[@"activityContent"] = self.event.backingObject;
             [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 if (succeeded) {
                     
@@ -876,7 +859,7 @@
         PeopleVC *viewAttendees = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         
         viewAttendees.typeOfUsers = VIEW_EVENT_ATTENDERS;
-        viewAttendees.eventToViewAttenders = self.eventObject;
+        viewAttendees.eventToViewAttenders = self.event.backingObject;
         
         [self.navigationController pushViewController:viewAttendees animated:YES];
     }
@@ -896,10 +879,16 @@
     EventPicturesVC *allEventPictures = [[EventPicturesVC alloc] initWithCollectionViewLayout:flowLayout];
     
     //Pass the Event
-    allEventPictures.eventObject = self.eventObject;
+    allEventPictures.eventObject = self.event.backingObject;
     
-    //TODO: Add Logic Here about Who Is Allowed to Add Photos
     allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
+    
+    if (self.isCurrentUserAttending) {
+        allEventPictures.allowsAddingPictures = [self.event allowUserToAddPhotosAtThisTime];
+    } else {
+        allEventPictures.allowsAddingPictures = NO;
+    }
+    
     
     [self.navigationController pushViewController:allEventPictures animated:YES];
     
@@ -926,7 +915,7 @@
         newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
         newInvitationActivity[@"from"] = [PFUser currentUser];
         newInvitationActivity[@"to"] = user;
-        newInvitationActivity[@"activityContent"] = self.eventObject;
+        newInvitationActivity[@"activityContent"] = self.event.backingObject;
         
         //save the invitation activities
         [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -973,7 +962,20 @@
 }
 
 
-
+/*
+ NSDate *dateFromParse = self.event.eventDate;
+ 
+ NSDateFormatter *dateForm = [[NSDateFormatter alloc] init];
+ dateForm.doesRelativeDateFormatting = YES;
+ dateForm.locale = [NSLocale currentLocale];
+ dateForm.dateStyle = NSDateFormatterMediumStyle;
+ dateForm.timeStyle = NSDateFormatterNoStyle;
+ NSString *localDateString = [dateForm stringFromDate:dateFromParse];
+ 
+ dateForm.dateStyle = NSDateFormatterNoStyle;
+ dateForm.timeStyle = NSDateFormatterShortStyle;
+ NSString *localTimeString = [dateForm stringFromDate:dateFromParse];
+ */
 
 
 @end

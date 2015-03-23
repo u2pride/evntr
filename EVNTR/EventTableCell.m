@@ -18,7 +18,7 @@
     
     self.eventTitle.textColor = [UIColor whiteColor];
     
-    self.roundedContaingView.layer.cornerRadius = 10;
+    //self.roundedContaingView.layer.cornerRadius = 10;
 }
 
 

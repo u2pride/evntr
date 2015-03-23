@@ -151,11 +151,15 @@
             
         } else {
             //Failed to Login
+            [self cleanUpBeforeTransition];
+
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Username or Password Does Not Exist" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
             
             [errorAlert show];
             
-            [self cleanUpBeforeTransition];
+            
+            
+
         }
 
         

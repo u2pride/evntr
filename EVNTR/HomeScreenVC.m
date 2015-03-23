@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "EVNConstants.h"
+#import "EVNEvent.h"
+#import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
 #import "EventTableCell.h"
 #import "FilterEventsVC.h"
@@ -29,6 +31,10 @@
 
 @property (nonatomic, strong) PFGeoPoint *currentUserLocation;
 @property (nonatomic) int searchRadius;
+
+@property (nonatomic, strong) EVNNoResultsView *noResultsView;
+
+@property (nonatomic, strong) NSMutableArray *allEvents;
 
 @end
 
@@ -55,6 +61,8 @@
         //Get isGuest Object
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
         self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
+        
+        _allEvents = [[NSMutableArray alloc] init];
 
     }
     return self;
@@ -202,18 +210,27 @@
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     
-    NSLog(@"Location Used for Search: %f and %f:", self.currentUserLocation.latitude, self.currentUserLocation.longitude);
+    //Clear All Events
+    [self.allEvents removeAllObjects];
     
-    /*
-    for (PFObject *newEvent in self.objects) {
-        PFGeoPoint *location = [newEvent objectForKey:@"locationOfEvent"];
-        NSLog(@"eventLocation lat and long %f and %f:", location.latitude, location.longitude);
+    if (self.objects.count == 0) {
+        [self showNoResultsView];
+    } else if (self.noResultsView) {
+        [self hideNoResultsView];
     }
-     */
+    
+    //Add New Results to All Events
+    for (PFObject *object in self.objects) {
+        
+        EVNEvent *returnedEvent = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
+        
+        [self.allEvents addObject:returnedEvent];
+    
+    }
+    
+    //NSLog(@"Location Used for Search: %f and %f:", self.currentUserLocation.latitude, self.currentUserLocation.longitude);
 
 }
-
-
 
 
 #pragma mark - PFTableView Data & Custom Cells
@@ -287,6 +304,60 @@
 //    [self loadObjects];
 //}
 
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *cellIdentifier = @"eventCell";
+    
+    EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    EVNEvent *eventForCell = [self.allEvents objectAtIndex:indexPath.row];
+    
+    if (cell) {
+        
+        cell.eventTitle.text = eventForCell.eventTitle;
+        cell.eventTypeLabel.text = [eventForCell eventTypeForHomeView];
+        cell.dateOfEventLabel.text = [eventForCell eventDateShortStyle];
+        cell.timeOfEventLabel.text = [eventForCell eventTimeShortStye];
+        
+        cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
+        //cell.eventCoverImage.file = (PFFile *) eventForCell.eventCoverPhoto;
+        
+        [eventForCell.eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+                UIImage *imageFromParse = [UIImage imageWithData:data];
+                UIImage *imageWithEffect = [UIImageEffects imageByApplyingBlurToImage:imageFromParse withRadius:10.0 tintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] saturationDeltaFactor:1.0 maskImage:nil];
+                
+                dispatch_async(dispatch_get_main_queue(), ^(void) {
+                    cell.eventCoverImage.image = imageWithEffect;
+                });
+
+            });
+            
+        }];
+        
+        
+        
+
+        [eventForCell totalNumberOfAttendersInBackground:^(int count) {
+
+            cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", count];
+            
+
+        }];
+        
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        
+    }
+    
+    return cell;
+    
+}
+
+
+/*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
     
     static NSString *cellIdentifier = @"eventCell";
@@ -344,11 +415,61 @@
                 break;
         }
         
+        
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+
     }
     
     return cell;
     
 }
+ 
+ */
+
+
+//Animate UITableViewCells Appearing
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    cell.alpha = 0;
+    cell.transform = CGAffineTransformMakeScale(0.01, 0.01);
+    
+    [UIView animateWithDuration:1.0 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+        
+        cell.alpha = 1;
+        cell.transform = CGAffineTransformIdentity;
+        
+    } completion:^(BOOL finished) {
+        
+        
+    }];
+     
+}
+
+
+- (void) showNoResultsView {
+    
+    if (!self.noResultsView) {
+        self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+    }
+    
+    self.noResultsView.headerText = @"Well This Is Awkward...";
+    self.noResultsView.subHeaderText = @"Looks like there's no public events around you. Maybe increase your search radius.";
+    self.noResultsView.actionButton.titleText = @"Increase Your Search Radius";
+    
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(displayFilterView)];
+    [self.noResultsView.actionButton addGestureRecognizer:tapgr];
+    
+    [self.view addSubview:self.noResultsView];
+    
+    
+}
+
+- (void) hideNoResultsView {
+    
+    [self.noResultsView removeFromSuperview];
+    
+}
+
 
 
 #pragma mark - Navigation
@@ -363,12 +484,11 @@
         NSIndexPath *indexPathOfSelectedItem = [self.tableView indexPathForSelectedRow];
         EventDetailVC *eventDetailVC = segue.destinationViewController;
         
-        PFObject *event = [self.objects objectAtIndex:indexPathOfSelectedItem.row];
+        eventDetailVC.event = [self.allEvents objectAtIndex:indexPathOfSelectedItem.row];
         
+        //PFObject *event = [self.objects objectAtIndex:indexPathOfSelectedItem.row];
         //TODO: Better way to select object and transition to new VC
         //PFObject *selectedObject = [self objectAtIndexPath:indexPath];
-
-        eventDetailVC.eventObject = event;
 
         
     } else if ([[segue identifier] isEqualToString:@"AddNewEvent"]) {
@@ -378,6 +498,32 @@
     
 }
 
+
+/*
+ [cell.eventCoverImage loadInBackground:^(UIImage *image, NSError *error) {
+ 
+ NSLog(@"Here 3");
+ 
+ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+ 
+ NSLog(@"before imageeffect");
+ 
+ UIImage *imageEffected = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] saturationDeltaFactor:1.0 maskImage:nil];
+ 
+ dispatch_async(dispatch_get_main_queue(), ^(void) {
+ 
+ cell.eventCoverImage.image = imageEffected;
+ 
+ });
+ 
+ NSLog(@"after imageeffect");
+ 
+ });
+ 
+ NSLog(@"Here 4");
+ 
+ }];
+ */
 
 
 
