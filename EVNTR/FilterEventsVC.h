@@ -10,4 +10,6 @@
 
 @interface FilterEventsVC : UIViewController
 
+@property (nonatomic) int selectedFilterDistance;
+
 @end

@@ -76,6 +76,7 @@
 		A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */; };
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
 		A4C935291AC04E3700BF174C /* EVNEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C935281AC04E3700BF174C /* EVNEvent.m */; };
+		A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
 		A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */; };
 		A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */; };
@@ -221,6 +222,8 @@
 		A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabNavigationVC.m; sourceTree = "<group>"; };
 		A4C935271AC04E3700BF174C /* EVNEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNEvent.h; sourceTree = "<group>"; };
 		A4C935281AC04E3700BF174C /* EVNEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNEvent.m; sourceTree = "<group>"; };
+		A4C9352A1AC096E900BF174C /* BBBadgeBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBadgeBarButtonItem.h; sourceTree = "<group>"; };
+		A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBadgeBarButtonItem.m; sourceTree = "<group>"; };
 		A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileVC.h; sourceTree = "<group>"; };
 		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileVC.m; sourceTree = "<group>"; };
 		A4CEF7531AB1DB11002F02C8 /* FBShimmering-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBShimmering-Prefix.pch"; sourceTree = "<group>"; };
@@ -445,6 +448,8 @@
 		A49A9E2B1AAE479300358D65 /* Third Party Utilties */ = {
 			isa = PBXGroup;
 			children = (
+				A4C9352A1AC096E900BF174C /* BBBadgeBarButtonItem.h */,
+				A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */,
 				A4CEF7521AB1DB11002F02C8 /* FBShimmering */,
 				A463633A1A9D00F100AD461D /* UIImageEffects.h */,
 				A463633B1A9D00F100AD461D /* UIImageEffects.m */,
@@ -800,6 +805,7 @@
 				A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */,
 				A43760FD1AA50CF4000F544D /* EVNCustomButton.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
+				A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

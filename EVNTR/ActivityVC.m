@@ -221,7 +221,7 @@
     }
     
     self.noResultsView.headerText = @"Where is Everyone?";
-    self.noResultsView.subHeaderText = @"Looks like there's no activity yet.  Once you start following your friends and attending events, you'll be able to view all your activity from here.";
+    self.noResultsView.subHeaderText = @"Looks like there's no activity yet.  Once you start attending and creating events, you'll see your activity in here.";
     
     [self.view addSubview:self.noResultsView];
     

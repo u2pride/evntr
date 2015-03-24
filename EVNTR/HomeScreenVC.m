@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "BBBadgeBarButtonItem.h"
 #import "EVNConstants.h"
 #import "EVNEvent.h"
 #import "EVNNoResultsView.h"
@@ -36,6 +37,8 @@
 
 @property (nonatomic, strong) NSMutableArray *allEvents;
 
+@property (nonatomic, strong) BBBadgeBarButtonItem *filterBarButton;
+
 @end
 
 @implementation HomeScreenVC
@@ -63,6 +66,7 @@
         self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
         
         _allEvents = [[NSMutableArray alloc] init];
+        _searchRadius = 10;
 
     }
     return self;
@@ -78,7 +82,7 @@
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SearchIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySearchController)];
     self.navigationItem.rightBarButtonItem = searchButton;
     
-    UIBarButtonItem *filterButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"FilterIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displayFilterView)];
+    UIBarButtonItem *filterButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%d", self.searchRadius] style:UIBarButtonItemStylePlain target:self action:@selector(displayFilterView)];
     self.navigationItem.leftBarButtonItem = filterButton;
     
     //Subscribe to Location Updates
@@ -123,9 +127,6 @@
     NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
     [defaultCenter addObserver:self selector:@selector(newFilterApplied:) name:@"FilterApplied" object:nil];
     
-    //Default Search Radius
-    self.searchRadius = 10;
-    
     
 }
 
@@ -164,6 +165,7 @@
     FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     filterVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    filterVC.selectedFilterDistance = [self.navigationItem.leftBarButtonItem.title intValue];
     
     [self.tabBarController presentViewController:filterVC animated:YES completion:nil];
     
@@ -176,6 +178,8 @@
     
     UIButton *buttonPressedToFilter = (UIButton *)notification.object;
     self.searchRadius = [buttonPressedToFilter.titleLabel.text intValue];
+    
+    self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%d", self.searchRadius];
     
     //Reload Table View with New Search Radius
     [self loadObjects];
@@ -305,6 +309,10 @@
 //}
 
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 320;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *cellIdentifier = @"eventCell";
@@ -339,13 +347,8 @@
         }];
         
         
-        
-
         [eventForCell totalNumberOfAttendersInBackground:^(int count) {
-
             cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", count];
-            
-
         }];
         
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -445,6 +448,8 @@
      
 }
 
+#pragma mark - No Results
+
 
 - (void) showNoResultsView {
     
@@ -452,7 +457,7 @@
         self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
     }
     
-    self.noResultsView.headerText = @"Well This Is Awkward...";
+    self.noResultsView.headerText = @"This Is Awkward...";
     self.noResultsView.subHeaderText = @"Looks like there's no public events around you. Maybe increase your search radius.";
     self.noResultsView.actionButton.titleText = @"Increase Your Search Radius";
     
@@ -469,7 +474,6 @@
     [self.noResultsView removeFromSuperview];
     
 }
-
 
 
 #pragma mark - Navigation

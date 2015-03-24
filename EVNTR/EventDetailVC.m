@@ -40,6 +40,7 @@
 @property BOOL isGuestUser;
 @property BOOL isCurrentUserAttending;
 @property BOOL isPublicApproved;
+@property BOOL isCurrentUsersEvent;
 
 //Buttons
 @property (weak, nonatomic) IBOutlet UIButton *rsvpButton;
@@ -104,6 +105,7 @@
     latitudeSF = 37.749;
     longitudeSF = -122.4167;
     self.isPublicApproved = NO;
+    self.isCurrentUsersEvent = NO;
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -152,6 +154,16 @@
     
     self.numberOfPicturesLabel.textColor = [UIColor whiteColor];
     
+    //Add Edit for Creator's Events
+    
+    if ([self.event.eventCreator.objectId isEqualToString:[PFUser currentUser].objectId]) {
+        
+        self.isCurrentUsersEvent = YES;
+        
+        UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"editEvent"] style:UIBarButtonItemStylePlain target:self action:@selector(editEvent)];
+        self.navigationItem.rightBarButtonItem = editButton;
+    }
+
 }
 
 
@@ -438,13 +450,12 @@
     
     [self.event.eventCreator fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         
-        if ([user.objectId isEqualToString:[PFUser currentUser].objectId]) {
+        if (self.isCurrentUsersEvent) {
             self.rsvpButton.hidden = YES;
             self.inviteButton.hidden = NO;
-        } else  {
+        } else {
             self.rsvpButton.hidden = NO;
             self.inviteButton.hidden = YES;
-            
         }
         
         UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
@@ -528,6 +539,12 @@
     viewUserProfileVC.userNameForProfileView = self.creatorName.text;
     viewUserProfileVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+    
+}
+
+- (void) editEvent {
+    
+    NSLog(@"Edit Event");
     
 }
 
