@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
+#import "EVNParseEventHelper.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
 #import "EventPictureCell.h"
@@ -34,6 +35,7 @@
     
     float latitudeSF;
     float longitudeSF;
+    int numNetworkCallsComplete;
     
 }
 
@@ -59,16 +61,14 @@
 
 //CollectionViews & DataSources
 @property (strong, nonatomic) IBOutlet UICollectionView *standbyUsersCollectionView;
-@property (nonatomic, strong) NSMutableArray *usersOnStandby;
+@property (nonatomic, strong) NSArray *usersOnStandby;
 
 //UI & Transitions
 @property (nonatomic, strong) UIImage *navBarBackground;
 @property (nonatomic, strong) UIImage *navbarShadow;
-@property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
 //Loading Helpers
-@property (nonatomic) int numNetworkCallsComplete;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
 //Mapping Location Component
@@ -77,13 +77,10 @@
 @property (strong, nonatomic) CLLocation *locationOfEvent;
 @property (strong, nonatomic) CLPlacemark *locationPlacemark;
 
-
 //Picture Component
 @property (strong, nonatomic) IBOutlet PFImageView *backgroundForPictureSection;
 @property (strong, nonatomic) IBOutlet UILabel *numberOfPicturesLabel;
 @property (strong, nonatomic) IBOutlet EVNButton *viewPicturesButton;
-
-
 
 
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
@@ -99,70 +96,43 @@
 @implementation EventDetailVC
 
 
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        
+        latitudeSF = 37.749;
+        longitudeSF = -122.4167;
+        _isPublicApproved = NO;
+        _isCurrentUsersEvent = NO;
+        _isCurrentUserAttending = NO;
+        _isGuestUser = NO;
+        numNetworkCallsComplete = 0;
+
+    }
+    
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    latitudeSF = 37.749;
-    longitudeSF = -122.4167;
-    self.isPublicApproved = NO;
-    self.isCurrentUsersEvent = NO;
+    self.title = @"";
     
-    //Remove text for back button used in navigation
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self.navigationItem setBackBarButtonItem:backButtonItem];
-    
-    //Configuring UIScrollView
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    
-    //UICollectionView
-    self.standbyUsersCollectionView.delegate = self;
-    self.standbyUsersCollectionView.dataSource = self;
-    self.standbyUsersCollectionView.backgroundColor = [UIColor orangeThemeColor];
-    self.standbyUsersCollectionView.tag = 2;
-    UICollectionViewFlowLayout *collectionViewLayout2 = (UICollectionViewFlowLayout*)self.standbyUsersCollectionView.collectionViewLayout;
-    collectionViewLayout2.minimumInteritemSpacing = 20;
-    collectionViewLayout2.minimumLineSpacing = 20;
-    
-    
-    //Disable Interaction with Map View
-    UITapGestureRecognizer *tapMapView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchedMap)];
-    [self.transparentTouchView addGestureRecognizer:tapMapView];
-    self.transparentTouchView.backgroundColor = [UIColor clearColor];
-    
-    //Get isGuest Object
+    //Determine if Guest User
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
-    self.isCurrentUserAttending = NO;
     
+    //Transition Delegate, Default Images, and ScrollView
+    self.automaticallyAdjustsScrollViewInsets = NO;
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
-    self.creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
-    self.title = @""; //self.eventObject[@"title"];
-    
-    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
-    self.creatorPhoto.userInteractionEnabled = YES;
-    [self.creatorPhoto addGestureRecognizer:tapgr];
-    
-    
-    //Map Component
-    self.entireMapView.mapView.userInteractionEnabled = NO;
-    
-    //Picture Component
-    self.viewPicturesButton.titleText = @"View";
-    self.viewPicturesButton.isStateless = YES;
-    self.viewPicturesButton.isSelected = NO;
-    self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];
-    
-    self.numberOfPicturesLabel.textColor = [UIColor whiteColor];
-    
-    //Add Edit for Creator's Events
-    
+
+    //Determine if the Event Creator is the Current User
     if ([self.event.eventCreator.objectId isEqualToString:[PFUser currentUser].objectId]) {
-        
         self.isCurrentUsersEvent = YES;
-        
-        UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"editEvent"] style:UIBarButtonItemStylePlain target:self action:@selector(editEvent)];
-        self.navigationItem.rightBarButtonItem = editButton;
     }
+    
+    [self setupStaticEventDetailComponents];
 
 }
 
@@ -171,44 +141,36 @@
     
     [super viewWillAppear:animated];
     
-    self.numNetworkCallsComplete = 0;
-
+    //Reset Number of Network Call
+    numNetworkCallsComplete = 0;
     
-    //Transparent Navigation Bar
+    //Transparent Navigation Bar - Store Current State to Restore
     self.navbarShadow = self.navigationController.navigationBar.shadowImage;
     self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.navigationBar.alpha = 1;
     
-    //Animate Navigation Bar
-    [UIView animateWithDuration:0.2 animations:^{
-        self.navigationController.navigationBar.alpha = 0;
-        
-    } completion:^(BOOL finished) {
-        
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                      forBarMetrics:UIBarMetricsDefault];
-        self.navigationController.navigationBar.shadowImage = [UIImage new];
-        self.navigationController.navigationBar.translucent = YES;
-        
-        [UIView animateWithDuration:0.5 animations:^{
-
-            self.navigationController.navigationBar.alpha = 1;
-            
-        } completion:^(BOOL finished) {
-        
-        }];
-    }];
-    
-    //Progress Indicator For Loading the View
+    //Progress Indicator - Start
     self.HUD = [[MBProgressHUD alloc] init];
     self.HUD.center = self.view.center;
     [self.view addSubview:self.HUD];
     [self.view bringSubviewToFront:self.HUD];
-    self.HUD.labelText = @"Event Details Loading";
+    self.HUD.labelText = @"Event Loading";
     [self.HUD show:YES];
     
-    self.numberOfPicturesLabel.text = [self.event numberOfPhotos];
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     
-    [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
+    [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = self.navbarShadow;
+    self.navigationController.navigationBar.translucent = YES;
     
 }
 
@@ -217,41 +179,56 @@
 
     [super viewDidAppear:animated];
 
+    [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
+
+    ///////////////////////////
+    //Configuring Basic Details
+    ///////////////////////////
     
-    ///////////////////////
-    //Find Users on Standby
-    ///////////////////////
+    self.eventTitle.text = self.event.eventTitle;
+    self.dateOfEventLabel.text = [self.event eventDateShortStyle];
+    self.timeOfEventLabel.text = [self.event eventTimeShortStye];
+    self.eventDescription.text = self.event.eventDescription;
     
-    PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
-    [queryForStandbyUsers whereKey:@"activityContent" equalTo:self.event.backingObject];
-    [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-    [queryForStandbyUsers includeKey:@"from"];
-    [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
+    self.backgroundForPictureSection.file = self.event.eventCoverPhoto;
+    self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
+    [self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
         
-        if (!self.usersOnStandby) {
-            self.usersOnStandby = [[NSMutableArray alloc] init];
-        }
+        NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
         
-        for (PFObject *activity in standbyActivities) {
-            
-            PFUser *userOnStandby = activity[@"from"];
-            [self.usersOnStandby addObject:userOnStandby];
-            
-        }
-        
-        [self.standbyUsersCollectionView reloadData];
-        
+        [self setBackgroundOfPictureSectionWithImage:image];
+        NSLog(@"Num 1");
         [self networkCallComplete]; //1
         
     }];
     
     
+    [self setupCreatorComponent];
+    [self setupMapComponent];
+    
+    ///////////////////////
+    //Find Users on Standby
+    ///////////////////////
+
+    [EVNParseEventHelper queryForStandbyUsersWithContent:self.event ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:@"from" completion:^(NSError *error, NSArray *users) {
+        
+        if (error || users == nil) {
+            self.usersOnStandby = nil;
+        } else {
+            self.usersOnStandby = users;
+        }
+        
+        [self.standbyUsersCollectionView reloadData];
+        
+        NSLog(@"Num2");
+        [self networkCallComplete]; //2
+        
+    }];
+    
     
     ////////////////////////////
     //Configuring Action Buttons
     ////////////////////////////
-    
-    [self.inviteButton setTitle:@"Invite Friends" forState:UIControlStateNormal];
     
     if (self.isGuestUser) {
         
@@ -260,25 +237,21 @@
         
     } else {
         
-        //Update Event Detail view based on Event Type
         int eventType = [self.event.eventType intValue];
+        NSString *username = [[PFUser currentUser] objectForKey:@"username"];
+
         switch (eventType) {
             case PUBLIC_EVENT_TYPE: {
-                NSString *username = [[PFUser currentUser] objectForKey:@"username"];
                 
-                PFRelation *eventAttendersRelation = self.event.eventAttenders;
-                PFQuery *attendingQuery = [eventAttendersRelation query];
-                [attendingQuery whereKey:@"username" equalTo:username];
-                [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    if (object) {
-                        [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
-                        self.isCurrentUserAttending = YES;
-                    } else {
-                        [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
-                    }
+                [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+                   
+                    self.isCurrentUserAttending = isAttending;
                     
-                    [self networkCallComplete]; //2
-
+                    [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                    
+                    NSLog(@"Num3");
+                    [self networkCallComplete]; //3
+                    
                 }];
                 
                 //Hide Collection View for Standby Users
@@ -288,22 +261,15 @@
             }
             case PRIVATE_EVENT_TYPE: {
                 
-                NSString *username = [[PFUser currentUser] objectForKey:@"username"];
-                
-                PFRelation *eventAttendersRelation = self.event.eventAttenders;
-                PFQuery *attendingQuery = [eventAttendersRelation query];
-                [attendingQuery whereKey:@"username" equalTo:username];
-                [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    NSLog(@"Result of Query: %@", object);
-                    if (object) {
-                        [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
-                        self.isCurrentUserAttending = YES;
-                    } else {
-                        [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
-                    }
+                [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
                     
-                    [self networkCallComplete]; //2
-
+                    self.isCurrentUserAttending = isAttending;
+                    
+                    [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                    
+                    NSLog(@"Num3");
+                    [self networkCallComplete]; //3
+                    
                 }];
                 
                 //Hide Collection View for Standby Users
@@ -319,90 +285,118 @@
                 //Determine the state of the user with the event
                 // Hasn't requested Accesss - Requested Access - Granted Acccess
                 
-                //User has not requested Access to Event
-                [self.rsvpButton setTitle:kNOTRSVPedForEvent forState:UIControlStateNormal];
-                
-                PFQuery *requestedAccessQuery = [PFQuery queryWithClassName:@"Activities"];
-                [requestedAccessQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-                [requestedAccessQuery whereKey:@"from" equalTo:[PFUser currentUser]];
-                [requestedAccessQuery whereKey:@"activityContent" equalTo:self.event.backingObject];
-                [requestedAccessQuery findObjectsInBackgroundWithBlock:^(NSArray *requestedActivityObjects, NSError *error) {
-                    
-                    if (requestedActivityObjects.count > 0) {
+                [EVNParseEventHelper queryApprovalStatusOfUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+                   
+                    if ([status isEqualToString:@"Error"]) {
+                        //TODO: Error Handling
+                    } else {
                         
-                        //User has requested Access to Event
-                        [self.rsvpButton setTitle:kRSVPedForEvent forState:UIControlStateNormal];
+                        self.isCurrentUserAttending = (isAttending) ? YES : NO;
+                        [self.rsvpButton setTitle:status forState:UIControlStateNormal];
                         
-                        //Now Query For Access Granted
-                        PFQuery *accessGrantedQuery = [PFQuery queryWithClassName:@"Activities"];
-                        [accessGrantedQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-                        [accessGrantedQuery whereKey:@"to" equalTo:[PFUser currentUser]];
-                        [accessGrantedQuery whereKey:@"activityContent" equalTo:self.event.backingObject];
-                        [accessGrantedQuery findObjectsInBackgroundWithBlock:^(NSArray *accessActivityObjects, NSError *error) {
-                            
-                            if (accessActivityObjects.count > 0) {
-                                
-                                //User has Access to Event
-                                [self.rsvpButton setTitle:kGrantedAccessToEvent forState:UIControlStateNormal];
-                                self.isCurrentUserAttending = YES;
-                                
-                            }
-                            
-
-                            
-                        }];
+                        NSLog(@"Num4");
+                        [self networkCallComplete]; //4
                     }
-                    
-                    [self networkCallComplete];
-
-                    
+            
                 }];
                 
                 break;
             }
+            
             default: {
                 break;
             }
         }
     }
     
-    
+}
 
+
+#pragma mark - Setup Methods for Event Detail View
+
+- (void) setupStaticEventDetailComponents {
     
+    //Remove text for back button used in navigation
+    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    [self.navigationItem setBackBarButtonItem:backButtonItem];
     
-    //////////////////////
-    //Configuring Location
-    //////////////////////
+    //Creator Component and Invite Button - Default Image
+    self.creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
+    [self.inviteButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+    [self.rsvpButton setTitle:kNOTRSVPedForEvent forState:UIControlStateNormal];
     
-    //Location Address
+    NSLog(@"self.isCurrentUsersEvent:%@", [NSNumber numberWithBool:self.isCurrentUserAttending]);
+    
+    self.rsvpButton.hidden = (self.isCurrentUsersEvent) ? YES : NO;
+    self.inviteButton.hidden = (self.isCurrentUsersEvent) ? NO : YES;
+
+    //Standby Component - UICollectionView
+    self.standbyUsersCollectionView.delegate = self;
+    self.standbyUsersCollectionView.dataSource = self;
+    self.standbyUsersCollectionView.backgroundColor = [UIColor orangeThemeColor];
+    self.standbyUsersCollectionView.tag = 2;
+    UICollectionViewFlowLayout *collectionViewLayout2 = (UICollectionViewFlowLayout*)self.standbyUsersCollectionView.collectionViewLayout;
+    collectionViewLayout2.minimumInteritemSpacing = 20;
+    collectionViewLayout2.minimumLineSpacing = 20;
+    
+    //Map Component - Disable Interaction with Map View and Wire Up Transparent Touch View on Top of Map View
+    self.entireMapView.mapView.userInteractionEnabled = NO;
+    UITapGestureRecognizer *tapMapView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchedMap)];
+    [self.transparentTouchView addGestureRecognizer:tapMapView];
+    self.transparentTouchView.backgroundColor = [UIColor clearColor];
+    
+    //Picture Component
+    self.viewPicturesButton.titleText = @"View";
+    self.viewPicturesButton.isStateless = YES;
+    self.viewPicturesButton.isSelected = NO;
+    self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];
+    self.numberOfPicturesLabel.text = [self.event numberOfPhotos];
+
+    //Tap Gesture for Event Creator Photo
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
+    self.creatorPhoto.userInteractionEnabled = YES;
+    [self.creatorPhoto addGestureRecognizer:tapgr];
+    
+    //Add Edit Button if Creator is Current User
+    if (self.isCurrentUsersEvent) {
+        UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"editEvent"] style:UIBarButtonItemStylePlain target:self action:@selector(editEvent)];
+        self.navigationItem.rightBarButtonItem = editButton;
+    }
+    
+}
+
+
+- (void) setupMapComponent {
     
     self.locationOfEvent = [[CLLocation alloc] initWithLatitude:self.event.eventLocationGeoPoint.latitude longitude:self.event.eventLocationGeoPoint.longitude];
+    
+    //Getting Current Location and Comparing to Event Location
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    CLLocation *currentLocation = [[appDelegate locationManager] location];
+    CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
+    
+    self.entireMapView.distanceAway = (float) distance * 0.000621371;
     self.entireMapView.eventLocation = self.locationOfEvent;
     
-    
+    //Determining Event Address
     CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
     [geoCoder reverseGeocodeLocation:self.locationOfEvent completionHandler:^(NSArray *placemarks, NSError *error) {
         
         if (!error && placemarks.count > 0) {
-            
             self.locationPlacemark = [placemarks firstObject];
-            
             self.entireMapView.address = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(self.locationPlacemark.addressDictionary, NO)];
-            
-            
         } else {
-            
             self.entireMapView.address = [NSString stringWithFormat:@"%.2f - %.2f", self.event.eventLocationGeoPoint.latitude, self.event.eventLocationGeoPoint.longitude];
-            
         }
         
-        [self networkCallComplete]; //3
-    
+        NSLog(@"Num5");
+        [self networkCallComplete]; //5
+        
     }];
     
     //Location Name
     NSString *locationName = self.event.eventLocationName;
-        
+    
     if (!locationName) {
         locationName = @"Custom Location";
     } else if ([locationName isEqualToString:@"Current Location"]) {
@@ -411,52 +405,11 @@
     }
     
     
-    //MKMapView
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    CLLocation *currentLocation = [[appDelegate locationManager] location];
-    CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
-    
+}
 
-    self.entireMapView.distanceAway = (float) distance * 0.000621371;
-    
-    
-    
-    ////////////////////////////
-    //Configuring User Interface
-    ////////////////////////////
-    
-    //////////////////
-    //Configuring Date
-    //////////////////
-    
-    self.eventTitle.text = self.event.eventTitle;
-    
-
-    self.dateOfEventLabel.text = [self.event eventDateShortStyle];
-    self.timeOfEventLabel.text = [self.event eventTimeShortStye];
-    
-    self.eventDescription.text = self.event.eventDescription;
-    self.backgroundForPictureSection.file = self.event.eventCoverPhoto;
-    self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
-    [self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
-        
-        NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
-
-        [self setBackgroundOfPictureSectionWithImage:image];
-        [self networkCallComplete]; //4
-        
-    }];
+- (void) setupCreatorComponent {
     
     [self.event.eventCreator fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
-        
-        if (self.isCurrentUsersEvent) {
-            self.rsvpButton.hidden = YES;
-            self.inviteButton.hidden = NO;
-        } else {
-            self.rsvpButton.hidden = NO;
-            self.inviteButton.hidden = YES;
-        }
         
         UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
         
@@ -468,94 +421,19 @@
         self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
             
+            NSLog(@"Determine if Masking Should Be Done in Background: Before Masking:");
             self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
-            [self networkCallComplete]; //5
-
+            NSLog(@"AndAftermasking:");
+            
+            NSLog(@"Num6");
+            [self networkCallComplete]; //6
+            
         }];
         
-        [self networkCallComplete]; //6
+        NSLog(@"Num7");
+        [self networkCallComplete]; //7
         
     }];
-    
-    
-    ////////////////////////////
-    //Additional UI Enhancements
-    ////////////////////////////
-    
-    //self.eventDescription.layer.borderWidth = 1.0f;
-    //self.eventDescription.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-    
-    
-    
-}
-
-
-- (void) recheckPublicApprovedAccess {
-    
-    NSLog(@"%@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending]);
-    
-    if (self.isPublicApproved && !self.isCurrentUserAttending) {
-        self.transparentTouchView.hidden = YES;
-        self.locationOfEvent = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
-        [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomLocation) userInfo:nil repeats:YES];
-        
-        self.entireMapView.address = [NSString stringWithFormat:@"Unknown"];
-        self.entireMapView.distanceAway = 0.0f;
-        self.dateOfEventLabel.text = @"Unknown";
-        self.timeOfEventLabel.text = @"Unknown";
-
-    }
-    
-    
-}
-
-
-- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    //self.scrollViewTopConstraint.constant -= 1.0f;
-    //NSLog(@"ScrollView frame: %@ and bounds: %@", NSStringFromCGRect(scrollView.frame), NSStringFromCGRect(scrollView.bounds));
-    
-}
-
-- (void) networkCallComplete {
-    
-    NSLog(@"NumNetworkCallsComplete: %d", self.numNetworkCallsComplete);
-    self.numNetworkCallsComplete = self.numNetworkCallsComplete + 1;
-    
-    if (self.numNetworkCallsComplete == 5) {
-        
-        [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(recheckPublicApprovedAccess) userInfo:nil repeats:NO];
-                
-        [self.HUD hide:YES afterDelay:0.5];
-    }
-    
-}
-
-
-- (void) viewCreatorProfile {
-    
-    ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    //TODO: change this from not using uilabel
-    viewUserProfileVC.userNameForProfileView = self.creatorName.text;
-    viewUserProfileVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:viewUserProfileVC animated:YES];
-    
-}
-
-- (void) editEvent {
-    
-    NSLog(@"Edit Event");
-    
-}
-
-
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-
-    [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = self.navbarShadow;
-    self.navigationController.navigationBar.translucent = YES;
     
 }
 
@@ -565,13 +443,54 @@
     UIImage *darkBlurredImageForPicturesBackground = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithWhite:0.11 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
     
     self.backgroundForPictureSection.image = darkBlurredImageForPicturesBackground;
-
     
-    UIImage *blurredBackgroundImage = [UIImageEffects imageByApplyingBlurToImage:image withRadius:100.0 tintColor:[UIColor colorWithWhite:0.08 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
     
+    UIImage *blurredBackgroundImage = [UIImageEffects imageByApplyingBlurToImage:image withRadius:30.0 tintColor:[UIColor colorWithWhite:0.08 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:blurredBackgroundImage];
 }
+
+
+
+
+
+#pragma mark - Helpers for Determing Whether to Show or Hide Event Details for PA Events
+
+- (void) networkCallComplete {
+    
+    numNetworkCallsComplete += 1;
+    NSLog(@"NumNetworkCallsComplete: %d", numNetworkCallsComplete);
+    
+    if (numNetworkCallsComplete == 5) {
+        
+        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(recheckPublicApprovedAccess) userInfo:nil repeats:NO];
+        [self.HUD hide:YES afterDelay:0.5];
+    }
+    
+}
+
+- (void) recheckPublicApprovedAccess {
+    
+    NSLog(@"%@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending]);
+    
+    if (self.isPublicApproved && !self.isCurrentUserAttending && !self.isCurrentUsersEvent) {
+        self.transparentTouchView.hidden = YES;
+        self.locationOfEvent = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
+        
+        //Randomize the Map View and Have It Constantly Scroll
+        [self randomLocation];
+        [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomLocation) userInfo:nil repeats:YES];
+        
+        self.entireMapView.address = [NSString stringWithFormat:@"Unknown"];
+        self.entireMapView.distanceAway = 0.0f;
+        self.dateOfEventLabel.text = @"Unknown";
+        self.timeOfEventLabel.text = @"Unknown";
+
+    }
+
+}
+
+
 
 
 #pragma mark - Touched Map Event
@@ -593,38 +512,17 @@
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
-    //Picture Collection View
-    if (collectionView.tag == 1 && self.isCurrentUserAttending) {
-        
-        NSLog(@"CHECK ONE");
-
-        return 2;
-        
-    //Standby List TableView or Not Attending
-    } else {
-        
-        return 1;
-        
-    }
-    
-    
+    return 1;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-
     return [self.usersOnStandby count];
-
-    
 }
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    
-        
-    //Standby List Collection View
-        
         static NSString *standbyCellID = @"StandbyUserCell";
         
         StandbyCollectionViewCell *cell = (StandbyCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:standbyCellID forIndexPath:indexPath];
@@ -645,10 +543,6 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-
-        
-    //Standby List Collection View
-        
         PFUser *selectedUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
         ProfileVC *profileView = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
@@ -656,65 +550,30 @@
         
         [self.navigationController pushViewController:profileView animated:YES];
     
-    
-}
-
-
-- (void) animateBackgroundDarkBlur {
-    
-    if (!self.blurEffectForModals) {
-        
-        UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-        self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-        self.blurEffectForModals.alpha = 0;
-        self.blurEffectForModals.frame = self.view.bounds;
-        [self.view addSubview:self.blurEffectForModals];
-        
-        UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
-        UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
-        [vibrancyEffectView setFrame:self.view.bounds];
-        
-        [[self.blurEffectForModals contentView] addSubview:vibrancyEffectView];
-        
-    }
-    
-    self.blurEffectForModals.alpha = 0;
-    self.blurEffectForModals.hidden = NO;
-    [UIView animateWithDuration:0.5 animations:^{
-        self.blurEffectForModals.alpha = 0.9;
-    } completion:^(BOOL finished) {
-        
-    }];
-    
-    
-}
-
-
-- (void)returnToEvent {
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
-    self.navigationController.navigationBar.hidden = NO;
-    self.tabBarController.tabBar.hidden = NO;
-    
-    [UIView animateWithDuration:0.5 animations:^{
-        
-        self.blurEffectForModals.alpha = 0;
-        self.navigationController.navigationBar.alpha = 1;
-        self.tabBarController.tabBar.alpha = 1;
-        
-    } completion:^(BOOL finished) {
-        
-        self.blurEffectForModals.hidden = YES;
-        
-    }];
-
 }
 
 
 
 
-#pragma mark - Profile Actions
+
+#pragma mark - Actions Performed By User
+
+- (void) viewCreatorProfile {
+    
+    ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+    //TODO: change this from not using uilabel
+    viewUserProfileVC.userNameForProfileView = self.creatorName.text;
+    viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+    
+}
+
+- (void) editEvent {
+    
+    NSLog(@"Edit Event");
+    
+}
+
 
 - (IBAction)inviteFriends:(id)sender {
     
@@ -735,6 +594,8 @@
     
     int eventType = [self.event.eventType intValue];
     
+    //Cases:  Guest User - PA Event Request Access - Attending Already - Not Attending
+    
     if (self.isGuestUser) {
         
         [self performSegueWithIdentifier:@"EventDetailToInitial" sender:self];
@@ -742,38 +603,27 @@
     
     } else if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
         
-        //Currently only allowing an RSVP - not to cancel an RSVP
+        //Currently only allowing A Request for access not to revoke
         if ([self.rsvpButton.titleLabel.text isEqualToString:kNOTRSVPedForEvent]) {
             
             self.rsvpButton.enabled = NO;
             
-            //RSVP User for Event
-            PFObject *rsvpActivity = [PFObject objectWithClassName:@"Activities"];
-            rsvpActivity[@"from"] = [PFUser currentUser];
-            rsvpActivity[@"to"] = self.event.eventCreator;
-            rsvpActivity[@"type"] = [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY];
-            rsvpActivity[@"activityContent"] = self.event.backingObject;
-            
-            [rsvpActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                if (succeeded) {
+            [EVNParseEventHelper requestAccessForUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+               
+                if (success) {
                     [self.rsvpButton setTitle:kRSVPedForEvent forState:UIControlStateNormal];
                 }
                 self.rsvpButton.enabled = YES;
-                
             }];
         }
         
         
     } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
         
-        //ADDING USER VIA A RELATION
         PFRelation *attendersRelation = self.event.eventAttenders;
-        NSLog(@"PFRelation: %@", attendersRelation);
+        self.rsvpButton.enabled = NO;
         
         if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
-            
-            NSLog(@"Removing PFRelation");
             
             [attendersRelation removeObject:[PFUser currentUser]];
             [self.event.backingObject saveInBackground];
@@ -781,8 +631,6 @@
             //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
             
         } else {
-            
-            NSLog(@"Adding PFRelation");
             
             //Create New Relation and Add User to List of Attenders for Event
             [attendersRelation addObject:[PFUser currentUser]];
@@ -792,65 +640,31 @@
         }
         
         
-        
-        
-        //CREATING AN ENTRY IN THE ACTIVITY TABLE - Similar to Above
+        //First Part is Adding Relation - This is Attending to Activity Table (choose one?)
         if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
             
-            NSLog(@"Deleting an Entry in the Activity Table");
-            
-            //Disable the rsvp button
-            self.rsvpButton.enabled = NO;
-            
-            //Query for the Previous Entry
-            PFQuery *queryForRSVP = [PFQuery queryWithClassName:@"Activities"];
-            [queryForRSVP whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
-            [queryForRSVP whereKey:@"to" equalTo:[PFUser currentUser]];
-            [queryForRSVP whereKey:@"activityContent" equalTo:self.event.backingObject];
-            [queryForRSVP findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            [EVNParseEventHelper unRSVPUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+               
+                if (success) {
+                    self.isCurrentUserAttending = NO;
+                    [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+                } else {
+                    //TODO: PFAnalytics
+                }
                 
-                PFObject *previousActivity = [objects firstObject];
-                [previousActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    
-                    if (succeeded) {
-                        [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
-                        self.isCurrentUserAttending = NO;
-                        
-                    } else {
-                        NSLog(@"Failed to Delete Previous Activity");
-                    }
-                    
-                    //re-enable the RSVP button
-                    self.rsvpButton.enabled = YES;
-                    
-                    
-                }];
-                
+                //Re-Enable RSVP Button
+                self.rsvpButton.enabled = YES;
             }];
             
-            
         } else {
-            
-            //Disable Button
-            self.rsvpButton.enabled = NO;
-            
-            PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
-            newAttendingActivity[@"to"] = [PFUser currentUser];
-            newAttendingActivity[@"type"] = [NSNumber numberWithInt:ATTENDING_ACTIVITY];
-            newAttendingActivity[@"activityContent"] = self.event.backingObject;
-            [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    
-                    //if succeeded, change the title to reflect the RSVP event
-                    [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+
+            [EVNParseEventHelper rsvpUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+               
+                if (success) {
                     self.isCurrentUserAttending = YES;
-                    
+                    [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
                 } else {
-                    
-                    //if failed, alert the user.
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"RSVP" message:@"Unable to RSVP at this time. Try later." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                    
-                    [errorAlert show];
+                    //TODO: Log Error with PFAnalytics
                 }
                 
                 //Re-Enable Button
@@ -860,10 +674,10 @@
             
         }
         
-        
     }
     
 }
+
 
 - (IBAction)viewEventAttenders:(id)sender {
     
@@ -897,20 +711,27 @@
     
     //Pass the Event
     allEventPictures.eventObject = self.event.backingObject;
+    //allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
     
-    allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
-    
-    if (self.isCurrentUserAttending) {
-        allEventPictures.allowsAddingPictures = [self.event allowUserToAddPhotosAtThisTime];
+    if (self.isCurrentUsersEvent) {
+        
+        allEventPictures.allowsAddingPictures = YES;
+        
     } else {
-        allEventPictures.allowsAddingPictures = NO;
+        
+        if (self.isCurrentUserAttending) {
+            allEventPictures.allowsAddingPictures = [self.event allowUserToAddPhotosAtThisTime];
+        } else {
+            allEventPictures.allowsAddingPictures = NO;
+        }
+        
     }
-    
-    
+
     [self.navigationController pushViewController:allEventPictures animated:YES];
     
-    
 }
+
+
 
 
 
@@ -920,44 +741,14 @@
     
     [self.navigationController popViewControllerAnimated:YES];
     
-    for (PFUser *user in selectedPeople) {
-        
-        //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
-        //if (publicPrivateSwitch.on) {
-        //[invitedRelation addObject:user];
-        //}
-        
-        PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
-        
-        newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
-        newInvitationActivity[@"from"] = [PFUser currentUser];
-        newInvitationActivity[@"to"] = user;
-        newInvitationActivity[@"activityContent"] = self.event.backingObject;
-        
-        //save the invitation activities
-        [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            if (succeeded) {
-                NSLog(@"Saved");
-            } else {
-                NSLog(@"Error in Saved");
-            }
-        }];
-    }
-    
-    
+    [EVNParseEventHelper inviteUsers:selectedPeople toEvent:self.event completion:^(BOOL success) {
+        //empty
+    }];
+
 }
 
 
 - (void) randomLocation {
-    
-    //float bigNumber = 85;
-    //float smallNumber = -85;
-
-    //float diff = bigNumber - smallNumber;
-    //float latitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
-    
-    //float longitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
     
     latitudeSF = latitudeSF + 0;
     longitudeSF = longitudeSF + 1;
@@ -993,6 +784,33 @@
  dateForm.timeStyle = NSDateFormatterShortStyle;
  NSString *localTimeString = [dateForm stringFromDate:dateFromParse];
  */
+
+/*
+ [UIView animateWithDuration:0.2 animations:^{
+ self.navigationController.navigationBar.alpha = 0;
+ } completion:^(BOOL finished) {
+ [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+ forBarMetrics:UIBarMetricsDefault];
+ self.navigationController.navigationBar.shadowImage = [UIImage new];
+ self.navigationController.navigationBar.translucent = YES;
+ 
+ [UIView animateWithDuration:0.5 animations:^{
+ 
+ self.navigationController.navigationBar.alpha = 1;
+ 
+ } completion:^(BOOL finished) {
+ 
+ }];
+ }];
+ */
+
+//float bigNumber = 85;
+//float smallNumber = -85;
+
+//float diff = bigNumber - smallNumber;
+//float latitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
+
+//float longitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
 
 
 @end

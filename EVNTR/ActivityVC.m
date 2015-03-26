@@ -24,6 +24,7 @@
 @implementation ActivityVC
 
 //TODO: move to viewDidLoad? - Doesn't depend on view though.
+//Only properties that will be available are ones in the super class (PFQueryTableViewController).  Only can access my instance variables.
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
@@ -33,7 +34,7 @@
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
         self.userForActivities = [PFUser currentUser];
-        self.typeOfActivityView = ACTIVITIES_ALL;
+        _typeOfActivityView = ACTIVITIES_ALL;
     }
     
     return self;

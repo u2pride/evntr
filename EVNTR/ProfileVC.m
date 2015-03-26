@@ -30,8 +30,6 @@
 //User Information
 @property (strong, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
-@property (strong, nonatomic) IBOutlet UILabel *twitterLabel;
-@property (strong, nonatomic) IBOutlet UILabel *instagramLabel;
 @property (strong, nonatomic) IBOutlet UILabel *numberEventsLabel;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowersLabel;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
@@ -90,8 +88,6 @@
     
     //Setup the View
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
-    self.twitterLabel.text = nil;
-    self.instagramLabel.text = nil;
     self.editProfileButton.hidden = YES;
     self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     

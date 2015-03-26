@@ -71,7 +71,7 @@ locationGeoPoint:(PFGeoPoint *)locationGeoPoint
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     dateFormatter.dateStyle = NSDateFormatterShortStyle;
     
-    return [dateFormatter stringFromDate:self.eventDate]; 
+    return [dateFormatter stringFromDate:self.eventDate];
     
 }
 

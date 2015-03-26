@@ -329,8 +329,10 @@
         cell.timeOfEventLabel.text = [eventForCell eventTimeShortStye];
         
         cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
-        //cell.eventCoverImage.file = (PFFile *) eventForCell.eventCoverPhoto;
+        cell.eventCoverImage.file = (PFFile *) eventForCell.eventCoverPhoto;
+        [cell.eventCoverImage loadInBackground];
         
+        /*
         [eventForCell.eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -345,7 +347,7 @@
             });
             
         }];
-        
+        */
         
         [eventForCell totalNumberOfAttendersInBackground:^(int count) {
             cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", count];
@@ -433,6 +435,7 @@
 //Animate UITableViewCells Appearing
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     
+    /*
     cell.alpha = 0;
     cell.transform = CGAffineTransformMakeScale(0.01, 0.01);
     
@@ -445,6 +448,7 @@
         
         
     }];
+     */
      
 }
 
