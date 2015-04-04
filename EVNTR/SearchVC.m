@@ -12,6 +12,8 @@
 #import "EventDetailVC.h"
 #import "SearchHeaderView.h"
 #import "ProfileVC.h"
+#import "EventObject.h"
+#import "UIColor+EVNColors.h"
 
 @interface SearchVC ()
 
@@ -81,13 +83,13 @@
     
     if (senderLabel == self.searchTypeSelectionView.eventLabel) {
         self.isSearchingEvents = YES;
-        self.searchTypeSelectionView.eventLabel.textColor = [UIColor orangeColor];
+        self.searchTypeSelectionView.eventLabel.textColor = [UIColor orangeThemeColor];
         self.searchTypeSelectionView.peopleLabel.textColor = [UIColor blackColor];
 
     } else {
         self.isSearchingEvents = NO;
         self.searchTypeSelectionView.eventLabel.textColor = [UIColor blackColor];
-        self.searchTypeSelectionView.peopleLabel.textColor = [UIColor orangeColor];
+        self.searchTypeSelectionView.peopleLabel.textColor = [UIColor orangeThemeColor];
 
     }
     
@@ -148,24 +150,19 @@
     
     if (self.isSearchingEvents) {
         
-        
         cell.textLabel.font = [UIFont fontWithName:@"Lato-Regular" size:15];
         
-        PFObject *currentObject = [self.searchResultsArray objectAtIndex:indexPath.row];
-        cell.textLabel.text = [currentObject objectForKey:@"title"];
-        
+        EventObject *currentObject = (EventObject *)[self.searchResultsArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = currentObject.title;
         
     } else {
-        
         
         cell.textLabel.font = [UIFont fontWithName:@"Lato-Regular" size:15];
         
         PFUser *currentUser = (PFUser *) [self.searchResultsArray objectAtIndex:indexPath.row];
         cell.textLabel.text = currentUser.username;
         
-        
     }
-
     
     return cell;
     
@@ -189,13 +186,13 @@
     
     if (self.isSearchingEvents) {
         
-        PFObject *object = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
+        EventObject *event = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
         
         EventDetailVC *eventVC = (EventDetailVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
         
-        EVNEvent *selectedEvent = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
+        //EVNEvent *selectedEvent = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
         
-        eventVC.event = selectedEvent;
+        eventVC.event = event;
         
         [self.navigationController pushViewController:eventVC animated:YES];
         
@@ -212,6 +209,11 @@
     
 
     
+}
+
+-(void)dealloc
+{
+    NSLog(@"searchvc is being deallocated");
 }
 
 

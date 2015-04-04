@@ -45,4 +45,9 @@
         [strongDelegate returnToEvent];
     }
 }
+
+-(void)dealloc
+{
+    NSLog(@"picturefullscreenvc is being deallocated");
+}
 @end

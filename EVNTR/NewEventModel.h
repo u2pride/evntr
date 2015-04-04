@@ -19,8 +19,11 @@
 @property (nonatomic, strong) PFGeoPoint *eventCoordinates;
 @property (nonatomic, strong) NSString *eventLocationName;
 @property (nonatomic, strong) NSDate *eventDate;
+@property (nonatomic, strong) PFObject *object;
 
 - (id)initWithTitle:(NSString*)title eventType:(int)type coverImage:(PFFile *)image;
+
+- (id)initWithTitle:(NSString*)title eventType:(int)type coverImage:(PFFile *)image eventDescription:(NSString *)description location:(PFGeoPoint *)coordinates locationName:(NSString *)name eventDate:(NSDate *)eventDate backingObject:(PFObject *)object;
 
 
 @end

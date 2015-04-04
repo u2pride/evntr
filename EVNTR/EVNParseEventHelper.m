@@ -26,11 +26,11 @@
 }
 
 
-+ (void) queryForStandbyUsersWithContent:(EVNEvent *)event ofType:(NSNumber *)type withIncludeKey:(NSString *)key completion:(void (^)(NSError *, NSArray *))completionBlock {
++ (void) queryForStandbyUsersWithContent:(EventObject *)event ofType:(NSNumber *)type withIncludeKey:(NSString *)key completion:(void (^)(NSError *, NSArray *))completionBlock {
     
     
     PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
-    [queryForStandbyUsers whereKey:@"activityContent" equalTo:event.backingObject];
+    [queryForStandbyUsers whereKey:@"activityContent" equalTo:event];
     [queryForStandbyUsers whereKey:@"type" equalTo:type];
     [queryForStandbyUsers includeKey:key];
     [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
@@ -58,9 +58,9 @@
 }
 
 
-+ (void) queryRSVPForUsername:(NSString *)username atEvent:(EVNEvent *)event completion:(void (^)(BOOL, NSString *))completionBlock {
++ (void) queryRSVPForUsername:(NSString *)username atEvent:(EventObject *)event completion:(void (^)(BOOL, NSString *))completionBlock {
     
-    PFRelation *eventAttendersRelation = event.eventAttenders;
+    PFRelation *eventAttendersRelation = event.attenders;
     PFQuery *attendingQuery = [eventAttendersRelation query];
     [attendingQuery whereKey:@"username" equalTo:username];
     [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
@@ -75,15 +75,15 @@
     
 }
 
-+ (void) queryApprovalStatusOfUser:(PFUser *)user forEvent:(EVNEvent *)event completion:(void (^)(BOOL, NSString *))completionBlock {
++ (void) queryApprovalStatusOfUser:(PFUser *)user forEvent:(EventObject *)event completion:(void (^)(BOOL, NSString *))completionBlock {
     
     PFQuery *requestedAccessQuery = [PFQuery queryWithClassName:@"Activities"];
     [requestedAccessQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
     [requestedAccessQuery whereKey:@"from" equalTo:user];
-    [requestedAccessQuery whereKey:@"activityContent" equalTo:event.backingObject];
+    [requestedAccessQuery whereKey:@"activityContent" equalTo:event];
     [requestedAccessQuery findObjectsInBackgroundWithBlock:^(NSArray *requestedActivityObjects, NSError *error) {
         
-        __block NSString *status = kNotAttendingEvent;
+        __block NSString *status = kNOTRSVPedForEvent;
 
         if (error) {
             completionBlock(NO, @"Error");
@@ -99,7 +99,7 @@
                 PFQuery *accessGrantedQuery = [PFQuery queryWithClassName:@"Activities"];
                 [accessGrantedQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
                 [accessGrantedQuery whereKey:@"to" equalTo:user];
-                [accessGrantedQuery whereKey:@"activityContent" equalTo:event.backingObject];
+                [accessGrantedQuery whereKey:@"activityContent" equalTo:event];
                 [accessGrantedQuery findObjectsInBackgroundWithBlock:^(NSArray *accessActivityObjects, NSError *error) {
                     
                     if (error) {
@@ -134,14 +134,14 @@
 }
 
 
-+ (void) requestAccessForUser:(PFUser *)user forEvent:(EVNEvent *)event completion:(void (^)(BOOL))completionBlock {
++ (void) requestAccessForUser:(PFUser *)user forEvent:(EventObject *)event completion:(void (^)(BOOL))completionBlock {
     
     //RSVP User for Event
     PFObject *rsvpActivity = [PFObject objectWithClassName:@"Activities"];
     rsvpActivity[@"from"] = user;
-    rsvpActivity[@"to"] = event.eventCreator;
+    rsvpActivity[@"to"] = event.parent;
     rsvpActivity[@"type"] = [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY];
-    rsvpActivity[@"activityContent"] = event.backingObject;
+    rsvpActivity[@"activityContent"] = event;
     
     [rsvpActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
@@ -154,12 +154,12 @@
 
 
 
-+ (void) rsvpUser:(PFUser *)user forEvent:(EVNEvent *)event completion:(void (^)(BOOL))completionBlock {
++ (void) rsvpUser:(PFUser *)user forEvent:(EventObject *)event completion:(void (^)(BOOL))completionBlock {
     
     PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
     newAttendingActivity[@"to"] = user;
     newAttendingActivity[@"type"] = [NSNumber numberWithInt:ATTENDING_ACTIVITY];
-    newAttendingActivity[@"activityContent"] = event.backingObject;
+    newAttendingActivity[@"activityContent"] = event;
     [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         completionBlock(succeeded);
@@ -169,12 +169,12 @@
 }
 
 
-+ (void) unRSVPUser:(PFUser *)user forEvent:(EVNEvent *)event completion:(void (^)(BOOL))completionBlock {
++ (void) unRSVPUser:(PFUser *)user forEvent:(EventObject *)event completion:(void (^)(BOOL))completionBlock {
     
     PFQuery *queryForRSVP = [PFQuery queryWithClassName:@"Activities"];
     [queryForRSVP whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
     [queryForRSVP whereKey:@"to" equalTo:user];
-    [queryForRSVP whereKey:@"activityContent" equalTo:event.backingObject];
+    [queryForRSVP whereKey:@"activityContent" equalTo:event];
     [queryForRSVP findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
         if (error) {
@@ -192,7 +192,7 @@
 }
 
 
-+ (void) inviteUsers:(NSArray *)users toEvent:(EVNEvent *)event completion:(void (^)(BOOL))completionBlock {
++ (void) inviteUsers:(NSArray *)users toEvent:(EventObject *)event completion:(void (^)(BOOL))completionBlock {
     
     __block BOOL success = YES;
     
@@ -205,7 +205,7 @@
         newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
         newInvitationActivity[@"from"] = [PFUser currentUser];
         newInvitationActivity[@"to"] = user;
-        newInvitationActivity[@"activityContent"] = event.backingObject;
+        newInvitationActivity[@"activityContent"] = event;
         
         //save the invitation activities
         [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

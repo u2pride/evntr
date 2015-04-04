@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "EVNConstants.h"
-#import "AddEventSecondaryVC.h"
+#import "AddEventSecondVC.h"
+#import "EventObject.h"
 
 @protocol EventModalProtocol;
 
 @interface AddEventPrimaryVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, EventCreationCompleted>
 
 @property (nonatomic, strong) id <EventModalProtocol> delegate;
+@property (nonatomic, strong) EventObject *eventToEdit;
 
 @end
 
@@ -22,5 +24,9 @@
 
 - (void) completedEventCreation:(UIVisualEffectView *)darkBlur;
 - (void) canceledEventCreation;
+
+- (void) completedEventEditing:(EventObject *)updatedEvent;
+- (void) canceledEventEditing;
+
 
 @end

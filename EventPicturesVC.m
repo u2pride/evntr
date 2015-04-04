@@ -307,6 +307,11 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 
 
+-(void)dealloc
+{
+    NSLog(@"eventpictures is being deallocated");
+}
+
 
 
 

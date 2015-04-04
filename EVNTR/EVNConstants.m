@@ -15,9 +15,11 @@ NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
 
 NSString *const kAttendingEvent = @"You're going!";
 NSString *const kNotAttendingEvent = @"Not Attending";
-NSString *const kRSVPedForEvent = @"Request Sent";
-NSString *const kNOTRSVPedForEvent = @"Request Access";
+NSString *const kRSVPedForEvent = @"Interested";
+NSString *const kNOTRSVPedForEvent = @"Show Interest";
 NSString *const kGrantedAccessToEvent = @"Granted Access";
+NSString *const kInviteUsers = @"Invite Users";
+
 
 //TODO:  Color button if granted acesss - similar to insta follow button
 NSString *const kGrantAccess = @"Let In";

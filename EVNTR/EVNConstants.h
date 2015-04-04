@@ -44,6 +44,7 @@ extern NSString *const kNotAttendingEvent;
 extern NSString *const kRSVPedForEvent;
 extern NSString *const kNOTRSVPedForEvent;
 extern NSString *const kGrantedAccessToEvent;
+extern NSString *const kInviteUsers;
 #define SEARCH_RADIUS_DEFAULT 10
 
 

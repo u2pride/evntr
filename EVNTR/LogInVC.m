@@ -585,10 +585,18 @@
         [self.blurMessage removeFromSuperview];
         [self.blurOutLogInScreen removeFromSuperview];
         [self.shimmerView removeFromSuperview];
+        //Stop Movie Player on Initial Screen
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];
+
         
     }];
-    
-    
+}
+
+
+-(void)dealloc
+{
+    NSLog(@"loginvc is being deallocated");
+
 }
 
 

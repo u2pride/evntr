@@ -8,7 +8,7 @@
 
 #import "EVNConstants.h"
 #import "LocationSearchVC.h"
-#import "NewEventModel.h"
+#import "EventObject.h"
 
 #import <Parse/Parse.h>
 #import <UIKit/UIKit.h>
@@ -18,7 +18,8 @@
 
 @interface AddEventSecondVC : UITableViewController <UITextViewDelegate, EventLocationSearch>
 
-@property (nonatomic, strong) NewEventModel *eventToCreate;
+@property (nonatomic, strong) EventObject *event;
+@property (nonatomic) BOOL isEditingEvent;
 
 @property (nonatomic, strong) id <EventCreationCompleted> delegate;
 
@@ -29,5 +30,8 @@
 
 - (void) eventCreationComplete:(UIVisualEffectView *)darkBlur;
 - (void) eventCreationCanceled;
+
+- (void) eventEditingComplete:(EventObject *)updatedEvent;
+- (void) eventEditingCanceled;
 
 @end

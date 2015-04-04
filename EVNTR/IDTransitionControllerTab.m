@@ -19,10 +19,8 @@
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext{
     
     if (self.isPresenting) {
-        NSLog(@"HERE");
         [self executePresentationAnimation:transitionContext];
     } else {
-        NSLog(@"THERE");
         [self executeDismissalAnimation:transitionContext];
     }
     

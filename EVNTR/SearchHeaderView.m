@@ -48,7 +48,7 @@
     self.eventLabel = [[UILabel alloc] init];
     self.eventLabel.text = @"EVENTS";
     self.eventLabel.font = [UIFont fontWithName:@"Lato-Regular" size:16];
-    self.eventLabel.textColor = [UIColor orangeColor];
+    self.eventLabel.textColor = [UIColor orangeThemeColor];
     self.eventLabel.textAlignment = NSTextAlignmentCenter;
     
     [self.eventLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -187,6 +187,11 @@
                                                       constant:0.0]];
      
      */
+}
+
+-(void)dealloc
+{
+    NSLog(@"searchheaderview is being deallocated");
 }
 
 

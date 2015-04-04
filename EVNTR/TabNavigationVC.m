@@ -170,6 +170,14 @@
     self.darkBlur = darkBlur;
     [self.darkBlur removeFromSuperview];
     
+    //Scroll TableView to Top and Refresh Results to Show Most Recently Created Event
+    UINavigationController *navController = (UINavigationController *) [self.viewControllers objectAtIndex:TAB_HOME];
+    HomeScreenVC *allEventsVC = (HomeScreenVC *) navController.childViewControllers.firstObject;
+    
+    allEventsVC.tableView.contentOffset = CGPointMake(0, 0 - allEventsVC.tableView.contentInset.top);
+    
+    [allEventsVC loadObjects];
+    
     [self setSelectedIndex:0];
     
     

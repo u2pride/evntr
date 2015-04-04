@@ -8,6 +8,7 @@
 
 #import "MapForEventView.h"
 #import <QuartzCore/QuartzCore.h>
+@import MediaPlayer;
 
 #import "EVNButton.h"
 #import "EVNConstants.h"
@@ -35,6 +36,8 @@
 @property (strong, nonatomic) UIVisualEffectView *darkBlurEffectView;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+
 @end
 
 
@@ -44,6 +47,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSLog(@"ViewDidLoad Called");
     
     //TODO: for testing purposes
     [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor redColor];
@@ -93,14 +98,35 @@
     
     [self.registerButton addGestureRecognizer:tapgr];
     [self.loginButton addGestureRecognizer:tapgr2];
-
     
+    [self.moviePlayer play];
+        
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopMoviePlayer) name:@"StopMoviePlayer" object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
+
 }
 
 
+- (MPMoviePlayerController *)moviePlayer
+{
+    if (!_moviePlayer) {
+        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrappbr" withExtension:@"mov"];
+        _moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
+        _moviePlayer.controlStyle = MPMovieControlStyleNone;
+        _moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+        _moviePlayer.view.frame = self.view.frame;
+        [self.view insertSubview:_moviePlayer.view atIndex:0];
+    }
+    return _moviePlayer;
+}
+
+
+
+
 - (void)continueIntoTheApp:(UIGestureRecognizer *)gr {
-    
-    NSLog(@"Gesture Recognized");
     
     NSInteger tag = gr.view.tag;
     
@@ -127,7 +153,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    NSLog(@"ViewWillAppear - only called once");
+    NSLog(@"ViewWillAppear Called");
     
 }
 
@@ -135,6 +161,13 @@
 #pragma mark - Navigation
 
 - (IBAction) logOutUnwindSegue:(UIStoryboardSegue *)unwindSegue {
+    
+    NSLog(@"Back from logout unwind segue");
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+
+    [self.moviePlayer play];
     
     [self returningTransitionAnimations];
     
@@ -149,8 +182,6 @@
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    
-    NSLog(@"Prepare for Segue Called");
     
     [self leavingTransitionAnimations];
 
@@ -191,23 +222,15 @@
         
     }
     
-    
 }
+
+
 
 - (void) viewDidDisappear:(BOOL)animated {
     
-    [self viewDidDisappear:animated];
+    [super viewDidDisappear:animated];
     
-    NSLog(@"ViewDidDisappear - not called");
-    
-    //Reset View to Original State
-    self.darkBlurEffectView.alpha = 0;
-    self.backgroundImageView.transform = CGAffineTransformIdentity;
-    self.logoView.alpha = 1;
-    self.loginButton.alpha = 1;
-    self.registerButton.alpha = 1;
-    self.skipLoginButton.alpha = 1;
-    
+    NSLog(@"ViewDidDisappear - not called because we use a custom transistion");
     
 }
 
@@ -273,6 +296,36 @@
     }];
     
 }
+
+
+#pragma mark - Movie Player
+
+- (void)loopVideo {
+    NSLog(@"Loop video notification");
+    [self.moviePlayer play];
+}
+
+- (void)backFromForeground {
+    NSLog(@"Back from foreground notification");
+    [self.moviePlayer play];
+}
+
+- (void)stopMoviePlayer {
+    
+    NSLog(@"Stop movie player and remove observers");
+    [self.moviePlayer stop];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
+    
+}
+
+-(void)dealloc
+{
+    NSLog(@"initialscreenvc is being deallocated");
+    //super dealloc is called automatically with ARC
+}
+
 
 
 @end

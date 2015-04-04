@@ -698,6 +698,12 @@ typedef enum {
 }
 
 
+-(void)dealloc
+{
+    NSLog(@"signupvc is being deallocated");
+    
+}
+
 @end
 
 

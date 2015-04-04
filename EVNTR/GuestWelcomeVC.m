@@ -25,5 +25,9 @@
     self.continueButton.backgroundColor = [UIColor orangeThemeColor];
 }
 
+-(void)dealloc
+{
+    NSLog(@"guestwelcomevc is being deallocated");
+}
 
 @end

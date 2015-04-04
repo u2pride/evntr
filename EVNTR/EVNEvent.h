@@ -53,7 +53,7 @@ locationGeoPoint:(PFGeoPoint *)locationGeoPoint
 - (NSString *) eventDateShortStyle;
 - (NSString *) eventTimeShortStye;
 
-- (NSString *) dateForEventDetails;
+//- (NSString *) dateForEventDetails;
 
 
 - (NSString *) eventTypeForHomeView;

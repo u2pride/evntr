@@ -92,4 +92,10 @@
 }
 */
 
+
+-(void)dealloc
+{
+    NSLog(@"fullmapvc is being deallocated");
+}
+
 @end

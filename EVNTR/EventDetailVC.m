@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AddEventPrimaryVC.h"
 #import "AppDelegate.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
@@ -55,6 +56,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *eventDescription;
 @property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
 @property (strong, nonatomic) IBOutlet UILabel *timeOfEventLabel;
+@property (strong, nonatomic) IBOutlet UILabel *standbyListTitle;
 
 //Images
 @property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
@@ -70,6 +72,7 @@
 
 //Loading Helpers
 @property (nonatomic, strong) MBProgressHUD *HUD;
+@property (nonatomic, strong) UIView *fadeOutBlackScreen;
 
 //Mapping Location Component
 @property (strong, nonatomic) IBOutlet MapForEventView *entireMapView;
@@ -119,6 +122,8 @@
     
     self.title = @"";
     
+    NSLog(@"Event TO SEEEEEE: %@", self.event);
+    
     //Determine if Guest User
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
@@ -128,9 +133,13 @@
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
 
     //Determine if the Event Creator is the Current User
-    if ([self.event.eventCreator.objectId isEqualToString:[PFUser currentUser].objectId]) {
+    if ([self.event.parent.objectId isEqualToString:[PFUser currentUser].objectId]) {
         self.isCurrentUsersEvent = YES;
+        NSLog(@"Current User's Event");
+
     }
+    
+    self.view.backgroundColor = [UIColor blackColor];
     
     [self setupStaticEventDetailComponents];
 
@@ -152,6 +161,11 @@
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
+    
+    //Create Black Loading Screen
+    self.fadeOutBlackScreen = [[UIView alloc] initWithFrame:self.view.frame];
+    self.fadeOutBlackScreen.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.85];
+    [self.view addSubview:self.fadeOutBlackScreen];
     
     //Progress Indicator - Start
     self.HUD = [[MBProgressHUD alloc] init];
@@ -185,12 +199,12 @@
     //Configuring Basic Details
     ///////////////////////////
     
-    self.eventTitle.text = self.event.eventTitle;
+    self.eventTitle.text = self.event.title;
     self.dateOfEventLabel.text = [self.event eventDateShortStyle];
     self.timeOfEventLabel.text = [self.event eventTimeShortStye];
-    self.eventDescription.text = self.event.eventDescription;
+    self.eventDescription.text = self.event.descriptionOfEvent;
     
-    self.backgroundForPictureSection.file = self.event.eventCoverPhoto;
+    self.backgroundForPictureSection.file = self.event.coverPhoto;
     self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
     [self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
         
@@ -233,22 +247,30 @@
     if (self.isGuestUser) {
         
         [self.rsvpButton setTitle:@"Sign Up To Attend" forState:UIControlStateNormal];
-        [self.viewAttendingButton setTitle:@"Sign Up to View People Going" forState:UIControlStateNormal];
+        [self.viewAttendingButton setTitle:@"Sign Up to View Attending Users" forState:UIControlStateNormal];
+        [self.inviteButton setTitle:@"Sign Up to Attend" forState:UIControlStateNormal];
+        
+        int eventType = [self.event.typeOfEvent intValue];
+        if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
+            self.standbyUsersCollectionView.hidden = YES;
+            self.standbyListTitle.hidden = YES;
+        }
         
     } else {
         
-        int eventType = [self.event.eventType intValue];
+        int eventType = [self.event.typeOfEvent intValue];
         NSString *username = [[PFUser currentUser] objectForKey:@"username"];
 
         switch (eventType) {
             case PUBLIC_EVENT_TYPE: {
                 
                 [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
-                   
-                    self.isCurrentUserAttending = isAttending;
                     
-                    [self.rsvpButton setTitle:status forState:UIControlStateNormal];
-                    
+                    if (!self.isCurrentUsersEvent) {
+                        self.isCurrentUserAttending = isAttending;
+                        [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                    }
+
                     NSLog(@"Num3");
                     [self networkCallComplete]; //3
                     
@@ -256,6 +278,7 @@
                 
                 //Hide Collection View for Standby Users
                 self.standbyUsersCollectionView.hidden = YES;
+                self.standbyListTitle.hidden = YES;
                 
                 break;
             }
@@ -263,9 +286,10 @@
                 
                 [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
                     
-                    self.isCurrentUserAttending = isAttending;
-                    
-                    [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                    if (!self.isCurrentUsersEvent) {
+                        self.isCurrentUserAttending = isAttending;
+                        [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                    }
                     
                     NSLog(@"Num3");
                     [self networkCallComplete]; //3
@@ -291,11 +315,13 @@
                         //TODO: Error Handling
                     } else {
                         
-                        self.isCurrentUserAttending = (isAttending) ? YES : NO;
-                        [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                        if (!self.isCurrentUsersEvent) {
+                            self.isCurrentUserAttending = isAttending;
+                            [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                        }
                         
-                        NSLog(@"Num4");
-                        [self networkCallComplete]; //4
+                        NSLog(@"Num3");
+                        [self networkCallComplete]; //3
                     }
             
                 }];
@@ -322,10 +348,10 @@
     
     //Creator Component and Invite Button - Default Image
     self.creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
-    [self.inviteButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+    [self.inviteButton setTitle:kInviteUsers forState:UIControlStateNormal];
     [self.rsvpButton setTitle:kNOTRSVPedForEvent forState:UIControlStateNormal];
     
-    NSLog(@"self.isCurrentUsersEvent:%@", [NSNumber numberWithBool:self.isCurrentUserAttending]);
+    NSLog(@"self.isCurrentUsersEvent:%@", [NSNumber numberWithBool:self.isCurrentUsersEvent]);
     
     self.rsvpButton.hidden = (self.isCurrentUsersEvent) ? YES : NO;
     self.inviteButton.hidden = (self.isCurrentUsersEvent) ? NO : YES;
@@ -368,11 +394,14 @@
 
 - (void) setupMapComponent {
     
-    self.locationOfEvent = [[CLLocation alloc] initWithLatitude:self.event.eventLocationGeoPoint.latitude longitude:self.event.eventLocationGeoPoint.longitude];
+    self.locationOfEvent = [[CLLocation alloc] initWithLatitude:self.event.locationOfEvent.latitude longitude:self.event.locationOfEvent.longitude];
     
     //Getting Current Location and Comparing to Event Location
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     CLLocation *currentLocation = [[appDelegate locationManager] location];
+    
+    NSLog(@"self.LocationOFevent: %@ and CurrentLocation: %@", self.locationOfEvent, currentLocation);
+    
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
     
     self.entireMapView.distanceAway = (float) distance * 0.000621371;
@@ -386,7 +415,7 @@
             self.locationPlacemark = [placemarks firstObject];
             self.entireMapView.address = [NSString stringWithFormat:@"%@", ABCreateStringWithAddressDictionary(self.locationPlacemark.addressDictionary, NO)];
         } else {
-            self.entireMapView.address = [NSString stringWithFormat:@"%.2f - %.2f", self.event.eventLocationGeoPoint.latitude, self.event.eventLocationGeoPoint.longitude];
+            self.entireMapView.address = [NSString stringWithFormat:@"%.2f - %.2f", self.event.locationOfEvent.latitude, self.event.locationOfEvent.longitude];
         }
         
         NSLog(@"Num5");
@@ -395,12 +424,12 @@
     }];
     
     //Location Name
-    NSString *locationName = self.event.eventLocationName;
+    NSString *locationName = self.event.nameOfLocation;
     
     if (!locationName) {
         locationName = @"Custom Location";
     } else if ([locationName isEqualToString:@"Current Location"]) {
-        locationName = [NSString stringWithFormat:@"%.2f - %.2f", self.event.eventLocationGeoPoint.latitude, self.event.eventLocationGeoPoint.longitude];
+        locationName = [NSString stringWithFormat:@"%.2f - %.2f", self.event.locationOfEvent.latitude, self.event.locationOfEvent.longitude];
         
     }
     
@@ -409,7 +438,9 @@
 
 - (void) setupCreatorComponent {
     
-    [self.event.eventCreator fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
+    NSLog(@"%@", [self.event.parent class]);
+    
+    [self.event.parent fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         
         UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
         
@@ -461,10 +492,20 @@
     numNetworkCallsComplete += 1;
     NSLog(@"NumNetworkCallsComplete: %d", numNetworkCallsComplete);
     
-    if (numNetworkCallsComplete == 5) {
+    if (numNetworkCallsComplete == 4) {
         
         [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(recheckPublicApprovedAccess) userInfo:nil repeats:NO];
-        [self.HUD hide:YES afterDelay:0.5];
+        
+        [UIView animateWithDuration:1.0 animations:^{
+            
+            self.fadeOutBlackScreen.alpha = 0;
+            
+        } completion:^(BOOL finished) {
+            
+            [self.HUD hide:YES];
+            
+        }];
+        
     }
     
 }
@@ -543,12 +584,16 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
+    if (!self.isGuestUser) {
+        
         PFUser *selectedUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
         ProfileVC *profileView = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
         profileView.userNameForProfileView = selectedUser[@"username"];
         
         [self.navigationController pushViewController:profileView animated:YES];
+        
+    }
     
 }
 
@@ -560,11 +605,13 @@
 
 - (void) viewCreatorProfile {
     
-    ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    //TODO: change this from not using uilabel
-    viewUserProfileVC.userNameForProfileView = self.creatorName.text;
-    viewUserProfileVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+    if (!self.isGuestUser) {
+        ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+        //TODO: change this from not using uilabel
+        viewUserProfileVC.userNameForProfileView = self.creatorName.text;
+        viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+    }
     
 }
 
@@ -572,18 +619,28 @@
     
     NSLog(@"Edit Event");
     
+    //TODO:  Must present this similarly to the way an add event modal is presented.
+    
+    AddEventPrimaryVC *editEventVC = (AddEventPrimaryVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"CreateEventFirstStep"];
+    editEventVC.delegate = self;
+    editEventVC.eventToEdit = self.event;
+    
+    [self.navigationController pushViewController:editEventVC animated:YES];
+    
+    
 }
 
 
 - (IBAction)inviteFriends:(id)sender {
     
-    PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
-    invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
-    invitePeopleVC.profileUsername = [PFUser currentUser];
-    invitePeopleVC.delegate = self;
-    
-    [self.navigationController pushViewController:invitePeopleVC animated:YES];
-    
+    if (!self.isGuestUser) {
+        PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
+        invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
+        invitePeopleVC.profileUsername = [PFUser currentUser];
+        invitePeopleVC.delegate = self;
+        
+        [self.navigationController pushViewController:invitePeopleVC animated:YES];
+    }
 }
 
 //Current: User is added to the event as a Relation.  No information about the activity is stored (ie timestamp)
@@ -592,7 +649,7 @@
 
 - (IBAction)rsvpForEvent:(id)sender {
     
-    int eventType = [self.event.eventType intValue];
+    int eventType = [self.event.typeOfEvent intValue];
     
     //Cases:  Guest User - PA Event Request Access - Attending Already - Not Attending
     
@@ -620,13 +677,13 @@
         
     } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
         
-        PFRelation *attendersRelation = self.event.eventAttenders;
+        PFRelation *attendersRelation = self.event.attenders;
         self.rsvpButton.enabled = NO;
         
         if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
             
             [attendersRelation removeObject:[PFUser currentUser]];
-            [self.event.backingObject saveInBackground];
+            [self.event saveInBackground];
             
             //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
             
@@ -634,7 +691,7 @@
             
             //Create New Relation and Add User to List of Attenders for Event
             [attendersRelation addObject:[PFUser currentUser]];
-            [self.event.backingObject saveInBackground];
+            [self.event saveInBackground];
             
             //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
         }
@@ -690,7 +747,7 @@
         PeopleVC *viewAttendees = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         
         viewAttendees.typeOfUsers = VIEW_EVENT_ATTENDERS;
-        viewAttendees.eventToViewAttenders = self.event.backingObject;
+        viewAttendees.eventToViewAttenders = self.event;
         
         [self.navigationController pushViewController:viewAttendees animated:YES];
     }
@@ -710,7 +767,7 @@
     EventPicturesVC *allEventPictures = [[EventPicturesVC alloc] initWithCollectionViewLayout:flowLayout];
     
     //Pass the Event
-    allEventPictures.eventObject = self.event.backingObject;
+    allEventPictures.eventObject = self.event;
     //allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
     
     if (self.isCurrentUsersEvent) {
@@ -732,8 +789,57 @@
 }
 
 
+#pragma mark - Delegate Methods for Editing An Event
+
+/*
+- (NSDictionary *) eventDetailsToEdit {
+    
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.event.typeOfEvent, @"type", self.event.title, @"title", self.backgroundForPictureSection.image, @"image", self.backgroundForPictureSection.file, @"file", self.event.description, @"description", self.event.locationOfEvent, @"coordinates", self.event.nameOfLocation, @"locationName", self.event.dateOfEvent, @"date", self.event, @"object", nil];
+    
+    return dictionary;
+}
+*/
 
 
+- (void) completedEventEditing:(EventObject *)updatedEvent {
+    NSLog(@"Back to Event Details - completed event editing");
+    
+    //create an event PFObject subclass.
+    //pass that when you edit an event.
+    //use a notification when the editing is complete - actually maybe just use protocols and pass the event.
+    
+    
+    //update the view with the new event details - not pulling from parse
+    self.eventTitle.text = updatedEvent.title;
+    //include event type updating
+    
+    [updatedEvent coverImage:^(UIImage *image) {
+        
+        [self setBackgroundOfPictureSectionWithImage:image];
+    }];
+    
+    
+    self.eventDescription.text = updatedEvent.descriptionOfEvent;
+    //self.entireMapView.eventLocation = updatedEvent.eventLocationName;
+    self.entireMapView.address = @"";
+    //self.eventDate = updatedEvent.date;
+    
+    
+    //[self configureWithEvent:event];
+    
+
+    [self.navigationController popViewControllerAnimated:NO];
+
+    
+}
+
+
+- (void) canceledEventEditing {
+    NSLog(@"Back to Event Details - canceled event editing");
+    
+    [self.navigationController popViewControllerAnimated:NO];
+
+}
 
 #pragma mark - Delegate Method for Inviting Users to Event
 
@@ -764,8 +870,6 @@
     MKCoordinateRegion region = MKCoordinateRegionMake(randomLocation.coordinate, MKCoordinateSpanMake(10, 10));
     
     [self.entireMapView.mapView setRegion:region animated:YES];
-    
-    
     
 }
 
@@ -812,5 +916,10 @@
 
 //float longitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
 
+
+-(void)dealloc
+{
+    NSLog(@"eventdetailsvc is being deallocated");
+}
 
 @end

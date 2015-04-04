@@ -276,6 +276,9 @@
         }];
     }];
     
+    //Update Font
+    cell.personTitle.font = [UIFont fontWithName:@"Lato-Thin" size:12.0];
+    
 
     return cell;
 }

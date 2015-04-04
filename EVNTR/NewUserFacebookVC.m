@@ -232,6 +232,11 @@
     
 }
 
+-(void)dealloc
+{
+    NSLog(@"newuserfacebokvc is being deallocated");
+}
+
 @end
 
 

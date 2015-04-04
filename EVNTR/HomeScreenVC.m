@@ -12,6 +12,7 @@
 #import "EVNEvent.h"
 #import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
+#import "EventObject.h"
 #import "EventTableCell.h"
 #import "FilterEventsVC.h"
 #import "HomeScreenVC.h"
@@ -59,14 +60,13 @@
         self.userForEventsQuery = [PFUser currentUser];
         self.tabBarController.hidesBottomBarWhenPushed = YES;
         //self.navigationController.hidesBarsOnSwipe = YES;
-        NSLog(@"INITWITHCODER OF HOMESCREEN: %@", [NSNumber numberWithBool:self.isGuestUser]);
         
         //Get isGuest Object
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-        self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
+        _isGuestUser = [standardDefaults boolForKey:kIsGuest];
         
         _allEvents = [[NSMutableArray alloc] init];
-        _searchRadius = 10;
+        _searchRadius = 20;
 
     }
     return self;
@@ -79,8 +79,10 @@
     //probably already wired up.    
     self.tableView.delegate = self;
     
-    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SearchIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySearchController)];
-    self.navigationItem.rightBarButtonItem = searchButton;
+    if (!self.isGuestUser) {
+        UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SearchIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(displaySearchController)];
+        self.navigationItem.rightBarButtonItem = searchButton;
+    }
     
     UIBarButtonItem *filterButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%d", self.searchRadius] style:UIBarButtonItemStylePlain target:self action:@selector(displayFilterView)];
     self.navigationItem.leftBarButtonItem = filterButton;
@@ -142,8 +144,6 @@
     
     [super viewDidAppear:animated];
     
-    NSLog(@"HOME FRAME: %@", NSStringFromCGRect(self.view.frame));
-    NSLog(@"HOME BOUNDS: %@", NSStringFromCGRect(self.view.bounds));
 }
 
 - (void)didReceiveMemoryWarning {
@@ -223,13 +223,25 @@
         [self hideNoResultsView];
     }
     
+    /*
     //Add New Results to All Events
     for (PFObject *object in self.objects) {
+        
+        NSLog(@"Loggging all pfobjects - %@", object);
         
         EVNEvent *returnedEvent = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
         
         [self.allEvents addObject:returnedEvent];
     
+    }
+    */
+    
+    for (EventObject *objectNew in self.objects) {
+        
+        NSLog(@"Objects New - %@", objectNew);
+        
+        [self.allEvents addObject:objectNew];
+        
     }
     
     //NSLog(@"Location Used for Search: %f and %f:", self.currentUserLocation.latitude, self.currentUserLocation.longitude);
@@ -319,18 +331,22 @@
     
     EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    EVNEvent *eventForCell = [self.allEvents objectAtIndex:indexPath.row];
+    EventObject *eventForCell = [self.allEvents objectAtIndex:indexPath.row];
+    
     
     if (cell) {
         
-        cell.eventTitle.text = eventForCell.eventTitle;
+        cell.eventTitle.text = eventForCell.title;
         cell.eventTypeLabel.text = [eventForCell eventTypeForHomeView];
         cell.dateOfEventLabel.text = [eventForCell eventDateShortStyle];
         cell.timeOfEventLabel.text = [eventForCell eventTimeShortStye];
         
         cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
-        cell.eventCoverImage.file = (PFFile *) eventForCell.eventCoverPhoto;
+        cell.eventCoverImage.file = (PFFile *) eventForCell.coverPhoto;
         [cell.eventCoverImage loadInBackground];
+
+    
+        //OLD start
         
         /*
         [eventForCell.eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
@@ -348,6 +364,8 @@
             
         }];
         */
+        
+        //OLD end
         
         [eventForCell totalNumberOfAttendersInBackground:^(int count) {
             cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", count];
@@ -435,11 +453,10 @@
 //Animate UITableViewCells Appearing
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    /*
     cell.alpha = 0;
     cell.transform = CGAffineTransformMakeScale(0.01, 0.01);
     
-    [UIView animateWithDuration:1.0 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:0.3 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut animations:^{
         
         cell.alpha = 1;
         cell.transform = CGAffineTransformIdentity;
@@ -448,7 +465,6 @@
         
         
     }];
-     */
      
 }
 
@@ -533,6 +549,11 @@
  }];
  */
 
+
+-(void)dealloc
+{
+    NSLog(@"homescreen is being deallocated");
+}
 
 
 

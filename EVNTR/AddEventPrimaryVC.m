@@ -10,7 +10,6 @@
 #import "AddEventSecondVC.h"
 #import "CustomEventTypeButton.h"
 #import "EVNButton.h"
-#import "NewEventModel.h"
 #import "UIColor+EVNColors.h"
 
 #import <Parse/Parse.h>
@@ -18,6 +17,7 @@
 @interface AddEventPrimaryVC ()
 {
     NSMutableDictionary *stateSnapshot;
+    BOOL isEditing;
 }
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
@@ -50,6 +50,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    isEditing = NO;
+    
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
@@ -59,6 +61,8 @@
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
 
+    //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
+    self.eventTitleField.delegate = self;
     
     //Configuring Buttons
     self.publicButton.titleText = @"Public";
@@ -71,9 +75,6 @@
     
     [self.publicApprovedButton sizeToFit];
     
-    
-    self.selectedEventType = PUBLIC_EVENT_TYPE;
-    
     // Initialize ImageView & Attach Tap Gesture
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventCoverPhotoView.userInteractionEnabled = YES;
@@ -81,11 +82,60 @@
     tapgr.delegate = self;
     [self.eventCoverPhotoView addGestureRecognizer:tapgr];
     
-    //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
-    self.eventTitleField.delegate = self;
-    
     self.selectedEventType = PUBLIC_EVENT_TYPE;
 
+    /*
+    //Determing Whether the User is Editing or Creating an Event
+    //Editing - Comes from EventDetailVC - Asks Delegate for the Event Details
+    if ([self.delegate isKindOfClass:NSClassFromString(@"EventDetailVC")]) {
+        
+        id<EventModalProtocol> strongDelegate = self.delegate;
+        if ([strongDelegate respondsToSelector:@selector(eventDetailsToEdit)]) {
+            
+            //NSDictionary *values = [strongDelegate eventDetailsToEdit];
+
+            NSNumber *type = [values objectForKey:@"type"];
+            NSString *title = [values objectForKey:@"title"];
+            UIImage *image = [values objectForKey:@"image"];
+            PFFile *imageFile = [values objectForKey:@"file"];
+            
+            self.selectedEventType = [type intValue];
+            self.eventTitleField.text = title;
+            self.eventCoverPhotoView.image = image;
+            self.coverPhotoFile = imageFile;
+            
+            NSString *description = [values objectForKey:@"description"];
+            PFGeoPoint *coordinates = [values objectForKey:@"coordinates"];
+            NSString *locationName = [values objectForKey:@"locationName"];
+            NSDate *date = [values objectForKey:@"date"];
+            
+            PFObject *eventObject = [values objectForKey:@"object"];
+            
+            //TOOD: Create NewEvent initializer that takes in an event object so I don't have to do all of this here.
+            self.eventEditing = [[NewEventModel alloc] initWithTitle:title eventType:[type intValue] coverImage:imageFile eventDescription:description location: coordinates locationName:locationName eventDate:date backingObject:eventObject];
+            
+
+        }
+        
+    }
+    
+    */
+    
+    if (self.eventToEdit) {
+        
+        self.selectedEventType = [self.eventToEdit.typeOfEvent intValue];
+        self.eventTitleField.text = self.eventToEdit.title;
+        [self.eventToEdit coverImage:^(UIImage *image) {
+            self.eventCoverPhotoView.image = image;
+        }];
+        self.coverPhotoFile = self.eventToEdit.coverPhoto;
+        
+        isEditing = YES;
+    
+        self.title = @"Edit Event";
+        self.navigationItem.leftBarButtonItems = nil;
+    }
+    
 }
 
 
@@ -283,13 +333,36 @@
     
     AddEventSecondVC *nextStepVC = (AddEventSecondVC *) [segue destinationViewController];
     
-    NewEventModel *eventInProgress = [[NewEventModel alloc] initWithTitle:self.eventTitleField.text eventType:self.selectedEventType coverImage:self.coverPhotoFile];
-    
     nextStepVC.title = self.eventTitleField.text;
-
-    nextStepVC.eventToCreate = eventInProgress;
-    
     nextStepVC.delegate = self;
+
+    
+    //If there is an Event Already Exisitng - We are editing the event
+    if (self.eventToEdit) {
+        
+        self.eventToEdit.title = self.eventTitleField.text;
+        self.eventToEdit.typeOfEvent = [NSNumber numberWithInt:self.selectedEventType];
+        self.coverPhotoFile = self.coverPhotoFile;
+        
+        nextStepVC.event = self.eventToEdit;
+        nextStepVC.isEditingEvent = YES;
+        
+        NSLog(@"FIRST STEP: %@", [NSNumber numberWithBool:nextStepVC.isEditingEvent] );
+        
+    } else {
+        
+        //Create New Event Object
+        
+        EventObject *newEvent = [EventObject object];
+        
+        newEvent.title = self.eventTitleField.text;
+        newEvent.typeOfEvent = [NSNumber numberWithInt:self.selectedEventType];
+        newEvent.coverPhoto = self.coverPhotoFile;
+        
+        nextStepVC.event = newEvent;
+        nextStepVC.isEditingEvent = NO;
+
+    }
     
 }
 
@@ -335,6 +408,42 @@
     
 }
 
+
+
+#pragma mark - Event Editing Delegates
+
+- (void) eventEditingComplete:(EventObject *)updatedEvent {
+    NSLog(@"Event Editing Complete");
+    
+    [self.navigationController popViewControllerAnimated:NO];
+    
+    id<EventModalProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedEventEditing:)]) {
+        
+        [strongDelegate completedEventEditing:updatedEvent];
+    }
+    
+}
+
+
+- (void) eventEditingCanceled {
+    NSLog(@"Event Editing Canceled");
+    
+    [self.navigationController popViewControllerAnimated:NO];
+
+    id<EventModalProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(canceledEventEditing)]) {
+        
+        [strongDelegate canceledEventEditing];
+    }
+}
+
+
+
+
+#pragma mark --
 
 
 - (IBAction)canceledEventCreation:(id)sender {

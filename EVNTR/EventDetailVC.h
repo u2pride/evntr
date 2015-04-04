@@ -6,9 +6,11 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EVNEvent.h"
+#import "EventObject.h"
 #import "PeopleVC.h"
 #import "PictureFullScreenVC.h"
+#import "AddEventPrimaryVC.h"
+#import "AddEventSecondVC.h"
 
 #import <MapKit/MapKit.h>
 #import <Parse/Parse.h>
@@ -16,9 +18,9 @@
 #import <UIKit/UIKit.h>
 
 //TODO - ensure all protocols are necessary
-@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate>
+@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate, EventModalProtocol, EventCreationCompleted>
 
-@property (nonatomic, strong) EVNEvent *event;
+@property (nonatomic, strong) EventObject *event;
 
 
 @end

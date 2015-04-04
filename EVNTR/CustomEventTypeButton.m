@@ -7,6 +7,7 @@
 //
 
 #import "CustomEventTypeButton.h"
+#import "UIColor+EVNColors.h"
 
 @implementation CustomEventTypeButton
 
@@ -21,7 +22,7 @@
 - (void)setSelected:(BOOL)selected {
     
     if (selected) {
-        self.titleLabel.textColor = [UIColor orangeColor];
+        self.titleLabel.textColor = [UIColor orangeThemeColor];
     } else {
         self.titleLabel.textColor = [UIColor darkTextColor];
     }

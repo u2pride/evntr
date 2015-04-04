@@ -154,4 +154,9 @@
     [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
     
 }
+
+-(void)dealloc
+{
+    NSLog(@"filtereventsvc is being deallocated");
+}
 @end
