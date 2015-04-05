@@ -23,7 +23,7 @@ NSString *const kInviteUsers = @"Invite Users";
 
 //TODO:  Color button if granted acesss - similar to insta follow button
 NSString *const kGrantAccess = @"Let In";
-NSString *const kRevokeAccess = @"Take Back";
+NSString *const kRevokeAccess = @"Revoke";
 
 
 

@@ -24,6 +24,7 @@
 
 static NSString * const reuseIdentifier = @"Cell";
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -47,8 +48,6 @@ static NSString * const reuseIdentifier = @"Cell";
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
     
-    self.hidesBottomBarWhenPushed = YES;
-
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -58,6 +57,14 @@ static NSString * const reuseIdentifier = @"Cell";
     
     [self.collectionView reloadData];
     
+    //self.tabBarController.tabBar.hidden = YES;
+}
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    //self.tabBarController.tabBar.hidden = NO;
 }
 
 

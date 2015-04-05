@@ -16,7 +16,7 @@
     PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
     [queryForStandbyUsers whereKey:@"activityContent" equalTo:object];
     [queryForStandbyUsers whereKey:@"type" equalTo:type];
-    [queryForStandbyUsers includeKey:key];
+    [queryForStandbyUsers includeKey:@"from"];
     [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *activities, NSError *error) {
         
         completionBlock(error, activities);
@@ -32,10 +32,12 @@
     PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
     [queryForStandbyUsers whereKey:@"activityContent" equalTo:event];
     [queryForStandbyUsers whereKey:@"type" equalTo:type];
-    [queryForStandbyUsers includeKey:key];
+    [queryForStandbyUsers includeKey:@"from"];
     [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
         
-        NSMutableArray *usersOnStandby = [[NSMutableArray alloc] init];
+        NSLog(@"FIRST QUERY RESULTS:  %@", standbyActivities);
+        
+        __block NSMutableArray *usersOnStandby = [[NSMutableArray alloc] init];
         
         if (error) {
             usersOnStandby = nil;
@@ -44,12 +46,72 @@
         } else {
             for (PFObject *activity in standbyActivities) {
                 
+                
                 PFUser *userOnStandby = activity[@"from"];
+                NSLog(@"User Found in Query One: %@", userOnStandby);
+
                 [usersOnStandby addObject:userOnStandby];
                 
             }
             
-            completionBlock(error, usersOnStandby);
+            PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
+            [queryForStandbyUsers whereKey:@"activityContent" equalTo:event];
+            [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+            [queryForStandbyUsers includeKey:@"to"];
+            [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *accessActivities, NSError *error) {
+               
+                NSLog(@"SECOND QUERY RESULTS:  %@", accessActivities);
+                
+                NSMutableArray *usersGrantedAccess = [[NSMutableArray alloc] init];
+                
+                if (error) {
+                    usersOnStandby = nil;
+                    completionBlock(error, usersOnStandby);
+                } else {
+                    
+                    for (PFObject *activity2 in accessActivities) {
+                        
+                        PFUser *userGrantedAcesss = activity2[@"to"];
+                        
+                        NSLog(@"User Found in Query Two: %@", userGrantedAcesss);
+                        
+                        [usersGrantedAccess addObject:userGrantedAcesss];
+                    }
+                    
+                    
+                    NSMutableArray *finalResults = [[NSMutableArray alloc] init];
+                    
+                    for (PFUser *requestedAccessUser in usersOnStandby) {
+                        
+                        BOOL tempFlag = 0;
+                        
+                        for (PFUser *grantedAccessUser in usersGrantedAccess) {
+                            
+                            if ([requestedAccessUser.objectId isEqualToString:grantedAccessUser.objectId]) {
+                                tempFlag = 1;
+                            }
+                            
+                        }
+                        
+                        if (tempFlag) {
+                            tempFlag = 0;
+                        } else {
+                            [finalResults addObject:requestedAccessUser];
+                        }
+                        
+                        
+                    }
+                    
+                    
+                    NSLog(@"FINAL USERS LIST:  %@", finalResults);
+                    
+
+                    completionBlock(error, finalResults);
+                    
+                }
+                
+            }];
+            
         }
         
     }];

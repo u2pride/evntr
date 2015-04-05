@@ -347,6 +347,7 @@
 - (IBAction)followUser:(id)sender {
     
     self.followButton.enabled = NO;
+    [self.followButton startedTask];
     
     if ([self.followButton.titleText isEqualToString:@"Follow"]) {
         
@@ -366,12 +367,15 @@
                 
             } else {
                 NSLog(@"Error in Saved");
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                [errorAlert show];
+
             }
             
             self.followButton.enabled = YES;
-            
+            [self.followButton endedTask];
         }];
-        
         
         
     } else if ([self.followButton.titleText isEqualToString:@"Following"]) {
@@ -387,21 +391,30 @@
             PFObject *previousFollowActivity = [objects firstObject];
             [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
-                //Notify View Controllers of a New Follow
-                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-                
-                self.followButton.titleText = @"Follow";
+                if (succeeded) {
+                    
+                    self.followButton.titleText = @"Follow";
+                    
+                    //Notify View Controllers of a New Follow
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
+                } else {
+                    
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
+                    
+                }
                 
                 self.followButton.enabled = YES;
+                [self.followButton endedTask];
+                
             }];
-            
         }];
-        
-        
         
     } else {
         NSLog(@"Weird error - need to notify user");
         self.followButton.enabled = YES;
+        [self.followButton endedTask];
     }
     
 }

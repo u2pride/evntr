@@ -8,8 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol EVNFilterProtocol;
+
 @interface FilterEventsVC : UIViewController
 
 @property (nonatomic) int selectedFilterDistance;
+@property (nonatomic, strong) id <EVNFilterProtocol> delegate;
+
+
+@end
+
+@protocol EVNFilterProtocol <NSObject>
+
+- (void) completedFiltering:(int)radius;
 
 @end

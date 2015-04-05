@@ -214,7 +214,7 @@
                         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
                         localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
                         localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!", userWhoInvited[@"username"]];
-                        localNotification.alertAction = @"Ready for some fun?";
+                        localNotification.alertAction = @"open";
                         localNotification.timeZone = [NSTimeZone defaultTimeZone];
                         localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
                         

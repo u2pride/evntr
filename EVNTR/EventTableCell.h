@@ -19,5 +19,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 @property (weak, nonatomic) IBOutlet UILabel *attendersCountLabel;
 @property (weak, nonatomic) IBOutlet UILabel *eventTypeLabel;
+@property (strong, nonatomic) IBOutlet UIView *darkViewOverImage;
+@property (strong, nonatomic) IBOutlet UILabel *distanceLabel;
 
 @end

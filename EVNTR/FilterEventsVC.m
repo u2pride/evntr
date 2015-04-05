@@ -114,44 +114,95 @@
 }
 */
 
+
+
+
 - (IBAction)distance1Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:1];
+    }
+    
+    //[self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
 }
 
 - (IBAction)distance2Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:3];
+    }
+
 }
 
 - (IBAction)distance3Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:5];
+    }
+
 }
 
 - (IBAction)distance4Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:10];
+    }
+
 }
 
 - (IBAction)distance5Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:20];
+    }
+
 }
 
 - (IBAction)distance6Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:50];
+    }
+
 }
 
 - (IBAction)distance7Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:100];
+    }
+
 }
 
 - (IBAction)distance8Press:(id)sender {
     
-    [self.notifcationCenter postNotificationName:@"FilterApplied" object:sender userInfo:nil];
+    id<EVNFilterProtocol> strongDelegate = self.delegate;
+    
+    if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
+        
+        [strongDelegate completedFiltering:800];
+    }
     
 }
 

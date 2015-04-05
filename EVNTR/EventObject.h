@@ -16,8 +16,8 @@
 @property (nonatomic, strong) NSDate *dateOfEvent;
 @property (nonatomic, strong) PFGeoPoint *locationOfEvent;
 @property (nonatomic, strong) NSNumber *typeOfEvent;
-@property (nonatomic, strong) PFRelation *attenders;
-@property (nonatomic, strong) PFRelation *invitedUsers;
+@property (nonatomic, strong, readonly) PFRelation *attenders;
+@property (nonatomic, strong, readonly) PFRelation *invitedUsers;
 @property (nonatomic, strong) NSArray *eventImages;
 @property (nonatomic, strong) NSString *nameOfLocation;
 @property (nonatomic, strong) PFFile *coverPhoto;

@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
+#import "FilterEventsVC.h"
 
-@interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate>
+@interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate, EVNFilterProtocol>
 
 //Customize an Event Table - All Events, Curent User Events, Other User Events (specified in userForEventsQuery)
 @property (nonatomic, assign) int typeOfEventTableView;

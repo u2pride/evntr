@@ -363,7 +363,9 @@
                 
                 PFObject *eventInvitedTo = object[@"activityContent"];
                 NSLog(@"eventInvitedTo: %@", eventInvitedTo);
-                [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *event, NSError *error) {
+                [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
+                    
+                    EventObject *event = (EventObject *) eventRetrieved;
                     
                     //TODO: Add error catching to other activity types.
                     if (!error) {
@@ -408,7 +410,9 @@
                 activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
                 activityCell.actionButton.backgroundColor = [UIColor clearColor];
 
-                [eventRequestingAccessTo fetchInBackgroundWithBlock:^(PFObject *event, NSError *error) {
+                [eventRequestingAccessTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
+                    
+                    EventObject *event = (EventObject *) eventRetrieved;
                     
                     //Determine if the user has been granted access yet.
                     PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
@@ -452,8 +456,10 @@
                 }
             }];
             
-            PFObject *eventAttending = object[@"activityContent"];
-            [eventAttending fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            EventObject *eventAttending = object[@"activityContent"];
+            [eventAttending fetchInBackgroundWithBlock:^(PFObject *objectRetrieved, NSError *error) {
+                
+                EventObject *object = (EventObject *) objectRetrieved;
                 
                 if (!error) {
                     
@@ -532,7 +538,9 @@
                 activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
                 activityCell.actionButton.backgroundColor = [UIColor clearColor];
                 
-                [eventGivenAccessTo fetchInBackgroundWithBlock:^(PFObject *event, NSError *error) {
+                [eventGivenAccessTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
+                    
+                    EventObject *event = (EventObject *) eventRetrieved;
                     
                     activityCell.actionButton.titleText = @"View";
                     //[activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
@@ -644,14 +652,33 @@
         [newActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (succeeded) {
                 
-                grantButton.titleText = kRevokeAccess;
+                EventObject *event = grantButton.eventToGrantAccess;
+                
+                PFRelation *attendingRelation = [event relationForKey:@"attenders"];
+                [attendingRelation addObject:grantButton.personToGrantAccess];
+                [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    
+                    if (succeeded) {
+                        grantButton.titleText = kRevokeAccess;
+
+                    } else {
+                        NSLog(@"Error saving relation");
+                    }
+                    
+                    grantButton.enabled = YES;
+                    [grantButton endedTask];
+
+                    
+                }];
+                
                 
             } else {
+                
                 NSLog(@"Error Saving New Grant Access Activity: %@", error);
-            }
+                grantButton.enabled = YES;
+                [grantButton endedTask];
             
-            grantButton.enabled = YES;
-            [grantButton endedTask];
+            }
 
         }];
         
@@ -667,10 +694,8 @@
     
     followButton.enabled = NO;
     
-    NSString *followState = followButton.titleText;
-    
     //Follow User or Unfollow User Depending on Current Button State
-    if ([followState isEqualToString:@"Following"]) {
+    if ([followButton.titleText isEqualToString:@"Following"]) {
 
         //Find and Delete Old Follow Activity
         PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
@@ -684,16 +709,17 @@
             PFObject *previousFollowActivity = [objects firstObject];
             [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 
-                if (succeeded){
+                if (succeeded) {
+                    
                     followButton.titleText = @"Follow";
-                    //[followButton setTitle:@"Follow" forState:UIControlStateNormal];
                     
                     //Notify Profile View of Update
                     [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-        
-                    
                 } else {
-                    NSLog(@"Error Deleting Follow Activity");
+                    
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
                 }
                 
                 //Re-Enable Button
@@ -703,28 +729,39 @@
             }];
         }];
         
-    } else {
+    } else if ([followButton.titleText isEqualToString:@"Follow"]) {
+        
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
+        
         newFollowActivity[@"from"] = [PFUser currentUser];
         newFollowActivity[@"to"] = userToChangeFollowState;
         newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
+        
         [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
             if (succeeded) {
+                
                 followButton.titleText = @"Following";
-                //[followButton setTitle:@"Following" forState:UIControlStateNormal];
-                [followButton endedTask];
-                //Notify Profile View of Update
+
                 [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
                 
             } else {
-                NSLog(@"Error Saving New Follow: %@", error);
+                NSLog(@"Error in Saved");
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                
+                [errorAlert show];
+
             }
             
             //Re-Enable Button
             followButton.enabled = YES;
             [followButton endedTask];
-            
         }];
+    } else {
+        NSLog(@"Weird error - need to notify user");
+        followButton.enabled = YES;
+        [followButton endedTask];
     }
 }
 

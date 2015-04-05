@@ -17,6 +17,8 @@
 
 
 
+//Consider using NSSet:  http://stackoverflow.com/questions/2288266/symmetric-difference-of-two-arrays
+
 //Query For Standby Users - Returns Error and Standby Users = nil if error.
 + (void) queryForStandbyUsersWithContent:(EventObject *)event ofType:(NSNumber *)type withIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *users))completionBlock;
 

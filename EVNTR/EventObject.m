@@ -61,15 +61,15 @@
     
     switch (eventType) {
         case PUBLIC_EVENT_TYPE: {
-            return @"Public";
+            return @"Pu";
             break;
         }
         case PRIVATE_EVENT_TYPE: {
-            return @"Private";
+            return @"Pr";
             break;
         }
         case PUBLIC_APPROVED_EVENT_TYPE: {
-            return @"Public-Approved";
+            return @"Pa";
             break;
         }
         default:

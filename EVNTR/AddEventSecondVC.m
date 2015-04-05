@@ -40,6 +40,10 @@
     //Subscribe to Date Picker Changes
     [self.eventDatePicker addTarget:self action:@selector(newDate:) forControlEvents:UIControlEventValueChanged];
     
+    NSDate *today = [NSDate date];
+    self.eventDatePicker.minimumDate = today;
+    self.eventDatePicker.maximumDate = [today dateByAddingTimeInterval:604800]; /* One Week */
+    
     //Event Description Setup
     self.eventDescriptionText.delegate = self;
     [self.eventDescriptionText setTextColor:[UIColor lightGrayColor]];
@@ -56,6 +60,7 @@
         
         [self.eventDatePicker setDate:self.event.dateOfEvent animated:YES];
         self.eventDescriptionText.text = self.event.descriptionOfEvent;
+        self.eventDescriptionText.textColor = [UIColor blackColor];
         
         [self.setLocationButton setTitle:self.event.nameOfLocation forState:UIControlStateNormal];
         [self.setLocationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -206,6 +211,8 @@
             UILabel *savingEvent = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
             savingEvent.text = @"Creating your event...";
             savingEvent.textColor = [UIColor whiteColor];
+            savingEvent.textAlignment = NSTextAlignmentCenter;
+            savingEvent.font = [UIFont fontWithName:@"Lato-Regular" size:27];
             savingEvent.center = self.view.center;
             [[darkBlurEffectView contentView] addSubview:savingEvent];
             

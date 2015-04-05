@@ -193,7 +193,7 @@
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
-        //imagePicker.allowsEditing = YES;
+        imagePicker.allowsEditing = YES;
         imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
         
         [self presentViewController:imagePicker animated:YES completion:nil];
@@ -205,7 +205,7 @@
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
-        //imagePicker.allowsEditing = YES;
+        imagePicker.allowsEditing = YES;
         imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         imagePicker.view.tintColor = [UIColor orangeThemeColor];
         imagePicker.navigationBar.tintColor = [UIColor orangeThemeColor];
@@ -288,8 +288,8 @@
         
     }];
 
-    //UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
-    UIImage *chosenImage = info[UIImagePickerControllerOriginalImage];
+    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+    //UIImage *chosenImage = info[UIImagePickerControllerOriginalImage];
     
     self.eventCoverPhotoView.image = chosenImage;
     

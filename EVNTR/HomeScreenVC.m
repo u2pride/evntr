@@ -20,6 +20,7 @@
 #import "ProfileVC.h"
 #import "SearchVC.h"
 #import "UIImageEffects.h"
+#import "UIColor+EVNColors.h"
 
 #import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
@@ -126,9 +127,8 @@
     
     
     //Observe Changes in the Filter Radius Distance
-    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
-    [defaultCenter addObserver:self selector:@selector(newFilterApplied:) name:@"FilterApplied" object:nil];
-    
+    //NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    //[defaultCenter addObserver:self selector:@selector(newFilterApplied:) name:@"FilterApplied" object:nil];
     
 }
 
@@ -166,12 +166,27 @@
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     filterVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     filterVC.selectedFilterDistance = [self.navigationItem.leftBarButtonItem.title intValue];
+    filterVC.delegate = self;
     
     [self.tabBarController presentViewController:filterVC animated:YES completion:nil];
     
     
 }
 
+- (void) completedFiltering:(int)radius {
+
+    [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
+    
+    self.searchRadius = radius;
+    
+    self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%d", self.searchRadius];
+    
+    //Reload Table View with New Search Radius
+    [self loadObjects];
+    
+}
+
+/*
 - (void) newFilterApplied:(NSNotification *)notification {
     
     [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
@@ -185,6 +200,7 @@
     [self loadObjects];
     
 }
+ */
 
 
 - (void) updatedLocation:(NSNotification *)notification {
@@ -372,6 +388,36 @@
         }];
         
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        
+        
+        CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:eventForCell.locationOfEvent.latitude longitude:eventForCell.locationOfEvent.longitude];
+        
+        //Getting Current Location and Comparing to Event Location
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        CLLocation *currentLocation = [[appDelegate locationManager] location];
+                
+        CLLocationDirection distance = [locationOfEvent distanceFromLocation:currentLocation];
+        
+        float distanceMiles = (float) distance * 0.000621371;
+        
+        cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2f M", distanceMiles];
+        
+        
+        UIView *roundForEventTypeView = [[UIView alloc] initWithFrame:cell.eventTypeLabel.frame];
+        roundForEventTypeView.frame = CGRectMake(0, 0, cell.eventTypeLabel.frame.size.width, cell.eventTypeLabel.frame.size.width);
+        roundForEventTypeView.center = cell.eventTypeLabel.center;
+        roundForEventTypeView.layer.cornerRadius = roundForEventTypeView.frame.size.width / 2.0f;
+        roundForEventTypeView.backgroundColor = [UIColor orangeThemeColor];
+        [cell.darkViewOverImage insertSubview:roundForEventTypeView atIndex:0];
+        
+    
+        UIView *roundForAttendersView = [[UIView alloc] initWithFrame:cell.attendersCountLabel.frame];
+        roundForAttendersView.frame = CGRectMake(0, 0, cell.attendersCountLabel.frame.size.width, cell.attendersCountLabel.frame.size.width);
+        roundForAttendersView.center = cell.attendersCountLabel.center;
+        roundForAttendersView.layer.cornerRadius = roundForAttendersView.frame.size.width / 2.0f;
+        roundForAttendersView.backgroundColor = [UIColor orangeThemeColor];
+        [cell.darkViewOverImage insertSubview:roundForAttendersView atIndex:0];
+        
         
     }
     

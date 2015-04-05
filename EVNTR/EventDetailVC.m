@@ -88,6 +88,11 @@
 
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
 
+@property (nonatomic, strong) NSTimer *timerForLocation;
+
+//Only YES if data model changes or viewing for first time.
+@property (nonatomic) BOOL needsInfoUpdate;
+
 - (IBAction)inviteFriends:(id)sender;
 - (IBAction)rsvpForEvent:(id)sender;
 - (IBAction)viewEventAttenders:(id)sender;
@@ -111,6 +116,7 @@
         _isCurrentUserAttending = NO;
         _isGuestUser = NO;
         numNetworkCallsComplete = 0;
+        _needsInfoUpdate = YES;
 
     }
     
@@ -132,10 +138,15 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
 
+    
+    NSLog(@"PARENT OBJECT ID: %@ and CURRENT USER ID: %@", self.event.parent.objectId, [PFUser currentUser].objectId);
+    
     //Determine if the Event Creator is the Current User
     if ([self.event.parent.objectId isEqualToString:[PFUser currentUser].objectId]) {
         self.isCurrentUsersEvent = YES;
-        NSLog(@"Current User's Event");
+        NSLog(@"Current User's Event ");
+        
+        
 
     }
     
@@ -150,9 +161,6 @@
     
     [super viewWillAppear:animated];
     
-    //Reset Number of Network Call
-    numNetworkCallsComplete = 0;
-    
     //Transparent Navigation Bar - Store Current State to Restore
     self.navbarShadow = self.navigationController.navigationBar.shadowImage;
     self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
@@ -162,19 +170,25 @@
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
     
-    //Create Black Loading Screen
-    self.fadeOutBlackScreen = [[UIView alloc] initWithFrame:self.view.frame];
-    self.fadeOutBlackScreen.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.85];
-    [self.view addSubview:self.fadeOutBlackScreen];
-    
-    //Progress Indicator - Start
-    self.HUD = [[MBProgressHUD alloc] init];
-    self.HUD.center = self.view.center;
-    [self.view addSubview:self.HUD];
-    [self.view bringSubviewToFront:self.HUD];
-    self.HUD.labelText = @"Event Loading";
-    [self.HUD show:YES];
-    
+    if (self.needsInfoUpdate) {
+
+        //Reset Number of Network Call
+        numNetworkCallsComplete = 0;
+        
+        //Create Black Loading Screen
+        self.fadeOutBlackScreen = [[UIView alloc] initWithFrame:self.view.frame];
+        self.fadeOutBlackScreen.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.85];
+        [self.view addSubview:self.fadeOutBlackScreen];
+        
+        //Progress Indicator - Start
+        self.HUD = [[MBProgressHUD alloc] init];
+        self.HUD.center = self.view.center;
+        [self.view addSubview:self.HUD];
+        [self.view bringSubviewToFront:self.HUD];
+        self.HUD.labelText = @"Event Loading";
+        [self.HUD show:YES];
+        
+    }
 }
 
 
@@ -186,134 +200,88 @@
     self.navigationController.navigationBar.shadowImage = self.navbarShadow;
     self.navigationController.navigationBar.translucent = YES;
     
+    [self.timerForLocation invalidate];
 }
 
 
 - (void)viewDidAppear:(BOOL)animated {
 
     [super viewDidAppear:animated];
-
-    [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
-
-    ///////////////////////////
-    //Configuring Basic Details
-    ///////////////////////////
     
-    self.eventTitle.text = self.event.title;
-    self.dateOfEventLabel.text = [self.event eventDateShortStyle];
-    self.timeOfEventLabel.text = [self.event eventTimeShortStye];
-    self.eventDescription.text = self.event.descriptionOfEvent;
-    
-    self.backgroundForPictureSection.file = self.event.coverPhoto;
-    self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
-    [self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
+    if (self.needsInfoUpdate) {
         
-        NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
+        [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
         
-        [self setBackgroundOfPictureSectionWithImage:image];
-        NSLog(@"Num 1");
-        [self networkCallComplete]; //1
+        ///////////////////////////
+        //Configuring Basic Details
+        ///////////////////////////
         
-    }];
-    
-    
-    [self setupCreatorComponent];
-    [self setupMapComponent];
-    
-    ///////////////////////
-    //Find Users on Standby
-    ///////////////////////
-
-    [EVNParseEventHelper queryForStandbyUsersWithContent:self.event ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:@"from" completion:^(NSError *error, NSArray *users) {
+        self.eventTitle.text = self.event.title;
+        self.dateOfEventLabel.text = [self.event eventDateShortStyle];
+        self.timeOfEventLabel.text = [self.event eventTimeShortStye];
+        self.eventDescription.text = self.event.descriptionOfEvent;
         
-        if (error || users == nil) {
-            self.usersOnStandby = nil;
-        } else {
-            self.usersOnStandby = users;
-        }
+        self.backgroundForPictureSection.file = self.event.coverPhoto;
+        self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
+        [self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
+            
+            NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
+            
+            [self setBackgroundOfPictureSectionWithImage:image];
+            NSLog(@"Num 1");
+            [self networkCallComplete]; //1
+            
+        }];
         
-        [self.standbyUsersCollectionView reloadData];
         
-        NSLog(@"Num2");
-        [self networkCallComplete]; //2
+        [self setupCreatorComponent];
+        [self setupMapComponent];
         
-    }];
-    
-    
-    ////////////////////////////
-    //Configuring Action Buttons
-    ////////////////////////////
-    
-    if (self.isGuestUser) {
+        ///////////////////////
+        //Find Users on Standby
+        ///////////////////////
         
-        [self.rsvpButton setTitle:@"Sign Up To Attend" forState:UIControlStateNormal];
-        [self.viewAttendingButton setTitle:@"Sign Up to View Attending Users" forState:UIControlStateNormal];
-        [self.inviteButton setTitle:@"Sign Up to Attend" forState:UIControlStateNormal];
+        [EVNParseEventHelper queryForStandbyUsersWithContent:self.event ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:nil completion:^(NSError *error, NSArray *users) {
+            
+            if (error || users == nil) {
+                self.usersOnStandby = nil;
+            } else {
+                self.usersOnStandby = users;
+            }
+            
+            [self.standbyUsersCollectionView reloadData];
+            
+            NSLog(@"Num2");
+            [self networkCallComplete]; //2
+            
+        }];
         
-        int eventType = [self.event.typeOfEvent intValue];
-        if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
-            self.standbyUsersCollectionView.hidden = YES;
-            self.standbyListTitle.hidden = YES;
-        }
         
-    } else {
+        ////////////////////////////
+        //Configuring Action Buttons
+        ////////////////////////////
         
-        int eventType = [self.event.typeOfEvent intValue];
-        NSString *username = [[PFUser currentUser] objectForKey:@"username"];
-
-        switch (eventType) {
-            case PUBLIC_EVENT_TYPE: {
-                
-                [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
-                    
-                    if (!self.isCurrentUsersEvent) {
-                        self.isCurrentUserAttending = isAttending;
-                        [self.rsvpButton setTitle:status forState:UIControlStateNormal];
-                    }
-
-                    NSLog(@"Num3");
-                    [self networkCallComplete]; //3
-                    
-                }];
-                
-                //Hide Collection View for Standby Users
+        if (self.isGuestUser) {
+            
+            [self.rsvpButton setTitle:@"Sign Up To Attend" forState:UIControlStateNormal];
+            [self.viewAttendingButton setTitle:@"Sign Up to View Attending Users" forState:UIControlStateNormal];
+            [self.inviteButton setTitle:@"Sign Up to Attend" forState:UIControlStateNormal];
+            
+            int eventType = [self.event.typeOfEvent intValue];
+            if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
                 self.standbyUsersCollectionView.hidden = YES;
                 self.standbyListTitle.hidden = YES;
-                
-                break;
             }
-            case PRIVATE_EVENT_TYPE: {
-                
-                [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+            
+        } else {
+            
+            int eventType = [self.event.typeOfEvent intValue];
+            NSString *username = [[PFUser currentUser] objectForKey:@"username"];
+            
+            switch (eventType) {
+                case PUBLIC_EVENT_TYPE: {
                     
-                    if (!self.isCurrentUsersEvent) {
-                        self.isCurrentUserAttending = isAttending;
-                        [self.rsvpButton setTitle:status forState:UIControlStateNormal];
-                    }
-                    
-                    NSLog(@"Num3");
-                    [self networkCallComplete]; //3
-                    
-                }];
-                
-                //Hide Collection View for Standby Users
-                self.standbyUsersCollectionView.hidden = YES;
-
-                
-                break;
-            }
-            case PUBLIC_APPROVED_EVENT_TYPE: {
-                
-                self.isPublicApproved = YES;
-                
-                //Determine the state of the user with the event
-                // Hasn't requested Accesss - Requested Access - Granted Acccess
-                
-                [EVNParseEventHelper queryApprovalStatusOfUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL isAttending, NSString *status) {
-                   
-                    if ([status isEqualToString:@"Error"]) {
-                        //TODO: Error Handling
-                    } else {
+                    [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
                         
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
@@ -322,17 +290,71 @@
                         
                         NSLog(@"Num3");
                         [self networkCallComplete]; //3
-                    }
-            
-                }];
-                
-                break;
-            }
-            
-            default: {
-                break;
+                        
+                    }];
+                    
+                    //Hide Collection View for Standby Users
+                    self.standbyUsersCollectionView.hidden = YES;
+                    self.standbyListTitle.hidden = YES;
+                    
+                    break;
+                }
+                case PRIVATE_EVENT_TYPE: {
+                    
+                    [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+                        
+                        if (!self.isCurrentUsersEvent) {
+                            self.isCurrentUserAttending = isAttending;
+                            [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                        }
+                        
+                        NSLog(@"Num3");
+                        [self networkCallComplete]; //3
+                        
+                    }];
+                    
+                    //Hide Collection View for Standby Users
+                    self.standbyUsersCollectionView.hidden = YES;
+                    self.standbyListTitle.hidden = YES;
+                    
+                    break;
+                }
+                case PUBLIC_APPROVED_EVENT_TYPE: {
+                    
+                    self.isPublicApproved = YES;
+                    
+                    //Determine the state of the user with the event
+                    // Hasn't requested Accesss - Requested Access - Granted Acccess
+                    
+                    [EVNParseEventHelper queryApprovalStatusOfUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+                        
+                        if ([status isEqualToString:@"Error"]) {
+                            //TODO: Error Handling
+                        } else {
+                            
+                            if (!self.isCurrentUsersEvent) {
+                                self.isCurrentUserAttending = isAttending;
+                                [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                            }
+                            
+                            NSLog(@"Num3");
+                            [self networkCallComplete]; //3
+                        }
+                        
+                    }];
+                    
+                    break;
+                }
+                    
+                default: {
+                    break;
+                }
             }
         }
+       
+        self.needsInfoUpdate = NO;
+    } else {
+        //empty.
     }
     
 }
@@ -383,11 +405,17 @@
     self.creatorPhoto.userInteractionEnabled = YES;
     [self.creatorPhoto addGestureRecognizer:tapgr];
     
-    //Add Edit Button if Creator is Current User
-    if (self.isCurrentUsersEvent) {
-        UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"editEvent"] style:UIBarButtonItemStylePlain target:self action:@selector(editEvent)];
-        self.navigationItem.rightBarButtonItem = editButton;
+    if (!self.isGuestUser) {
+        
+        //Add Edit Button if Creator is Current User
+        if (self.isCurrentUsersEvent) {
+            UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"editEvent"] style:UIBarButtonItemStylePlain target:self action:@selector(editEvent)];
+            self.navigationItem.rightBarButtonItem = editButton;
+        }
+        
     }
+    
+
     
 }
 
@@ -492,9 +520,9 @@
     numNetworkCallsComplete += 1;
     NSLog(@"NumNetworkCallsComplete: %d", numNetworkCallsComplete);
     
-    if (numNetworkCallsComplete == 4) {
+    if (numNetworkCallsComplete == 5) {
         
-        [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(recheckPublicApprovedAccess) userInfo:nil repeats:NO];
+        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recheckPublicApprovedAccess) userInfo:nil repeats:NO];
         
         [UIView animateWithDuration:1.0 animations:^{
             
@@ -520,7 +548,7 @@
         
         //Randomize the Map View and Have It Constantly Scroll
         [self randomLocation];
-        [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomLocation) userInfo:nil repeats:YES];
+        self.timerForLocation = [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomLocation) userInfo:nil repeats:YES];
         
         self.entireMapView.address = [NSString stringWithFormat:@"Unknown"];
         self.entireMapView.distanceAway = 0.0f;
@@ -768,6 +796,7 @@
     
     //Pass the Event
     allEventPictures.eventObject = self.event;
+    allEventPictures.hidesBottomBarWhenPushed = YES;
     //allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
     
     if (self.isCurrentUsersEvent) {

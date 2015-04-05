@@ -10,13 +10,14 @@
 
 @protocol PeopleVCDelegate;
 @class EventAddVC;
+#import "EventObject.h"
 
 @interface PeopleVC : UICollectionViewController
 
 @property (nonatomic, weak) id<PeopleVCDelegate> delegate;
 @property (nonatomic, assign) int typeOfUsers;
 @property (nonatomic, strong) PFUser *profileUsername;
-@property (nonatomic, strong) PFObject *eventToViewAttenders;
+@property (nonatomic, strong) EventObject *eventToViewAttenders;
 
 @end
 
