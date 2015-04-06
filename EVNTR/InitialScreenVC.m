@@ -100,10 +100,12 @@
     [self.loginButton addGestureRecognizer:tapgr2];
     
     [self.moviePlayer play];
-        
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopMoviePlayer) name:@"StopMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:@"RestartMoviePlayer" object:nil];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
 
@@ -154,7 +156,7 @@
     
     [super viewWillAppear:animated];
     NSLog(@"ViewWillAppear Called");
-    
+
 }
 
 
@@ -184,7 +186,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
     [self leavingTransitionAnimations];
-
+    
     if ([segue.identifier isEqualToString:@"InitialToLogin"]) {
         
         LogInVC *loginVC = (LogInVC *) [segue destinationViewController];
@@ -306,7 +308,7 @@
 }
 
 - (void)backFromForeground {
-    NSLog(@"Back from foreground notification");
+    NSLog(@"Back from foreground notification or restart notificaiton");
     [self.moviePlayer play];
 }
 
@@ -315,15 +317,18 @@
     NSLog(@"Stop movie player and remove observers");
     [self.moviePlayer stop];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
-    
 }
 
 -(void)dealloc
 {
     NSLog(@"initialscreenvc is being deallocated");
     //super dealloc is called automatically with ARC
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"StopMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RestartMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
+
+
 }
 
 

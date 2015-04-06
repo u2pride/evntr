@@ -89,6 +89,7 @@
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
 
 @property (nonatomic, strong) NSTimer *timerForLocation;
+@property (nonatomic) BOOL shouldRestoreNavBar;
 
 //Only YES if data model changes or viewing for first time.
 @property (nonatomic) BOOL needsInfoUpdate;
@@ -117,6 +118,7 @@
         _isGuestUser = NO;
         numNetworkCallsComplete = 0;
         _needsInfoUpdate = YES;
+        _shouldRestoreNavBar = YES;
 
     }
     
@@ -161,11 +163,18 @@
     
     [super viewWillAppear:animated];
     
-    //Transparent Navigation Bar - Store Current State to Restore
-    self.navbarShadow = self.navigationController.navigationBar.shadowImage;
-    self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
+    NSLog(@"Event invitedUsers: %@", self.event.invitedUsers);
+    
+    if (self.shouldRestoreNavBar) {
+        //Transparent Navigation Bar - Store Current State to Restore
+        self.navbarShadow = self.navigationController.navigationBar.shadowImage;
+        self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                      forBarMetrics:UIBarMetricsDefault];
+    } else {
+        self.shouldRestoreNavBar = YES;
+    }
+
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
@@ -195,10 +204,15 @@
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = self.navbarShadow;
-    self.navigationController.navigationBar.translucent = YES;
+    NSLog(@"Should restore: %@", [NSNumber numberWithBool:self.shouldRestoreNavBar]);
+    
+    if (self.shouldRestoreNavBar) {
+    
+        [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
+                                                      forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = self.navbarShadow;
+        self.navigationController.navigationBar.translucent = YES;
+    }
     
     [self.timerForLocation invalidate];
 }
@@ -662,12 +676,20 @@
 - (IBAction)inviteFriends:(id)sender {
     
     if (!self.isGuestUser) {
+        
+        self.shouldRestoreNavBar = NO;
+        
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
         invitePeopleVC.profileUsername = [PFUser currentUser];
+        invitePeopleVC.usersAlreadyInvited = self.event.invitedUsers;
         invitePeopleVC.delegate = self;
         
-        [self.navigationController pushViewController:invitePeopleVC animated:YES];
+        UINavigationController *embedInThisVC = [[UINavigationController alloc] initWithRootViewController:invitePeopleVC];
+        
+        [self presentViewController:embedInThisVC animated:YES completion:nil];
+        
+        //[self.navigationController pushViewController:invitePeopleVC animated:YES];
     }
 }
 
@@ -874,10 +896,18 @@
 
 - (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
     
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    //[self.navigationController popViewControllerAnimated:YES];
     
     [EVNParseEventHelper inviteUsers:selectedPeople toEvent:self.event completion:^(BOOL success) {
-        //empty
+        NSLog(@"finished inviting users with : %@", [NSNumber numberWithBool:success]);
+    }];
+    
+    [self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        NSLog(@"Saved invite pfrelations");
+        
     }];
 
 }

@@ -275,12 +275,56 @@
             success = (succeeded) ? YES : NO;
             
             if (error) {
-                NSLog(@"%@", error);
+                NSLog(@"Developer Note:  Error saving invitations: %@", error);
             }
+        }];
+        
+        PFRelation *invitedUsersRelation = [event relationForKey:@"invitedUsers"];
+        [invitedUsersRelation addObject:user];
+        [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            success = (succeeded) ? YES : NO;
+
+            if (succeeded) {
+                //empty
+            }
+            
         }];
     }
     
     completionBlock(success);
+    
+}
+
++ (void) queryForUsersFollowing:(PFUser *)user completion:(void (^)(NSArray *))completionBlock {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+    [query whereKey:@"from" equalTo:user];
+    [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [query includeKey:@"to"];
+    [query orderByAscending:@"createdAt"];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+        
+        NSMutableArray *finalResults = [[NSMutableArray alloc] init];
+        
+        if (!error) {
+            for (PFObject *object in usersFound) {
+                
+                PFUser *userFollowing = object[@"to"];
+                
+                if (![finalResults containsObject:userFollowing]) {
+                    [finalResults addObject:userFollowing];
+                } else {
+                    NSLog(@"Developer Note:  Duplicate attendee found.");
+                }
+            }
+        }
+
+        completionBlock(finalResults);
+        
+    }];
+
     
 }
 

@@ -2956,7 +2956,7 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="takePicture" translatesAutoresizingMaskIntoConstraints="NO" id="r1A-qW-tQC">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="takePicture" translatesAutoresizingMaskIntoConstraints="NO" id="r1A-qW-tQC">
                                 <rect key="frame" x="82" y="278" width="156" height="156"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="r1A-qW-tQC" secondAttribute="height" multiplier="1:1" id="6Qy-th-Mie"/>

@@ -36,4 +36,7 @@
 
 + (void) inviteUsers:(NSArray *)users toEvent:(EventObject *)event completion:(void (^)(BOOL success))completionBlock;
 
++ (void) queryForUsersFollowing:(PFUser *)user completion:(void (^)(NSArray *following))completionBlock;
+
+
 @end

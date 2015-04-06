@@ -114,6 +114,7 @@
     }
     
     
+    
 }
 
 
@@ -164,6 +165,14 @@
     }];
     
     
+}
+
+#pragma mark - Alert View Delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RestartMoviePlayer" object:nil];
+
 }
 
 
@@ -550,6 +559,8 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
+
+
 }
 
 - (void) resetPasswordCanceled {
@@ -557,6 +568,7 @@
     NSLog(@"Canceled Reset");
 
     [self cleanUpBeforeTransition];
+    
 
     /*
     [UIView animateWithDuration:1.0f animations:^{
@@ -585,8 +597,6 @@
         [self.blurMessage removeFromSuperview];
         [self.blurOutLogInScreen removeFromSuperview];
         [self.shimmerView removeFromSuperview];
-        //Stop Movie Player on Initial Screen
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];
 
         
     }];
@@ -596,6 +606,7 @@
 -(void)dealloc
 {
     NSLog(@"loginvc is being deallocated");
+
 
 }
 

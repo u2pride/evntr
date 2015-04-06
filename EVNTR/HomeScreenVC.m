@@ -77,6 +77,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //stop Movie Player on Initial Screen
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];
+
+    
     //probably already wired up.    
     self.tableView.delegate = self;
     
@@ -252,9 +256,16 @@
     }
     */
     
+    NSTimeZone *outputTimeZone = [NSTimeZone localTimeZone];
+    NSDateFormatter *outputDateFormatter = [[NSDateFormatter alloc] init];
+    [outputDateFormatter setTimeZone:outputTimeZone];
+    [outputDateFormatter setDateStyle:NSDateFormatterFullStyle];
+    [outputDateFormatter setTimeStyle:NSDateFormatterFullStyle];
+    
+    
     for (EventObject *objectNew in self.objects) {
         
-        NSLog(@"Objects New - %@", objectNew);
+        NSLog(@"Objects Date - %@ and Current: %@", [outputDateFormatter stringFromDate:objectNew.dateOfEvent], [outputDateFormatter stringFromDate:[NSDate date]]);
         
         [self.allEvents addObject:objectNew];
         
@@ -302,6 +313,10 @@
 
             [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
             [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:self.searchRadius];
+            
+            NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
+            [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
+            [eventsQuery orderByAscending:@"dateOfEvent"];
             
             break;
         }

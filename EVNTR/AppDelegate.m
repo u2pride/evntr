@@ -56,6 +56,7 @@
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
+    
     //Background Fetching for Server Updates
     [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
     

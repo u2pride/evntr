@@ -11,7 +11,7 @@
 #import <UIKit/UIKit.h>
 #import "ResetPasswordModalVC.h"
 
-@interface LogInVC : UIViewController <ResetPasswordDelegate, UITextFieldDelegate>
+@interface LogInVC : UIViewController <ResetPasswordDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) id<NewUserFacebookDelegate> delegate;
 
