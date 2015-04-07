@@ -11,10 +11,20 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 
+@protocol EventPicturesProtocol;
+
 @interface EventPicturesVC : UICollectionViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, PictureViewerDelegate>
 
 @property (nonatomic) BOOL allowsAddingPictures;
 
 @property (strong, nonatomic) PFObject *eventObject;
+@property (nonatomic, strong) id <EventPicturesProtocol> delegate;
+
+@end
+
+
+@protocol EventPicturesProtocol <NSObject>
+
+- (void) newPictureAdded;
 
 @end

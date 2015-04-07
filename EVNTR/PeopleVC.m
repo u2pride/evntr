@@ -345,10 +345,7 @@
         }];
         
     }
-    
-    //Update Font
-    cell.personTitle.font = [UIFont fontWithName:@"Lato-Regular" size:12.0];
-    
+        
     return cell;
 }
 

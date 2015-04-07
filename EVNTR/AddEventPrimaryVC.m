@@ -119,7 +119,8 @@
         
     }
     
-    */
+     */
+
     
     if (self.eventToEdit) {
         
@@ -128,13 +129,19 @@
         [self.eventToEdit coverImage:^(UIImage *image) {
             self.eventCoverPhotoView.image = image;
         }];
+        
+        NSLog(@"CoverPhotoFile Before Edit: %@", self.eventToEdit.coverPhoto);
         self.coverPhotoFile = self.eventToEdit.coverPhoto;
         
         isEditing = YES;
     
         self.title = @"Edit Event";
         self.navigationItem.leftBarButtonItems = nil;
+        
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
+        self.navigationItem.leftBarButtonItem = cancelButton;
     }
+    
     
 }
 
@@ -296,6 +303,11 @@
     NSData *pictureData = UIImageJPEGRepresentation(chosenImage, 0.5);
     self.coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
     
+    //Editing Event - Add New Cover Photo to the Event
+    if (isEditing) {
+        self.eventToEdit.coverPhoto = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
+    }
+    
     //Restore Selections
     self.eventTitleField.text = [stateSnapshot objectForKey:@"kTitle"];
     self.selectedEventType = [[stateSnapshot objectForKey:@"kType"] intValue];
@@ -414,9 +426,7 @@
 
 - (void) eventEditingComplete:(EventObject *)updatedEvent {
     NSLog(@"Event Editing Complete");
-    
-    [self.navigationController popViewControllerAnimated:NO];
-    
+        
     id<EventModalProtocol> strongDelegate = self.delegate;
     
     if ([strongDelegate respondsToSelector:@selector(completedEventEditing:)]) {
@@ -430,8 +440,6 @@
 - (void) eventEditingCanceled {
     NSLog(@"Event Editing Canceled");
     
-    [self.navigationController popViewControllerAnimated:NO];
-
     id<EventModalProtocol> strongDelegate = self.delegate;
     
     if ([strongDelegate respondsToSelector:@selector(canceledEventEditing)]) {

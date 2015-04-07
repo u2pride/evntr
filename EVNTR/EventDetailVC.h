@@ -7,6 +7,7 @@
 //
 
 #import "EventObject.h"
+#import "EventPicturesVC.h"
 #import "PeopleVC.h"
 #import "PictureFullScreenVC.h"
 #import "AddEventPrimaryVC.h"
@@ -17,10 +18,19 @@
 #import <ParseUI/ParseUI.h>
 #import <UIKit/UIKit.h>
 
+@protocol EventDetailProtocol;
+
 //TODO - ensure all protocols are necessary
-@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate, EventModalProtocol, EventCreationCompleted>
+@interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate, EventModalProtocol, EventCreationCompleted, EventPicturesProtocol>
 
 @property (nonatomic, strong) EventObject *event;
+@property (nonatomic, strong) id <EventDetailProtocol> delegate;
+
+@end
 
 
+@protocol EventDetailProtocol <NSObject>
+
+- (void) userCompletedEventEditing;
+- (void) rsvpStatusUpdatedToGoing:(BOOL)rsvp;
 @end

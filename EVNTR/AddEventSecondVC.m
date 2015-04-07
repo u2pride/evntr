@@ -13,6 +13,7 @@
 #import "EVNCustomButton.h"
 #import "EVNDefaultButton.h"
 #import "EVNLocationButton.h"
+#import "MBProgressHUD.h"
 
 @interface AddEventSecondVC ()
 
@@ -119,6 +120,8 @@
                     
                     //self.event[@"coverPhoto"] = self.event.coverPhoto;
                     
+                    self.event[@"coverPhoto"] = self.event.coverPhoto;
+                    
                     //Now Save Event to Parse
                     [self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         
@@ -129,12 +132,35 @@
                             //Notify VCs of new event creation - TODO: updates profile view.
                             [[NSNotificationCenter defaultCenter] postNotificationName:kEventCreated object:nil userInfo:nil];
                             
-                            id<EventCreationCompleted> strongDelegate = self.delegate;
+                            //Progress Indicator - Start
                             
-                            if ([strongDelegate respondsToSelector:@selector(eventEditingComplete:)]) {
+                            UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+                            
+                            MBProgressHUD *HUD = [[MBProgressHUD alloc] init];
+                            HUD.center = window.center;
+                            HUD.dimBackground = YES;
+                            [window addSubview:HUD];
+                            HUD.labelText = @"Updating Event";
+                            [HUD show:YES];
+                            
+                            
+                            
+                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 2.0 * NSEC_PER_SEC);
+                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                 
-                                [strongDelegate eventEditingComplete:self.event];
-                            }
+                                [self.navigationController popViewControllerAnimated:YES];
+                                
+                                id<EventCreationCompleted> strongDelegate = self.delegate;
+                                
+                                if ([strongDelegate respondsToSelector:@selector(eventEditingComplete:)]) {
+                                    
+                                    [strongDelegate eventEditingComplete:self.event];
+                                }
+                                
+                                [HUD hide:YES afterDelay:1.0];
+                            });
+                            
+    
                             
                             
                         } else {
@@ -144,7 +170,9 @@
                             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Error updating event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
                             
                             [errorAlert show];
-                                                        
+                            
+                            [self.navigationController popViewControllerAnimated:YES];
+                            
                             id<EventCreationCompleted> strongDelegate = self.delegate;
                             
                             if ([strongDelegate respondsToSelector:@selector(eventEditingCanceled)]) {

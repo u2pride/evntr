@@ -26,7 +26,6 @@
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
 
-#import "EventPicturesVC.h"
 
 #import <AddressBookUI/AddressBookUI.h>
 #import <Parse/Parse.h>
@@ -66,8 +65,8 @@
 @property (nonatomic, strong) NSArray *usersOnStandby;
 
 //UI & Transitions
-@property (nonatomic, strong) UIImage *navBarBackground;
-@property (nonatomic, strong) UIImage *navbarShadow;
+//@property (nonatomic, strong) UIImage *navBarBackground;
+//@property (nonatomic, strong) UIImage *navbarShadow;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
 //Loading Helpers
@@ -167,14 +166,15 @@
     
     if (self.shouldRestoreNavBar) {
         //Transparent Navigation Bar - Store Current State to Restore
-        self.navbarShadow = self.navigationController.navigationBar.shadowImage;
-        self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
-        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                      forBarMetrics:UIBarMetricsDefault];
+        //self.navbarShadow = self.navigationController.navigationBar.shadowImage;
+        //self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+
     } else {
         self.shouldRestoreNavBar = YES;
     }
 
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
@@ -208,9 +208,12 @@
     
     if (self.shouldRestoreNavBar) {
     
-        [self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
-                                                      forBarMetrics:UIBarMetricsDefault];
-        self.navigationController.navigationBar.shadowImage = self.navbarShadow;
+        [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        [self.navigationController.navigationBar setShadowImage:nil];
+
+        //[self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
+         //                                             forBarMetrics:UIBarMetricsDefault];
+        //self.navigationController.navigationBar.shadowImage = self.navbarShadow;
         self.navigationController.navigationBar.translucent = YES;
     }
     
@@ -254,22 +257,29 @@
         ///////////////////////
         //Find Users on Standby
         ///////////////////////
-        
-        [EVNParseEventHelper queryForStandbyUsersWithContent:self.event ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:nil completion:^(NSError *error, NSArray *users) {
+        int eventType = [self.event.typeOfEvent intValue];
+
+        if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
             
-            if (error || users == nil) {
-                self.usersOnStandby = nil;
-            } else {
-                self.usersOnStandby = users;
-            }
+            [EVNParseEventHelper queryForStandbyUsersWithContent:self.event ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:nil completion:^(NSError *error, NSArray *users) {
+                
+                if (error || users == nil) {
+                    self.usersOnStandby = nil;
+                } else {
+                    self.usersOnStandby = users;
+                }
+                
+                [self.standbyUsersCollectionView reloadData];
+                
+                NSLog(@"Num2");
+                [self networkCallComplete]; //2
+                
+            }];
             
-            [self.standbyUsersCollectionView reloadData];
-            
-            NSLog(@"Num2");
-            [self networkCallComplete]; //2
-            
-        }];
-        
+        } else {
+            //collection view will see 0 when self.usersOnStandby.count is run
+            self.usersOnStandby = nil;
+        }
         
         ////////////////////////////
         //Configuring Action Buttons
@@ -730,6 +740,7 @@
         PFRelation *attendersRelation = self.event.attenders;
         self.rsvpButton.enabled = NO;
         
+        //Updating Relation
         if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
             
             [attendersRelation removeObject:[PFUser currentUser]];
@@ -747,7 +758,7 @@
         }
         
         
-        //First Part is Adding Relation - This is Attending to Activity Table (choose one?)
+        //Updating the Activity Table (choose one?)
         if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
             
             [EVNParseEventHelper unRSVPUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
@@ -755,6 +766,12 @@
                 if (success) {
                     self.isCurrentUserAttending = NO;
                     [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+                    
+                    //Notify Table Cell of Update in RSVP Count
+                    id<EventDetailProtocol> strongDelegate = self.delegate;
+                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
+                        [strongDelegate rsvpStatusUpdatedToGoing:NO];
+                    }
                 } else {
                     //TODO: PFAnalytics
                 }
@@ -770,6 +787,12 @@
                 if (success) {
                     self.isCurrentUserAttending = YES;
                     [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+                    
+                    //Notify Table Cell of Update in RSVP Count
+                    id<EventDetailProtocol> strongDelegate = self.delegate;
+                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
+                        [strongDelegate rsvpStatusUpdatedToGoing:YES];
+                    }
                 } else {
                     //TODO: Log Error with PFAnalytics
                 }
@@ -818,6 +841,7 @@
     
     //Pass the Event
     allEventPictures.eventObject = self.event;
+    allEventPictures.delegate = self;
     allEventPictures.hidesBottomBarWhenPushed = YES;
     //allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
     
@@ -851,35 +875,55 @@
 }
 */
 
-
+//update the view with the new event details - not pulling from parse
 - (void) completedEventEditing:(EventObject *)updatedEvent {
-    NSLog(@"Back to Event Details - completed event editing");
-    
-    //create an event PFObject subclass.
-    //pass that when you edit an event.
-    //use a notification when the editing is complete - actually maybe just use protocols and pass the event.
     
     
-    //update the view with the new event details - not pulling from parse
     self.eventTitle.text = updatedEvent.title;
-    //include event type updating
+    self.eventDescription.text = updatedEvent.descriptionOfEvent;
+
+    //Update the Event Based on the Event Type - Currently just showing/hiding standby view and requerying for users
+    if ([updatedEvent.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE) {
+        self.standbyUsersCollectionView.hidden = NO;
+        self.standbyListTitle.hidden = NO;
+        
+        [EVNParseEventHelper queryForStandbyUsersWithContent:updatedEvent ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:nil completion:^(NSError *error, NSArray *users) {
+            
+            if (error || users == nil) {
+                self.usersOnStandby = nil;
+            } else {
+                self.usersOnStandby = users;
+            }
+            
+            [self.standbyUsersCollectionView reloadData];
+        }];
+        
+    } else {
+        self.standbyUsersCollectionView.hidden = YES;
+        self.standbyListTitle.hidden = YES;
+    }
+
     
+    
+    //Not Working
     [updatedEvent coverImage:^(UIImage *image) {
         
         [self setBackgroundOfPictureSectionWithImage:image];
     }];
     
+    //Update Map with New Event Location
+    [self setupMapComponent];
     
-    self.eventDescription.text = updatedEvent.descriptionOfEvent;
-    //self.entireMapView.eventLocation = updatedEvent.eventLocationName;
-    self.entireMapView.address = @"";
-    //self.eventDate = updatedEvent.date;
+    //Update Date and Time
+    self.dateOfEventLabel.text = [self.event eventDateShortStyle];
+    self.timeOfEventLabel.text = [self.event eventTimeShortStye];
     
+    id<EventDetailProtocol> strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(userCompletedEventEditing)]) {
+        [strongDelegate userCompletedEventEditing];
+    }
     
-    //[self configureWithEvent:event];
-    
-
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 
     
 }
@@ -888,7 +932,7 @@
 - (void) canceledEventEditing {
     NSLog(@"Back to Event Details - canceled event editing");
     
-    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController popViewControllerAnimated:YES];
 
 }
 
@@ -929,6 +973,16 @@
     MKCoordinateRegion region = MKCoordinateRegionMake(randomLocation.coordinate, MKCoordinateSpanMake(10, 10));
     
     [self.entireMapView.mapView setRegion:region animated:YES];
+    
+}
+
+
+#pragma mark - Event Pictures Protocol
+- (void) newPictureAdded {
+    
+    NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
+    int newCount = [currentPictureCountString intValue] + 1;
+    self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
     
 }
 

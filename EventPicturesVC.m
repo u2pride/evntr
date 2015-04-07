@@ -242,6 +242,14 @@ static NSString * const reuseIdentifier = @"Cell";
                     
                     [self.collectionView reloadData];
                     
+                    //Notify Event Details VC of New Picture
+                    id<EventPicturesProtocol> strongDelegate = self.delegate;
+                    
+                    if ([strongDelegate respondsToSelector:@selector(newPictureAdded)]) {
+                        
+                        [strongDelegate newPictureAdded];
+                    }
+                    
                     //[NSTimer scheduledTimerWithTimeInterval:2.0 target:self.pictureCollectionView selector:@selector(reloadData) userInfo:nil repeats:NO];
                 }
                 

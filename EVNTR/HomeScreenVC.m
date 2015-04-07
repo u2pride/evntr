@@ -36,10 +36,10 @@
 @property (nonatomic) int searchRadius;
 
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
-
 @property (nonatomic, strong) NSMutableArray *allEvents;
-
 @property (nonatomic, strong) BBBadgeBarButtonItem *filterBarButton;
+
+@property (nonatomic, strong) NSIndexPath *indexPathOfEventInDetailView;
 
 @end
 
@@ -358,25 +358,22 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    NSLog(@"Updating the Cell");
+    
     static NSString *cellIdentifier = @"eventCell";
     
     EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    EventObject *eventForCell = [self.allEvents objectAtIndex:indexPath.row];
+    EventObject *event = [self.allEvents objectAtIndex:indexPath.row];
     
     
     if (cell) {
         
-        cell.eventTitle.text = eventForCell.title;
-        cell.eventTypeLabel.text = [eventForCell eventTypeForHomeView];
-        cell.dateOfEventLabel.text = [eventForCell eventDateShortStyle];
-        cell.timeOfEventLabel.text = [eventForCell eventTimeShortStye];
-        
         cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
-        cell.eventCoverImage.file = (PFFile *) eventForCell.coverPhoto;
-        [cell.eventCoverImage loadInBackground];
-
-    
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        
+        [self refreshUIForCell:cell withEvent:event];
+        
         //OLD start
         
         /*
@@ -398,25 +395,6 @@
         
         //OLD end
         
-        [eventForCell totalNumberOfAttendersInBackground:^(int count) {
-            cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", count];
-        }];
-        
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        
-        
-        CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:eventForCell.locationOfEvent.latitude longitude:eventForCell.locationOfEvent.longitude];
-        
-        //Getting Current Location and Comparing to Event Location
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        CLLocation *currentLocation = [[appDelegate locationManager] location];
-                
-        CLLocationDirection distance = [locationOfEvent distanceFromLocation:currentLocation];
-        
-        float distanceMiles = (float) distance * 0.000621371;
-        
-        cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2f M", distanceMiles];
-        
         
         UIView *roundForEventTypeView = [[UIView alloc] initWithFrame:cell.eventTypeLabel.frame];
         roundForEventTypeView.frame = CGRectMake(0, 0, cell.eventTypeLabel.frame.size.width, cell.eventTypeLabel.frame.size.width);
@@ -437,6 +415,38 @@
     }
     
     return cell;
+    
+}
+
+
+- (void) refreshUIForCell:(EventTableCell *)cell withEvent:(EventObject *)eventForCell {
+    
+    cell.eventTitle.text = eventForCell.title;
+    cell.eventTypeLabel.text = [eventForCell eventTypeForHomeView];
+    cell.dateOfEventLabel.text = [eventForCell eventDateShortStyle];
+    cell.timeOfEventLabel.text = [eventForCell eventTimeShortStye];
+    
+    cell.eventCoverImage.file = (PFFile *) eventForCell.coverPhoto;
+    [cell.eventCoverImage loadInBackground];
+
+    
+    [eventForCell totalNumberOfAttendersInBackground:^(int count) {
+        cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", count];
+    }];
+    
+    
+    
+    CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:eventForCell.locationOfEvent.latitude longitude:eventForCell.locationOfEvent.longitude];
+    
+    //Getting Current Location and Comparing to Event Location
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    CLLocation *currentLocation = [[appDelegate locationManager] location];
+    
+    CLLocationDirection distance = [locationOfEvent distanceFromLocation:currentLocation];
+    
+    float distanceMiles = (float) distance * 0.000621371;
+    
+    cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2f M", distanceMiles];
     
 }
 
@@ -517,7 +527,7 @@
     cell.alpha = 0;
     cell.transform = CGAffineTransformMakeScale(0.01, 0.01);
     
-    [UIView animateWithDuration:0.3 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:0.65 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction animations:^{
         
         cell.alpha = 1;
         cell.transform = CGAffineTransformIdentity;
@@ -556,6 +566,41 @@
     
 }
 
+#pragma mark - Event Details Delegate Methods
+
+- (void) userCompletedEventEditing {
+    NSLog(@"userCompletedEventEditing");
+    
+    EventTableCell *cellToUpdate = (EventTableCell *) [self.tableView cellForRowAtIndexPath:self.indexPathOfEventInDetailView];
+    EventObject *event = [self.allEvents objectAtIndex:self.indexPathOfEventInDetailView.row];
+
+    [self refreshUIForCell:cellToUpdate withEvent:event];
+    
+    NSLog(@"CellToUpdates title: %@", cellToUpdate);
+    
+}
+
+- (void) rsvpStatusUpdatedToGoing:(BOOL) rsvp {
+    
+    EventTableCell *cellToUpdate = (EventTableCell *) [self.tableView cellForRowAtIndexPath:self.indexPathOfEventInDetailView];
+
+    if (rsvp) {
+        //increment
+        NSString *currentCount = cellToUpdate.attendersCountLabel.text;
+        int newCount = [currentCount intValue] + 1;
+        cellToUpdate.attendersCountLabel.text = [NSString stringWithFormat:@"%d", newCount];
+
+    } else {
+        //decrement
+        NSString *currentCount = cellToUpdate.attendersCountLabel.text;
+        int newCount = [currentCount intValue] - 1;
+        cellToUpdate.attendersCountLabel.text = [NSString stringWithFormat:@"%d", newCount];
+    }
+    
+    
+    
+}
+
 
 #pragma mark - Navigation
 
@@ -568,9 +613,10 @@
         
         NSIndexPath *indexPathOfSelectedItem = [self.tableView indexPathForSelectedRow];
         EventDetailVC *eventDetailVC = segue.destinationViewController;
+        self.indexPathOfEventInDetailView = indexPathOfSelectedItem;
         
         eventDetailVC.event = [self.allEvents objectAtIndex:indexPathOfSelectedItem.row];
-        
+        eventDetailVC.delegate = self;
         //PFObject *event = [self.objects objectAtIndex:indexPathOfSelectedItem.row];
         //TODO: Better way to select object and transition to new VC
         //PFObject *selectedObject = [self objectAtIndexPath:indexPath];

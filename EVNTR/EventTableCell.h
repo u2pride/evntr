@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <ParseUI/ParseUI.h>
 
-
 @interface EventTableCell : PFTableViewCell
 
 @property (weak, nonatomic) IBOutlet UIView *roundedContaingView;
