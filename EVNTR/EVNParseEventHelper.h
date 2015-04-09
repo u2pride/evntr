@@ -38,5 +38,8 @@
 
 + (void) queryForUsersFollowing:(PFUser *)user completion:(void (^)(NSArray *following))completionBlock;
 
++ (void) queryForImagesFromEvent:(EventObject *)event completion:(void (^)(NSArray *images))completionBlock;
+
++ (void) estimateNumberOfPhotosForEvent:(EventObject *)event completion:(void (^)(int count))completionBlock;
 
 @end

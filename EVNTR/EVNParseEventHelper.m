@@ -329,5 +329,38 @@
 }
 
 
++ (void) queryForImagesFromEvent:(EventObject *)event completion:(void (^)(NSArray *))completionBlock {
+    
+    PFQuery *imagesQuery = [PFQuery queryWithClassName:@"Pictures"];
+    [imagesQuery includeKey:@"takenBy"]; /* Include the PFUser who took the photo */
+    [imagesQuery whereKey:@"eventParent" equalTo:event];
+    [imagesQuery orderByDescending:@"createdAt"];
+    
+    [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+       
+        completionBlock(objects);
+        
+    }];
+    
+}
 
+
++ (void) estimateNumberOfPhotosForEvent:(EventObject *)event completion:(void (^)(int))completionBlock {
+    
+    PFQuery *imagesQuery = [PFQuery queryWithClassName:@"Pictures"];
+    [imagesQuery includeKey:@"takenBy"]; /* Include the PFUser who took the photo */
+    [imagesQuery whereKey:@"eventParent" equalTo:event];
+    [imagesQuery orderByAscending:@"createdAt"];
+    
+    [imagesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
+       
+        completionBlock(number);
+        
+    }];
+     
+     
+     
+}
+     
+     
 @end

@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EventObject.h"
 #import "PictureFullScreenVC.h"
 
 #import <UIKit/UIKit.h>
@@ -17,7 +18,7 @@
 
 @property (nonatomic) BOOL allowsAddingPictures;
 
-@property (strong, nonatomic) PFObject *eventObject;
+@property (strong, nonatomic) EventObject *eventObject;
 @property (nonatomic, strong) id <EventPicturesProtocol> delegate;
 
 @end
@@ -26,5 +27,6 @@
 @protocol EventPicturesProtocol <NSObject>
 
 - (void) newPictureAdded;
+- (void) pictureRemoved;
 
 @end

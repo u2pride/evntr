@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+@import MessageUI;
 
-@interface SettingsVC : UIViewController
+
+@interface SettingsVC : UIViewController <MFMailComposeViewControllerDelegate, UINavigationControllerDelegate>
 
 
 - (IBAction)logOut:(id)sender;
+- (IBAction)submitFeedback:(id)sender;
 
 - (IBAction)evntr1Profile:(id)sender;
 - (IBAction)envtr2Profile:(id)sender;

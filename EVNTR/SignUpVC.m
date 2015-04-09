@@ -571,7 +571,6 @@ typedef enum {
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     
-    NSLog(@"KEYBOARDWILL SHOW");
     
     //NSValue * keyboardEndFrame;
     CGRect    screenRect;
@@ -615,7 +614,6 @@ typedef enum {
 
 - (void)keyboardWillHide:(NSNotification *)notification {
     
-    NSLog(@"KEYBOARDWILL HIDE");
     
     //NSValue * keyboardEndFrame;
     CGRect    screenRect;
@@ -675,11 +673,11 @@ typedef enum {
 }
 
 
+
 #pragma mark - private methods
 
 - (void) cleanUpBeforeTransition {
     
-
     [UIView animateWithDuration:1.0 animations:^{
         
         self.blurMessage.alpha = 0;

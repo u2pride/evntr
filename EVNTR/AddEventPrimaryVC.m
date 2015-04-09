@@ -29,6 +29,7 @@
 @property (strong, nonatomic) IBOutlet EVNButton *nextButton;
 
 @property (weak, nonatomic) IBOutlet UIImageView *eventCoverPhotoView;
+@property (nonatomic, strong) UIView *tapToDismissView;
 
 
 @property (nonatomic, strong) PFFile *coverPhotoFile;
@@ -143,7 +144,11 @@
     }
     
     
+
+    
 }
+
+
 
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -378,6 +383,30 @@
     
 }
 
+#pragma mark - Tap To Dismiss Keyboard
+- (void) textFieldDidBeginEditing:(UITextField *)textField {
+    
+    self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.tapToDismissView.backgroundColor = [UIColor clearColor];
+    
+    [self.view addSubview:self.tapToDismissView];
+    
+    //Gesture Recognizer to Dismiss Keyboard on Tap in View
+    UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    tapToDismiss.cancelsTouchesInView = YES;
+    [self.tapToDismissView addGestureRecognizer:tapToDismiss];
+    
+}
+
+- (void) textFieldDidEndEditing:(UITextField *)textField {
+    [self.tapToDismissView removeFromSuperview];
+    
+}
+
+- (void)tapToDismissKeyboard {
+    [self.view endEditing:YES];
+}
+
 
 #pragma mark - Delegate Methods for EventCreation
 
@@ -451,17 +480,12 @@
 
 
 
-#pragma mark --
+#pragma mark -- Button Press on Storyboard
 
 
 - (IBAction)canceledEventCreation:(id)sender {
     
-    id<EventModalProtocol> strongDelegate = self.delegate;
-    
-    if ([strongDelegate respondsToSelector:@selector(canceledEventCreation)]) {
-        
-        [strongDelegate canceledEventCreation];
-    }
+    [self eventCreationCanceled];
 }
 
 

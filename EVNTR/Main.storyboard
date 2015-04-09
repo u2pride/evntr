@@ -18,6 +18,10 @@
             <string>Lato-Bold</string>
             <string>Lato-Bold</string>
             <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
+            <string>Lato-Bold</string>
         </mutableArray>
         <mutableArray key="Lato-Light.ttf">
             <string>Lato-Light</string>
@@ -55,8 +59,19 @@
             <string>Lato-Light</string>
             <string>Lato-Light</string>
             <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
         </mutableArray>
         <mutableArray key="Lato-Regular.ttf">
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
@@ -153,6 +168,15 @@
                                     <constraint firstAttribute="height" constant="40" id="dbH-eS-xEJ"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cvw-kO-asO">
+                                <rect key="frame" x="137" y="269" width="46" height="30"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="uyk-pA-XEY" kind="show" id="aO5-R0-C3d"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -652,28 +676,22 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="WELCOME TO EVNTR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wj2-es-MFc">
-                                <rect key="frame" x="43" y="46" width="235" height="36"/>
-                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The new social events app that's (actually) trying to put the event back into the social experience. " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvR-n1-R0o">
+                                <rect key="frame" x="16" y="89" width="288" height="190"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="190" id="wcR-3V-7oO"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvR-n1-R0o">
-                                <rect key="frame" x="26" y="61" width="269" height="190"/>
-                                <string key="text">You're currently exploring events as a guest.  In order to attend events and follow users to see events they post, you will need to create an account.  You can do this at any time from the settings menu.</string>
-                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="One More Thing.  We need your location in order to find events next to you." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ndj-Gw-5zn">
-                                <rect key="frame" x="51" y="250" width="218" height="122"/>
-                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jok-PH-l5H" customClass="EVNDefaultButton">
-                                <rect key="frame" x="99" y="419" width="123" height="55"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jok-PH-l5H" customClass="EVNDefaultButton">
+                                <rect key="frame" x="99" y="411" width="123" height="55"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="H6e-CU-yc5"/>
+                                    <constraint firstAttribute="width" constant="123" id="brA-Ts-Oqa"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
                                 <state key="normal" title="Got It">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -683,8 +701,39 @@ Click continue when you're ready.</string>
                                     <segue destination="Hoa-x5-Et8" kind="presentation" id="2rG-LN-NSK"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to Evntr" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wj2-es-MFc">
+                                <rect key="frame" x="16" y="41" width="288" height="40"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="33"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="As a note, guests can only view what's happening. To participate, sign up." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ndj-Gw-5zn">
+                                <rect key="frame" x="16" y="266" width="288" height="122"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="122" id="V2Q-6m-PfN"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="0.32000000000000001" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ndj-Gw-5zn" firstAttribute="top" secondItem="kvR-n1-R0o" secondAttribute="bottom" constant="-13" id="3E4-sL-Omw"/>
+                            <constraint firstAttribute="centerX" secondItem="ndj-Gw-5zn" secondAttribute="centerX" id="8xs-rs-iXl"/>
+                            <constraint firstItem="jok-PH-l5H" firstAttribute="top" secondItem="ndj-Gw-5zn" secondAttribute="bottom" constant="23" id="Jyt-BA-Ydp"/>
+                            <constraint firstItem="kvR-n1-R0o" firstAttribute="leading" secondItem="vrE-vp-BKf" secondAttribute="leadingMargin" id="KGx-Ve-UFX"/>
+                            <constraint firstItem="Wj2-es-MFc" firstAttribute="leading" secondItem="vrE-vp-BKf" secondAttribute="leadingMargin" id="Kso-vq-7cI"/>
+                            <constraint firstItem="ndj-Gw-5zn" firstAttribute="trailing" secondItem="vrE-vp-BKf" secondAttribute="trailingMargin" id="PsX-7z-m2y"/>
+                            <constraint firstItem="ndj-Gw-5zn" firstAttribute="leading" secondItem="vrE-vp-BKf" secondAttribute="leadingMargin" id="RKw-UP-7KL"/>
+                            <constraint firstItem="Wj2-es-MFc" firstAttribute="top" secondItem="dBa-JJ-biJ" secondAttribute="bottom" constant="21" id="XfF-8l-KG4"/>
+                            <constraint firstAttribute="centerX" secondItem="jok-PH-l5H" secondAttribute="centerX" id="YHp-fi-30t"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Wj2-es-MFc" secondAttribute="trailing" id="cGN-7r-ULe"/>
+                            <constraint firstAttribute="centerX" secondItem="kvR-n1-R0o" secondAttribute="centerX" id="jrL-rY-MGT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kvR-n1-R0o" secondAttribute="trailing" id="lGY-4g-uYk"/>
+                            <constraint firstItem="kvR-n1-R0o" firstAttribute="top" secondItem="Wj2-es-MFc" secondAttribute="bottom" constant="8" id="tJd-IA-4g6"/>
+                            <constraint firstAttribute="centerX" secondItem="Wj2-es-MFc" secondAttribute="centerX" id="zS7-50-cZB"/>
+                        </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
@@ -1240,9 +1289,23 @@ Click continue when you're ready.</string>
                                     <action selector="logOut:" destination="61X-hd-Ll9" eventType="touchUpInside" id="Tpw-hD-YfC"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uX7-8W-Uic">
+                                <rect key="frame" x="16" y="327" width="288" height="51"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="32"/>
+                                <state key="normal" title="Submit Feedback">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="submitFeedback:" destination="61X-hd-Ll9" eventType="touchUpInside" id="Jce-g0-5t8"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="uX7-8W-Uic" firstAttribute="leading" secondItem="EK3-sr-ftt" secondAttribute="leadingMargin" id="0xT-jc-0vJ"/>
+                            <constraint firstItem="uX7-8W-Uic" firstAttribute="top" secondItem="bLg-mX-LDC" secondAttribute="bottom" constant="17" id="HTa-Pq-bWj"/>
+                            <constraint firstItem="uX7-8W-Uic" firstAttribute="trailing" secondItem="EK3-sr-ftt" secondAttribute="trailingMargin" id="JBc-1p-1wu"/>
+                            <constraint firstAttribute="centerX" secondItem="uX7-8W-Uic" secondAttribute="centerX" id="bPK-pF-dRw"/>
                             <constraint firstAttribute="centerY" secondItem="bLg-mX-LDC" secondAttribute="centerY" id="bTb-xk-hyZ"/>
                             <constraint firstAttribute="centerX" secondItem="bLg-mX-LDC" secondAttribute="centerX" id="uJg-NL-6nM"/>
                         </constraints>
@@ -1270,8 +1333,12 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8OY-wJ-G4D">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8OY-wJ-G4D">
                                 <rect key="frame" x="74" y="256" width="172" height="56"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="172" id="68V-0k-qgy"/>
+                                    <constraint firstAttribute="height" constant="56" id="QgO-Y4-Xer"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="32"/>
                                 <state key="normal" title="Sign Up">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -1280,14 +1347,25 @@ Click continue when you're ready.</string>
                                     <segue destination="FSL-PO-gyc" kind="unwind" unwindAction="logOutUnwindSegue:" id="YRO-mM-oBK"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ready to Join the Party?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clS-50-gO5">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Ready to Join the Party?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clS-50-gO5">
                                 <rect key="frame" x="33" y="86" width="254" height="52"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="52" id="5vP-Ch-hCo"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="21"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="clS-50-gO5" firstAttribute="leading" secondItem="P59-mk-R76" secondAttribute="leadingMargin" constant="17" id="IUr-qQ-sLC"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="clS-50-gO5" secondAttribute="trailing" constant="17" id="JgW-VT-eG7"/>
+                            <constraint firstAttribute="centerX" secondItem="clS-50-gO5" secondAttribute="centerX" id="QBk-ho-s23"/>
+                            <constraint firstAttribute="centerY" secondItem="8OY-wJ-G4D" secondAttribute="centerY" id="oqu-3T-CQJ"/>
+                            <constraint firstAttribute="centerX" secondItem="8OY-wJ-G4D" secondAttribute="centerX" id="osm-ll-hxk"/>
+                            <constraint firstItem="clS-50-gO5" firstAttribute="top" secondItem="RX3-aH-wdC" secondAttribute="bottom" constant="22" id="pZg-db-B4r"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="aic-ER-whK"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
@@ -1300,7 +1378,7 @@ Click continue when you're ready.</string>
         <!--View Controller-->
         <scene sceneID="xl3-VJ-Nsb">
             <objects>
-                <viewController id="b3Y-Sh-ZP4" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Walkthrough1" id="b3Y-Sh-ZP4" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Dhh-3l-xoh"/>
                         <viewControllerLayoutGuide type="bottom" id="Xsi-Lt-ga2"/>
@@ -1309,23 +1387,24 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pwP-yv-Bso">
-                                <rect key="frame" x="144" y="342" width="33" height="30"/>
-                                <state key="normal" title="Start">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="4Tx-yp-ezo" kind="show" id="gyU-HU-3UK"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Test Screen - Click Start" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LGh-KQ-J22">
-                                <rect key="frame" x="67" y="180" width="186" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Welcome to Evntr" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LGh-KQ-J22">
+                                <rect key="frame" x="16" y="76" width="288" height="55"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="28"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="swipeDown" translatesAutoresizingMaskIntoConstraints="NO" id="BnL-QM-5Wm">
+                                <rect key="frame" x="132" y="504" width="56" height="56"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="The new social events app that's (actually) trying to put the event back into the social experience." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Phn-br-d3S">
+                                <rect key="frame" x="41" y="185" width="239" height="198"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="19"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0056516011349999999" green="0.0002040816348" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
@@ -1333,10 +1412,39 @@ Click continue when you're ready.</string>
             </objects>
             <point key="canvasLocation" x="-1182" y="220"/>
         </scene>
+        <!--WalkthroughVC-->
+        <scene sceneID="Shi-B1-SSn">
+            <objects>
+                <viewController id="uyk-pA-XEY" customClass="WalkthroughVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ddm-3n-wGT"/>
+                        <viewControllerLayoutGuide type="bottom" id="jsh-kh-5UY"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="AJ4-xV-7TV">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="l0k-lR-3W6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2085" y="212"/>
+        </scene>
+        <!--Walkthrough PageVC-->
+        <scene sceneID="KR4-if-8Xt">
+            <objects>
+                <pageViewController storyboardIdentifier="WalkthroughPageViewController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="vertical" spineLocation="none" id="IQ4-I9-EWz" customClass="WalkthroughPageVC" sceneMemberID="viewController">
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="R1b-Ew-ixm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1610" y="212"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="beM-Aq-8CD">
             <objects>
-                <viewController id="4Tx-yp-ezo" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Walkthrough2" id="4Tx-yp-ezo" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pd8-61-8cO"/>
                         <viewControllerLayoutGuide type="bottom" id="hoE-If-Ipk"/>
@@ -1345,21 +1453,39 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3p4-0p-zje">
-                                <rect key="frame" x="144" y="386" width="32" height="30"/>
-                                <state key="normal" title="Next">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="aBU-07-kVM" kind="show" id="rZs-pj-K32"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Test Screen - Click Next" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PHC-Ai-lqS">
-                                <rect key="frame" x="68" y="206" width="185" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Features" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PHC-Ai-lqS">
+                                <rect key="frame" x="16" y="68" width="288" height="58"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="28"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Invite friends or others locally to join!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZcX-Ju-SnQ">
+                                <rect key="frame" x="20" y="217" width="281" height="21"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="16"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="See what's happening." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FB4-nm-Cr2">
+                                <rect key="frame" x="72" y="443" width="176" height="21"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="16"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Activty Screen" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hxs-Yp-Nts">
+                                <rect key="frame" x="88" y="401" width="144" height="34"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="21"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Create an Event" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c13-nv-Ly5">
+                                <rect key="frame" x="80" y="176" width="161" height="33"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="21"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="tabBarBlowUp" translatesAutoresizingMaskIntoConstraints="NO" id="q74-Qm-F2S">
+                                <rect key="frame" x="0.0" y="297" width="320" height="54"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -1372,7 +1498,7 @@ Click continue when you're ready.</string>
         <!--View Controller-->
         <scene sceneID="Ahv-x4-41s">
             <objects>
-                <viewController id="aBU-07-kVM" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Walkthrough3" id="aBU-07-kVM" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="2J7-bS-aka"/>
                         <viewControllerLayoutGuide type="bottom" id="dg3-hS-NPh"/>
@@ -1381,18 +1507,30 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FRh-W5-DJ6">
-                                <rect key="frame" x="137" y="392" width="32" height="30"/>
-                                <state key="normal" title="Next">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="5se-10-AT8" kind="show" id="JYC-Xk-NFi"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Test Screen - Click Next" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YlO-NJ-1vG">
-                                <rect key="frame" x="61" y="212" width="185" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Event Types" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YlO-NJ-1vG">
+                                <rect key="frame" x="63" y="85" width="195" height="32"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="28"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="eventCard" translatesAutoresizingMaskIntoConstraints="NO" id="iaF-R1-Fmk">
+                                <rect key="frame" x="52" y="153" width="217" height="128"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Private (Invite Only)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rdp-df-cVB">
+                                <rect key="frame" x="71" y="318" width="178" height="52"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Public (Anyone Locally)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2nI-Dl-kI8">
+                                <rect key="frame" x="71" y="378" width="178" height="52"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Public-Approved - Anyone local can ask to join event." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dzd-ih-jnX">
+                                <rect key="frame" x="35" y="438" width="251" height="84"/>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="16"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -1408,7 +1546,7 @@ Click continue when you're ready.</string>
         <!--View Controller-->
         <scene sceneID="byc-5Y-Cfg">
             <objects>
-                <viewController id="5se-10-AT8" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Walkthrough4" id="5se-10-AT8" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="qSl-w8-dac"/>
                         <viewControllerLayoutGuide type="bottom" id="Sn6-qa-54a"/>
@@ -1417,8 +1555,27 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Filtering &amp; Search" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XZk-oG-2c4">
+                                <rect key="frame" x="45" y="28" width="231" height="49"/>
+                                <fontDescription key="fontDescription" name="Lato-Bold" family="Lato" pointSize="28"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Want to see more event? Change yourrange." textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZNP-SN-F38">
+                                <rect key="frame" x="185" y="111" width="119" height="143"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="16"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="searchCallout" translatesAutoresizingMaskIntoConstraints="NO" id="K9R-3H-mtA">
+                                <rect key="frame" x="0.0" y="272" width="98" height="301"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="filteringCallout" translatesAutoresizingMaskIntoConstraints="NO" id="DNs-xr-FRs">
+                                <rect key="frame" x="185" y="272" width="135" height="296"/>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Rq-hX-2v2">
-                                <rect key="frame" x="93" y="249" width="134" height="30"/>
+                                <rect key="frame" x="66" y="486" width="188" height="62"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Start Using EVNTR!">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -1426,6 +1583,12 @@ Click continue when you're ready.</string>
                                     <segue destination="Hoa-x5-Et8" kind="presentation" id="ymg-Am-0zj"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Search Events or People to Find What You're Looking For" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aFo-5N-ssP">
+                                <rect key="frame" x="16" y="111" width="116" height="143"/>
+                                <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="16"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -1689,14 +1852,14 @@ Click continue when you're ready.</string>
                         <outlet property="profileImageView" destination="ip8-o7-UOQ" id="H2z-IM-Dnn"/>
                         <outlet property="registerButton" destination="9Zk-uV-KDu" id="Wi1-TV-dWr"/>
                         <outlet property="usernameField" destination="Upj-CP-rjA" id="JQ4-m6-wFR"/>
-                        <segue destination="b3Y-Sh-ZP4" kind="presentation" identifier="SignUpToOnBoard" id="XMT-eB-l88"/>
                         <segue destination="Hoa-x5-Et8" kind="presentation" identifier="SignUpToHomeView" id="vng-gU-3GQ"/>
+                        <segue destination="IQ4-I9-EWz" kind="presentation" identifier="SignUpToOnBoard" id="mFx-Wb-Czy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vDZ-ZC-lUv" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="mOe-3U-Ik9" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-475" y="1012"/>
+            <point key="canvasLocation" x="-475" y="989"/>
         </scene>
         <!--Filter EventsVC-->
         <scene sceneID="jEn-W8-0vb">
@@ -1798,42 +1961,42 @@ Click continue when you're ready.</string>
                                     <action selector="distance5Press:" destination="Kje-Ts-GEk" eventType="touchUpInside" id="5qQ-aD-b0L"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J84-WQ-SVh">
-                                <rect key="frame" x="173" y="297" width="75" height="58"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J84-WQ-SVh">
+                                <rect key="frame" x="173" y="297" width="75" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="WJo-xM-cx2"/>
                                     <constraint firstAttribute="height" constant="58" id="haA-sy-znL"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="40"/>
-                                <state key="normal" title="50">
+                                <state key="normal" title="30">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="distance6Press:" destination="Kje-Ts-GEk" eventType="touchUpInside" id="2Pz-6l-BGF"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Krf-9H-186">
-                                <rect key="frame" x="63" y="363" width="75" height="58"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Krf-9H-186">
+                                <rect key="frame" x="63" y="363" width="75" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="tYA-r0-IUj"/>
                                     <constraint firstAttribute="height" constant="58" id="wTC-Cf-tkD"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="40"/>
-                                <state key="normal" title="100">
+                                <state key="normal" title="40">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="distance7Press:" destination="Kje-Ts-GEk" eventType="touchUpInside" id="vJZ-If-mjY"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="je7-RV-7pX">
-                                <rect key="frame" x="173" y="363" width="75" height="58"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="je7-RV-7pX">
+                                <rect key="frame" x="173" y="365" width="75" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="0Va-s4-2F8"/>
                                     <constraint firstAttribute="height" constant="58" id="kuI-2J-iPa"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="40"/>
-                                <state key="normal" title="800">
+                                <state key="normal" title="50">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -2611,11 +2774,11 @@ Click continue when you're ready.</string>
                         <viewControllerLayoutGuide type="bottom" id="7t7-tE-y5t"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="QwP-LE-eGL">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vk6-aN-nic" customClass="PFImageView">
-                                <rect key="frame" x="36" y="36" width="528" height="528"/>
+                                <rect key="frame" x="36" y="160" width="248" height="248"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Vk6-aN-nic" secondAttribute="height" multiplier="100:100" id="ef6-U4-gsl"/>
@@ -2637,6 +2800,7 @@ Click continue when you're ready.</string>
                             </mask>
                         </variation>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="eventPhotoView" destination="Vk6-aN-nic" id="z8e-P7-iVu"/>
                     </connections>
@@ -3085,25 +3249,6 @@ Click continue when you're ready.</string>
             </objects>
             <point key="canvasLocation" x="1666" y="159"/>
         </scene>
-        <!--Add Event SecondaryVC-->
-        <scene sceneID="NEg-6u-VvP">
-            <objects>
-                <viewController id="QCx-g5-Fam" customClass="AddEventSecondaryVC" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="C5U-IN-6el"/>
-                        <viewControllerLayoutGuide type="bottom" id="DXy-lb-bej"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="tpt-Th-kit">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="tOF-YS-0kt" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2679" y="841"/>
-        </scene>
         <!--Location-->
         <scene sceneID="AnI-lY-S1u">
             <objects>
@@ -3442,10 +3587,15 @@ Click continue when you're ready.</string>
         <image name="CustomBackButton" width="24" height="24"/>
         <image name="LoginBackground" width="2509" height="1673"/>
         <image name="SettingsIcon" width="32" height="32"/>
+        <image name="eventCard" width="500" height="324"/>
+        <image name="filteringCallout" width="167" height="354"/>
         <image name="instagram" width="32" height="32"/>
         <image name="mapIcon" width="18" height="24"/>
+        <image name="searchCallout" width="221" height="670"/>
+        <image name="swipeDown" width="50" height="50"/>
         <image name="tabActivity" width="25" height="25"/>
         <image name="tabAdd" width="25" height="25"/>
+        <image name="tabBarBlowUp" width="563" height="97"/>
         <image name="tabHome" width="25" height="25"/>
         <image name="tabProfile" width="25" height="25"/>
         <image name="tabSignUp" width="25" height="25"/>
@@ -3454,7 +3604,6 @@ Click continue when you're ready.</string>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ymg-Am-0zj"/>
-        <segue reference="XMT-eB-l88"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

@@ -34,7 +34,6 @@
 - (void) totalNumberOfAttendersInBackground:(void (^)(int count))completionBlock;
 
 - (BOOL) allowUserToAddPhotosAtThisTime;
-- (NSString *) numberOfPhotos;
 
 
 /*

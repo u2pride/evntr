@@ -12,7 +12,7 @@
 @protocol ProfileEditDelegate;
 
 
-@interface EditProfileVC : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface EditProfileVC : UITableViewController <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate>
 
 @property (nonatomic, weak) id<ProfileEditDelegate> delegate;
 

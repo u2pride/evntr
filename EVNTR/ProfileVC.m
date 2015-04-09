@@ -44,6 +44,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *viewAccessRequestsForMyEventsButton;
 @property (weak, nonatomic) IBOutlet UIButton *viewMyAccessRequestsButton;
 
+//Timer For Edit Profile Modal
+@property (nonatomic) BOOL isDismissedAlreadyCancel;
+@property (nonatomic) BOOL isDismissedAlreadyUpdate;
 
 - (IBAction)followUser:(id)sender;
 - (IBAction)viewEventsAttending:(id)sender;
@@ -70,6 +73,8 @@
         //initial values
         self.userForProfileView = [PFUser currentUser];
         self.userNameForProfileView = [PFUser currentUser][@"username"];
+        _isDismissedAlreadyCancel = NO;
+        _isDismissedAlreadyUpdate = NO;
     }
     
     return self;
@@ -463,30 +468,61 @@
 
 - (void)canceledEditingProfile {
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    NSLog(@"cancel - self.isDismissedAlready: %@", [NSNumber numberWithBool: self.isDismissedAlreadyCancel]);
+    
+    if (!self.isDismissedAlreadyCancel) {
+        
+        self.isDismissedAlreadyCancel = YES;
+        
+        [self dismissViewControllerAnimated:YES completion:^{
+            
+            NSLog(@"completion - self.isDismissedAlready: %@", [NSNumber numberWithBool:self.isDismissedAlreadyCancel]);
+            self.isDismissedAlreadyCancel = NO;
+            
+        }];
+
+    }
+    
 }
 
 
 -(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData {
 
-    PFFile *newProfilePicture = [PFFile fileWithData:imageData];
-    [newProfilePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    NSLog(@"cancel2 - self.isDismissedAlready: %@", [NSNumber numberWithBool: self.isDismissedAlreadyCancel]);
+    
+    if (!self.isDismissedAlreadyCancel) {
+        
+        self.isDismissedAlreadyCancel = YES;
         
         
-    }];
+        PFFile *newProfilePicture = [PFFile fileWithData:imageData];
+        [newProfilePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            
+        }];
+        
+        NSString *username = [stringDictionary objectForKey:@"username"];
+        //NSString *realName = [stringDictionary objectForKey:@"realName"];
+        //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
+        //NSString *bio = [stringDictionary objectForKey:@"bio"];
+        
+        self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
+        self.nameLabel.text = username;
+        
+        self.userNameForProfileView = username;
+        self.userForProfileView = [PFUser currentUser];
+        
+        [self dismissViewControllerAnimated:YES completion:^{
+            
+            NSLog(@"completion2 - self.isDismissedAlready: %@", [NSNumber numberWithBool:self.isDismissedAlreadyCancel]);
+            self.isDismissedAlreadyCancel = NO;
+            
+        }];
+        
+    }
     
-    NSString *username = [stringDictionary objectForKey:@"username"];
-    //NSString *realName = [stringDictionary objectForKey:@"realName"];
-    //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
-    //NSString *bio = [stringDictionary objectForKey:@"bio"];
     
-    self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
-    self.nameLabel.text = username;
 
-    self.userNameForProfileView = username;
-    self.userForProfileView = [PFUser currentUser];
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
     
 }
 

@@ -57,8 +57,8 @@
         self.parseClassName = @"Events";
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
+        //self.objectsPerPage = 2;
         self.typeOfEventTableView = ALL_PUBLIC_EVENTS;
-        self.userForEventsQuery = [PFUser currentUser];
         self.tabBarController.hidesBottomBarWhenPushed = YES;
         //self.navigationController.hidesBarsOnSwipe = YES;
         
@@ -76,6 +76,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.userForEventsQuery = [PFUser currentUser];
     
     //stop Movie Player on Initial Screen
     [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];
@@ -316,7 +318,7 @@
             
             NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
             [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
-            [eventsQuery orderByAscending:@"dateOfEvent"];
+            [eventsQuery orderByDescending:@"createdAt"];
             
             break;
         }
@@ -352,15 +354,97 @@
 //}
 
 
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+//    return self.allEvents.count;
+    
+//}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 320;
 }
 
+
+- (PFTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
+    NSLog(@"Updating the Cell for indexpath... %ld", (long)indexPath.row);
+    
+    static NSString *cellIdentifier = @"eventCell";
+    
+    NSLog(@"number of items in events %lu", (unsigned long)self.objects.count);
+    NSLog(@"indexPath row %ld", (long)indexPath.row);
+    
+    for (NSObject *eventitem in self.objects) {
+        
+        EventObject *eventFromFullList = (EventObject *)eventitem;
+        NSLog(@"list of events - %@", eventFromFullList.title);
+    }
+    
+    EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    EventObject *event = (EventObject *)object;
+    
+    
+    if (cell) {
+        
+        cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        
+        [self refreshUIForCell:cell withEvent:event];
+        
+        //OLD start
+        
+        /*
+         [eventForCell.eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+         
+         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+         
+         UIImage *imageFromParse = [UIImage imageWithData:data];
+         UIImage *imageWithEffect = [UIImageEffects imageByApplyingBlurToImage:imageFromParse withRadius:10.0 tintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] saturationDeltaFactor:1.0 maskImage:nil];
+         
+         dispatch_async(dispatch_get_main_queue(), ^(void) {
+         cell.eventCoverImage.image = imageWithEffect;
+         });
+         
+         });
+         
+         }];
+         */
+        
+        //OLD end
+        
+        
+        UIView *roundForEventTypeView = [[UIView alloc] initWithFrame:cell.eventTypeLabel.frame];
+        roundForEventTypeView.frame = CGRectMake(0, 0, cell.eventTypeLabel.frame.size.width, cell.eventTypeLabel.frame.size.width);
+        roundForEventTypeView.center = cell.eventTypeLabel.center;
+        roundForEventTypeView.layer.cornerRadius = roundForEventTypeView.frame.size.width / 2.0f;
+        roundForEventTypeView.backgroundColor = [UIColor orangeThemeColor];
+        [cell.darkViewOverImage insertSubview:roundForEventTypeView atIndex:0];
+        
+        
+        UIView *roundForAttendersView = [[UIView alloc] initWithFrame:cell.attendersCountLabel.frame];
+        roundForAttendersView.frame = CGRectMake(0, 0, cell.attendersCountLabel.frame.size.width, cell.attendersCountLabel.frame.size.width);
+        roundForAttendersView.center = cell.attendersCountLabel.center;
+        roundForAttendersView.layer.cornerRadius = roundForAttendersView.frame.size.width / 2.0f;
+        roundForAttendersView.backgroundColor = [UIColor orangeThemeColor];
+        [cell.darkViewOverImage insertSubview:roundForAttendersView atIndex:0];
+        
+        
+    }
+    
+    return cell;
+
+}
+
+/*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSLog(@"Updating the Cell");
     
     static NSString *cellIdentifier = @"eventCell";
+    
+    NSLog(@"number of items in events %lu", (unsigned long)self.allEvents.count);
+    NSLog(@"indexPath row %ld", (long)indexPath.row);
+    NSLog(@"list of events - %@", self.allEvents);
     
     EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
@@ -376,7 +460,7 @@
         
         //OLD start
         
-        /*
+ 
         [eventForCell.eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -391,7 +475,7 @@
             });
             
         }];
-        */
+ 
         
         //OLD end
         
@@ -417,9 +501,11 @@
     return cell;
     
 }
-
+*/
 
 - (void) refreshUIForCell:(EventTableCell *)cell withEvent:(EventObject *)eventForCell {
+    
+    NSLog(@"Refreshing UI for cell with Event %@", eventForCell.title);
     
     cell.eventTitle.text = eventForCell.title;
     cell.eventTypeLabel.text = [eventForCell eventTypeForHomeView];
@@ -572,8 +658,9 @@
     NSLog(@"userCompletedEventEditing");
     
     EventTableCell *cellToUpdate = (EventTableCell *) [self.tableView cellForRowAtIndexPath:self.indexPathOfEventInDetailView];
-    EventObject *event = [self.allEvents objectAtIndex:self.indexPathOfEventInDetailView.row];
-
+    //EventObject *event = [self.allEvents objectAtIndex:self.indexPathOfEventInDetailView.row];
+    EventObject *event = (EventObject *)[self.objects objectAtIndex:self.indexPathOfEventInDetailView.row];
+    
     [self refreshUIForCell:cellToUpdate withEvent:event];
     
     NSLog(@"CellToUpdates title: %@", cellToUpdate);
@@ -615,7 +702,8 @@
         EventDetailVC *eventDetailVC = segue.destinationViewController;
         self.indexPathOfEventInDetailView = indexPathOfSelectedItem;
         
-        eventDetailVC.event = [self.allEvents objectAtIndex:indexPathOfSelectedItem.row];
+        //eventDetailVC.event = [self.allEvents objectAtIndex:indexPathOfSelectedItem.row];
+        eventDetailVC.event = (EventObject *)[self.objects objectAtIndex:self.indexPathOfEventInDetailView.row];
         eventDetailVC.delegate = self;
         //PFObject *event = [self.objects objectAtIndex:indexPathOfSelectedItem.row];
         //TODO: Better way to select object and transition to new VC

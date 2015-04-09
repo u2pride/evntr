@@ -152,10 +152,6 @@
     
 }
 
-- (NSString *) numberOfPhotos {
-    
-    return [NSString stringWithFormat:@"%lu", (unsigned long)self.eventImages.count];
-    
-}
+
 
 @end

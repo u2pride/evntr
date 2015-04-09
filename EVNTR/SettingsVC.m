@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import "ProfileVC.h"
 
+
 @interface SettingsVC ()
 
 @end
@@ -36,6 +37,35 @@
     [PFUser logOut];
     
     [self performSegueWithIdentifier:@"SettingsToInitialScreen" sender:self];
+    
+    
+}
+
+- (IBAction)submitFeedback:(id)sender {
+    
+    [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
+   
+    MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
+    
+    mailVC.mailComposeDelegate = self;
+    [mailVC setSubject:@"Evntr App Feedback"];
+    [mailVC setToRecipients:@[@"aryan@evntr.co"]];
+    [mailVC setCcRecipients:@[@"kjaved@evntr.co"]];
+    
+    [self presentViewController:mailVC animated:YES completion:nil];
+    
+}
+
+#pragma mark - MFMailViewController Delegate Methods
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    
+    NSLog(@"aaa");
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+
+    }];
     
     
 }

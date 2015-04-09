@@ -74,19 +74,19 @@
             [self.distance5Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
-        case 50: {
+        case 30: {
             self.distance6Button.selected = YES;
 
             [self.distance6Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
-        case 100: {
+        case 40: {
             self.distance7Button.selected = YES;
 
             [self.distance7Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
-        case 800: {
+        case 50: {
             self.distance8Button.selected = YES;
 
             [self.distance8Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
@@ -179,7 +179,7 @@
     
     if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
         
-        [strongDelegate completedFiltering:50];
+        [strongDelegate completedFiltering:30];
     }
 
 }
@@ -190,7 +190,7 @@
     
     if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
         
-        [strongDelegate completedFiltering:100];
+        [strongDelegate completedFiltering:40];
     }
 
 }
@@ -201,7 +201,7 @@
     
     if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
         
-        [strongDelegate completedFiltering:800];
+        [strongDelegate completedFiltering:50];
     }
     
 }

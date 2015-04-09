@@ -22,6 +22,7 @@
 @property (strong, nonatomic) IBOutlet EVNLocationButton *setLocationButton;
 @property (strong, nonatomic) IBOutlet EVNButton *createButton;
 
+@property (nonatomic, strong) UIView *tapToDismissView;
 
 - (IBAction)createEvent:(id)sender;
 - (IBAction)setLocation:(id)sender;
@@ -78,6 +79,8 @@
     }
     
 }
+
+
 
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -378,16 +381,29 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
+    
     if ([textView.text isEqualToString:@"Add details about your event..."]) {
         textView.text = @"";
         textView.textColor = [UIColor blackColor]; //optional
     }
+    
+    self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.tapToDismissView.backgroundColor = [UIColor clearColor];
+    
+    [self.view addSubview:self.tapToDismissView];
+    
+    //Gesture Recognizer to Dismiss Keyboard on Tap in View
+    UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    tapToDismiss.cancelsTouchesInView = YES;
+    [self.tapToDismissView addGestureRecognizer:tapToDismiss];
     
     [textView becomeFirstResponder];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
+    [self.tapToDismissView removeFromSuperview];
+
     if ([textView.text isEqualToString:@""]) {
         textView.text = @"Add details about your event...";
         textView.textColor = [UIColor lightGrayColor]; //optional
@@ -410,6 +426,10 @@
     }
     // For any other character return TRUE so that the text gets added to the view
     return YES;
+}
+
+- (void)tapToDismissKeyboard {
+    [self.view endEditing:YES];
 }
 
 

@@ -73,6 +73,23 @@
     
     self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"]];
     
+    self.realNameTextField.delegate = self;
+    self.hometownTextField.delegate = self;
+    self.usernameTextField.delegate = self;
+    self.bioTextField.delegate = self;
+
+}
+
+
+
+
+#pragma mark - TextField Delegate Method to Dismiss Keyboard
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    
+    return YES;
 }
 
 

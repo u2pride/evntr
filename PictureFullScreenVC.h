@@ -9,19 +9,22 @@
 @protocol PictureViewerDelegate;
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 
 @interface PictureFullScreenVC : UIViewController
 
 @property (weak, nonatomic) IBOutlet PFImageView *eventPhotoView;
 
-@property (nonatomic, strong) PFFile *fileOfEventPhoto;
+@property (nonatomic, strong) PFObject *eventPictureObject;
 @property (nonatomic, weak) id<PictureViewerDelegate> delegate;
+
+@property (nonatomic) BOOL showRemovePhotoAction;
 
 @end
 
 @protocol PictureViewerDelegate <NSObject>
 
--(void)returnToEvent;
+-(void)returnToEventAndDeletePhoto:(BOOL) shouldDeletePhoto;
 
 @end

@@ -127,6 +127,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     self.title = @"";
     
     NSLog(@"Event TO SEEEEEE: %@", self.event);
@@ -148,7 +149,6 @@
         NSLog(@"Current User's Event ");
         
         
-
     }
     
     self.view.backgroundColor = [UIColor blackColor];
@@ -422,7 +422,10 @@
     self.viewPicturesButton.isStateless = YES;
     self.viewPicturesButton.isSelected = NO;
     self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];
-    self.numberOfPicturesLabel.text = [self.event numberOfPhotos];
+    //self.numberOfPicturesLabel.text = [self.event numberOfPhotos];
+    [EVNParseEventHelper estimateNumberOfPhotosForEvent:self.event completion:^(int count) {
+        self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", count];
+    }];
 
     //Tap Gesture for Event Creator Photo
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
@@ -566,7 +569,7 @@
     
     NSLog(@"%@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending]);
     
-    if (self.isPublicApproved && !self.isCurrentUserAttending && !self.isCurrentUsersEvent) {
+    if ((self.isPublicApproved && !self.isCurrentUserAttending && !self.isCurrentUsersEvent) || self.isGuestUser) {
         self.transparentTouchView.hidden = YES;
         self.locationOfEvent = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
         
@@ -578,7 +581,6 @@
         self.entireMapView.distanceAway = 0.0f;
         self.dateOfEventLabel.text = @"Unknown";
         self.timeOfEventLabel.text = @"Unknown";
-
     }
 
 }
@@ -729,6 +731,11 @@
                
                 if (success) {
                     [self.rsvpButton setTitle:kRSVPedForEvent forState:UIControlStateNormal];
+                    
+                    NSMutableArray *updatedStandbyListWithCurrentUser = [NSMutableArray arrayWithArray:self.usersOnStandby];
+                    [updatedStandbyListWithCurrentUser addObject:[PFUser currentUser]];
+                    self.usersOnStandby = [NSArray arrayWithArray:updatedStandbyListWithCurrentUser];
+                    [self.standbyUsersCollectionView reloadData];
                 }
                 self.rsvpButton.enabled = YES;
             }];
@@ -982,6 +989,14 @@
     
     NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
     int newCount = [currentPictureCountString intValue] + 1;
+    self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
+    
+}
+
+- (void) pictureRemoved {
+    
+    NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
+    int newCount = [currentPictureCountString intValue] - 1;
     self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
     
 }

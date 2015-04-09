@@ -7,6 +7,7 @@
 //
 
 #import "EVNConstants.h"
+#import "EVNNoResultsView.h"
 #import "EVNUtility.h"
 #import "PeopleVC.h"
 #import "PersonCell.h"
@@ -164,10 +165,8 @@
 
 
 - (void) viewDidAppear:(BOOL)animated {
+    
     [super viewDidAppear:animated];
-    
-
-    
 }
 
 
@@ -184,9 +183,20 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
-                self.usersArray = [[NSArray alloc] initWithArray:usersFound];
-                [self.collectionView reloadData];
-                
+                if (error || usersFound.count == 0) {
+                    
+                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+                    noResultsView.headerText = @"Hello?";
+                    noResultsView.subHeaderText = @"Whoa, it's really empty in here.  Know where everyone went?";
+                    noResultsView.actionButton.titleText = @"Okay";
+                    
+                    [self.view addSubview:noResultsView];
+                    
+                } else {
+                    self.usersArray = [[NSArray alloc] initWithArray:usersFound];
+                    [self.collectionView reloadData];
+                }
+            
             }];
             
             break;
@@ -201,15 +211,27 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
-                NSLog(@"Objects Found: %@", usersFound);
-                
-                for (PFObject *object in usersFound) {
-                    [self.usersMutableArray addObject:object[@"from"]];
+                if (error || usersFound.count == 0) {
+                    
+                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+                    noResultsView.headerText = @"No Followers";
+                    noResultsView.subHeaderText = @"Looks like no one is following you yet.";
+                    noResultsView.actionButton.titleText = @"Got It";
+                    
+                    [self.view addSubview:noResultsView];
+                    
+                } else {
+                    NSLog(@"Objects Found: %@", usersFound);
+                    
+                    for (PFObject *object in usersFound) {
+                        [self.usersMutableArray addObject:object[@"from"]];
+                    }
+                    
+                    self.usersArray = self.usersMutableArray;
+                    
+                    [self.collectionView reloadData];
+
                 }
-                
-                self.usersArray = self.usersMutableArray;
-                
-                [self.collectionView reloadData];
             }];
             
             break;
@@ -223,15 +245,27 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
-                NSLog(@"Objects Found: %@", usersFound);
-
-                for (PFObject *object in usersFound) {
-                    [self.usersMutableArray addObject:object[@"to"]];
+                if (error || usersFound.count == 0) {
+                    
+                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+                    noResultsView.headerText = @"No Users";
+                    noResultsView.subHeaderText = @"Once you start following users, they will pop up here.";
+                    noResultsView.actionButton.titleText = @"Got It";
+                    
+                    [self.view addSubview:noResultsView];
+                    
+                } else {
+                    NSLog(@"Objects Found: %@", usersFound);
+                    
+                    for (PFObject *object in usersFound) {
+                        [self.usersMutableArray addObject:object[@"to"]];
+                    }
+                    
+                    self.usersArray = self.usersMutableArray;
+                    
+                    [self.collectionView reloadData];
                 }
                 
-                self.usersArray = self.usersMutableArray;
-                
-                [self.collectionView reloadData];
             }];
             
             break;
@@ -241,10 +275,22 @@
             
             [EVNParseEventHelper queryForUsersFollowing:self.profileUsername completion:^(NSArray *following) {
                 
-                self.usersArray = [NSArray arrayWithArray:following];
+                if (following.count == 0) {
+                    
+                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+                    noResultsView.headerText = @"No One to Invite";
+                    noResultsView.subHeaderText = @"Once you start to follow users, you will be able to invite them to events.";
+                    noResultsView.actionButton.titleText = @"Got It";
+                    
+                    [self.view addSubview:noResultsView];
+                    
+                } else {
+                    
+                    self.usersArray = [NSArray arrayWithArray:following];
+                    [self.collectionView reloadData];
+                }
                 
-                [self.collectionView reloadData];
-                
+   
             }];
             
             /*
@@ -274,8 +320,20 @@
             PFQuery *queryForAttenders = [attendingRelation query];
             [queryForAttenders findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                self.usersArray = objects;
-                [self.collectionView reloadData];
+                if (error || objects.count == 0) {
+                    
+                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+                    noResultsView.headerText = @"No Attendees";
+                    noResultsView.subHeaderText = @"Looks like no one is attending this event yet. You could be the first.";
+                    noResultsView.actionButton.titleText = @"Got It";
+                    
+                    [self.view addSubview:noResultsView];
+                    
+                } else {
+                    self.usersArray = objects;
+                    [self.collectionView reloadData];
+                }
+                
                 
             }];
             
@@ -316,13 +374,15 @@
     
     //if ([self.allInvitedUsers containsObject:currentUser]) {
         
-        NSLog(@"User Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
         
         //Add to Selected Indexes
         //[self.selectedPeople addObject:currentUser];
 
         //Update Mask with Checkmark
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            
+            NSLog(@"User Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
+            
             cell.profileImage.file = (PFFile *)object[@"profilePicture"];
             cell.personTitle.text = object[@"username"];
             [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
@@ -333,9 +393,11 @@
         
     } else {
         
-        NSLog(@"User Not Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
         
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            
+            NSLog(@"User Not Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
+
             cell.profileImage.file = (PFFile *)object[@"profilePicture"];
             cell.personTitle.text = object[@"username"];
             [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
@@ -364,10 +426,12 @@
             [self removeUser:currentUser fromArray:self.allInvitedUsers];
             //[self.allInvitedUsers removeObject:currentUser];
             
-            NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
             [self.usersAlreadyInvited removeObject:currentUser];
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                
+                NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
+
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 cell.personTitle.text = object[@"username"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
@@ -382,10 +446,12 @@
             
             [self.allInvitedUsers addObject:currentUser];
             
-            NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
             [self.usersAlreadyInvited addObject:currentUser];
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                
+                NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
+
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                     cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
@@ -401,11 +467,17 @@
         
         PFUser *selectedUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
         
-        ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-        viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
-        viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+        [selectedUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+            
+            ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+            viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
+            viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+            
+            [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+            
+        }];
         
-        [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+
     }
     
 }
@@ -427,10 +499,12 @@
             [self removeUser:currentUser fromArray:self.allInvitedUsers];
             //[self.allInvitedUsers removeObject:currentUser];
             
-            NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
             [self.usersAlreadyInvited removeObject:currentUser];
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                
+                NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
+
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 cell.personTitle.text = object[@"username"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
@@ -445,10 +519,12 @@
             
             [self.allInvitedUsers addObject:currentUser];
             
-            NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
             [self.usersAlreadyInvited addObject:currentUser];
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                
+                NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
+
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                     cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];

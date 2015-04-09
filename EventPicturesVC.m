@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EventPicturesVC.h"
+#import "EVNParseEventHelper.h"
 #import "IDTransitioningDelegate.h"
 #import "UIColor+EVNColors.h"
 
@@ -16,6 +17,9 @@
 @property (strong, nonatomic) NSMutableArray *eventImages;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 @property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
+
+//Selected Photo Index
+@property (nonatomic, strong) NSIndexPath *selectedPhoto;
 
 
 @end
@@ -53,9 +57,12 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.eventImages = [NSMutableArray arrayWithArray:self.eventObject[@"eventImages"]];
-    
-    [self.collectionView reloadData];
+    [EVNParseEventHelper queryForImagesFromEvent:self.eventObject completion:^(NSArray *images) {
+       
+        self.eventImages = [NSMutableArray arrayWithArray:images];
+        [self.collectionView reloadData];
+        
+    }];
     
     //self.tabBarController.tabBar.hidden = YES;
 }
@@ -138,14 +145,17 @@ static NSString * const reuseIdentifier = @"Cell";
     
     cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"EventsTabIcon"]];
     
-    PFFile *fileForPhoto = [self.eventImages objectAtIndex:indexPath.row];
+    PFFile *fileForPhoto = [[self.eventImages objectAtIndex:indexPath.row] objectForKey:@"pictureFile"];
     
     //Load Image in Background
     [fileForPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         
+        NSLog(@"Making a network call");
         cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:data]];
         
     }];
+    
+    self.selectedPhoto = indexPath;
     
     return cell;
 }
@@ -155,12 +165,29 @@ static NSString * const reuseIdentifier = @"Cell";
     
     [self animateBackgroundDarkBlur];
     
+    PFObject *pictureObject = (PFObject *) [self.eventImages objectAtIndex:indexPath.row];
+    PFUser *pictureTakenBy = (PFUser *)[pictureObject objectForKey:@"takenBy"];
+    
     PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.navigationController.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
     
     displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
-    displayFullScreenPhoto.fileOfEventPhoto = (PFFile *)[self.eventImages objectAtIndex:indexPath.row];
+    displayFullScreenPhoto.eventPictureObject = pictureObject;
     displayFullScreenPhoto.delegate = self;
+    
+    if ([self.eventObject.parent.objectId isEqualToString:[PFUser currentUser].objectId]) {
+        displayFullScreenPhoto.showRemovePhotoAction = YES;
+    } else {
+        if ([pictureTakenBy.objectId isEqualToString:[PFUser currentUser].objectId]) {
+            displayFullScreenPhoto.showRemovePhotoAction = YES;
+        } else {
+            displayFullScreenPhoto.showRemovePhotoAction = NO;
+        }
+        
+    }
+    
+    
+
     
     [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
     
@@ -228,6 +255,45 @@ static NSString * const reuseIdentifier = @"Cell";
     [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded){
             
+            //create new picture pfobject and save
+            PFObject *picture = [PFObject objectWithClassName:@"Pictures"];
+            picture[@"pictureFile"] = profilePictureFile;
+            picture[@"takenBy"] = [PFUser currentUser];
+            picture[@"eventParent"] = self.eventObject;
+            
+            [picture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    
+                    if (!self.eventImages) {
+                        self.eventImages = [[NSMutableArray alloc] init];
+                    }
+                    
+                    [self.eventImages addObject:picture];
+                    
+                    
+                    //Instead of refreshing all items, just insert a row.
+                    NSUInteger numberOfItems = [self.eventImages count] - 1;
+                    NSIndexPath *indexPathOfLastRow = [NSIndexPath indexPathForRow:numberOfItems inSection:0];
+                    
+                    NSLog(@"indexpath: %ld and %ld", (long)indexPathOfLastRow.row, (long)indexPathOfLastRow.section);
+
+                    //[self.collectionView reloadData];
+                    [self.collectionView insertItemsAtIndexPaths:@[indexPathOfLastRow]];
+                    
+                    
+                    //Notify Event Details VC of New Picture
+                    id<EventPicturesProtocol> strongDelegate = self.delegate;
+                    
+                    if ([strongDelegate respondsToSelector:@selector(newPictureAdded)]) {
+                        
+                        [strongDelegate newPictureAdded];
+                    }
+                }
+            }];
+            
+            
+            /*
             //append pffile to eventImages array on event (PFObject)
             [self.eventObject addObject:profilePictureFile forKey:@"eventImages"];
             [self.eventObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -254,6 +320,7 @@ static NSString * const reuseIdentifier = @"Cell";
                 }
                 
             }];
+            */
             
         }
     }];
@@ -270,7 +337,18 @@ static NSString * const reuseIdentifier = @"Cell";
 
 #pragma mark - Delegate for Full Screen Image Viewer
 
-- (void) returnToEvent {
+- (void) returnToEventAndDeletePhoto:(BOOL) shouldDeletePhoto {
+
+    if (shouldDeletePhoto) {
+        [self.eventImages removeObjectAtIndex:self.selectedPhoto.row];
+        [self.collectionView deleteItemsAtIndexPaths:@[self.selectedPhoto]];
+        
+        //Notify Event Details VC of Removal
+        id<EventPicturesProtocol> strongDelegate = self.delegate;
+        if ([strongDelegate respondsToSelector:@selector(pictureRemoved)]) {
+            [strongDelegate pictureRemoved];
+        }
+    }
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
@@ -288,6 +366,7 @@ static NSString * const reuseIdentifier = @"Cell";
         self.blurEffectForModals.hidden = YES;
         
     }];
+    
     
 }
 
