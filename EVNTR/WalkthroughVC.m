@@ -21,6 +21,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    UIImageView *backgroundImageForWalkthrough = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cityBackground"]];
+    backgroundImageForWalkthrough.frame = self.view.frame;
+    backgroundImageForWalkthrough.contentMode = UIViewContentModeScaleAspectFill;
+    [self.view addSubview:backgroundImageForWalkthrough];
+    
     self.pageViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"WalkthroughPageViewController"];
     
     //self.pageViewController.delegate = self;
@@ -39,6 +44,8 @@
     [self.view addSubview:_pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
     
+    
+
     
 }
 

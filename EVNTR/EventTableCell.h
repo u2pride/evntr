@@ -21,4 +21,7 @@
 @property (strong, nonatomic) IBOutlet UIView *darkViewOverImage;
 @property (strong, nonatomic) IBOutlet UILabel *distanceLabel;
 
+@property (strong, nonatomic) IBOutlet UIView *roundForEventTypeView;
+@property (strong, nonatomic) IBOutlet UIView *roundForAttendersView;
+
 @end

@@ -46,11 +46,13 @@
         } else {
             for (PFObject *activity in standbyActivities) {
                 
-                
+                NSLog(@"activity: %@", activity);
                 PFUser *userOnStandby = activity[@"from"];
                 NSLog(@"User Found in Query One: %@", userOnStandby);
-
-                [usersOnStandby addObject:userOnStandby];
+                
+                if (userOnStandby) {
+                    [usersOnStandby addObject:userOnStandby];
+                }
                 
             }
             

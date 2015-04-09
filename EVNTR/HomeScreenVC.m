@@ -412,21 +412,7 @@
         
         //OLD end
         
-        
-        UIView *roundForEventTypeView = [[UIView alloc] initWithFrame:cell.eventTypeLabel.frame];
-        roundForEventTypeView.frame = CGRectMake(0, 0, cell.eventTypeLabel.frame.size.width, cell.eventTypeLabel.frame.size.width);
-        roundForEventTypeView.center = cell.eventTypeLabel.center;
-        roundForEventTypeView.layer.cornerRadius = roundForEventTypeView.frame.size.width / 2.0f;
-        roundForEventTypeView.backgroundColor = [UIColor orangeThemeColor];
-        [cell.darkViewOverImage insertSubview:roundForEventTypeView atIndex:0];
-        
-        
-        UIView *roundForAttendersView = [[UIView alloc] initWithFrame:cell.attendersCountLabel.frame];
-        roundForAttendersView.frame = CGRectMake(0, 0, cell.attendersCountLabel.frame.size.width, cell.attendersCountLabel.frame.size.width);
-        roundForAttendersView.center = cell.attendersCountLabel.center;
-        roundForAttendersView.layer.cornerRadius = roundForAttendersView.frame.size.width / 2.0f;
-        roundForAttendersView.backgroundColor = [UIColor orangeThemeColor];
-        [cell.darkViewOverImage insertSubview:roundForAttendersView atIndex:0];
+
         
         
     }

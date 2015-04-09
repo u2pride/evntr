@@ -86,7 +86,7 @@
             [self.distance7Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
-        case 50: {
+        case 1000: {
             self.distance8Button.selected = YES;
 
             [self.distance8Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
@@ -201,7 +201,7 @@
     
     if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
         
-        [strongDelegate completedFiltering:50];
+        [strongDelegate completedFiltering:1000];
     }
     
 }
