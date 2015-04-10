@@ -65,8 +65,19 @@
             <string>Lato-Light</string>
             <string>Lato-Light</string>
             <string>Lato-Light</string>
+            <string>Lato-Light</string>
         </mutableArray>
         <mutableArray key="Lato-Regular.ttf">
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
@@ -1159,13 +1170,13 @@ Click continue when you're ready.</string>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZUv-Dd-DoL">
                                                     <rect key="frame" x="30" y="11" width="46" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dMO-sP-8g8">
                                                     <rect key="frame" x="137" y="11" width="230" height="30"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                             </subviews>
@@ -1178,13 +1189,13 @@ Click continue when you're ready.</string>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Hometown" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7a-4G-Sm6">
                                                     <rect key="frame" x="30" y="11" width="84" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="hometown" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z8W-SX-13R">
                                                     <rect key="frame" x="137" y="9" width="230" height="30"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                             </subviews>
@@ -1197,13 +1208,13 @@ Click continue when you're ready.</string>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Username" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9fE-6e-7Qj">
                                                     <rect key="frame" x="29" y="11" width="79" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BUa-BQ-sN6">
                                                     <rect key="frame" x="136" y="9" width="231" height="30"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                             </subviews>
@@ -1216,12 +1227,12 @@ Click continue when you're ready.</string>
                                             <subviews>
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="bio" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g00-ji-NSo">
                                                     <rect key="frame" x="137" y="9" width="230" height="30"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Bio" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o54-V1-x8F">
                                                     <rect key="frame" x="30" y="11" width="26" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -1233,12 +1244,12 @@ Click continue when you're ready.</string>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="k7R-ak-5kL" id="ObH-S2-58y">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2r4-j0-hB5">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="PersonDefault" translatesAutoresizingMaskIntoConstraints="NO" id="2r4-j0-hB5">
                                                     <rect key="frame" x="38" y="16" width="100" height="100"/>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tap to Edit" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fqX-is-Ni0">
                                                     <rect key="frame" x="170" y="46" width="110" height="39"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="20"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -1255,7 +1266,8 @@ Click continue when you're ready.</string>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s5Q-M5-8Ft">
-                                                    <rect key="frame" x="117" y="7" width="141" height="30"/>
+                                                    <rect key="frame" x="118" y="7" width="140" height="30"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="15"/>
                                                     <state key="normal" title="Connect with Twitter">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
@@ -1349,12 +1361,24 @@ Click continue when you're ready.</string>
                                     <action selector="submitFeedback:" destination="61X-hd-Ll9" eventType="touchUpInside" id="Jce-g0-5t8"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Opens the Mail app.  You can also email feedback to aryan@evntr.co" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ynK-Wr-fGO">
+                                <rect key="frame" x="46" y="374" width="228" height="71"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="71" id="I3A-un-P4q"/>
+                                    <constraint firstAttribute="width" constant="228" id="s9K-w5-6V0"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
+                                <color key="textColor" red="0.31237599206349209" green="0.31237599206349209" blue="0.31237599206349209" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="uX7-8W-Uic" firstAttribute="leading" secondItem="EK3-sr-ftt" secondAttribute="leadingMargin" id="0xT-jc-0vJ"/>
+                            <constraint firstItem="ynK-Wr-fGO" firstAttribute="top" secondItem="bLg-mX-LDC" secondAttribute="bottom" constant="64" id="34m-q4-QJy"/>
                             <constraint firstItem="uX7-8W-Uic" firstAttribute="top" secondItem="bLg-mX-LDC" secondAttribute="bottom" constant="17" id="HTa-Pq-bWj"/>
                             <constraint firstItem="uX7-8W-Uic" firstAttribute="trailing" secondItem="EK3-sr-ftt" secondAttribute="trailingMargin" id="JBc-1p-1wu"/>
+                            <constraint firstAttribute="centerX" secondItem="ynK-Wr-fGO" secondAttribute="centerX" id="a7L-Ha-m4W"/>
                             <constraint firstAttribute="centerX" secondItem="uX7-8W-Uic" secondAttribute="centerX" id="bPK-pF-dRw"/>
                             <constraint firstAttribute="centerY" secondItem="bLg-mX-LDC" secondAttribute="centerY" id="bTb-xk-hyZ"/>
                             <constraint firstAttribute="centerX" secondItem="bLg-mX-LDC" secondAttribute="centerX" id="uJg-NL-6nM"/>
@@ -2604,6 +2628,10 @@ Click continue when you're ready.</string>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fZP-1x-ybf">
+                                                <rect key="frame" x="16" y="779" width="288" height="166"/>
+                                                <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="calibratedWhite"/>
+                                            </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8lu-8u-jfO">
                                                 <rect key="frame" x="20" y="434" width="280" height="100"/>
                                                 <constraints>
@@ -2761,10 +2789,6 @@ Click continue when you're ready.</string>
                                                     <outlet property="delegate" destination="9xw-Ai-RPd" id="fFC-u9-KJD"/>
                                                 </connections>
                                             </collectionView>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fZP-1x-ybf">
-                                                <rect key="frame" x="16" y="779" width="288" height="166"/>
-                                                <color key="backgroundColor" white="1" alpha="0.14999999999999999" colorSpace="calibratedWhite"/>
-                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -3837,6 +3861,7 @@ Click continue when you're ready.</string>
         <image name="Current Location" width="25" height="25"/>
         <image name="CustomBackButton" width="24" height="24"/>
         <image name="LoginBackground" width="2509" height="1673"/>
+        <image name="PersonDefault" width="649" height="659"/>
         <image name="SettingsIcon" width="32" height="32"/>
         <image name="eventTypeCallout" width="921" height="929"/>
         <image name="filteringCallout" width="200" height="400"/>

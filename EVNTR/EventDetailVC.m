@@ -191,6 +191,7 @@
         
         //Progress Indicator - Start
         self.HUD = [[MBProgressHUD alloc] init];
+        self.HUD.removeFromSuperViewOnHide = YES; //otherwise it blocks other views
         self.HUD.center = self.view.center;
         [self.view addSubview:self.HUD];
         [self.view bringSubviewToFront:self.HUD];
@@ -427,11 +428,7 @@
         self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", count];
     }];
 
-    //Tap Gesture for Event Creator Photo
-    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
-    self.creatorPhoto.userInteractionEnabled = YES;
-    [self.creatorPhoto addGestureRecognizer:tapgr];
-    
+
     if (!self.isGuestUser) {
         
         //Add Edit Button if Creator is Current User
@@ -493,7 +490,13 @@
 
 - (void) setupCreatorComponent {
     
-    NSLog(@"%@", [self.event.parent class]);
+    NSLog(@"setup creator component - %@", [self.event.parent class]);
+    
+    //Tap Gesture for Event Creator Photo
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
+    self.creatorPhoto.userInteractionEnabled = YES;
+    [self.creatorPhoto addGestureRecognizer:tapgr];
+    
     
     [self.event.parent fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         
@@ -507,9 +510,7 @@
         self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
             
-            NSLog(@"Determine if Masking Should Be Done in Background: Before Masking:");
             self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
-            NSLog(@"AndAftermasking:");
             
             NSLog(@"Num6");
             [self networkCallComplete]; //6
@@ -659,10 +660,11 @@
 
 - (void) viewCreatorProfile {
     
+    NSLog(@"View Creator Profile - guest %@", [NSNumber numberWithBool:self.isGuestUser]);
+    
     if (!self.isGuestUser) {
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-        //TODO: change this from not using uilabel
-        viewUserProfileVC.userNameForProfileView = self.creatorName.text;
+        viewUserProfileVC.userNameForProfileView = self.event.parent.username;
         viewUserProfileVC.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:viewUserProfileVC animated:YES];
     }
@@ -693,7 +695,7 @@
         
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
-        invitePeopleVC.profileUsername = [PFUser currentUser];
+        invitePeopleVC.userProfile = [PFUser currentUser];
         invitePeopleVC.usersAlreadyInvited = self.event.invitedUsers;
         invitePeopleVC.delegate = self;
         

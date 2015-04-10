@@ -71,7 +71,9 @@
     self.usernameTextField.text = self.username;
     self.bioTextField.text = self.bio;
     
-    self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"]];
+    if (self.pictureData) {
+        self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"]];
+    }
     
     self.realNameTextField.delegate = self;
     self.hometownTextField.delegate = self;
@@ -245,8 +247,8 @@
     
     [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded){
-            [PFUser currentUser][@"profilePicture"] = profilePictureFile;
-            [[PFUser currentUser] saveInBackground];
+            //[PFUser currentUser][@"profilePicture"] = profilePictureFile;
+            //[[PFUser currentUser] saveInBackground];
         }
     }];
     
@@ -296,32 +298,39 @@
 
 - (IBAction)finishedEditProfile:(id)sender {
     
-    [[PFUser currentUser] setUsername:self.usernameTextField.text];
-    [[PFUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
-    [[PFUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
-    [[PFUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
-    [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
-        if (succeeded) {
-            NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
-            
-            id<ProfileEditDelegate> strongDelegate = self.delegate;
-            
-            if ([strongDelegate respondsToSelector:@selector(saveProfileWithNewInformation:withImageData:)]) {
+    PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
+    
+    [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (succeeded){
+            [PFUser currentUser][@"profilePicture"] = profilePictureFile;
+
+            [[PFUser currentUser] setUsername:self.usernameTextField.text];
+            [[PFUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
+            [[PFUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
+            [[PFUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
+            [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
-                [strongDelegate saveProfileWithNewInformation:newUserValues withImageData:self.pictureData];
-            }
-            
-        } else {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable To Update" message:[NSString stringWithFormat:@"%@", error] delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
+                if (succeeded) {
+                    NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
+                    
+                    id<ProfileEditDelegate> strongDelegate = self.delegate;
+                    
+                    if ([strongDelegate respondsToSelector:@selector(saveProfileWithNewInformation:withImageData:)]) {
+                        
+                        [strongDelegate saveProfileWithNewInformation:newUserValues withImageData:self.pictureData];
+                    }
+                    
+                } else {
+                    
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable To Update" message:[NSString stringWithFormat:@"%@", error] delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
+                    
+                }
+            }];
         }
-        
-        
     }];
+    
     
     
 }

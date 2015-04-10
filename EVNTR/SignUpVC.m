@@ -114,10 +114,10 @@ typedef enum {
                                                object:nil];
     
     //TODO:  Needed?
-    if ([self.presentingViewController isKindOfClass:[LogInVC class]]) {
+    //if ([self.presentingViewController isKindOfClass:[LogInVC class]]) {
         
-        [self grabUserDetailsFromFacebook];
-    }
+      //  [self grabUserDetailsFromFacebook];
+    //}
     
     if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:1.0 alpha:0.8] }];
@@ -187,7 +187,7 @@ typedef enum {
                 double delayInSeconds = 3.0;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [self grabUserDetailsFromFacebook];
+                    [self grabUserDetailsFromFacebookWithUser:user];
                     [self cleanUpBeforeTransition];
                     
                 });
@@ -230,7 +230,7 @@ typedef enum {
 }
 
 
-- (void) grabUserDetailsFromFacebook {
+- (void) grabUserDetailsFromFacebookWithUser:(PFUser *)newUser {
     
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     activityIndicator.hidesWhenStopped = YES;
@@ -281,16 +281,46 @@ typedef enum {
                 [userDetailsForFBRegistration setObject:pictureURL forKey:@"profilePictureURL"];
             }
             
+            NSLog(@"User Before New Data: %@", newUser);
             
-            id<NewUserFacebookSignUpDelegate> strongDelegate = self.delegate;
-            
-            if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetailsFromSignUp:)]) {
-                
-                [strongDelegate createFBRegisterVCWithDetailsFromSignUp:[NSDictionary dictionaryWithDictionary:userDetailsForFBRegistration]];
+            //Submit Initial User Info In Case they Quit the Process Before Finishing Evntr Register Process
+            if (userData[@"email"]) {
+                newUser[@"email"] = (NSString *) userData[@"email"];
             }
             
+            if (userData[@"first_name"]) {
+                newUser[@"username"] = (NSString *) userData[@"first_name"];
+            } else {
+                newUser[@"username"] = @"Evntr User";
+            }
+            
+            if (userData[@"id"]) {
+                newUser[@"facebookID"] = userData[@"id"];
+            }
+            
+            NSLog(@"User After New Data Before Save: %@", newUser);
+            
+            [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                NSLog(@"Finished Saving in Background - %@", [NSNumber numberWithBool:succeeded]);
+                
+                id<NewUserFacebookSignUpDelegate> strongDelegate = self.delegate;
+                
+                if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetailsFromSignUp:)]) {
+                    
+                    [strongDelegate createFBRegisterVCWithDetailsFromSignUp:[NSDictionary dictionaryWithDictionary:userDetailsForFBRegistration]];
+                }
+                
+            }];
+            
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to retrieve Facebook details." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            
+            [errorAlert show];
             
         }
+        
     }];
     
 }

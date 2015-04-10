@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "ActivityVC.h"
 #import "EVNConstants.h"
 #import "HomeScreenVC.h"
 #import "IDTransitionControllerTab.h"
@@ -122,22 +123,47 @@
         eventsView.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         eventsView.userForEventsQuery = [PFUser currentUser];
         
-    //Profile VC
-    } else if (viewController == [self.viewControllers objectAtIndex:3] && !self.isGuestUser) {
-        
-        UINavigationController *navVC = (UINavigationController *) self.viewControllers.lastObject;
-        ProfileVC *profileView = navVC.childViewControllers.firstObject;
-        
-        profileView.userNameForProfileView = [[PFUser currentUser] objectForKey:@"username"];
-    
-    
+
     //Add Event VC
     } else if (viewController == [self.viewControllers objectAtIndex:1] && !self.isGuestUser) {
         
         UINavigationController *navController = (UINavigationController *)viewController;
+        
         AddEventPrimaryVC *addEventModal = (AddEventPrimaryVC *)navController.childViewControllers.firstObject;
         addEventModal.delegate = self;
+    
+    //Activity VC
+    } else if (viewController == [self.viewControllers objectAtIndex:2] && !self.isGuestUser) {
+        
+        UINavigationController *navVC = (UINavigationController *) viewController;
+        [navVC popToRootViewControllerAnimated:NO];
+        
+        ActivityVC *activityVC = (ActivityVC *)navVC.childViewControllers.firstObject;
+        activityVC.userForActivities = [PFUser currentUser];
+        activityVC.typeOfActivityView = ACTIVITIES_ALL;
+        
+    //Profile VC
+    } else if (viewController == [self.viewControllers objectAtIndex:3] && !self.isGuestUser) {
+    
+        UINavigationController *navVC = (UINavigationController *) viewController;
+        [navVC popToRootViewControllerAnimated:NO];
+        
+        ProfileVC *profileView = navVC.childViewControllers.firstObject;
+        profileView.userNameForProfileView = [[PFUser currentUser] objectForKey:@"username"];
     }
+    
+    
+}
+
+
+#pragma mark - Events Sent From Other VCs
+- (void) selectCreateTab {
+    
+    [self setSelectedIndex:1];
+    
+    UINavigationController *navController = (UINavigationController *)self.selectedViewController;
+    AddEventPrimaryVC *addEventModal = (AddEventPrimaryVC *)navController.childViewControllers.firstObject;
+    addEventModal.delegate = self;
     
 }
 

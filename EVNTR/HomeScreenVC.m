@@ -19,6 +19,7 @@
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
 #import "SearchVC.h"
+#import "TabNavigationVC.h"
 #import "UIImageEffects.h"
 #import "UIColor+EVNColors.h"
 
@@ -620,12 +621,38 @@
         self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
     }
     
-    self.noResultsView.headerText = @"This Is Awkward...";
-    self.noResultsView.subHeaderText = @"Looks like there's no public events around you. Maybe increase your search radius.";
-    self.noResultsView.actionButton.titleText = @"Increase Your Search Radius";
     
-    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(displayFilterView)];
-    [self.noResultsView.actionButton addGestureRecognizer:tapgr];
+    switch (self.typeOfEventTableView) {
+        case ALL_PUBLIC_EVENTS: {
+            self.noResultsView.headerText = @"This Is Awkward...";
+            self.noResultsView.subHeaderText = @"Looks like there's no public events around you. Maybe increase your search radius.";
+            self.noResultsView.actionButton.titleText = @"Increase Your Search Radius";
+            
+            UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(displayFilterView)];
+            [self.noResultsView.actionButton addGestureRecognizer:tapgr];
+            
+            break;
+        }
+        case CURRENT_USER_EVENTS: {
+            self.noResultsView.headerText = @"No Events";
+            self.noResultsView.subHeaderText = @"Looks like you haven't created any events yet.  Want to create your first?";
+            self.noResultsView.actionButton.titleText = @"Create An Event";
+            
+            [self.noResultsView.actionButton addTarget:self action:@selector(switchToCreateTab) forControlEvents:UIControlEventTouchUpInside];
+            
+            break;
+        }
+        case OTHER_USER_EVENTS: {
+            self.noResultsView.headerText = @"No Events";
+            self.noResultsView.subHeaderText = @"Looks like they haven't created any events yet.";
+            self.noResultsView.actionButton.hidden = YES;
+            
+            break;
+        }
+        default:
+            break;
+    }
+    
     
     [self.view addSubview:self.noResultsView];
     
@@ -635,6 +662,16 @@
 - (void) hideNoResultsView {
     
     [self.noResultsView removeFromSuperview];
+    
+}
+
+- (void) switchToCreateTab {
+    
+    TabNavigationVC *tabController = (TabNavigationVC *) self.tabBarController;
+
+    [tabController selectCreateTab];
+    
+    self.noResultsView.actionButton.isSelected = NO;
     
 }
 

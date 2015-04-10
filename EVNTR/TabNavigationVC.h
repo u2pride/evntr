@@ -11,6 +11,8 @@
 
 @interface TabNavigationVC : UITabBarController <UITabBarControllerDelegate, EventModalProtocol>
 
+- (void) selectCreateTab;
+
 
 @end
 

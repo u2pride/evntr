@@ -78,6 +78,7 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    //Grab Facebook Profile Picture
     if ([self.informationFromFB objectForKey:@"profilePictureURL"]) {
         
         NSString *urlString = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"profilePictureURL"]];
@@ -100,6 +101,8 @@
                                }];
         
     }
+    
+    
 }
 
 

@@ -195,7 +195,7 @@
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
             self.userPictureData = data;
-            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
+            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"]];
         }
     }];
     
@@ -281,7 +281,7 @@
     PeopleVC *viewFollowersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
     viewFollowersVC.typeOfUsers = VIEW_FOLLOWERS;
-    viewFollowersVC.profileUsername = self.userForProfileView;
+    viewFollowersVC.userProfile = self.userForProfileView;
     
     [self.navigationController pushViewController:viewFollowersVC animated:YES];
     
@@ -292,7 +292,7 @@
     PeopleVC *viewFollowingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
     viewFollowingVC.typeOfUsers = VIEW_FOLLOWING;
-    viewFollowingVC.profileUsername = self.userForProfileView;
+    viewFollowingVC.userProfile = self.userForProfileView;
     
     [self.navigationController pushViewController:viewFollowingVC animated:YES];
     
@@ -506,7 +506,7 @@
         //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
         //NSString *bio = [stringDictionary objectForKey:@"bio"];
         
-        self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImageSelected"]];
+        self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"]];
         self.nameLabel.text = username;
         
         self.userNameForProfileView = username;

@@ -16,7 +16,7 @@
 
 @property (nonatomic, weak) id<PeopleVCDelegate> delegate;
 @property (nonatomic, assign) int typeOfUsers;
-@property (nonatomic, strong) PFUser *profileUsername;
+@property (nonatomic, strong) PFUser *userProfile;
 @property (nonatomic, strong) EventObject *eventToViewAttenders;
 
 //Property for Invitation PeopleVC

@@ -204,7 +204,7 @@
         case VIEW_FOLLOWERS: {
             
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"to" equalTo:self.profileUsername];
+            [query whereKey:@"to" equalTo:self.userProfile];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [query orderByAscending:@"createdAt"];
             [query selectKeys:@[@"from"]];
@@ -215,8 +215,8 @@
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Followers";
-                    noResultsView.subHeaderText = @"Looks like no one is following you yet.";
-                    noResultsView.actionButton.titleText = @"Got It";
+                    noResultsView.subHeaderText = @"";
+                    noResultsView.actionButton.hidden = YES;
                     
                     [self.view addSubview:noResultsView];
                     
@@ -239,7 +239,7 @@
         case VIEW_FOLLOWING: {
             
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"from" equalTo:self.profileUsername];
+            [query whereKey:@"from" equalTo:self.userProfile];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [query orderByAscending:@"createdAt"];
             
@@ -249,8 +249,8 @@
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Users";
-                    noResultsView.subHeaderText = @"Once you start following users, they will pop up here.";
-                    noResultsView.actionButton.titleText = @"Got It";
+                    noResultsView.subHeaderText = @"";
+                    noResultsView.actionButton.hidden = YES;
                     
                     [self.view addSubview:noResultsView];
                     
@@ -273,7 +273,7 @@
             
         case VIEW_FOLLOWING_TO_INVITE: {
             
-            [EVNParseEventHelper queryForUsersFollowing:self.profileUsername completion:^(NSArray *following) {
+            [EVNParseEventHelper queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -454,8 +454,20 @@
 
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                    
+                    cell.profileImage.alpha = 0;
                     cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
                     NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+                    
+                    cell.profileImage.alpha = 0.0;
+                    cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
+
+                    [UIView animateWithDuration:0.24 animations:^{
+                        
+                        cell.profileImage.alpha = 1.0;
+                        cell.profileImage.layer.transform = CATransform3DIdentity;
+                    }];
+                    
                     
                 }];
             }];
@@ -527,8 +539,19 @@
 
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                   
+                    cell.profileImage.alpha = 0;
                     cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
                     NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+                    
+                    cell.profileImage.alpha = 0.0;
+                    cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
+                    
+                    [UIView animateWithDuration:0.24 animations:^{
+                        
+                        cell.profileImage.alpha = 1.0;
+                        cell.profileImage.layer.transform = CATransform3DIdentity;
+                    }];
                     
                 }];
             }];
