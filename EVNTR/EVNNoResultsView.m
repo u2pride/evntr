@@ -10,6 +10,7 @@
 #define SUBHEADER_FONT_SIZE 16
 
 #import "EVNNoResultsView.h"
+#import "EVNConstants.h"
 
 @interface EVNNoResultsView ()
 
@@ -60,7 +61,7 @@
     
     _actionButton = [[EVNButton alloc] init];
     _actionButton.titleText = @"I'm Lonely";
-    _actionButton.font = [UIFont fontWithName:@"Lato-Regular" size:15.0];
+    _actionButton.font = [UIFont fontWithName:EVNFontRegular size:15.0];
     
     _headerTextLabel.textColor = [UIColor blackColor];
     _subHeaderTextLabel.textColor = [UIColor blackColor];
@@ -72,8 +73,8 @@
     
     _headerTextLabel.text = @"HeaderText";
     _subHeaderTextLabel.text = @"SubHeaderText";
-    _headerTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:HEADER_FONT_SIZE];
-    _subHeaderTextLabel.font = [UIFont fontWithName:@"Lato-Light" size:SUBHEADER_FONT_SIZE];
+    _headerTextLabel.font = [UIFont fontWithName:EVNFontRegular size:HEADER_FONT_SIZE];
+    _subHeaderTextLabel.font = [UIFont fontWithName:EVNFontLight size:SUBHEADER_FONT_SIZE];
     
     
     _backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -113,7 +114,7 @@
     _milesAwayLabel = [[UILabel alloc] init];
     _milesAwayLabel.text = @"miles away";
     _milesAwayLabel.textAlignment = NSTextAlignmentCenter;
-    _milesAwayLabel.font = [UIFont fontWithName:@"Lato-Regular" size:12];
+    _milesAwayLabel.font = [UIFont fontWithName:EVNFontRegular size:12];
     _milesAwayLabel.textColor = [UIColor darkGrayColor];
     
     _mapView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -196,7 +197,7 @@
     
     NSString *sampleString = @"Header";
 
-    CGSize size = [sampleString sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Lato-Regular" size:HEADER_FONT_SIZE]}];
+    CGSize size = [sampleString sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:EVNFontRegular size:HEADER_FONT_SIZE]}];
     CGSize adjustedSize = CGSizeMake(ceilf(size.width), ceilf(size.height));
     
     NSLog(@"size: %@", NSStringFromCGSize(adjustedSize));

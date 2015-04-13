@@ -12,6 +12,6 @@
 
 @interface ProfileVC : UIViewController <UINavigationControllerDelegate, ProfileEditDelegate>
 
-@property (strong, nonatomic) NSString *userNameForProfileView;
+@property (strong, nonatomic) NSString *userObjectID;
 
 @end

@@ -48,6 +48,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    //Update Font of Navigation Controller Title
+    //UIFont *font = [UIFont fontWithName:@"Lato-Light" size:12];
+    //NSDictionary *textAttributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
+    //[[UINavigationBar appearance] setTitleTextAttributes:textAttributes];
+    
+    //[UINavigationBar appearance].titleTextAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:20.0], NSForegroundColorAttributeName: [UIColor redColor]};
+
+
+    
     NSLog(@"ViewDidLoad Called");
     
     //TODO: for testing purposes
@@ -59,7 +68,7 @@
     self.loginButton.isRounded = NO;
     self.loginButton.tag = 1;
     self.loginButton.isSelected = YES;
-    self.loginButton.font = [UIFont fontWithName:@"Lato-Regular" size:20.0];
+    self.loginButton.font = [UIFont fontWithName:EVNFontRegular size:20.0];
     self.loginButton.isStateless = YES;
     
     self.registerButton.buttonColor = [UIColor orangeThemeColor];
@@ -67,7 +76,7 @@
     self.registerButton.isRounded = NO;
     self.registerButton.tag = 2;
     self.registerButton.isSelected = YES;
-    self.registerButton.font = [UIFont fontWithName:@"Lato-Regular" size:20.0];
+    self.registerButton.font = [UIFont fontWithName:EVNFontRegular size:20.0];
     self.registerButton.isStateless = YES;
     
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];

@@ -7,6 +7,7 @@
 //
 
 #import "EVNUtility.h"
+#import "EVNConstants.h"
 #import "EditProfileVC.h"
 #import "UIColor+EVNColors.h"
 
@@ -50,12 +51,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = YES;
 
     //change font color of title to white
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    
+    //Bar Button Item Text Attributes
+    [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                        [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
+                                        [UIColor whiteColor], NSForegroundColorAttributeName,
+                                        nil] 
+                              forState:UIControlStateNormal];
+    
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                   [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
+                                                                   [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                                   nil]
+                                                         forState:UIControlStateNormal];
 
     //default profile image
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];

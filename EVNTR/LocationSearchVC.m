@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNConstants.h"
 #import "LocationSearchVC.h"
 #import "GoogleResult.h"
 #import "UserLocationTableCell.h"
@@ -40,11 +41,22 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+        
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    
+    //Bar Button Setup
+    [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                    [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
+                                                                    [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                                    nil]
+                                                          forState:UIControlStateNormal];
     
     //Set up Search TableView and Controller
     self.locationSearchResults = [[NSMutableArray alloc] init];
@@ -179,7 +191,7 @@
                 cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifierCustom];
                 cell.textLabel.text = @"Custom User Location";
                 cell.textLabel.textAlignment = NSTextAlignmentCenter;
-                cell.textLabel.font = [UIFont fontWithName:@"Lato-Regular" size:19];
+                cell.textLabel.font = [UIFont fontWithName:EVNFontRegular size:19];
                 
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 

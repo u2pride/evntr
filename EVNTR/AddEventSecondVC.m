@@ -243,7 +243,7 @@
             savingEvent.text = @"Creating your event...";
             savingEvent.textColor = [UIColor whiteColor];
             savingEvent.textAlignment = NSTextAlignmentCenter;
-            savingEvent.font = [UIFont fontWithName:@"Lato-Regular" size:27];
+            savingEvent.font = [UIFont fontWithName:EVNFontRegular size:27];
             savingEvent.center = self.view.center;
             [[darkBlurEffectView contentView] addSubview:savingEvent];
             

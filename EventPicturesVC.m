@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EventPicturesVC.h"
+#import "EVNConstants.h"
 #import "EVNParseEventHelper.h"
 #import "IDTransitioningDelegate.h"
 #import "UIColor+EVNColors.h"
@@ -31,6 +32,10 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     
     // Uncomment the following line to preserve selection between presentations
     // self.clearsSelectionOnViewWillAppear = NO;

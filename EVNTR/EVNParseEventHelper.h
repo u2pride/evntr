@@ -23,7 +23,7 @@
 + (void) queryForStandbyUsersWithContent:(EventObject *)event ofType:(NSNumber *)type withIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *users))completionBlock;
 
 
-+ (void) queryRSVPForUsername:(NSString *)username atEvent:(EventObject *)event completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
++ (void) queryRSVPForUserId:(NSString *)userObjectId atEvent:(EventObject *)event completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
 
 + (void) queryApprovalStatusOfUser:(PFUser *)user forEvent:(EventObject *)event completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
 

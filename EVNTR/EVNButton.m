@@ -7,6 +7,7 @@
 //
 
 #import "EVNButton.h"
+#import "EVNConstants.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIColor+EVNColors.h"
 
@@ -27,7 +28,7 @@
         
         _buttonColorOpposing = [UIColor whiteColor];
         _isStateless = NO;
-        _font = [UIFont fontWithName:@"Lato-Regular" size:14.0];
+        _font = [UIFont fontWithName:EVNFontRegular size:14.0];
         _isRounded = YES;
         _buttonColor = [UIColor orangeThemeColor];
         _isSelected = NO;
@@ -46,7 +47,7 @@
         
         _buttonColorOpposing = [UIColor whiteColor];
         _isStateless = NO;
-        _font = [UIFont fontWithName:@"Lato-Regular" size:14.0];
+        _font = [UIFont fontWithName:EVNFontRegular size:14.0];
         _isRounded = YES;
         _buttonColor = [UIColor orangeThemeColor];
         _isSelected = NO;

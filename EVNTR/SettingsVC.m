@@ -59,8 +59,6 @@
 #pragma mark - MFMailViewController Delegate Methods
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     
-    NSLog(@"aaa");
-    
     [self dismissViewControllerAnimated:YES completion:^{
         
         [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
@@ -70,42 +68,6 @@
     
 }
 
-- (IBAction)evntr1Profile:(id)sender {
-    
-    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    newUserProfileVC.userNameForProfileView = @"EVNTR";
-    
-    [self.navigationController pushViewController:newUserProfileVC animated:YES];
-    
-}
-
-- (IBAction)envtr2Profile:(id)sender {
-    
-    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    newUserProfileVC.userNameForProfileView = @"EVNTR2";
-    
-    [self.navigationController pushViewController:newUserProfileVC animated:YES];
-    
-    
-}
-
-- (IBAction)evntr3Profile:(id)sender {
-    
-    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    newUserProfileVC.userNameForProfileView = @"EVNTR3";
-    
-    [self.navigationController pushViewController:newUserProfileVC animated:YES];
-    
-}
-
-- (IBAction)evntr4Profile:(id)sender {
-    
-    ProfileVC *newUserProfileVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    newUserProfileVC.userNameForProfileView = @"EVNTR4";
-    
-    [self.navigationController pushViewController:newUserProfileVC animated:YES];
-    
-}
 
 
 @end

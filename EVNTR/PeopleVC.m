@@ -37,6 +37,10 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
     
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
@@ -238,6 +242,28 @@
         }
         case VIEW_FOLLOWING: {
             
+            [EVNParseEventHelper queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
+                
+                if (following.count == 0) {
+                    
+                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+                    noResultsView.headerText = @"No One to Invite";
+                    noResultsView.subHeaderText = @"Once you start to follow users, you will be able to invite them to events.";
+                    noResultsView.actionButton.titleText = @"Got It";
+                    
+                    [self.view addSubview:noResultsView];
+                    
+                } else {
+                    
+                    self.usersArray = [NSArray arrayWithArray:following];
+                    [self.collectionView reloadData];
+                }
+                
+                
+            }];
+            
+            
+            /*
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
             [query whereKey:@"from" equalTo:self.userProfile];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
@@ -267,11 +293,24 @@
                 }
                 
             }];
+            */
             
             break;
         }
             
         case VIEW_FOLLOWING_TO_INVITE: {
+            
+            //VC to Invite is Presented Modally - Thus Minor UI Tweaks are Needed to Nav Bar
+            //Navigation Bar Font & Color
+            NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+            self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+            
+            //Bar Button Item Text Attributes
+            [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                           [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
+                                                                           [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                                           nil]
+                                                                 forState:UIControlStateNormal];
             
             [EVNParseEventHelper queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
@@ -482,7 +521,7 @@
         [selectedUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
             ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-            viewUserProfileVC.userNameForProfileView = selectedUser[@"username"];
+            viewUserProfileVC.userObjectID = selectedUser.objectId;
             viewUserProfileVC.hidesBottomBarWhenPushed = YES;
             
             [self.navigationController pushViewController:viewUserProfileVC animated:YES];

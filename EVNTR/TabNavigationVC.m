@@ -148,8 +148,14 @@
         UINavigationController *navVC = (UINavigationController *) viewController;
         [navVC popToRootViewControllerAnimated:NO];
         
+        //Update Font and Color of NavBar in Case of Moving Directly from Event Detail Page
+        //navVC.navigationBar.barTintColor = [UIColor orangeThemeColor];
+        //navVC.navigationBar.translucent = YES;
+        //[navVC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+        
         ProfileVC *profileView = navVC.childViewControllers.firstObject;
-        profileView.userNameForProfileView = [[PFUser currentUser] objectForKey:@"username"];
+        profileView.userObjectID = [PFUser currentUser].objectId;
+        profileView.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     }
     
     

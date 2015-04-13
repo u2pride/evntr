@@ -35,6 +35,7 @@
         self.paginationEnabled = YES;
         self.userForActivities = [PFUser currentUser];
         _typeOfActivityView = ACTIVITIES_ALL;
+        
     }
     
     return self;
@@ -43,6 +44,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     
     //TODO:  ONLY FOR ALL ACTIVITIES
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
@@ -577,10 +582,11 @@
 - (void)viewProfile:(UITapGestureRecognizer *)tapgr {
     
     ImageViewPFExtended *tappedImage = (ImageViewPFExtended *)tapgr.view;
-    NSString *username = [tappedImage.objectForImageView objectForKey:@"username"];
+    
     
     ProfileVC *followerProfileVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    followerProfileVC.userNameForProfileView = username;
+    followerProfileVC.userObjectID = [tappedImage.objectForImageView objectForKey:@"objectId"];
+    
     [self.navigationController pushViewController:followerProfileVC animated:YES];
 
 }

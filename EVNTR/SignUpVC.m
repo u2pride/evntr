@@ -162,23 +162,37 @@ typedef enum {
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
         if (!user) {
-            NSString *errorMessage = nil;
-            if (!error) {
-                NSLog(@"Uh oh. The user cancelled the Facebook login.");
-                errorMessage = @"Uh oh. The user cancelled the Facebook login.";
+
+            [self cleanUpBeforeTransition];
+            
+            
+            // Handles cases like Facebook password change or unverified Facebook accounts.
+            NSString *alertMessage, *alertTitle;
+            
+            if ([FBErrorUtility shouldNotifyUserForError:error]) {
+                alertTitle = [FBErrorUtility userTitleForError:error];
+                alertMessage = [FBErrorUtility userMessageForError:error];
+                
+            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession) {
+                alertTitle = @"Session Error";
+                alertMessage = @"Your current session is no longer valid. Please log in again.";
+                
+            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
+                NSLog(@"user cancelled login");
+                
             } else {
-                NSLog(@"Uh oh. An error occurred: %@", error);
-                errorMessage = [error localizedDescription];
+                alertTitle  = @"Something went wrong";
+                alertMessage = @"Please try again later.";
+                NSLog(@"Unexpected error:%@", error);
             }
             
-            [self cleanUpBeforeTransition];
-
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error"
-                                                            message:errorMessage
-                                                           delegate:nil
-                                                  cancelButtonTitle:nil
-                                                  otherButtonTitles:@"Dismiss", nil];
-            [alert show];
+            if (alertMessage) {
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                            message:alertMessage
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            }
             
         } else {
             if (user.isNew) {
@@ -200,7 +214,7 @@ typedef enum {
                 UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
                 loginInTextLabel.alpha = 0;
                 loginInTextLabel.text = @"WELCOME to EVNTR";
-                loginInTextLabel.font = [UIFont fontWithName:@"Lato-Regular" size:26];
+                loginInTextLabel.font = [UIFont fontWithName:EVNFontRegular size:26];
                 loginInTextLabel.textAlignment = NSTextAlignmentCenter;
                 loginInTextLabel.textColor = [UIColor whiteColor];
                 loginInTextLabel.center = self.view.center;
@@ -434,9 +448,37 @@ typedef enum {
         
     } else {
         
-        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Information" message:@"Make sure to fill in all fields and that your username and password are greater than three characters." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+        if (!self.pictureData) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Profile Picture" message:@"Click on the photo to choose a profile picture." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.emailField.text.length < 1) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Email" message:@"Add your email before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.usernameField.text.length <= 3) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose a username that is greater than three characters" delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.passwordField.text.length <= 3) {
         
-        [errorAlert show];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Password" message:@"Please choose a password that is greater than three characters" delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Issue" message:@"Please make sure to fill in all fields before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+        }
+        
         
         [self cleanUpBeforeTransition];
 
@@ -456,7 +498,7 @@ typedef enum {
     self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
     self.blurMessage.alpha = 0;
     self.blurMessage.text = message;
-    self.blurMessage.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
     self.blurMessage.textAlignment = NSTextAlignmentCenter;
     self.blurMessage.textColor = [UIColor whiteColor];
     self.blurMessage.center = self.view.center;

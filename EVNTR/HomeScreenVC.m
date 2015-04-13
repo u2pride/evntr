@@ -71,12 +71,17 @@
         _searchRadius = 20;
 
     }
+    
     return self;
     
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     
     self.userForEventsQuery = [PFUser currentUser];
     

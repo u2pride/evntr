@@ -216,6 +216,14 @@
          //                                             forBarMetrics:UIBarMetricsDefault];
         //self.navigationController.navigationBar.shadowImage = self.navbarShadow;
         self.navigationController.navigationBar.translucent = YES;
+        
+        NSLog(@"Setting to Orange");
+        self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+        self.tabBarController.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+        
+        //Navigation Bar Font & Color
+        NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+        self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     }
     
     [self.timerForLocation invalidate];
@@ -301,12 +309,12 @@
         } else {
             
             int eventType = [self.event.typeOfEvent intValue];
-            NSString *username = [[PFUser currentUser] objectForKey:@"username"];
+            NSString *userObjectId = [PFUser currentUser].objectId;
             
             switch (eventType) {
                 case PUBLIC_EVENT_TYPE: {
                     
-                    [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+                    [EVNParseEventHelper queryRSVPForUserId:userObjectId atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
                         
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
@@ -326,8 +334,8 @@
                 }
                 case PRIVATE_EVENT_TYPE: {
                     
-                    [EVNParseEventHelper queryRSVPForUsername:username atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
-                        
+                    [EVNParseEventHelper queryRSVPForUserId:userObjectId atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
                             [self.rsvpButton setTitle:status forState:UIControlStateNormal];
@@ -644,7 +652,7 @@
         PFUser *selectedUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
         ProfileVC *profileView = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-        profileView.userNameForProfileView = selectedUser[@"username"];
+        profileView.userObjectID = selectedUser.objectId;
         
         [self.navigationController pushViewController:profileView animated:YES];
         
@@ -664,8 +672,9 @@
     
     if (!self.isGuestUser) {
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-        viewUserProfileVC.userNameForProfileView = self.event.parent.username;
+        viewUserProfileVC.userObjectID = self.event.parent.objectId;
         viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+        
         [self.navigationController pushViewController:viewUserProfileVC animated:YES];
     }
     

@@ -15,6 +15,7 @@
 #import "LogInVC.h"
 #import "PeopleVC.h"
 #import "ProfileVC.h"
+#import "UIColor+EVNColors.h"
 
 
 @interface ProfileVC ()
@@ -72,9 +73,10 @@
     if (self) {
         //initial values
         self.userForProfileView = [PFUser currentUser];
-        self.userNameForProfileView = [PFUser currentUser][@"username"];
+        self.userObjectID = [PFUser currentUser].objectId;
         _isDismissedAlreadyCancel = NO;
         _isDismissedAlreadyUpdate = NO;
+        
     }
     
     return self;
@@ -83,6 +85,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+
     
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -106,9 +110,17 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    //Update Font and Color of NavBar in Case of Moving Directly from Event Detail Page
+    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:nil];
+    
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    
     //Query Parse for the User.
     PFQuery *usernameQuery = [PFUser query];
-    [usernameQuery whereKey:@"username" equalTo:self.userNameForProfileView];
+    [usernameQuery whereKey:@"objectId" equalTo:self.userObjectID];
     [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         self.userForProfileView = (PFUser *)object;
         
@@ -117,7 +129,7 @@
         // make sure to include follow status and following and followers counts.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUIDueToNewFollow:) name:kFollowActivity object:nil];
         
-        if ([self.userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+        if ([self.userObjectID isEqualToString:[PFUser currentUser].objectId]) {
             self.profileType = CURRENT_USER_PROFILE;
             
             //Register for Notifications when Current User Creates a New Event
@@ -262,7 +274,7 @@
     
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
-    if ([self.userNameForProfileView isEqualToString:[PFUser currentUser][@"username"]]) {
+    if ([self.userObjectID isEqualToString:[PFUser currentUser].objectId]) {
         NSLog(@"Current user events from profile page");
         eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
         eventVC.userForEventsQuery = [PFUser currentUser];
@@ -509,7 +521,7 @@
         self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"]];
         self.nameLabel.text = username;
         
-        self.userNameForProfileView = username;
+        self.userObjectID = [PFUser currentUser].objectId;
         self.userForProfileView = [PFUser currentUser];
         
         [self dismissViewControllerAnimated:YES completion:^{

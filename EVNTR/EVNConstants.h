@@ -110,7 +110,14 @@ extern NSString *const kLastBackgroundFetchTimeStamp;
 
 
 
+#pragma mark - Nav Bar Appearance
+#define kFontSize 18
 
+#pragma mark - Custom Font
+extern NSString *const EVNFontBold;
+extern NSString *const EVNFontRegular;
+extern NSString *const EVNFontLight;
+extern NSString *const EVNFontThin;
 
 
 
@@ -121,4 +128,11 @@ extern NSString *const kLastBackgroundFetchTimeStamp;
 // Alex approved {you} to Attend the Event on Dec 4th
 //
 //
+
+
+
+
+
+
+
 

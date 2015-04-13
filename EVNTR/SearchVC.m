@@ -106,33 +106,36 @@
 
 - (void) updateSearchResultsForSearchController:(UISearchController *)searchController {
 
-    if (self.isSearchingEvents) {
+    if (self.searchController.searchBar.text.length > 0) {
         
-        PFQuery *searchQuery = [PFQuery queryWithClassName:@"Events"];
-        [searchQuery whereKey:@"title" containsString:self.searchController.searchBar.text];
-        [searchQuery whereKey:@"typeOfEvent" notEqualTo:[NSNumber numberWithInt:PRIVATE_EVENT_TYPE]];
-        [searchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
-            [self.searchResultsTable reloadData];
-        }];
-        
-    } else {
-        
-        PFQuery *peopleSearchQuery = [PFUser query];
-        [peopleSearchQuery whereKey:@"username" matchesRegex:self.searchController.searchBar.text modifiers:@"i"];
-        //[peopleSearchQuery whereKey:@"username" containsString:self.searchController.searchBar.text];
-        //[peopleSearchQuery whereKey:@"realName" containsString:self.searchController.searchBar.text];
-        [peopleSearchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
-            [self.searchResultsTable reloadData];
+        if (self.isSearchingEvents) {
             
-            NSLog(@"query: %@ and results %@", peopleSearchQuery, objects);
-        }];
+            PFQuery *searchQuery = [PFQuery queryWithClassName:@"Events"];
+            [searchQuery whereKey:@"title" containsString:self.searchController.searchBar.text];
+            [searchQuery whereKey:@"typeOfEvent" notEqualTo:[NSNumber numberWithInt:PRIVATE_EVENT_TYPE]];
+            [searchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
+                [self.searchResultsTable reloadData];
+            }];
+            
+        } else {
+            
+            PFQuery *peopleSearchQuery = [PFUser query];
+            [peopleSearchQuery whereKey:@"username" matchesRegex:self.searchController.searchBar.text modifiers:@"i"];
+            //[peopleSearchQuery whereKey:@"username" containsString:self.searchController.searchBar.text];
+            //[peopleSearchQuery whereKey:@"realName" containsString:self.searchController.searchBar.text];
+            [peopleSearchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
+                [self.searchResultsTable reloadData];
+                
+                NSLog(@"query: %@ and results %@", peopleSearchQuery, objects);
+            }];
+            
+        }
         
     }
     
 }
-
 
 
 #pragma mark -
@@ -150,19 +153,21 @@
     
     if (self.isSearchingEvents) {
         
-        cell.textLabel.font = [UIFont fontWithName:@"Lato-Regular" size:15];
+        cell.textLabel.font = [UIFont fontWithName:EVNFontRegular size:15];
         
         EventObject *currentObject = (EventObject *)[self.searchResultsArray objectAtIndex:indexPath.row];
         cell.textLabel.text = currentObject.title;
         
     } else {
         
-        cell.textLabel.font = [UIFont fontWithName:@"Lato-Regular" size:15];
+        cell.textLabel.font = [UIFont fontWithName:EVNFontRegular size:15];
         
         PFUser *currentUser = (PFUser *) [self.searchResultsArray objectAtIndex:indexPath.row];
         cell.textLabel.text = currentUser.username;
         
     }
+    
+    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     return cell;
     
@@ -201,7 +206,7 @@
         PFUser *selectedUser = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
         
         ProfileVC *profileVC = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-        profileVC.userNameForProfileView = selectedUser.username;
+        profileVC.userObjectID = selectedUser.objectId;
         
         [self.navigationController pushViewController:profileVC animated:YES];
         

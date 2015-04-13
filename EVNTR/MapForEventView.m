@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNConstants.h"
 #import "MapForEventView.h"
 #import <QuartzCore/QuartzCore.h>
 
@@ -70,7 +71,7 @@
     _milesAwayLabel = [[UILabel alloc] init];
     _milesAwayLabel.text = @"miles away";
     _milesAwayLabel.textAlignment = NSTextAlignmentCenter;
-    _milesAwayLabel.font = [UIFont fontWithName:@"Lato-Regular" size:12];
+    _milesAwayLabel.font = [UIFont fontWithName:EVNFontRegular size:12];
     _milesAwayLabel.textColor = [UIColor darkGrayColor];
     
     _mapView.translatesAutoresizingMaskIntoConstraints = NO;

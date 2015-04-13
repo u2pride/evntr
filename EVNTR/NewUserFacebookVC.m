@@ -182,7 +182,7 @@
     self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
     self.blurMessage.alpha = 0;
     self.blurMessage.text = message;
-    self.blurMessage.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
     self.blurMessage.textAlignment = NSTextAlignmentCenter;
     self.blurMessage.textColor = [UIColor whiteColor];
     self.blurMessage.center = self.view.center;

@@ -188,23 +188,38 @@
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
         if (!user) {
-            NSString *errorMessage = nil;
-            if (!error) {
-                NSLog(@"Uh oh. The user cancelled the Facebook login.");
-                errorMessage = @"Uh oh. The user cancelled the Facebook login.";
-            } else {
-                NSLog(@"Uh oh. An error occurred: %@", error);
-                errorMessage = [error localizedDescription];
-            }
             
             [self cleanUpBeforeTransition];
+
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Log In Error"
-                                                            message:errorMessage
-                                                           delegate:nil
-                                                  cancelButtonTitle:nil
-                                                  otherButtonTitles:@"Dismiss", nil];
-            [alert show];
+            // Handles cases like Facebook password change or unverified Facebook accounts.
+            NSString *alertMessage, *alertTitle;
+            
+            if ([FBErrorUtility shouldNotifyUserForError:error]) {
+                alertTitle = [FBErrorUtility userTitleForError:error];
+                alertMessage = [FBErrorUtility userMessageForError:error];
+                
+            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession) {
+                alertTitle = @"Session Error";
+                alertMessage = @"Your current session is no longer valid. Please log in again.";
+                
+            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
+                NSLog(@"user cancelled login");
+                
+            } else {
+                alertTitle  = @"Something went wrong";
+                alertMessage = @"Please try again later.";
+                NSLog(@"Unexpected error:%@", error);
+            }
+            
+            if (alertMessage) {
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                            message:alertMessage
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            }
+            
             
         } else {
             if (user.isNew) {
@@ -357,7 +372,7 @@
     self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
     self.blurMessage.alpha = 0;
     self.blurMessage.text = message;
-    self.blurMessage.font = [UIFont fontWithName:@"Lato-Regular" size:24];
+    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
     self.blurMessage.textAlignment = NSTextAlignmentCenter;
     self.blurMessage.textColor = [UIColor whiteColor];
     self.blurMessage.center = self.view.center;

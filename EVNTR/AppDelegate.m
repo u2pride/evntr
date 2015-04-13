@@ -8,10 +8,13 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import <Bolts/Bolts.h>
+
 #import "EVNConstants.h"
 #import <FacebookSDK/FacebookSDK.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
-
+#import <ParseCrashReporting/ParseCrashReporting.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface AppDelegate ()
 
@@ -23,6 +26,7 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
     
     //User's Location for Queries of Local Events.
     if (!self.locationManager) {
@@ -53,6 +57,7 @@
     [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
     
     //Connecting App to Parse and Enabling Analytics
+    [ParseCrashReporting enable];
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
@@ -62,6 +67,11 @@
     
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
+    
+    //Audio Session - Continue Playing Background Music
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    [audioSession setCategory:AVAudioSessionCategoryAmbient error:nil];
+    
     
     return YES;
 }
@@ -315,6 +325,18 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
+    
+
+    [PFAnalytics trackAppOpenedWithLaunchOptions:nil];
+    
+    NSDictionary *dimensions = @{
+                                 // What type of news is this?
+                                 @"category": @"politics",
+                                 // Is it a weekday or the weekend?
+                                 @"dayType": @"weekday",
+                                 };
+    
+    [PFAnalytics trackEvent:@"read" dimensions:dimensions];
 
 }
 

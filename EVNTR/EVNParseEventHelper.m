@@ -122,11 +122,11 @@
 }
 
 
-+ (void) queryRSVPForUsername:(NSString *)username atEvent:(EventObject *)event completion:(void (^)(BOOL, NSString *))completionBlock {
++ (void) queryRSVPForUserId:(NSString *)userObjectId atEvent:(EventObject *)event completion:(void (^)(BOOL, NSString *))completionBlock {
     
     PFRelation *eventAttendersRelation = event.attenders;
     PFQuery *attendingQuery = [eventAttendersRelation query];
-    [attendingQuery whereKey:@"username" equalTo:username];
+    [attendingQuery whereKey:@"objectId" equalTo:userObjectId];
     [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         
         if (object && !error) {
@@ -308,6 +308,8 @@
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
         
+        NSLog(@"RESULTS OF QUERYFORUSERSFOLLOWING: %@", usersFound);
+        
         NSMutableArray *finalResults = [[NSMutableArray alloc] init];
         
         if (!error) {
@@ -316,7 +318,11 @@
                 PFUser *userFollowing = object[@"to"];
                 
                 if (![finalResults containsObject:userFollowing]) {
-                    [finalResults addObject:userFollowing];
+                    
+                    if (userFollowing) {
+                        [finalResults addObject:userFollowing];
+                    }
+                    
                 } else {
                     NSLog(@"Developer Note:  Duplicate attendee found.");
                 }

@@ -35,3 +35,13 @@ NSString *const kEventCreated = @"EventCreated";
 
 
 NSString *const kIsGuest = @"isGuestKey";
+
+
+NSString *const kFontName = @"Lato-Regular";
+NSString *const kFontColor = @"whiteColor";
+
+
+NSString *const EVNFontBold = @"Lato-Bold";
+NSString *const EVNFontRegular = @"Lato-Regular";
+NSString *const EVNFontLight = @"Lato-Light";
+NSString *const EVNFontThin = @"Lato-Thin";

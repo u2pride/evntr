@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNConstants.h"
 #import "SearchHeaderView.h"
 #import "UIColor+EVNColors.h"
 
@@ -47,7 +48,7 @@
     
     self.eventLabel = [[UILabel alloc] init];
     self.eventLabel.text = @"EVENTS";
-    self.eventLabel.font = [UIFont fontWithName:@"Lato-Regular" size:16];
+    self.eventLabel.font = [UIFont fontWithName:EVNFontRegular size:16];
     self.eventLabel.textColor = [UIColor orangeThemeColor];
     self.eventLabel.textAlignment = NSTextAlignmentCenter;
     
@@ -56,7 +57,7 @@
     
     self.peopleLabel = [[UILabel alloc] init];
     self.peopleLabel.text = @"PEOPLE";
-    self.peopleLabel.font = [UIFont fontWithName:@"Lato-Regular" size:16];
+    self.peopleLabel.font = [UIFont fontWithName:EVNFontRegular size:16];
     self.peopleLabel.textColor = [UIColor blackColor];
     self.peopleLabel.textAlignment = NSTextAlignmentCenter;
     
@@ -65,7 +66,7 @@
     
     /*
     self.separator = [[UILabel alloc] initWithFrame:CGRectMake(30, 30, 1.0, 20.0)];
-    self.separator.font = [UIFont fontWithName:@"Lato-Regular" size:20];
+    self.separator.font = [UIFont fontWithName:EVNFontRegular size:20];
     self.separator.text = @"";
     self.separator.backgroundColor = [UIColor blackColor];
     
@@ -79,7 +80,7 @@
     
     CALayer *bottomLayer = [CALayer layer];
     bottomLayer.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 1.0f);
-    bottomLayer.backgroundColor = [UIColor grayColor].CGColor;
+    bottomLayer.backgroundColor = [UIColor orangeThemeColor].CGColor;
     
     
     
