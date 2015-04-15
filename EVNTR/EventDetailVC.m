@@ -8,6 +8,7 @@
 
 #import "AddEventPrimaryVC.h"
 #import "AppDelegate.h"
+#import "CommentsTableSource.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNParseEventHelper.h"
@@ -85,6 +86,11 @@
 @property (strong, nonatomic) IBOutlet EVNButton *viewPicturesButton;
 
 
+//Comments Component
+@property (strong, nonatomic) IBOutlet UITableView *commentsTable;
+@property (strong, nonatomic) CommentsTableSource *commentsController;
+
+
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
 
 @property (nonatomic, strong) NSTimer *timerForLocation;
@@ -154,7 +160,61 @@
     self.view.backgroundColor = [UIColor blackColor];
     
     [self setupStaticEventDetailComponents];
+    
+    
+    //TEST DATA - COMMENTS
+    
+    PFObject *newComment = [PFObject objectWithClassName:@"Comments"];
+    newComment[@"commentText"] = @"This is here a comment with a lot of text... I wonder what this will look like.";
+    newComment[@"commentParent"] = [PFUser currentUser];
+    newComment[@"commentEvent"] = self.event;
+    
+    [newComment saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (succeeded) {
+            NSLog(@"Saved");
+            //add to comments array
+            //insert row in table
+        } else {
+            //error
+        }
+        
+    }];
 
+    
+    PFObject *newComment2 = [PFObject objectWithClassName:@"Comments"];
+    newComment2[@"commentText"] = @"Go to this event.  OH look, another comment with a lot of text.  Hmmmmmmmmm.....";
+    newComment2[@"commentParent"] = [PFUser currentUser];
+    newComment2[@"commentEvent"] = self.event;
+    
+    [newComment2 saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (succeeded) {
+            NSLog(@"Saved");
+            //add to comments array
+            //insert row in table
+        } else {
+            //error
+        }
+        
+    }];
+    
+    PFObject *newComment3 = [PFObject objectWithClassName:@"Comments"];
+    newComment3[@"commentText"] = @"This is a nice idea.";
+    newComment3[@"commentParent"] = [PFUser currentUser];
+    newComment3[@"commentEvent"] = self.event;
+    
+    [newComment3 saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (succeeded) {
+            NSLog(@"Saved");
+            //add to comments array
+            //insert row in table
+        } else {
+            //error
+        }
+        
+    }];
 }
 
 
@@ -447,7 +507,9 @@
         
     }
     
-
+    //Setup Comments Component
+    self.commentsController = [[CommentsTableSource alloc] initWithEvent:self.event withTable:self.commentsTable];
+    self.commentsController.delegate = self;
     
 }
 
@@ -1011,6 +1073,54 @@
     self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
     
 }
+
+
+
+#pragma mark - EVNComment Protocol
+
+- (void) addNewComment {
+    
+    
+    EVNAddCommentVC *newCommentVC = [[EVNAddCommentVC alloc] init];
+    newCommentVC.delegate = self;
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newCommentVC];
+    
+    [self presentViewController:navController animated:YES completion:nil];
+}
+
+
+- (void) cancelComment {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+}
+
+- (void) submitCommentWithText:(NSString *)commentString {
+    
+    //Add Event To Comment and Save to Backend
+    PFObject *newComment = [PFObject objectWithClassName:@"Comments"];
+    newComment[@"commentText"] = commentString;
+    newComment[@"commentParent"] = [PFUser currentUser];
+    newComment[@"commentEvent"] = self.event;
+    
+    [newComment saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (succeeded) {
+            NSLog(@"saved comment");
+            
+            [self dismissViewControllerAnimated:YES completion:nil];
+            //add to comments array
+            //insert row in table
+        } else {
+            //error
+        }
+        
+    }];
+    
+}
+    
+
 
 
 /*

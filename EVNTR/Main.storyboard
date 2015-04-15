@@ -2408,7 +2408,7 @@ Click continue when you're ready.</string>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
-                                                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.35999999999999999" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstItem="d1h-fv-1A8" firstAttribute="centerX" secondItem="Tbg-fw-cOB" secondAttribute="centerX" id="1fD-sK-oLG"/>
                                                         <constraint firstItem="VVs-1w-JhP" firstAttribute="centerY" secondItem="hF9-Zo-J5N" secondAttribute="centerY" id="1hR-a2-xPH"/>
@@ -2790,6 +2790,15 @@ Click continue when you're ready.</string>
                                                     <outlet property="delegate" destination="9xw-Ai-RPd" id="fFC-u9-KJD"/>
                                                 </connections>
                                             </collectionView>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="UAo-w8-gAK">
+                                                <rect key="frame" x="25" y="1178" width="271" height="200"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="200" id="4zk-hN-XMI"/>
+                                                </constraints>
+                                                <color key="sectionIndexColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            </tableView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -2815,6 +2824,7 @@ Click continue when you're ready.</string>
                                             <constraint firstAttribute="centerX" secondItem="CeH-mV-5d8" secondAttribute="centerX" id="ECl-4n-C9h"/>
                                             <constraint firstItem="TcM-9I-PvE" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="16" id="ESR-zr-ffP"/>
                                             <constraint firstItem="OEQ-GB-dJ2" firstAttribute="top" secondItem="9B5-qw-1QG" secondAttribute="top" constant="8" id="Ecm-nM-xSM"/>
+                                            <constraint firstAttribute="trailing" secondItem="UAo-w8-gAK" secondAttribute="trailing" constant="24" id="Egk-pD-Vet"/>
                                             <constraint firstAttribute="centerX" secondItem="429-cp-IMw" secondAttribute="centerX" constant="-0.5" id="Etu-r2-a34"/>
                                             <constraint firstItem="CeH-mV-5d8" firstAttribute="top" secondItem="bUB-Qg-yFJ" secondAttribute="bottom" id="FnJ-hG-uV3"/>
                                             <constraint firstItem="PHv-2y-ZBG" firstAttribute="top" secondItem="I7U-Tw-AXO" secondAttribute="bottom" constant="23" id="G5M-sY-aKa"/>
@@ -2840,6 +2850,7 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="Bfu-kw-HWs" firstAttribute="top" secondItem="Yz9-9S-wgt" secondAttribute="bottom" constant="8" id="XTr-JQ-0H6"/>
                                             <constraint firstItem="TcM-9I-PvE" firstAttribute="centerX" secondItem="MDS-UN-c76" secondAttribute="centerX" id="Xjh-96-pzv"/>
                                             <constraint firstAttribute="trailing" secondItem="P1U-1j-kdG" secondAttribute="trailing" id="Yul-y3-owq"/>
+                                            <constraint firstItem="UAo-w8-gAK" firstAttribute="top" secondItem="Bfu-kw-HWs" secondAttribute="bottom" constant="23" id="aC6-ct-u4i"/>
                                             <constraint firstItem="mmZ-Xw-jmF" firstAttribute="top" secondItem="MDS-UN-c76" secondAttribute="bottom" constant="8" id="aOg-OK-fqu"/>
                                             <constraint firstAttribute="trailing" secondItem="PHv-2y-ZBG" secondAttribute="trailing" constant="86" id="bhA-mT-bdw"/>
                                             <constraint firstItem="8cT-rR-tW8" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" id="e2v-On-8bV"/>
@@ -2872,6 +2883,7 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="Bfu-kw-HWs" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="25" id="w8U-Di-Joj"/>
                                             <constraint firstItem="wof-6L-VbM" firstAttribute="top" secondItem="Yz9-9S-wgt" secondAttribute="bottom" constant="20" id="xex-tm-pba"/>
                                             <constraint firstItem="DX1-8m-Bua" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="70" id="yPm-Oz-4UC"/>
+                                            <constraint firstItem="UAo-w8-gAK" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="25" id="ycr-Tr-RnC"/>
                                             <constraint firstAttribute="height" constant="800" id="yhZ-0g-Kx3"/>
                                             <constraint firstItem="429-cp-IMw" firstAttribute="top" secondItem="Yz9-9S-wgt" secondAttribute="bottom" constant="-356" id="ylu-vB-MwY"/>
                                             <constraint firstItem="P1U-1j-kdG" firstAttribute="top" secondItem="CeH-mV-5d8" secondAttribute="bottom" constant="-410" id="yme-TP-v5a"/>
@@ -3017,6 +3029,7 @@ Click continue when you're ready.</string>
                     <size key="freeformSize" width="320" height="1500"/>
                     <connections>
                         <outlet property="backgroundForPictureSection" destination="P1U-1j-kdG" id="CYX-fD-9Ir"/>
+                        <outlet property="commentsTable" destination="UAo-w8-gAK" id="m0D-cw-ZBJ"/>
                         <outlet property="creatorName" destination="CeH-mV-5d8" id="EBV-Q4-ER9"/>
                         <outlet property="creatorPhoto" destination="429-cp-IMw" id="xPI-vY-GFw"/>
                         <outlet property="dateOfEventLabel" destination="5hW-kd-qt7" id="oXg-qy-Tjy"/>
@@ -3142,7 +3155,7 @@ Click continue when you're ready.</string>
         <scene sceneID="9sK-GK-i4v">
             <objects>
                 <tableViewController storyboardIdentifier="activityViewController" id="TCI-t0-Q6P" customClass="ActivityVC" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" allowsSelection="NO" rowHeight="87" sectionHeaderHeight="22" sectionFooterHeight="22" id="TE6-nE-vtq">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="87" sectionHeaderHeight="22" sectionFooterHeight="22" id="TE6-nE-vtq">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -3398,7 +3411,7 @@ Click continue when you're ready.</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="takePicture" translatesAutoresizingMaskIntoConstraints="NO" id="r1A-qW-tQC">
-                                <rect key="frame" x="82" y="278" width="156" height="156"/>
+                                <rect key="frame" x="80" y="273" width="161" height="161"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="r1A-qW-tQC" secondAttribute="height" multiplier="1:1" id="6Qy-th-Mie"/>
                                     <constraint firstAttribute="width" constant="288" id="FuE-CC-G0v"/>
@@ -3412,11 +3425,11 @@ Click continue when you're ready.</string>
                                 </variation>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rz5-9r-mWY" customClass="EVNButton">
-                                <rect key="frame" x="94" y="213" width="132" height="45"/>
+                                <rect key="frame" x="94" y="213" width="132" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="b1d-Zl-MZO"/>
-                                    <constraint firstAttribute="height" constant="45" id="ucX-5M-upY"/>
+                                    <constraint firstAttribute="height" constant="40" id="ucX-5M-upY"/>
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -3427,15 +3440,15 @@ Click continue when you're ready.</string>
                                     <action selector="selectedPublicApproved:" destination="q4z-iz-15h" eventType="touchUpInside" id="vGl-Gk-sdv"/>
                                 </connections>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i3j-su-oM8" customClass="EVNButton">
-                                <rect key="frame" x="21" y="216" width="70" height="40"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i3j-su-oM8" customClass="EVNButton">
+                                <rect key="frame" x="21" y="214" width="70" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <action selector="selectedPublic:" destination="q4z-iz-15h" eventType="touchUpInside" id="uOT-Q5-hzY"/>
                                 </connections>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHL-DY-Q0O" customClass="EVNButton">
-                                <rect key="frame" x="229" y="216" width="70" height="40"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YHL-DY-Q0O" customClass="EVNButton">
+                                <rect key="frame" x="229" y="214" width="70" height="40"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="70" id="9qz-d3-Lxd"/>
@@ -3591,11 +3604,11 @@ Click continue when you're ready.</string>
             </objects>
             <point key="canvasLocation" x="1080" y="-1215"/>
         </scene>
-        <!--Activity-->
+        <!--Notifications-->
         <scene sceneID="cRp-zF-n8g">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ZjU-EG-f3Z" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Activity" image="tabActivity" id="CeS-C4-BO7"/>
+                    <tabBarItem key="tabBarItem" title="Notifications" image="tabActivity" id="CeS-C4-BO7"/>
                     <toolbarItems/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="gTK-Wg-8TM">

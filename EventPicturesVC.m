@@ -19,6 +19,8 @@
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 @property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
 
+@property (nonatomic, strong) UILabel *noResultsLabel;
+
 //Selected Photo Index
 @property (nonatomic, strong) NSIndexPath *selectedPhoto;
 
@@ -65,11 +67,42 @@ static NSString * const reuseIdentifier = @"Cell";
     [EVNParseEventHelper queryForImagesFromEvent:self.eventObject completion:^(NSArray *images) {
        
         self.eventImages = [NSMutableArray arrayWithArray:images];
-        [self.collectionView reloadData];
+        
+        if (self.eventImages.count == 0) {
+            
+            [self showNoResultsView];
+            
+        } else {
+            
+            self.noResultsLabel.hidden = YES;
+            
+            [self.collectionView reloadData];
+
+        }
+        
         
     }];
     
     //self.tabBarController.tabBar.hidden = YES;
+}
+
+
+- (void) showNoResultsView {
+    
+    if (!self.noResultsLabel) {
+        self.noResultsLabel = [[UILabel alloc] init];
+        self.noResultsLabel.text = @"No Pictures";
+        self.noResultsLabel.font = [UIFont fontWithName:EVNFontLight size:21.0];
+        self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
+        
+        self.noResultsLabel.frame = CGRectMake(0, 120, self.view.frame.size.width, 100);
+        
+        [self.view addSubview:self.noResultsLabel];
+        
+    }
+    
+    self.noResultsLabel.hidden = NO;
+    
 }
 
 
@@ -192,8 +225,6 @@ static NSString * const reuseIdentifier = @"Cell";
     }
     
     
-
-    
     [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
     
     [UIView animateWithDuration:0.2 animations:^{
@@ -276,6 +307,7 @@ static NSString * const reuseIdentifier = @"Cell";
                     
                     [self.eventImages addObject:picture];
                     
+                    self.noResultsLabel.hidden = YES;
                     
                     //Instead of refreshing all items, just insert a row.
                     NSUInteger numberOfItems = [self.eventImages count] - 1;
@@ -347,6 +379,10 @@ static NSString * const reuseIdentifier = @"Cell";
     if (shouldDeletePhoto) {
         [self.eventImages removeObjectAtIndex:self.selectedPhoto.row];
         [self.collectionView deleteItemsAtIndexPaths:@[self.selectedPhoto]];
+        
+        if (self.eventImages.count == 0) {
+            [self showNoResultsView];
+        }
         
         //Notify Event Details VC of Removal
         id<EventPicturesProtocol> strongDelegate = self.delegate;

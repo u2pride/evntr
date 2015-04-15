@@ -10,6 +10,7 @@
 #import "BBBadgeBarButtonItem.h"
 #import "EVNConstants.h"
 #import "EVNEvent.h"
+#import "EVNParseEventHelper.h"
 #import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
 #import "EventObject.h"
@@ -41,6 +42,9 @@
 @property (nonatomic, strong) BBBadgeBarButtonItem *filterBarButton;
 
 @property (nonatomic, strong) NSIndexPath *indexPathOfEventInDetailView;
+
+//Event for Invites
+@property (nonatomic, strong) EventObject *eventForInvites;
 
 @end
 
@@ -231,9 +235,26 @@
 - (void)objectsWillLoad {
     [super objectsWillLoad];
     
-    AppDelegate *appDelegate=(AppDelegate *)[UIApplication sharedApplication].delegate;
-    CLLocation *currentLocationFromAppDelegate=appDelegate.locationManager.location;
-
+    //TODO - Location Grabbing for Queries
+    
+    //One Way to Do It
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManager.location];
+    
+    //Ends up Grabbing the Last Location Stored if No Location in Location Manager
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userLocationDictionary = [userDefaults objectForKey:@"userLocation"];
+    
+    NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
+    NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
+    
+    if (userLocationDictionary) {
+        NSLog(@"Got the User Location from UserDefaults");
+        self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+        NSLog(@"location from userdefaults - %@", self.currentUserLocation);
+    }
+    
+    CLLocation *currentLocationFromAppDelegate = appDelegate.locationManager.location;
     NSLog(@"Current Location From AppDelegate: %@", currentLocationFromAppDelegate);
     
 }
@@ -295,27 +316,6 @@
     
     switch (self.typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
-            
-            //One Way to Do It
-            AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManager.location];
-            
-            //Ends up Grabbing the Last Location Stored if No Location in Location Manager
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            NSDictionary *userLocationDictionary = [userDefaults objectForKey:@"userLocation"];
-            
-            NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
-            NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
-
-            if (userLocationDictionary) {
-                NSLog(@"Got the User Location from UserDefaults");
-                self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
-            }
-            
-            if (!self.currentUserLocation) {
-                NSLog(@"Returning nil");
-                return nil;
-            }
 
             NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
 
@@ -513,14 +513,15 @@
     }];
     
     
+    //Getting Current Location and Comparing to Event Location
+    //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    //CLLocation *currentLocation = [[appDelegate locationManager] location];
     
     CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:eventForCell.locationOfEvent.latitude longitude:eventForCell.locationOfEvent.longitude];
     
-    //Getting Current Location and Comparing to Event Location
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    CLLocation *currentLocation = [[appDelegate locationManager] location];
+    CLLocation *locationCurrent = [[CLLocation alloc] initWithLatitude:self.currentUserLocation.latitude longitude:self.currentUserLocation.longitude];
     
-    CLLocationDirection distance = [locationOfEvent distanceFromLocation:currentLocation];
+    CLLocationDirection distance = [locationOfEvent distanceFromLocation:locationCurrent];
     
     float distanceMiles = (float) distance * 0.000621371;
     
@@ -746,6 +747,43 @@
 }
 
 
+
+#pragma mark - Invite Modal Delegate
+
+- (void) finishedSelectingInvitations:(NSArray *)selectedPeople {
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+    
+    [EVNParseEventHelper inviteUsers:selectedPeople toEvent:self.eventForInvites completion:^(BOOL success) {
+        NSLog(@"finished inviting users with : %@", [NSNumber numberWithBool:success]);
+    }];
+    
+    [self.eventForInvites saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        NSLog(@"Saved invite pfrelations");
+        
+    }];
+
+    
+}
+
+
+- (void) inviteUsersToEvent:(EventObject *)event {
+    
+    self.eventForInvites = event;
+    
+    PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
+    invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
+    invitePeopleVC.userProfile = [PFUser currentUser];
+    invitePeopleVC.usersAlreadyInvited = nil;
+    invitePeopleVC.delegate = self;
+    
+    UINavigationController *embedInThisVC = [[UINavigationController alloc] initWithRootViewController:invitePeopleVC];
+    
+    [self presentViewController:embedInThisVC animated:YES completion:nil];
+}
+
+
 /*
  [cell.eventCoverImage loadInBackground:^(UIImage *image, NSError *error) {
  
@@ -771,6 +809,10 @@
  
  }];
  */
+
+
+
+
 
 
 -(void)dealloc

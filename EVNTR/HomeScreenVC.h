@@ -12,10 +12,13 @@
 #import "FilterEventsVC.h"
 #import "EventDetailVC.h"
 
-@interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate, EVNFilterProtocol, EventDetailProtocol>
+@interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate, EVNFilterProtocol, EventDetailProtocol, PeopleVCDelegate>
 
 //Customize an Event Table - All Events, Curent User Events, Other User Events (specified in userForEventsQuery)
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) PFUser *userForEventsQuery;
+
+
+- (void) inviteUsersToEvent:(EventObject *)event;
 
 @end

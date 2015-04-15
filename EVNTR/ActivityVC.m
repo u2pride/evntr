@@ -34,6 +34,7 @@
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
         self.userForActivities = [PFUser currentUser];
+        self.objectsPerPage = 5;
         _typeOfActivityView = ACTIVITIES_ALL;
         
     }
@@ -44,6 +45,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     //Navigation Bar Font & Color
     NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
@@ -142,6 +144,9 @@
         case ACTIVITIES_ALL: {
             //[queryForActivities whereKey:@"type" notEqualTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities includeKey:@"to"];
+            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
@@ -149,6 +154,8 @@
         case ACTIVITIES_INVITES: {
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
@@ -168,6 +175,8 @@
             //now find access activities that are from the current user
             [queryForActivities whereKey:@"activityContent" matchesQuery:innerQueryForAuthor];
             
+            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
 
             
@@ -176,6 +185,8 @@
         case ACTIVITIES_ATTENDED: {
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities includeKey:@"to"];
+            [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
@@ -184,6 +195,8 @@
             
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
@@ -214,7 +227,7 @@
         self.noResultsView.hidden = YES;
     }
     
-    //Reset App Badge and Tab Bar Badge
+    //TODO - Badge Values - Reset App Badge and Tab Bar Badge
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
     
@@ -242,12 +255,12 @@
     
 
 
-
 - (PFTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
         
     static NSString *cellIdentifier = @"activityCell";
 
     ActivityTableCell *activityCell = (ActivityTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    
     
     int activityType = (int) [[object objectForKey:@"type"] integerValue];
 
@@ -268,185 +281,166 @@
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     
+    //Remove Old Gestures and Targets from the Cell
+    for (UIGestureRecognizer *recognizer in activityCell.leftSideImageView.gestureRecognizers) {
+        NSLog(@"Removing Gesture...");
+        [activityCell.leftSideImageView removeGestureRecognizer:recognizer];
+    }
+    
+    [activityCell.actionButton removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
+    
+    
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
             
-            PFUser *userWhoFollowedCurrentProfile = object[@"from"];
+            PFUser *userFollow = object[@"from"];
             
-            //TODO - Use includeKey: in original query. Therefore you don't need to do fetchIfNeeded a ton.
-            [userWhoFollowedCurrentProfile fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
+            //Left Image Thumbnail
+            PFFile *profilePictureFromParse = userFollow[@"profilePicture"];
+            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
+                if (!error) {
+                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                }
+            }];
+            activityCell.leftSideImageView.userInteractionEnabled = YES;
+            activityCell.leftSideImageView.objectForImageView = userFollow;
+            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+            
+            
+            //Main Text Message
+            NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", userFollow.username];
+            activityCell.activityContentTextLabel.text = textForActivityCell;
+            
+            
+            //Right Action Button
+            PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
+            [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+            [followActivity whereKey:@"to" equalTo:userFollow];
+            [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                PFUser *userWhoFollowed = (PFUser *)user;
+                if (!objects || !objects.count) {
+                    activityCell.actionButton.titleText = @"Follow";
+                    activityCell.actionButton.personToFollow = userFollow;
+                    [activityCell.actionButton setIsSelected:NO];
+                } else {
+                    activityCell.actionButton.titleText = @"Following";
+                    [activityCell.actionButton setIsSelected:YES];
+                    activityCell.actionButton.personToFollow = userFollow;
+                }
                 
-                //Create Content for the Cell
-                NSString *username = user[@"username"];
-                activityCell.leftSideImageView.userInteractionEnabled = YES;
-                activityCell.leftSideImageView.objectForImageView = userWhoFollowed;
-                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-                
-                NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", username];
-                activityCell.activityContentTextLabel.text = textForActivityCell;
-                
-                //configure view button on right side
-                //UIButtonPFExtended *followButton = activityCell.actionButton;
-                //followButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-                //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-                //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-                //activityCell.actionButton.backgroundColor = [UIColor clearColor];
-                
-                //Grab the profile pic of the user and set it to the left image
-                PFFile *profilePictureFromParse = user[@"profilePicture"];
-                [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                    if (!error) {
-                        activityCell.leftSideImageView.image = [UIImage imageWithData:data];
-                    }
-                }];
-                
-                //Determine whether the current user is following this user
-                PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-                [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
-                [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-                [followActivity whereKey:@"to" equalTo:userWhoFollowed];
-                [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                    //TODO - Does this make sense?
-                    
-                    if (!objects || !objects.count) {
-                        activityCell.actionButton.titleText = @"Follow";
-                        activityCell.actionButton.personToFollow = userWhoFollowed;
-                    } else {
-                        activityCell.actionButton.titleText = @"Following";
-                        [activityCell.actionButton setIsSelected:YES];
-                        activityCell.actionButton.personToFollow = userWhoFollowed;
-                    }
-                    
-                    [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
-                    
-                }];
+                [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
                 
             }];
+            
             
             break;
         }
         case INVITE_ACTIVITY: {
             
-            PFUser *userWhoInvitedCurrentProfile = object[@"from"];
-            __block NSString *username;
+            PFUser *userInvite = object[@"from"];
+            
+            __block NSString *username = userInvite[@"username"];
+            
+            
+            //Left Image Thumbnail
+            PFFile *profilePictureFromParse = userInvite[@"profilePicture"];
+            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
+                if (!error) {
+                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                }
+            }];
+            activityCell.leftSideImageView.userInteractionEnabled = YES;
+            activityCell.leftSideImageView.objectForImageView = userInvite;
+            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+            
+            
+            //Main Text Message
+            PFObject *eventInvitedTo = object[@"activityContent"];
+            NSLog(@"eventInvitedTo: %@", eventInvitedTo);
+            [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
+                
+                EventObject *event = (EventObject *) eventRetrieved;
+                
+                if (!error) {
 
-            [userWhoInvitedCurrentProfile fetchIfNeededInBackgroundWithBlock:^(PFObject *user, NSError *error) {
-                
-                //next line is unneccessary?
-                //TOOD: is this causing the error?
-                PFObject *userWhoInvited = user;
-                
-                username = userWhoInvited[@"username"];
-                
-                //attach user to imageview for tap gesture recognizer
-                activityCell.leftSideImageView.userInteractionEnabled = YES;
-                activityCell.leftSideImageView.objectForImageView = userWhoInvited;
-                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-                
-                //configure view button on right side
-                activityCell.actionButton.titleText = @"View";
-                //[activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
-                activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-                activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-                activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-                activityCell.actionButton.backgroundColor = [UIColor clearColor];
-                [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-                
-                
-                //Grab the profile pic of the user and set it to the left image
-                PFFile *profilePictureFromParse = userWhoInvited[@"profilePicture"];
-                [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                    if (!error) {
-                        activityCell.leftSideImageView.image = [UIImage imageWithData:data];
-                    }
-                }];
-                
-                
-                PFObject *eventInvitedTo = object[@"activityContent"];
-                NSLog(@"eventInvitedTo: %@", eventInvitedTo);
-                [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
+                    activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ invited you to %@", username, event.title];
+                    activityCell.actionButton.eventToView = event;
+                    [activityCell.actionButton setIsSelected:NO];
                     
-                    EventObject *event = (EventObject *) eventRetrieved;
+                } else {
                     
-                    //TODO: Add error catching to other activity types.
-                    if (!error) {
-                        NSString *eventName = [event objectForKey:@"title"];
-                        NSString *textForActivityCell = [NSString stringWithFormat:@"%@ invited you to %@", username, eventName];
-                        activityCell.activityContentTextLabel.text = textForActivityCell;
-                        
-                        //attach the event to the cell
-                        activityCell.actionButton.eventToView = event;
-                        
-                    } else {
-                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"ERROR IN GETTING EVENT THRU FETCH" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [errorAlert show];
-                    }
+                    //TODO - remove before release
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Send Feedback" message:@"Error in retrieving information from DB.  Contact developer at aryan@evntr.co" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                     
-                }];
+                    [errorAlert show];
+                }
                 
             }];
+            
+            
+            //Right Action Button
+            activityCell.actionButton.titleText = @"View";
+            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
             
             break;
         }
         case REQUEST_ACCESS_ACTIVITY: {
             
             PFUser *userRequestedAccess = object[@"from"];
+            EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
 
-            [userRequestedAccess fetchInBackgroundWithBlock:^(PFObject *userRequesting, NSError *error) {
+            
+            //Left Image Thumbnail
+            PFFile *profilePictureFromParse = userRequestedAccess[@"profilePicture"];
+            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
+                if (!error) {
+                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                }
+            }];
+            activityCell.leftSideImageView.userInteractionEnabled = YES;
+            activityCell.leftSideImageView.objectForImageView = userRequestedAccess;
+            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+            
+            
+            //Main Text Message
+            activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ requested access to %@", userRequestedAccess.username, eventToAccess.title];
+            
+            
+            //Right Action Button
+            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            activityCell.actionButton.personToGrantAccess = userRequestedAccess;
+            activityCell.actionButton.eventToGrantAccess = eventToAccess;
+            
+            
+            PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
+            [grantedActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+            [grantedActivity whereKey:@"to" equalTo:userRequestedAccess];
+            [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
+            [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                PFObject *eventRequestingAccessTo = object[@"activityContent"];
+                if (!objects || !objects.count) {
+                    activityCell.actionButton.titleText = kGrantAccess;
+                    [activityCell.actionButton setIsSelected:NO];
+                    //[activityCell.actionButton setTitle:kGrantAccess forState:UIControlStateNormal];
+                } else {
+                    activityCell.actionButton.titleText = kRevokeAccess;
+                    [activityCell.actionButton setIsSelected:YES];
+                    //[activityCell.actionButton setTitle:kRevokeAccess forState:UIControlStateNormal];
+                }
                 
-                //Grab the profile pic of the user and set it to the left image
-                PFFile *profilePictureFromParse = userRequesting[@"profilePicture"];
-                [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                    if (!error) {
-                        activityCell.leftSideImageView.image = [UIImage imageWithData:data];
-                    }
-                }];
-                
-                //configure view button on right side
-                activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-                activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-                activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-                activityCell.actionButton.backgroundColor = [UIColor clearColor];
-
-                [eventRequestingAccessTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
-                    
-                    EventObject *event = (EventObject *) eventRetrieved;
-                    
-                    //Determine if the user has been granted access yet.
-                    PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
-                    [grantedActivity whereKey:@"from" equalTo:[PFUser currentUser]];
-                    [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-                    [grantedActivity whereKey:@"to" equalTo:userRequesting];
-                    [grantedActivity whereKey:@"activityContent" equalTo:event];
-                    [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                        
-                        if (!objects || !objects.count) {
-                            activityCell.actionButton.titleText = kGrantAccess;
-                            //[activityCell.actionButton setTitle:kGrantAccess forState:UIControlStateNormal];
-                        } else {
-                            activityCell.actionButton.titleText = kRevokeAccess;
-                            [activityCell.actionButton setIsSelected:YES];
-                            //[activityCell.actionButton setTitle:kRevokeAccess forState:UIControlStateNormal];
-                        }
-                        
-                        [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
-                        
-                    }];
-                    
-                    activityCell.actionButton.personToGrantAccess = (PFUser *)userRequesting;
-                    activityCell.actionButton.eventToGrantAccess = event;
-                    
-                    NSString *descriptionString = [NSString stringWithFormat:@"%@ requested access to %@", userRequesting[@"username"], event[@"title"]];
-                    activityCell.activityContentTextLabel.text = descriptionString;
-                    
-                }];
+                [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
                 
             }];
             
@@ -454,123 +448,135 @@
         }
         case ATTENDING_ACTIVITY: {
             
-            PFFile *profilePicture = [[PFUser currentUser] objectForKey:@"profilePicture"];
+            PFUser *userForAttend = object[@"to"];
+            EventObject *eventAttending = object[@"activityContent"];
+
+            
+            //Left Image Thumbnail
+            PFFile *profilePicture = [userForAttend objectForKey:@"profilePicture"];
             [profilePicture getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                 if (!error) {
                     activityCell.leftSideImageView.image = [UIImage imageWithData:data];
                 }
             }];
+            activityCell.leftSideImageView.userInteractionEnabled = YES;
+            activityCell.leftSideImageView.objectForImageView = userForAttend;
+            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
             
-            EventObject *eventAttending = object[@"activityContent"];
-            [eventAttending fetchInBackgroundWithBlock:^(PFObject *objectRetrieved, NSError *error) {
+            
+            //Main Text Message
+            NSString *activityDescriptionString;
+            NSDate *currentDate = [NSDate date];
+            NSComparisonResult dateComparison = [currentDate compare:eventAttending.dateOfEvent];
+            
+            //Build the description string based off Time of Event and Current User
+            if ([self.userForActivities.objectId isEqualToString:[PFUser currentUser].objectId] ) {
                 
-                EventObject *object = (EventObject *) objectRetrieved;
-                
-                if (!error) {
+                if (dateComparison == NSOrderedAscending) {
+                    activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", eventAttending.title];
                     
-                    NSString *activityDescriptionString;
+                } else if (dateComparison == NSOrderedDescending) {
+                    activityDescriptionString = [NSString stringWithFormat:@"You went to %@", eventAttending.title];
                     
-                    NSDate *dateOfEvent = object[@"dateOfEvent"];
-                    NSDate *currentDate = [NSDate date];
-                    NSComparisonResult dateComparison = [currentDate compare:dateOfEvent];
-                    
-                    //Build the description string based off Time of Event and User
-                    if ([self.userForActivities.objectId isEqualToString:[PFUser currentUser].objectId] ) {
-                    
-                        if (dateComparison == NSOrderedAscending) {
-                            activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", object[@"title"]];
-                            
-                        } else if (dateComparison == NSOrderedDescending) {
-                            activityDescriptionString = [NSString stringWithFormat:@"You went to %@", object[@"title"]];
-                            
-                        } else {
-                            
-                        }
-                        
-                    } else {
-                        
-                        if (dateComparison == NSOrderedAscending) {
-                            activityDescriptionString = [NSString stringWithFormat:@"%@ is going to %@", self.userForActivities[@"username"], object[@"title"]];
-                            
-                        } else if (dateComparison == NSOrderedDescending) {
-                            activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], object[@"title"]];
-                            
-                        } else {
-                            
-                        }
-                        
-                        
-                    }
-
-                    activityCell.activityContentTextLabel.text = activityDescriptionString;
-                    
-                    
-                    //configure view button on right side
-                    activityCell.actionButton.titleText = @"View";
-                    //[activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
-                    activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-                    activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-                    activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-                    activityCell.actionButton.backgroundColor = [UIColor clearColor];
-                    activityCell.actionButton.eventToView = object;
-                    
-                    [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                } else {
+                    activityDescriptionString = @"Failed comparison";
                 }
                 
-            }];
+            } else {
+                
+                if (dateComparison == NSOrderedAscending) {
+                    activityDescriptionString = [NSString stringWithFormat:@"%@ is going to %@", self.userForActivities[@"username"], eventAttending.title];
+                    
+                } else if (dateComparison == NSOrderedDescending) {
+                    activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], eventAttending.title];
+                    
+                } else {
+                    activityDescriptionString = @"Failed comparison2";
+                    
+                }
+                
+                
+            }
+            
+            activityCell.activityContentTextLabel.text = activityDescriptionString;
+            
+            
+            
+            //Right Action Button
+            activityCell.actionButton.titleText = @"View";
+            [activityCell.actionButton setIsSelected:NO];
+            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            activityCell.actionButton.eventToView = eventAttending;
+            
+            [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+
             
             break;
         }
         case ACCESS_GRANTED_ACTIVITY: {
             
-            PFUser *userThatGrantedAccess = object[@"from"];
-            
-            [userThatGrantedAccess fetchInBackgroundWithBlock:^(PFObject *userThatGranted, NSError *error) {
-                
-                PFObject *eventGivenAccessTo = object[@"activityContent"];
-                
-                //Grab the profile pic of the user and set it to the left image
-                PFFile *profilePictureFromParse = userThatGranted[@"profilePicture"];
-                [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                    if (!error) {
-                        activityCell.leftSideImageView.image = [UIImage imageWithData:data];
-                    }
-                }];
-                
-                //configure view button on right side
-                activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-                activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-                activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-                activityCell.actionButton.backgroundColor = [UIColor clearColor];
-                
-                [eventGivenAccessTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
-                    
-                    EventObject *event = (EventObject *) eventRetrieved;
-                    
-                    activityCell.actionButton.titleText = @"View";
-                    //[activityCell.actionButton setTitle:@"View" forState:UIControlStateNormal];
-                    [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-                    
-                    activityCell.actionButton.eventToView = event;
-                    
-                    NSString *descriptionString = [NSString stringWithFormat:@"%@ let you in to %@", userThatGranted[@"username"], event[@"title"]];
-                    activityCell.activityContentTextLabel.text = descriptionString;
-                    
-                }];
-                
-            }];
+            PFUser *userGrantedAccess = object[@"from"];
+            EventObject *eventGrantedAccess = (EventObject *) object[@"activityContent"];
 
+            
+            //Left Side Thumbnail
+            PFFile *profilePictureFromParse = userGrantedAccess[@"profilePicture"];
+            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
+                if (!error) {
+                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                }
+            }];
+            activityCell.leftSideImageView.userInteractionEnabled = YES;
+            activityCell.leftSideImageView.objectForImageView = userGrantedAccess;
+            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+            
+            
+            //Main Text Message
+            activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ let you in to %@", userGrantedAccess.username, eventGrantedAccess.title];
+            
+            //Right Action Button
+            activityCell.actionButton.titleText = @"View";
+            [activityCell.actionButton setIsSelected:NO];
+            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            activityCell.actionButton.eventToView = eventGrantedAccess;
+
+            
+            [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+            
             break;
         }
-        default:
+        default: {
             
-            NSLog(@"DEFAULT Activity SWITCH");
+            UIAlertView *errorAlert2 = [[UIAlertView alloc] initWithTitle:@"Error #3" message:@"Please submit feedback with this error number" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            
+            [errorAlert2 show];
 
+            
             break;
+        }
     }
     
+    [activityCell setSelectionStyle:UITableViewCellSelectionStyleNone];
+
 
     return activityCell;
+    
+}
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    
+    NSLog(@"Did Select Row at Index Path - %@", indexPath);
     
 }
 
@@ -582,10 +588,10 @@
 - (void)viewProfile:(UITapGestureRecognizer *)tapgr {
     
     ImageViewPFExtended *tappedImage = (ImageViewPFExtended *)tapgr.view;
-    
+    PFUser *userProfle = (PFUser *)tappedImage.objectForImageView;
     
     ProfileVC *followerProfileVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-    followerProfileVC.userObjectID = [tappedImage.objectForImageView objectForKey:@"objectId"];
+    followerProfileVC.userObjectID = userProfle.objectId;
     
     [self.navigationController pushViewController:followerProfileVC animated:YES];
 

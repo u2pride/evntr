@@ -414,21 +414,19 @@
 
 #pragma mark - Delegate Methods for EventCreation
 
-- (void) eventCreationComplete:(UIVisualEffectView *)darkBlur {
-            
+- (void) eventCreationComplete:(UIVisualEffectView *)darkBlur withEvent:(EventObject *)event {
+
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventTitleField.text = @"";
-    self.publicButton.selected = YES;
-    self.publicApprovedButton.selected = YES;
-    self.privateButton.selected = YES;
-
+    self.selectedEventType = PUBLIC_EVENT_TYPE;
+    
     self.coverPhotoFile = nil;
     
     id<EventModalProtocol> strongDelegate = self.delegate;
     
-    if ([strongDelegate respondsToSelector:@selector(completedEventCreation:)]) {
+    if ([strongDelegate respondsToSelector:@selector(completedEventCreation:withEvent:)]) {
     
-        [strongDelegate completedEventCreation:darkBlur];
+        [strongDelegate completedEventCreation:darkBlur withEvent:event];
     }
 
 }
@@ -438,9 +436,7 @@
     
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventTitleField.text = @"";
-    self.publicButton.selected = YES;
-    self.publicApprovedButton.selected = YES;
-    self.privateButton.selected = YES;
+    self.selectedEventType = PUBLIC_EVENT_TYPE;
     
     self.coverPhotoFile = nil;
     

@@ -247,7 +247,7 @@
                                                radius:radius];
     
     [self.layer addSublayer:circleShape];
-    [circleShape addAnimation:[self createFlashAnimationWithScale:scale duration:0.5f] forKey:nil];
+    [circleShape addAnimation:[self createFlashAnimationWithScale:scale duration:0.15f] forKey:nil];
 
     
     if (self.isSelected) {
@@ -319,7 +319,7 @@
 
     NSLog(@"started task");
     
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.35 animations:^{
         
         self.titleTextLabel.alpha = 0;
         self.backgroundColor = [self.backgroundColor colorWithAlphaComponent:0.6];
@@ -346,7 +346,7 @@
 - (void) endedTask {
     
     
-    [UIView animateWithDuration:1.0 animations:^{
+    [UIView animateWithDuration:0.35 animations:^{
         
         self.titleTextLabel.alpha = 1;
         self.backgroundColor = [self.backgroundColor colorWithAlphaComponent:1.0];

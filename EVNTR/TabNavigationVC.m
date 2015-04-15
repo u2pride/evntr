@@ -197,7 +197,7 @@
 
 #pragma mark - AddEventModal Delegate Methods
 
-- (void) completedEventCreation:(UIVisualEffectView *)darkBlur {
+- (void) completedEventCreation:(UIVisualEffectView *)darkBlur withEvent:(EventObject *)event {
     
     self.darkBlur = darkBlur;
     [self.darkBlur removeFromSuperview];
@@ -213,6 +213,8 @@
     [allEventsVC loadObjects];
     
     [self setSelectedIndex:0];
+    
+    [allEventsVC inviteUsersToEvent:event];
     
     
 }

@@ -369,6 +369,22 @@
      
      
 }
+
+
++ (void) queryForCommentsFromEvent:(EventObject *)event completion:(void (^)(NSArray *comments))completionBlock {
+    
+    PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
+    [commentsQuery whereKey:@"commentEvent" equalTo:event];
+    [commentsQuery orderByAscending:@"createdAt"];
+    
+    [commentsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        
+        completionBlock(objects);
+        
+    }];
+    
+}
+
      
      
 @end

@@ -28,7 +28,7 @@
 
 @protocol EventCreationCompleted <NSObject>
 
-- (void) eventCreationComplete:(UIVisualEffectView *)darkBlur;
+- (void) eventCreationComplete:(UIVisualEffectView *)darkBlur withEvent:(EventObject *)event;
 - (void) eventCreationCanceled;
 
 - (void) eventEditingComplete:(EventObject *)updatedEvent;

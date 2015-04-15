@@ -42,4 +42,8 @@
 
 + (void) estimateNumberOfPhotosForEvent:(EventObject *)event completion:(void (^)(int count))completionBlock;
 
++ (void) queryForCommentsFromEvent:(EventObject *)event completion:(void (^)(NSArray *comments))completionBlock;
+
+
+
 @end

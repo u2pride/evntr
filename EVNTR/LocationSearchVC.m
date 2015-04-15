@@ -108,7 +108,11 @@
     NSString *keyword = self.searchController.searchBar.text;
 
     // Build the url string to send to Google - Searching for Places with Keyword rankedby distance to user's current location.
-    NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?location=%@,%@&rankby=distance&keyword=%@&sensor=true&key=%@", self.latitude, self.longitude, keyword, kGOOGLE_API_KEY];
+    //NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?location=%@,%@&rankby=prominence&keyword=%@&sensor=true&key=%@", self.latitude, self.longitude, keyword, kGOOGLE_API_KEY];
+    
+    //New Google Search String - Sorted by Prominence
+    NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@,%@&rankby=prominence&keyword=%@&sensor=true&key=%@&radius=50000", self.latitude, self.longitude, keyword, kGOOGLE_API_KEY];
+    
     
     url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     //Formulate the string as a URL object.

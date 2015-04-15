@@ -271,9 +271,9 @@
                                 
                                 id<EventCreationCompleted> strongDelegate = self.delegate;
                                 
-                                if ([strongDelegate respondsToSelector:@selector(eventCreationComplete:)]) {
+                                if ([strongDelegate respondsToSelector:@selector(eventCreationComplete:withEvent:)]) {
                                     
-                                    [strongDelegate eventCreationComplete:darkBlurEffectView];
+                                    [strongDelegate eventCreationComplete:darkBlurEffectView withEvent:self.event];
                                 }
                                 
                                 

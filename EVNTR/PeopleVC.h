@@ -7,10 +7,10 @@
 //
 
 #import <ParseUI/ParseUI.h>
+#import "EventObject.h"
 
 @protocol PeopleVCDelegate;
 @class EventAddVC;
-#import "EventObject.h"
 
 @interface PeopleVC : UICollectionViewController
 

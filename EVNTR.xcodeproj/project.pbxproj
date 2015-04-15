@@ -88,6 +88,8 @@
 		A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */; };
 		A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */ = {isa = PBXBuildFile; fileRef = A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */; };
 		A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */; };
+		A4E4B6B11ADEB60F00D38358 /* CommentsTableSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */; };
+		A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */; };
 		A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */; };
 		A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */; };
 		A4E5D4C51AA909BD00E86410 /* UserLocationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */; };
@@ -251,6 +253,10 @@
 		A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDTransitionControllerTab.m; sourceTree = "<group>"; };
 		A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewUserFacebookVC.h; sourceTree = "<group>"; };
 		A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NewUserFacebookVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A4E4B6AF1ADEB60F00D38358 /* CommentsTableSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsTableSource.h; sourceTree = "<group>"; };
+		A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsTableSource.m; sourceTree = "<group>"; };
+		A4E4B6B21ADEE01B00D38358 /* EVNAddCommentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNAddCommentVC.h; sourceTree = "<group>"; };
+		A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNAddCommentVC.m; sourceTree = "<group>"; };
 		A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationSearchVC.h; sourceTree = "<group>"; };
 		A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = LocationSearchVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleResult.h; sourceTree = "<group>"; };
@@ -539,6 +545,10 @@
 			children = (
 				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
 				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
+				A4E4B6B21ADEE01B00D38358 /* EVNAddCommentVC.h */,
+				A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */,
+				A4E4B6AF1ADEB60F00D38358 /* CommentsTableSource.h */,
+				A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */,
 				A4C935301AC1E60800BF174C /* EVNParseEventHelper.h */,
 				A4C935311AC1E60800BF174C /* EVNParseEventHelper.m */,
 				A45638C81ABA2122009D3BCC /* EventPicturesVC.h */,
@@ -819,6 +829,7 @@
 				A4628CFA1AB77C4B00EBD959 /* FullMapVC.m in Sources */,
 				A47430671A81556C00CF3B8F /* ActivityVC.m in Sources */,
 				A4C4EDC61A94E85D000BC3AD /* IDTransitioningDelegate.m in Sources */,
+				A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */,
 				A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */,
 				A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */,
 				A4C935321AC1E60800BF174C /* EVNParseEventHelper.m in Sources */,
@@ -842,6 +853,7 @@
 				A4C2C1371ACEB4FB004C7F35 /* EventObject.m in Sources */,
 				A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */,
 				A4AE41AD1AB796CB006270E2 /* EVNLocationButton.m in Sources */,
+				A4E4B6B11ADEB60F00D38358 /* CommentsTableSource.m in Sources */,
 				A41562C71A767D3A00565BB6 /* main.m in Sources */,
 				A4B6FB1E1AB365C80033A3A1 /* SearchHeaderView.m in Sources */,
 				A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */,

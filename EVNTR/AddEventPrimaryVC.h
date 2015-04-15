@@ -22,7 +22,7 @@
 
 @protocol EventModalProtocol <NSObject>
 
-- (void) completedEventCreation:(UIVisualEffectView *)darkBlur;
+- (void) completedEventCreation:(UIVisualEffectView *)darkBlur withEvent:(EventObject *)event;
 - (void) canceledEventCreation;
 
 - (void) completedEventEditing:(EventObject *)updatedEvent;
