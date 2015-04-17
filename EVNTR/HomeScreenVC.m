@@ -38,7 +38,6 @@
 @property (nonatomic) int searchRadius;
 
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
-@property (nonatomic, strong) NSMutableArray *allEvents;
 @property (nonatomic, strong) BBBadgeBarButtonItem *filterBarButton;
 
 @property (nonatomic, strong) NSIndexPath *indexPathOfEventInDetailView;
@@ -61,8 +60,8 @@
         self.title = @"Events";
         self.parseClassName = @"Events";
         self.pullToRefreshEnabled = YES;
-        self.paginationEnabled = YES;
-        //self.objectsPerPage = 2;
+        //self.paginationEnabled = YES;
+        //self.objectsPerPage = 5;
         self.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         self.tabBarController.hidesBottomBarWhenPushed = YES;
         //self.navigationController.hidesBarsOnSwipe = YES;
@@ -71,7 +70,6 @@
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
         _isGuestUser = [standardDefaults boolForKey:kIsGuest];
         
-        _allEvents = [[NSMutableArray alloc] init];
         _searchRadius = 20;
 
     }
@@ -263,9 +261,6 @@
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     
-    //Clear All Events
-    [self.allEvents removeAllObjects];
-    
     if (self.objects.count == 0) {
         [self showNoResultsView];
     } else if (self.noResultsView) {
@@ -285,20 +280,12 @@
     }
     */
     
-    NSTimeZone *outputTimeZone = [NSTimeZone localTimeZone];
-    NSDateFormatter *outputDateFormatter = [[NSDateFormatter alloc] init];
-    [outputDateFormatter setTimeZone:outputTimeZone];
-    [outputDateFormatter setDateStyle:NSDateFormatterFullStyle];
-    [outputDateFormatter setTimeStyle:NSDateFormatterFullStyle];
+    //NSTimeZone *outputTimeZone = [NSTimeZone localTimeZone];
+    //NSDateFormatter *outputDateFormatter = [[NSDateFormatter alloc] init];
+    //[outputDateFormatter setTimeZone:outputTimeZone];
+    //[outputDateFormatter setDateStyle:NSDateFormatterFullStyle];
+    //[outputDateFormatter setTimeStyle:NSDateFormatterFullStyle];
     
-    
-    for (EventObject *objectNew in self.objects) {
-        
-        NSLog(@"Objects Date - %@ and Current: %@", [outputDateFormatter stringFromDate:objectNew.dateOfEvent], [outputDateFormatter stringFromDate:[NSDate date]]);
-        
-        [self.allEvents addObject:objectNew];
-        
-    }
     
     //NSLog(@"Location Used for Search: %f and %f:", self.currentUserLocation.latitude, self.currentUserLocation.longitude);
 
@@ -349,6 +336,8 @@
             break;
     }
     
+    eventsQuery.limit = 50;
+    
     return eventsQuery;
 }
 
@@ -372,18 +361,8 @@
 
 
 - (PFTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
-    NSLog(@"Updating the Cell for indexpath... %ld", (long)indexPath.row);
     
     static NSString *cellIdentifier = @"eventCell";
-    
-    NSLog(@"number of items in events %lu", (unsigned long)self.objects.count);
-    NSLog(@"indexPath row %ld", (long)indexPath.row);
-    
-    for (NSObject *eventitem in self.objects) {
-        
-        EventObject *eventFromFullList = (EventObject *)eventitem;
-        NSLog(@"list of events - %@", eventFromFullList.title);
-    }
     
     EventTableCell *cell = (EventTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
@@ -396,30 +375,6 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
         [self refreshUIForCell:cell withEvent:event];
-        
-        //OLD start
-        
-        /*
-         [eventForCell.eventCoverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-         
-         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-         
-         UIImage *imageFromParse = [UIImage imageWithData:data];
-         UIImage *imageWithEffect = [UIImageEffects imageByApplyingBlurToImage:imageFromParse withRadius:10.0 tintColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.5] saturationDeltaFactor:1.0 maskImage:nil];
-         
-         dispatch_async(dispatch_get_main_queue(), ^(void) {
-         cell.eventCoverImage.image = imageWithEffect;
-         });
-         
-         });
-         
-         }];
-         */
-        
-        //OLD end
-        
-
-        
         
     }
     
@@ -525,7 +480,7 @@
     
     float distanceMiles = (float) distance * 0.000621371;
     
-    cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2f M", distanceMiles];
+    cell.distanceLabel.text = [NSString stringWithFormat:@"%0.2f Mi", distanceMiles];
     
 }
 
@@ -631,7 +586,7 @@
     switch (self.typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
             self.noResultsView.headerText = @"This Is Awkward...";
-            self.noResultsView.subHeaderText = @"Looks like there's no public events around you. Maybe increase your search radius.";
+            self.noResultsView.subHeaderText = @"Looks like there aren't any public events near you. Maybe increase your search radius.";
             self.noResultsView.actionButton.titleText = @"Increase Your Search Radius";
             
             UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(displayFilterView)];

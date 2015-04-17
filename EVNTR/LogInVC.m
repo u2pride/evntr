@@ -76,11 +76,13 @@
     self.passwordField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     self.passwordField.layer.borderWidth = 1.0f;
     
-    self.loginButton.titleText = @"Login";
-    self.loginButton.font = [UIFont fontWithName:@"Lato-Light" size:21];
+    self.loginButton.titleText = @"Log In";
+    self.loginButton.font = [UIFont fontWithName:EVNFontRegular size:21];
     self.loginButton.isRounded = NO;
     self.loginButton.isSelected = YES;
     self.loginButton.isStateless = YES;
+    
+    self.fbLoginButton.layer.cornerRadius = 4.0;
     
     
 

@@ -375,7 +375,8 @@
     
     PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
     [commentsQuery whereKey:@"commentEvent" equalTo:event];
-    [commentsQuery orderByAscending:@"createdAt"];
+    [commentsQuery orderByDescending:@"updatedAt"];
+    [commentsQuery setLimit:50];
     
     [commentsQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         

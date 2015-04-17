@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="Lato-Light.ttf">
+            <string>Lato-Light</string>
+            <string>Lato-Light</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="80" id="KGk-i7-Jjw" customClass="EVNCommentsTableCell">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dsT-Xh-mTH">
+                        <rect key="frame" x="8" y="8" width="304" height="53"/>
+                        <string key="text">Labelaafalksjdflkajslfjalsdfljalsjdflajsldfjlasjdfljalsjdfljalsjdfljalsdjflajsldfjlasjdfljaslkdfjal;sflajeo;iwuoruweoruoweurouwoeruoweurouweoruoweurouwoer,xcn,xnv,ncx,vmnx,cvnx,m</string>
+                        <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="15"/>
+                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dAo-Pk-9mD">
+                        <rect key="frame" x="212" y="57" width="100" height="21"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="100" id="N1v-G2-jwo"/>
+                            <constraint firstAttribute="height" constant="21" id="rDi-4k-sew"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="10"/>
+                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottomMargin" secondItem="dAo-Pk-9mD" secondAttribute="bottom" constant="-7" id="CdJ-U3-w1S"/>
+                    <constraint firstItem="dsT-Xh-mTH" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="ELt-js-MyA"/>
+                    <constraint firstItem="dAo-Pk-9mD" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="Hmw-WN-c7q"/>
+                    <constraint firstItem="dAo-Pk-9mD" firstAttribute="top" secondItem="dsT-Xh-mTH" secondAttribute="bottom" constant="-4" id="LHJ-3Q-udT"/>
+                    <constraint firstItem="dsT-Xh-mTH" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="Tax-LG-8hz"/>
+                    <constraint firstItem="dsT-Xh-mTH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="ikf-PC-Rb2"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="dsT-Xh-mTH" secondAttribute="bottom" constant="10" id="xOA-01-a8e"/>
+                </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="CdJ-U3-w1S"/>
+                    </mask>
+                </variation>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="commentDateLabel" destination="dAo-Pk-9mD" id="T4r-PN-DTG"/>
+                <outlet property="commentTextLabel" destination="dsT-Xh-mTH" id="Bw9-rw-Vm4"/>
+            </connections>
+            <point key="canvasLocation" x="469" y="264"/>
+        </tableViewCell>
+    </objects>
+</document>

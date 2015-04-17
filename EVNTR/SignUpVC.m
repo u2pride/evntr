@@ -96,6 +96,8 @@ typedef enum {
     self.registerButton.isRounded = NO;
     
     self.viewIsPulledUpForTextInput = NO;
+    
+    self.connectWithFacebookButton.layer.cornerRadius = 5.0f;
 
     
     

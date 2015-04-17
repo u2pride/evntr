@@ -64,7 +64,7 @@
 
     //Setting Up Custom Buttons
     self.loginButton.buttonColor = [UIColor orangeThemeColor];
-    self.loginButton.titleText = @"Login";
+    self.loginButton.titleText = @"Log In";
     self.loginButton.isRounded = NO;
     self.loginButton.tag = 1;
     self.loginButton.isSelected = YES;

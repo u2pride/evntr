@@ -19,4 +19,7 @@
 @property (nonatomic, strong) MKMapView *mapView;
 
 
+- (void) startedLoading;
+- (void) finishedLoadingWithLocationAvailable:(BOOL)isLocationVisible;
+
 @end

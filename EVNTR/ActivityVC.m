@@ -34,7 +34,7 @@
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
         self.userForActivities = [PFUser currentUser];
-        self.objectsPerPage = 5;
+        self.objectsPerPage = 15;
         _typeOfActivityView = ACTIVITIES_ALL;
         
     }
@@ -217,13 +217,8 @@
     [super objectsDidLoad:error];
     
     if (self.objects.count == 0) {
-        
         [self showNoResultsView];
-        
-        NSLog(@"No Results - Add a No Results View");
-        
     } else {
-        
         self.noResultsView.hidden = YES;
     }
     

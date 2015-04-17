@@ -58,7 +58,7 @@
     self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 90, self.view.frame.size.width - 40, ceilf(size.height))];
     self.placeholderLabel.textColor = [UIColor colorWithWhite:0.9 alpha:0.7];
     self.placeholderLabel.font = [UIFont fontWithName:EVNFontLight size:21.0];
-    self.placeholderLabel.text = @"What's happening near you?";
+    self.placeholderLabel.text = @"Add to the conversation...";
     self.placeholderLabel.backgroundColor = [UIColor clearColor];
 
     
@@ -117,10 +117,10 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
     
-    if (textView.text.length == 0) {
+    if (textView.text.length == 0 && self.placeholderLabel.hidden == YES) {
         self.placeholderLabel.hidden = NO;
 
-    } else {
+    } else if (self.placeholderLabel.hidden == NO && textView.text.length > 0) {
         self.placeholderLabel.hidden = YES;
 
     }

@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "signupphoenix.png"
+      "filename" : "signupphoenix-white.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "signupphoenix@2x.png"
+      "filename" : "signupphoenix-white@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "signupphoenix@3x.png"
+      "filename" : "signupphoenix-white@3x.png"
     }
   ],
   "info" : {

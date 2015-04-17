@@ -15,6 +15,8 @@
 @interface CommentsTableSource : NSObject <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *commentsTable;
+@property (nonatomic, strong) NSMutableArray *commentsData;
+
 @property (nonatomic, strong) id <EVNCommentsTableProtocol> delegate;
 
 //Designated Initializer

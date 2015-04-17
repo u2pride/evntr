@@ -8,10 +8,13 @@
 
 #import "CommentsTableSource.h"
 #import "EVNParseEventHelper.h"
+#import "NSDate+NVTimeAgo.h"
+#import "EVNCommentsTableCell.h"
+
+NSString *const cellIdentifier = @"commentsCell";
 
 @interface CommentsTableSource ()
 
-@property (nonatomic, strong) NSArray *commentsData;
 
 
 @end
@@ -35,7 +38,9 @@
             _commentsTable.delegate = self;
             _commentsTable.dataSource = self;
             _commentsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+            [_commentsTable registerNib:[UINib nibWithNibName:@"EVNCommentsTableCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
             
+            [self setupTableHeader];
             [self getCommentsForTableWithEvent:event];
         }
     }
@@ -43,12 +48,33 @@
     return self;
 }
 
+
+- (void) setupTableHeader {
+    
+    UIView *tableHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _commentsTable.frame.size.width, 50)];
+    tableHeader.backgroundColor = [UIColor clearColor];
+    
+    UIButton *addCommentButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [addCommentButton setTitle:@"+" forState:UIControlStateNormal];
+    [addCommentButton.titleLabel setFont:[UIFont fontWithName:@"Lato-Regular" size:20]];
+    [addCommentButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [addCommentButton addTarget:self action:@selector(createNewComment) forControlEvents:UIControlEventTouchUpInside];
+    addCommentButton.backgroundColor = [UIColor whiteColor];
+    addCommentButton.layer.cornerRadius = 20;
+    addCommentButton.center = tableHeader.center;
+    
+    [tableHeader addSubview:addCommentButton];
+    
+    [_commentsTable setTableHeaderView:tableHeader];
+    
+}
+
 - (void) getCommentsForTableWithEvent:(EventObject *)event {
     
     [EVNParseEventHelper queryForCommentsFromEvent:event completion:^(NSArray *comments) {
         
         NSLog(@"Got Comments");
-        _commentsData = comments;
+        _commentsData = [NSMutableArray arrayWithArray:comments];
         
         [self.commentsTable reloadData];
         
@@ -57,29 +83,35 @@
     
 }
 
+
+- (void) createNewComment {
+    
+    id<EVNCommentsTableProtocol> strongDelegate = self.delegate;
+    if ([strongDelegate respondsToSelector:@selector(addNewComment)]) {
+        [strongDelegate addNewComment];
+    }
+    
+}
+
+
 #pragma mark - Comments Table View DataSource Methods
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"Cellforrowatindexpath");
-
-    
-    static NSString *cellIdentifier = @"commentsCell";
-
-    UITableViewCell *commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    EVNCommentsTableCell *commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if (!commentCell) {
-        commentCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        [tableView registerNib:[UINib nibWithNibName:@"EVNCommentsTableCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
+        
+        commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     }
+    
     
     PFObject *comment;
     
-    if (indexPath.row == 0) {
-        commentCell.textLabel.text = @"Add a Comment";
-    } else {
-        comment = [self.commentsData objectAtIndex:indexPath.row - 1];
-        commentCell.textLabel.text = comment[@"commentText"];
-        commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
+    comment = [self.commentsData objectAtIndex:indexPath.row];
+    commentCell.commentTextLabel.text = comment[@"commentText"];
+    commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
+    commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     commentCell.backgroundColor = [UIColor clearColor];
     commentCell.textLabel.textColor = [UIColor whiteColor];
@@ -90,7 +122,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return self.commentsData.count + 1;
+    return self.commentsData.count;
 }
 
 
@@ -98,17 +130,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (indexPath.row == 0) {
-        
-        id<EVNCommentsTableProtocol> strongDelegate = self.delegate;
-        if ([strongDelegate respondsToSelector:@selector(addNewComment)]) {
-            [strongDelegate addNewComment];
-        }
-        
-    }
     
     NSLog(@"Did select table cell for comment - %ld", (long)indexPath.row);
     
 }
+
+
+
 
 @end

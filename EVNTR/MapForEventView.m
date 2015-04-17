@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UILabel *distanceAwayLabel;
 @property (nonatomic, strong) UILabel *milesAwayLabel;
 @property (nonatomic, strong) UIView *circleView;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
 @end
 
@@ -47,7 +48,7 @@
 
 - (void) setup {
     
-    _address = @"Location Address";
+    _address = @"";
     _eventLocation = [[CLLocation alloc] init];
     _distanceAway = 2.0f;
     
@@ -59,11 +60,13 @@
     _addressLabel.textColor = [UIColor blackColor];
     _addressLabel.numberOfLines = 2;
     _addressLabel.text = _address;
+    _addressLabel.alpha = 0.0;
 
     _distanceAwayLabel = [[UILabel alloc] init];
     _distanceAwayLabel.textAlignment = NSTextAlignmentCenter;
     _distanceAwayLabel.font = [UIFont fontWithName:@"Lato-Light" size:78];
-    _distanceAwayLabel.text = @"23.4";
+    _distanceAwayLabel.text = @"";
+    _distanceAwayLabel.alpha = 0.0;
 
     
     _circleView = [[UIView alloc] init];
@@ -73,20 +76,27 @@
     _milesAwayLabel.textAlignment = NSTextAlignmentCenter;
     _milesAwayLabel.font = [UIFont fontWithName:EVNFontRegular size:12];
     _milesAwayLabel.textColor = [UIColor darkGrayColor];
+    _milesAwayLabel.alpha = 0.0;
     
+    
+    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _activityIndicator.hidesWhenStopped = YES;
+    
+    _activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;
     _mapView.translatesAutoresizingMaskIntoConstraints = NO;
     _addressLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _distanceAwayLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _circleView.translatesAutoresizingMaskIntoConstraints = NO;
     _milesAwayLabel.translatesAutoresizingMaskIntoConstraints = NO;
-
+    
+    
     [self addSubview:_mapView];
     [self addSubview:_circleView];
     [self addSubview:_addressLabel];
     
     [_circleView addSubview:_distanceAwayLabel];
     [_circleView addSubview:_milesAwayLabel];
-    
+    [_circleView addSubview:_activityIndicator];
     
     _mapView.backgroundColor = [UIColor orangeColor];
     _addressLabel.backgroundColor = [UIColor whiteColor];
@@ -95,6 +105,8 @@
     _milesAwayLabel.backgroundColor = [UIColor clearColor];
     
     
+    [_activityIndicator startAnimating];
+
     
 }
 
@@ -236,6 +248,40 @@
     self.distanceAwayLabel.adjustsFontSizeToFitWidth = YES;
     
     ////////////////////////////////////////////////////////////////////
+    //Activity Indicator
+    
+    //Center X
+    [self addConstraint:[NSLayoutConstraint
+                         constraintWithItem:self.activityIndicator
+                         attribute:NSLayoutAttributeCenterX
+                         relatedBy:NSLayoutRelationEqual
+                         toItem:self.activityIndicator
+                         attribute:NSLayoutAttributeCenterX
+                         multiplier:1.0
+                         constant:0.0]];
+    
+    //Center Y
+    [self addConstraint:[NSLayoutConstraint
+                         constraintWithItem:self.activityIndicator
+                         attribute:NSLayoutAttributeCenterY
+                         relatedBy:NSLayoutRelationEqual
+                         toItem:self.activityIndicator
+                         attribute:NSLayoutAttributeCenterY
+                         multiplier:1.0
+                         constant:-20.0]];
+    
+    //Width is 0.8 of Superview
+    [self addConstraint:[NSLayoutConstraint
+                         constraintWithItem:self.activityIndicator
+                         attribute:NSLayoutAttributeWidth
+                         relatedBy:NSLayoutRelationEqual
+                         toItem:self.activityIndicator
+                         attribute:NSLayoutAttributeWidth
+                         multiplier:0.7
+                         constant:0.0]];
+    
+    
+    ////////////////////////////////////////////////////////////////////
     //Miles Away Label
     
     //Center X
@@ -327,9 +373,6 @@
 
 - (void) setEventLocation:(CLLocation *)eventLocation {
     
-    MKCoordinateRegion region = MKCoordinateRegionMake(eventLocation.coordinate, MKCoordinateSpanMake(0.05, 0.05));
-    
-    [self.mapView setRegion:region animated:YES];
     
     _eventLocation = eventLocation;
     
@@ -353,6 +396,36 @@
     
     _address = address;
     
+}
+
+
+- (void) startedLoading {
+    
+    self.distanceAwayLabel.alpha = 0.0;
+    self.addressLabel.alpha = 0.0;
+    self.milesAwayLabel.alpha = 0.0;
+    
+    
+}
+
+- (void) finishedLoadingWithLocationAvailable:(BOOL)isLocationVisible {
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        
+        self.distanceAwayLabel.alpha = 1.0;
+        self.addressLabel.alpha = 1.0;
+        self.milesAwayLabel.alpha = 1.0;
+
+        
+    }];
+    
+    if (isLocationVisible) {
+        MKCoordinateRegion region = MKCoordinateRegionMake(self.eventLocation.coordinate, MKCoordinateSpanMake(0.05, 0.05));
+        [self.mapView setRegion:region animated:YES];
+    }
+    
+    
+    [self.activityIndicator stopAnimating];
 }
 
 

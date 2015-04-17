@@ -87,6 +87,8 @@
 		A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */; };
 		A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */; };
 		A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */ = {isa = PBXBuildFile; fileRef = A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */; };
+		A4E130481ADFDD41002E0862 /* EVNCommentsTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E130461ADFDD41002E0862 /* EVNCommentsTableCell.m */; };
+		A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A4E130471ADFDD41002E0862 /* EVNCommentsTableCell.xib */; };
 		A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */; };
 		A4E4B6B11ADEB60F00D38358 /* CommentsTableSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */; };
 		A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */; };
@@ -251,6 +253,9 @@
 		A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBShimmeringView.m; sourceTree = "<group>"; };
 		A4D72FB31AAA175E00488D8D /* IDTransitionControllerTab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTransitionControllerTab.h; sourceTree = "<group>"; };
 		A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IDTransitionControllerTab.m; sourceTree = "<group>"; };
+		A4E130451ADFDD41002E0862 /* EVNCommentsTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNCommentsTableCell.h; sourceTree = "<group>"; };
+		A4E130461ADFDD41002E0862 /* EVNCommentsTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNCommentsTableCell.m; sourceTree = "<group>"; };
+		A4E130471ADFDD41002E0862 /* EVNCommentsTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EVNCommentsTableCell.xib; sourceTree = "<group>"; };
 		A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewUserFacebookVC.h; sourceTree = "<group>"; };
 		A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = NewUserFacebookVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4E4B6AF1ADEB60F00D38358 /* CommentsTableSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentsTableSource.h; sourceTree = "<group>"; };
@@ -547,6 +552,9 @@
 				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
 				A4E4B6B21ADEE01B00D38358 /* EVNAddCommentVC.h */,
 				A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */,
+				A4E130451ADFDD41002E0862 /* EVNCommentsTableCell.h */,
+				A4E130461ADFDD41002E0862 /* EVNCommentsTableCell.m */,
+				A4E130471ADFDD41002E0862 /* EVNCommentsTableCell.xib */,
 				A4E4B6AF1ADEB60F00D38358 /* CommentsTableSource.h */,
 				A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */,
 				A4C935301AC1E60800BF174C /* EVNParseEventHelper.h */,
@@ -767,6 +775,7 @@
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */,
+				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
 				A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
@@ -811,6 +820,7 @@
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
 				A418129B1AA0BFA200317B0C /* GuestWelcomeVC.m in Sources */,
 				A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */,
+				A4E130481ADFDD41002E0862 /* EVNCommentsTableCell.m in Sources */,
 				A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */,
 				A45795F11AB74DE4004C7088 /* EVNDefaultButton.m in Sources */,
 				A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */,

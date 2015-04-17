@@ -316,6 +316,7 @@
 
 - (void) startedTask {
     
+    self.enabled = NO;
 
     NSLog(@"started task");
     
@@ -345,6 +346,8 @@
 
 - (void) endedTask {
     
+
+    
     
     [UIView animateWithDuration:0.35 animations:^{
         
@@ -356,8 +359,9 @@
         //}
         
         [self.activityIndicator stopAnimating];
-
         
+        self.enabled = YES;
+
     } completion:^(BOOL finished) {
         
         if (finished) {
@@ -367,17 +371,8 @@
         
     }];
     
-    
 }
 
 
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

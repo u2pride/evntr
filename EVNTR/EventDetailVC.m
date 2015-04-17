@@ -26,6 +26,7 @@
 #import "StandbyCollectionViewCell.h"
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
+#import "UIButtonPFExtended.h"
 
 
 #import <AddressBookUI/AddressBookUI.h>
@@ -46,9 +47,9 @@
 @property BOOL isCurrentUsersEvent;
 
 //Buttons
-@property (weak, nonatomic) IBOutlet UIButton *rsvpButton;
+@property (strong, nonatomic) IBOutlet UIButtonPFExtended *rsvpStatusButton;
 @property (strong, nonatomic) IBOutlet UIButton *inviteButton;
-@property (weak, nonatomic) IBOutlet UIButton *viewAttendingButton;
+@property (strong, nonatomic) IBOutlet UILabel *viewAttending;
 
 //Labels
 @property (weak, nonatomic) IBOutlet UILabel *eventTitle;
@@ -81,7 +82,6 @@
 @property (strong, nonatomic) CLPlacemark *locationPlacemark;
 
 //Picture Component
-@property (strong, nonatomic) IBOutlet PFImageView *backgroundForPictureSection;
 @property (strong, nonatomic) IBOutlet UILabel *numberOfPicturesLabel;
 @property (strong, nonatomic) IBOutlet EVNButton *viewPicturesButton;
 
@@ -100,9 +100,8 @@
 @property (nonatomic) BOOL needsInfoUpdate;
 
 - (IBAction)inviteFriends:(id)sender;
-- (IBAction)rsvpForEvent:(id)sender;
-- (IBAction)viewEventAttenders:(id)sender;
 - (IBAction)viewEventPictures:(id)sender;
+- (IBAction)rsvpToEvent:(id)sender;
 
 @end
 
@@ -133,8 +132,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
     self.title = @"";
+    
+    [self.rsvpStatusButton startedTask];
+    
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEventAttenders)];
+    tapgr.numberOfTapsRequired = 1;
+    self.viewAttending.text = @"View Attending";
+    self.viewAttending.textColor = [UIColor orangeThemeColor];
+    self.viewAttending.userInteractionEnabled = YES;
+    [self.viewAttending addGestureRecognizer:tapgr];
     
     NSLog(@"Event TO SEEEEEE: %@", self.event);
     
@@ -153,68 +160,12 @@
     if ([self.event.parent.objectId isEqualToString:[PFUser currentUser].objectId]) {
         self.isCurrentUsersEvent = YES;
         NSLog(@"Current User's Event ");
-        
-        
     }
     
     self.view.backgroundColor = [UIColor blackColor];
     
     [self setupStaticEventDetailComponents];
     
-    
-    //TEST DATA - COMMENTS
-    
-    PFObject *newComment = [PFObject objectWithClassName:@"Comments"];
-    newComment[@"commentText"] = @"This is here a comment with a lot of text... I wonder what this will look like.";
-    newComment[@"commentParent"] = [PFUser currentUser];
-    newComment[@"commentEvent"] = self.event;
-    
-    [newComment saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
-        if (succeeded) {
-            NSLog(@"Saved");
-            //add to comments array
-            //insert row in table
-        } else {
-            //error
-        }
-        
-    }];
-
-    
-    PFObject *newComment2 = [PFObject objectWithClassName:@"Comments"];
-    newComment2[@"commentText"] = @"Go to this event.  OH look, another comment with a lot of text.  Hmmmmmmmmm.....";
-    newComment2[@"commentParent"] = [PFUser currentUser];
-    newComment2[@"commentEvent"] = self.event;
-    
-    [newComment2 saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
-        if (succeeded) {
-            NSLog(@"Saved");
-            //add to comments array
-            //insert row in table
-        } else {
-            //error
-        }
-        
-    }];
-    
-    PFObject *newComment3 = [PFObject objectWithClassName:@"Comments"];
-    newComment3[@"commentText"] = @"This is a nice idea.";
-    newComment3[@"commentParent"] = [PFUser currentUser];
-    newComment3[@"commentEvent"] = self.event;
-    
-    [newComment3 saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
-        if (succeeded) {
-            NSLog(@"Saved");
-            //add to comments array
-            //insert row in table
-        } else {
-            //error
-        }
-        
-    }];
 }
 
 
@@ -247,16 +198,20 @@
         //Create Black Loading Screen
         self.fadeOutBlackScreen = [[UIView alloc] initWithFrame:self.view.frame];
         self.fadeOutBlackScreen.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.85];
-        [self.view addSubview:self.fadeOutBlackScreen];
+        //[self.view addSubview:self.fadeOutBlackScreen];
         
         //Progress Indicator - Start
         self.HUD = [[MBProgressHUD alloc] init];
         self.HUD.removeFromSuperViewOnHide = YES; //otherwise it blocks other views
         self.HUD.center = self.view.center;
-        [self.view addSubview:self.HUD];
-        [self.view bringSubviewToFront:self.HUD];
-        self.HUD.labelText = @"Event Loading";
-        [self.HUD show:YES];
+        //[self.view addSubview:self.HUD];
+        //[self.view bringSubviewToFront:self.HUD];
+        //self.HUD.labelText = @"Event Loading";
+        //[self.HUD show:YES];
+        
+        
+        self.timeOfEventLabel.alpha = 0.0;
+        self.dateOfEventLabel.alpha = 0.0;
         
     }
 }
@@ -302,22 +257,39 @@
         //Configuring Basic Details
         ///////////////////////////
         
+        CGRect originalFrame = self.eventDescription.frame;
+        
         self.eventTitle.text = self.event.title;
+        self.eventTitle.adjustsFontSizeToFitWidth = YES;
         self.dateOfEventLabel.text = [self.event eventDateShortStyle];
         self.timeOfEventLabel.text = [self.event eventTimeShortStye];
         self.eventDescription.text = self.event.descriptionOfEvent;
+        self.eventDescription.textAlignment = NSTextAlignmentCenter;
+        self.eventDescription.numberOfLines = 0;
+        [self.eventDescription sizeToFit];
         
-        self.backgroundForPictureSection.file = self.event.coverPhoto;
-        self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
-        [self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
+        CGRect resizedFrame = self.eventDescription.frame;
+        self.eventDescription.frame = CGRectMake(resizedFrame.origin.x, resizedFrame.origin.y, originalFrame.size.width, resizedFrame.size.height);
+        
+        [self.event.coverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
             
-            NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
+            UIImage *coverImage = [UIImage imageWithData:data];
             
-            [self setBackgroundOfPictureSectionWithImage:image];
-            NSLog(@"Num 1");
-            [self networkCallComplete]; //1
-            
+            [self setBackgroundOfPictureSectionWithImage:coverImage];
+            [self networkCallComplete];
         }];
+        
+        //self.backgroundForPictureSection.file = self.event.coverPhoto;
+        //self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
+        //[self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
+            
+            //NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
+            
+            //[self setBackgroundOfPictureSectionWithImage:image];
+            //NSLog(@"Num 1");
+            //[self networkCallComplete]; //1
+            
+        //}];
         
         
         [self setupCreatorComponent];
@@ -356,8 +328,8 @@
         
         if (self.isGuestUser) {
             
-            [self.rsvpButton setTitle:@"Sign Up To Attend" forState:UIControlStateNormal];
-            [self.viewAttendingButton setTitle:@"Sign Up to View Attending Users" forState:UIControlStateNormal];
+            self.rsvpStatusButton.titleText = @"Sign Up Required";
+            self.viewAttending.text = @"Sign Up to View Attending Users";
             [self.inviteButton setTitle:@"Sign Up to Attend" forState:UIControlStateNormal];
             
             int eventType = [self.event.typeOfEvent intValue];
@@ -378,7 +350,11 @@
                         
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
-                            [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                            self.rsvpStatusButton.titleText = status;
+                            
+                            if (isAttending) {
+                                self.rsvpStatusButton.isSelected = YES;
+                            }
                         }
                         
                         NSLog(@"Num3");
@@ -398,7 +374,11 @@
 
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
-                            [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                            self.rsvpStatusButton.titleText = status;
+                            
+                            if (isAttending) {
+                                self.rsvpStatusButton.isSelected = YES;
+                            }
                         }
                         
                         NSLog(@"Num3");
@@ -427,7 +407,14 @@
                             
                             if (!self.isCurrentUsersEvent) {
                                 self.isCurrentUserAttending = isAttending;
-                                [self.rsvpButton setTitle:status forState:UIControlStateNormal];
+                                self.rsvpStatusButton.titleText = status;
+                                
+                                if ([status isEqualToString:kGrantedAccessToEvent] || [status isEqualToString:kRSVPedForEvent]) {
+                                    self.rsvpStatusButton.isSelected = YES;
+                                    self.rsvpStatusButton.isStateless = YES;
+                                } else {
+                                    self.rsvpStatusButton.isSelected = NO;
+                                }
                             }
                             
                             NSLog(@"Num3");
@@ -464,17 +451,17 @@
     //Creator Component and Invite Button - Default Image
     self.creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
     [self.inviteButton setTitle:kInviteUsers forState:UIControlStateNormal];
-    [self.rsvpButton setTitle:kNOTRSVPedForEvent forState:UIControlStateNormal];
+    self.rsvpStatusButton.titleText = kNOTRSVPedForEvent;
     
     NSLog(@"self.isCurrentUsersEvent:%@", [NSNumber numberWithBool:self.isCurrentUsersEvent]);
     
-    self.rsvpButton.hidden = (self.isCurrentUsersEvent) ? YES : NO;
+    self.rsvpStatusButton.hidden = (self.isCurrentUsersEvent) ? YES : NO;
     self.inviteButton.hidden = (self.isCurrentUsersEvent) ? NO : YES;
 
     //Standby Component - UICollectionView
     self.standbyUsersCollectionView.delegate = self;
     self.standbyUsersCollectionView.dataSource = self;
-    self.standbyUsersCollectionView.backgroundColor = [UIColor orangeThemeColor];
+    //self.standbyUsersCollectionView.backgroundColor = [UIColor orangeThemeColor];
     self.standbyUsersCollectionView.tag = 2;
     UICollectionViewFlowLayout *collectionViewLayout2 = (UICollectionViewFlowLayout*)self.standbyUsersCollectionView.collectionViewLayout;
     collectionViewLayout2.minimumInteritemSpacing = 20;
@@ -516,6 +503,8 @@
 
 - (void) setupMapComponent {
     
+    [self.entireMapView startedLoading];
+    
     self.locationOfEvent = [[CLLocation alloc] initWithLatitude:self.event.locationOfEvent.latitude longitude:self.event.locationOfEvent.longitude];
     
     //Getting Current Location and Comparing to Event Location
@@ -542,6 +531,7 @@
         
         NSLog(@"Num5");
         [self networkCallComplete]; //5
+        
         
     }];
     
@@ -597,9 +587,9 @@
 
 - (void) setBackgroundOfPictureSectionWithImage:(UIImage *)image {
     //Set Background to Blurred Cover Photo Image
-    UIImage *darkBlurredImageForPicturesBackground = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithWhite:0.11 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
+    //UIImage *darkBlurredImageForPicturesBackground = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithWhite:0.11 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
     
-    self.backgroundForPictureSection.image = darkBlurredImageForPicturesBackground;
+    //self.backgroundForPictureSection.image = darkBlurredImageForPicturesBackground;
     
     
     UIImage *blurredBackgroundImage = [UIImageEffects imageByApplyingBlurToImage:image withRadius:30.0 tintColor:[UIColor colorWithWhite:0.08 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
@@ -638,6 +628,15 @@
 
 - (void) recheckPublicApprovedAccess {
     
+    //unhide all important details
+    // map location - address and distance - use function [map finishedWithDetails] - loading before this finishes.
+    // event details - blank with loading indicator. [details finishedWithTime: andDateString: ]
+    // RSVP Button - loading indicator.  set text throughout loading but keep hidden until finished checking public approved
+    
+    //keep these all disabled until loading is finished.
+    //currently:  the following things are what contribute to the event details load:
+    
+
     NSLog(@"%@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending]);
     
     if ((self.isPublicApproved && !self.isCurrentUserAttending && !self.isCurrentUsersEvent) || self.isGuestUser) {
@@ -652,7 +651,19 @@
         self.entireMapView.distanceAway = 0.0f;
         self.dateOfEventLabel.text = @"Unknown";
         self.timeOfEventLabel.text = @"Unknown";
+        
+        [self.rsvpStatusButton endedTask];
+        [self.entireMapView finishedLoadingWithLocationAvailable:NO];
+        
+    } else {
+        
+        [self.rsvpStatusButton endedTask];
+        [self.entireMapView finishedLoadingWithLocationAvailable:YES];
+        
     }
+    
+    self.dateOfEventLabel.alpha = 1.0;
+    self.timeOfEventLabel.alpha = 1.0;
 
 }
 
@@ -778,118 +789,10 @@
     }
 }
 
-//Current: User is added to the event as a Relation.  No information about the activity is stored (ie timestamp)
-//Update:  User is added to the event as a Relation and an entry in the activity table is created - will be used for Activity/Notifications View.
-//Long-Term:  Is this the best solution?
-
-- (IBAction)rsvpForEvent:(id)sender {
-    
-    int eventType = [self.event.typeOfEvent intValue];
-    
-    //Cases:  Guest User - PA Event Request Access - Attending Already - Not Attending
-    
-    if (self.isGuestUser) {
-        
-        [self performSegueWithIdentifier:@"EventDetailToInitial" sender:self];
-        
-    
-    } else if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
-        
-        //Currently only allowing A Request for access not to revoke
-        if ([self.rsvpButton.titleLabel.text isEqualToString:kNOTRSVPedForEvent]) {
-            
-            self.rsvpButton.enabled = NO;
-            
-            [EVNParseEventHelper requestAccessForUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
-               
-                if (success) {
-                    [self.rsvpButton setTitle:kRSVPedForEvent forState:UIControlStateNormal];
-                    
-                    NSMutableArray *updatedStandbyListWithCurrentUser = [NSMutableArray arrayWithArray:self.usersOnStandby];
-                    [updatedStandbyListWithCurrentUser addObject:[PFUser currentUser]];
-                    self.usersOnStandby = [NSArray arrayWithArray:updatedStandbyListWithCurrentUser];
-                    [self.standbyUsersCollectionView reloadData];
-                }
-                self.rsvpButton.enabled = YES;
-            }];
-        }
-        
-        
-    } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
-        
-        PFRelation *attendersRelation = self.event.attenders;
-        self.rsvpButton.enabled = NO;
-        
-        //Updating Relation
-        if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
-            
-            [attendersRelation removeObject:[PFUser currentUser]];
-            [self.event saveInBackground];
-            
-            //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
-            
-        } else {
-            
-            //Create New Relation and Add User to List of Attenders for Event
-            [attendersRelation addObject:[PFUser currentUser]];
-            [self.event saveInBackground];
-            
-            //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
-        }
-        
-        
-        //Updating the Activity Table (choose one?)
-        if ([self.rsvpButton.titleLabel.text isEqualToString:kAttendingEvent]) {
-            
-            [EVNParseEventHelper unRSVPUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
-               
-                if (success) {
-                    self.isCurrentUserAttending = NO;
-                    [self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
-                    
-                    //Notify Table Cell of Update in RSVP Count
-                    id<EventDetailProtocol> strongDelegate = self.delegate;
-                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
-                        [strongDelegate rsvpStatusUpdatedToGoing:NO];
-                    }
-                } else {
-                    //TODO: PFAnalytics
-                }
-                
-                //Re-Enable RSVP Button
-                self.rsvpButton.enabled = YES;
-            }];
-            
-        } else {
-
-            [EVNParseEventHelper rsvpUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
-               
-                if (success) {
-                    self.isCurrentUserAttending = YES;
-                    [self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
-                    
-                    //Notify Table Cell of Update in RSVP Count
-                    id<EventDetailProtocol> strongDelegate = self.delegate;
-                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
-                        [strongDelegate rsvpStatusUpdatedToGoing:YES];
-                    }
-                } else {
-                    //TODO: Log Error with PFAnalytics
-                }
-                
-                //Re-Enable Button
-                self.rsvpButton.enabled = YES;
-                
-            }];
-            
-        }
-        
-    }
-    
-}
 
 
-- (IBAction)viewEventAttenders:(id)sender {
+
+- (void) viewEventAttenders {
     
     if (self.isGuestUser) {
         
@@ -904,8 +807,6 @@
         
         [self.navigationController pushViewController:viewAttendees animated:YES];
     }
-    
-
     
 }
 
@@ -941,6 +842,116 @@
 
     [self.navigationController pushViewController:allEventPictures animated:YES];
     
+}
+
+//Current: User is added to the event as a Relation.  No information about the activity is stored (ie timestamp)
+//Update:  User is added to the event as a Relation and an entry in the activity table is created - will be used for Activity/Notifications View.
+//Long-Term:  Is this the best solution?
+
+- (IBAction)rsvpToEvent:(id)sender {
+    
+    int eventType = [self.event.typeOfEvent intValue];
+    
+    //Cases:  Guest User - PA Event Request Access - Attending Already - Not Attending
+    
+    if (self.isGuestUser) {
+        
+        [self performSegueWithIdentifier:@"EventDetailToInitial" sender:self];
+        
+        
+    } else if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
+        
+        //Currently only allowing A Request for access not to revoke
+        if ([self.rsvpStatusButton.titleText isEqualToString:kNOTRSVPedForEvent]) {
+            
+            self.rsvpStatusButton.enabled = NO;
+            
+            [EVNParseEventHelper requestAccessForUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+                
+                if (success) {
+                    self.rsvpStatusButton.titleText = kRSVPedForEvent;
+                    
+                    NSMutableArray *updatedStandbyListWithCurrentUser = [NSMutableArray arrayWithArray:self.usersOnStandby];
+                    [updatedStandbyListWithCurrentUser addObject:[PFUser currentUser]];
+                    self.usersOnStandby = [NSArray arrayWithArray:updatedStandbyListWithCurrentUser];
+                    [self.standbyUsersCollectionView reloadData];
+                }
+                self.rsvpStatusButton.enabled = YES;
+            }];
+        }
+        
+        
+    } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
+        
+        PFRelation *attendersRelation = self.event.attenders;
+        self.rsvpStatusButton.enabled = NO;
+        
+        //Updating Relation
+        if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
+            
+            [attendersRelation removeObject:[PFUser currentUser]];
+            [self.event saveInBackground];
+            
+            //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
+            
+        } else {
+            
+            //Create New Relation and Add User to List of Attenders for Event
+            [attendersRelation addObject:[PFUser currentUser]];
+            [self.event saveInBackground];
+            
+            //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
+        }
+        
+        
+        //Updating the Activity Table (choose one?)
+        if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
+            
+            [EVNParseEventHelper unRSVPUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+                
+                if (success) {
+                    self.isCurrentUserAttending = NO;
+                    self.rsvpStatusButton.titleText = kNotAttendingEvent;
+                    
+                    //Notify Table Cell of Update in RSVP Count
+                    id<EventDetailProtocol> strongDelegate = self.delegate;
+                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
+                        [strongDelegate rsvpStatusUpdatedToGoing:NO];
+                    }
+                } else {
+                    //TODO: PFAnalytics
+                }
+                
+                //Re-Enable RSVP Button
+                self.rsvpStatusButton.enabled = YES;
+            }];
+            
+        } else {
+            
+            [EVNParseEventHelper rsvpUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+                
+                if (success) {
+                    self.isCurrentUserAttending = YES;
+                    self.rsvpStatusButton.titleText = kAttendingEvent;
+                    
+                    //Notify Table Cell of Update in RSVP Count
+                    id<EventDetailProtocol> strongDelegate = self.delegate;
+                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
+                        [strongDelegate rsvpStatusUpdatedToGoing:YES];
+                    }
+                } else {
+                    //TODO: Log Error with PFAnalytics
+                }
+                
+                //Re-Enable Button
+                self.rsvpStatusButton.enabled = YES;
+                
+            }];
+            
+        }
+        
+    }
+
 }
 
 
@@ -1080,13 +1091,17 @@
 
 - (void) addNewComment {
     
-    
-    EVNAddCommentVC *newCommentVC = [[EVNAddCommentVC alloc] init];
-    newCommentVC.delegate = self;
-    
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newCommentVC];
-    
-    [self presentViewController:navController animated:YES completion:nil];
+    if (self.isCurrentUserAttending) {
+        
+        self.shouldRestoreNavBar = NO;
+        
+        EVNAddCommentVC *newCommentVC = [[EVNAddCommentVC alloc] init];
+        newCommentVC.delegate = self;
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newCommentVC];
+        
+        [self presentViewController:navController animated:YES completion:nil];
+    }
 }
 
 
@@ -1109,9 +1124,16 @@
         if (succeeded) {
             NSLog(@"saved comment");
             
-            [self dismissViewControllerAnimated:YES completion:nil];
-            //add to comments array
-            //insert row in table
+            [self dismissViewControllerAnimated:YES completion:^{
+                [self.commentsController.commentsData insertObject:newComment atIndex:0];
+                
+                NSArray *firstIndexPath = [NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]];
+                
+                [self.commentsController.commentsTable insertRowsAtIndexPaths:firstIndexPath withRowAnimation:UITableViewRowAnimationFade];
+                
+            }];
+
+            
         } else {
             //error
         }
