@@ -61,6 +61,8 @@
         
     } else {
         
+        NSLog(@"Setting the VCs for the Navigation Tab Bar");
+        
         NSMutableArray *viewControllersTab = [NSMutableArray arrayWithArray:[self viewControllers]];
         [viewControllersTab removeObjectAtIndex:4];
 
@@ -78,6 +80,8 @@
         //Set Font Color to White
         [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         
+        NSLog(@"Setting the VCs for the Navigation Tab Bar 2");
+
     }
     
     self.tabBar.barTintColor = [UIColor whiteColor];
@@ -91,6 +95,9 @@
 #pragma mark - Notification Response - Update Badge of Activity Tab
 - (void) newActivity:(NSNotification *)notification {
     
+    //For now, tabling the notification badge.
+    
+    /*
     NSDictionary *notificationDictionary = notification.userInfo;
     NSNumber *num = [notificationDictionary objectForKey:@"numberOfNotifications"];
     
@@ -100,7 +107,7 @@
     if (num.intValue != 0) {
         self.activityItem.badgeValue = [NSString stringWithFormat:@"%@", num];
     }
-    
+    */
     
 }
 

@@ -84,9 +84,7 @@
     //Navigation Bar Font & Color
     NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
     self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
-    
-    self.userForEventsQuery = [PFUser currentUser];
-    
+        
     //stop Movie Player on Initial Screen
     [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];
 
@@ -727,15 +725,23 @@
     
     self.eventForInvites = event;
     
-    PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
-    invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
-    invitePeopleVC.userProfile = [PFUser currentUser];
-    invitePeopleVC.usersAlreadyInvited = nil;
-    invitePeopleVC.delegate = self;
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
+        invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
+        invitePeopleVC.userProfile = [PFUser currentUser];
+        invitePeopleVC.usersAlreadyInvited = nil;
+        invitePeopleVC.delegate = self;
+        
+        UINavigationController *embedInThisVC = [[UINavigationController alloc] initWithRootViewController:invitePeopleVC];
+        
+        [self presentViewController:embedInThisVC animated:YES completion:nil];
+        
+    });
     
-    UINavigationController *embedInThisVC = [[UINavigationController alloc] initWithRootViewController:invitePeopleVC];
-    
-    [self presentViewController:embedInThisVC animated:YES completion:nil];
+
 }
 
 

@@ -27,7 +27,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    
     //User's Location for Queries of Local Events.
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
@@ -223,9 +222,9 @@
                         
                         //Scheduling Local Notification
                         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-                        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:5];
+                        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:30];
                         localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!", userWhoInvited[@"username"]];
-                        localNotification.alertAction = @"open";
+                        localNotification.alertAction = nil;
                         localNotification.timeZone = [NSTimeZone defaultTimeZone];
                         localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
                         

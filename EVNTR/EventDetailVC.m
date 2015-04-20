@@ -93,6 +93,10 @@
 
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
 
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *commentsTopVerticalConstraint;
+
+
+
 @property (nonatomic, strong) NSTimer *timerForLocation;
 @property (nonatomic) BOOL shouldRestoreNavBar;
 
@@ -189,6 +193,14 @@
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
+    
+    int eventType = [self.event.typeOfEvent intValue];
+    if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
+        self.commentsTopVerticalConstraint.constant = 15;
+        [self.view layoutIfNeeded];
+    }
+    
+    
     
     if (self.needsInfoUpdate) {
 
@@ -502,6 +514,8 @@
 
 
 - (void) setupMapComponent {
+    
+    NSLog(@"Setting up map component");
     
     [self.entireMapView startedLoading];
     
@@ -1091,7 +1105,7 @@
 
 - (void) addNewComment {
     
-    if (self.isCurrentUserAttending) {
+    if (self.isCurrentUserAttending || self.isCurrentUsersEvent) {
         
         self.shouldRestoreNavBar = NO;
         

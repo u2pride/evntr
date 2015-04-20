@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "MapForEventView.h"
+#import <Parse/Parse.h>
 #import <QuartzCore/QuartzCore.h>
 @import MediaPlayer;
 
@@ -16,12 +16,10 @@
 #import "IDTransitioningDelegate.h"
 #import "InitialScreenVC.h"
 #import "LogInVC.h"
+#import "MapForEventView.h"
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
-
-
-#import <Parse/Parse.h>
 
 
 @interface InitialScreenVC ()
@@ -45,6 +43,8 @@
 @implementation InitialScreenVC
 
 
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -60,7 +60,7 @@
     NSLog(@"ViewDidLoad Called");
     
     //TODO: for testing purposes
-    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor redColor];
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor orangeThemeColor];
 
     //Setting Up Custom Buttons
     self.loginButton.buttonColor = [UIColor orangeThemeColor];
@@ -166,6 +166,7 @@
     [super viewWillAppear:animated];
     NSLog(@"ViewWillAppear Called");
 
+
 }
 
 
@@ -231,10 +232,21 @@
         guestWelcomeView.transitioningDelegate = self.customTransitionDelegate;
         guestWelcomeView.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         
+    } else if ([segue.identifier isEqualToString:@"currentUserExists"]) {
+        
+        NSLog(@"User Already Logged In - now see tabs");
     }
     
 }
 
+
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if ([PFUser currentUser]) {
+        [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+    }
+}
 
 
 - (void) viewDidDisappear:(BOOL)animated {

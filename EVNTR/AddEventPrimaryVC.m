@@ -158,6 +158,8 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    [self.eventTitleField becomeFirstResponder];
+    
 }
 
 
@@ -301,6 +303,8 @@
     [picker dismissViewControllerAnimated:YES completion:^{
         
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        
+        [self.eventTitleField resignFirstResponder];
         
     }];
 

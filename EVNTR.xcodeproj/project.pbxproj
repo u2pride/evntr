@@ -348,9 +348,6 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
-				A490C99D1AD69C0400182B5E /* WalkthroughVC.h */,
-				A490C99E1AD69C0400182B5E /* WalkthroughVC.m */,
-				A497BD9E1AD54A2600619BF4 /* Walkthrough */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Tabs */,
@@ -417,15 +414,121 @@
 			path = EVNTR;
 			sourceTree = "<group>";
 		};
-		A423F7EF1A9BC4D800DF9ABE /* Custom UI Elements */ = {
+		A423F7EF1A9BC4D800DF9ABE /* UI Elements */ = {
 			isa = PBXGroup;
 			children = (
+				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
+				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
 				A41352531A81B80200034222 /* ImageViewPFExtended.h */,
 				A41352541A81B80200034222 /* ImageViewPFExtended.m */,
 				A423F7EC1A9BC46600DF9ABE /* UIButtonPFExtended.h */,
 				A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */,
 			);
-			name = "Custom UI Elements";
+			name = "UI Elements";
+			sourceTree = "<group>";
+		};
+		A425A1D11AE585DE00AF26E6 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				A43760FB1AA50CF4000F544D /* EVNCustomButton.h */,
+				A43760FC1AA50CF4000F544D /* EVNCustomButton.m */,
+				A45795EF1AB74DE4004C7088 /* EVNDefaultButton.h */,
+				A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */,
+				A4B2BC5D1AB870370004B084 /* EVNButton.h */,
+				A4B2BC5E1AB870370004B084 /* EVNButton.m */,
+				A4AE41AB1AB796CB006270E2 /* EVNLocationButton.h */,
+				A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */,
+			);
+			name = Buttons;
+			sourceTree = "<group>";
+		};
+		A425A1D21AE585FE00AF26E6 /* Register */ = {
+			isa = PBXGroup;
+			children = (
+				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
+				A415633E1A769FDE00565BB6 /* SignUpVC.m */,
+				A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */,
+				A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */,
+			);
+			name = Register;
+			sourceTree = "<group>";
+		};
+		A425A1D31AE5865600AF26E6 /* UI Elements */ = {
+			isa = PBXGroup;
+			children = (
+				A4F2E9B01A7ABDF400614412 /* PersonCell.h */,
+				A4F2E9B11A7ABDF400614412 /* PersonCell.m */,
+			);
+			name = "UI Elements";
+			sourceTree = "<group>";
+		};
+		A425A1D41AE5868B00AF26E6 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */,
+				A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */,
+				A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */,
+				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		A425A1D51AE586B500AF26E6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */,
+				A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		A425A1D61AE586D000AF26E6 /* Comments */ = {
+			isa = PBXGroup;
+			children = (
+				A4E4B6B21ADEE01B00D38358 /* EVNAddCommentVC.h */,
+				A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */,
+				A4E130451ADFDD41002E0862 /* EVNCommentsTableCell.h */,
+				A4E130461ADFDD41002E0862 /* EVNCommentsTableCell.m */,
+				A4E130471ADFDD41002E0862 /* EVNCommentsTableCell.xib */,
+				A4E4B6AF1ADEB60F00D38358 /* CommentsTableSource.h */,
+				A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */,
+			);
+			name = Comments;
+			sourceTree = "<group>";
+		};
+		A425A1D71AE586E600AF26E6 /* Pictures */ = {
+			isa = PBXGroup;
+			children = (
+				A45638C81ABA2122009D3BCC /* EventPicturesVC.h */,
+				A45638C91ABA2122009D3BCC /* EventPicturesVC.m */,
+				A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */,
+				A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */,
+				A4F6C4BC1AA620C1001C68BA /* EventPictureCell.h */,
+				A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */,
+			);
+			name = Pictures;
+			sourceTree = "<group>";
+		};
+		A425A1D81AE586EE00AF26E6 /* Maps */ = {
+			isa = PBXGroup;
+			children = (
+				A4628CF81AB77C4B00EBD959 /* FullMapVC.h */,
+				A4628CF91AB77C4B00EBD959 /* FullMapVC.m */,
+				A45638C51AB9B8AB009D3BCC /* MapForEventView.h */,
+				A45638C61AB9B8AB009D3BCC /* MapForEventView.m */,
+			);
+			name = Maps;
+			sourceTree = "<group>";
+		};
+		A425A1D91AE5870400AF26E6 /* UI Elements */ = {
+			isa = PBXGroup;
+			children = (
+				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
+				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
+				A4B6FB1C1AB365C80033A3A1 /* SearchHeaderView.h */,
+				A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */,
+			);
+			name = "UI Elements";
 			sourceTree = "<group>";
 		};
 		A474306B1A8155C700CF3B8F /* Events */ = {
@@ -433,6 +536,8 @@
 			children = (
 				A4C2C1351ACEB4FB004C7F35 /* EventObject.h */,
 				A4C2C1361ACEB4FB004C7F35 /* EventObject.m */,
+				A4C935301AC1E60800BF174C /* EVNParseEventHelper.h */,
+				A4C935311AC1E60800BF174C /* EVNParseEventHelper.m */,
 				A49A9E301AAE48CF00358D65 /* All Events */,
 				A49A9E2F1AAE48A300358D65 /* Event Details */,
 				A49A9E2D1AAE484400358D65 /* Add Event */,
@@ -449,8 +554,7 @@
 				A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */,
 				A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */,
 				A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */,
-				A4F2E9B01A7ABDF400614412 /* PersonCell.h */,
-				A4F2E9B11A7ABDF400614412 /* PersonCell.m */,
+				A425A1D31AE5865600AF26E6 /* UI Elements */,
 			);
 			name = People;
 			sourceTree = "<group>";
@@ -460,11 +564,7 @@
 			children = (
 				A47430651A81556C00CF3B8F /* ActivityVC.h */,
 				A47430661A81556C00CF3B8F /* ActivityVC.m */,
-				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
-				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
-				A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */,
-				A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */,
-				A423F7EF1A9BC4D800DF9ABE /* Custom UI Elements */,
+				A423F7EF1A9BC4D800DF9ABE /* UI Elements */,
 			);
 			name = Activities;
 			sourceTree = "<group>";
@@ -472,6 +572,8 @@
 		A497BD9E1AD54A2600619BF4 /* Walkthrough */ = {
 			isa = PBXGroup;
 			children = (
+				A490C99D1AD69C0400182B5E /* WalkthroughVC.h */,
+				A490C99E1AD69C0400182B5E /* WalkthroughVC.m */,
 				A497BD601AD542F100619BF4 /* WalkthroughPageVC.h */,
 				A497BD611AD542F100619BF4 /* WalkthroughPageVC.m */,
 				A497BD9B1AD54A0D00619BF4 /* WalkthroughModel.h */,
@@ -518,14 +620,10 @@
 		A49A9E2D1AAE484400358D65 /* Add Event */ = {
 			isa = PBXGroup;
 			children = (
-				A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */,
-				A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */,
-				A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */,
-				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
 				A4B2BC601AB8C7D40004B084 /* NewEventModel.h */,
 				A4B2BC611AB8C7D40004B084 /* NewEventModel.m */,
-				A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */,
-				A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */,
+				A425A1D41AE5868B00AF26E6 /* View Controllers */,
+				A425A1D51AE586B500AF26E6 /* Views */,
 				A49A9E2E1AAE487D00358D65 /* Location */,
 			);
 			name = "Add Event";
@@ -550,25 +648,9 @@
 			children = (
 				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
 				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
-				A4E4B6B21ADEE01B00D38358 /* EVNAddCommentVC.h */,
-				A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */,
-				A4E130451ADFDD41002E0862 /* EVNCommentsTableCell.h */,
-				A4E130461ADFDD41002E0862 /* EVNCommentsTableCell.m */,
-				A4E130471ADFDD41002E0862 /* EVNCommentsTableCell.xib */,
-				A4E4B6AF1ADEB60F00D38358 /* CommentsTableSource.h */,
-				A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */,
-				A4C935301AC1E60800BF174C /* EVNParseEventHelper.h */,
-				A4C935311AC1E60800BF174C /* EVNParseEventHelper.m */,
-				A45638C81ABA2122009D3BCC /* EventPicturesVC.h */,
-				A45638C91ABA2122009D3BCC /* EventPicturesVC.m */,
-				A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */,
-				A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */,
-				A4628CF81AB77C4B00EBD959 /* FullMapVC.h */,
-				A4628CF91AB77C4B00EBD959 /* FullMapVC.m */,
-				A45638C51AB9B8AB009D3BCC /* MapForEventView.h */,
-				A45638C61AB9B8AB009D3BCC /* MapForEventView.m */,
-				A4F6C4BC1AA620C1001C68BA /* EventPictureCell.h */,
-				A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */,
+				A425A1D61AE586D000AF26E6 /* Comments */,
+				A425A1D71AE586E600AF26E6 /* Pictures */,
+				A425A1D81AE586EE00AF26E6 /* Maps */,
 				A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */,
 				A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */,
 			);
@@ -580,14 +662,11 @@
 			children = (
 				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
 				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
-				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
-				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
 				A423F7F01A9BFF0900DF9ABE /* SearchVC.h */,
 				A423F7F11A9BFF0900DF9ABE /* SearchVC.m */,
+				A425A1D91AE5870400AF26E6 /* UI Elements */,
 				A4B6FB191AB349940033A3A1 /* FilterEventsVC.h */,
 				A4B6FB1A1AB349950033A3A1 /* FilterEventsVC.m */,
-				A4B6FB1C1AB365C80033A3A1 /* SearchHeaderView.h */,
-				A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */,
 			);
 			name = "All Events";
 			sourceTree = "<group>";
@@ -634,20 +713,15 @@
 		A4F2E9A61A7A806A00614412 /* Navigation - Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */,
+				A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */,
 				A4F2E9B31A7AF5CF00614412 /* EVNUtility.h */,
 				A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */,
 				A4F2E9B61A7AF65800614412 /* EVNConstants.h */,
 				A4F2E9B71A7AF65800614412 /* EVNConstants.m */,
+				A425A1D11AE585DE00AF26E6 /* Buttons */,
 				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
 				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
-				A43760FB1AA50CF4000F544D /* EVNCustomButton.h */,
-				A43760FC1AA50CF4000F544D /* EVNCustomButton.m */,
-				A45795EF1AB74DE4004C7088 /* EVNDefaultButton.h */,
-				A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */,
-				A4B2BC5D1AB870370004B084 /* EVNButton.h */,
-				A4B2BC5E1AB870370004B084 /* EVNButton.m */,
-				A4AE41AB1AB796CB006270E2 /* EVNLocationButton.h */,
-				A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */,
 				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
 				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
 				A41B2A111ABCBE3F00F7CE44 /* SignUpTabVC.h */,
@@ -670,12 +744,10 @@
 				A4C4EDD41A95186A000BC3AD /* InitialScreenVC.h */,
 				A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */,
 				A49A9E2C1AAE47D400358D65 /* Login */,
-				A415633D1A769FDE00565BB6 /* SignUpVC.h */,
-				A415633E1A769FDE00565BB6 /* SignUpVC.m */,
+				A425A1D21AE585FE00AF26E6 /* Register */,
+				A497BD9E1AD54A2600619BF4 /* Walkthrough */,
 				A41812991AA0BFA200317B0C /* GuestWelcomeVC.h */,
 				A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */,
-				A4E436BB1A9EAC3B002EAAB0 /* NewUserFacebookVC.h */,
-				A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */,
 			);
 			name = "Login Flow";
 			sourceTree = "<group>";

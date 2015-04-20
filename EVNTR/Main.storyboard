@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xaR-eF-GqN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="xaR-eF-GqN">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -220,6 +220,7 @@
                         <segue destination="o8p-62-GhP" kind="custom" identifier="NewUserFacebook" id="zA2-0p-EGp"/>
                         <segue destination="kNH-N0-DyF" kind="custom" identifier="InitialToSignUp" id="pvw-Xe-rnZ"/>
                         <segue destination="5DD-Kt-92r" kind="custom" identifier="InitialToLogin" id="IVW-6G-qhT"/>
+                        <segue destination="Hoa-x5-Et8" kind="presentation" identifier="currentUserExists" id="0HK-TD-lr3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qKs-DE-VnS" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2209,43 +2210,43 @@ Click continue when you're ready.</string>
                                     <constraint firstAttribute="height" constant="58" id="hc1-Ur-8o4"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="40"/>
-                                <state key="normal" title="20">
+                                <state key="normal" title="15">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="distance5Press:" destination="Kje-Ts-GEk" eventType="touchUpInside" id="5qQ-aD-b0L"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J84-WQ-SVh">
-                                <rect key="frame" x="173" y="297" width="75" height="60"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J84-WQ-SVh">
+                                <rect key="frame" x="173" y="297" width="75" height="58"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="WJo-xM-cx2"/>
                                     <constraint firstAttribute="height" constant="58" id="haA-sy-znL"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="40"/>
-                                <state key="normal" title="30">
+                                <state key="normal" title="20">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="distance6Press:" destination="Kje-Ts-GEk" eventType="touchUpInside" id="2Pz-6l-BGF"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Krf-9H-186">
-                                <rect key="frame" x="63" y="363" width="75" height="60"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Krf-9H-186">
+                                <rect key="frame" x="63" y="363" width="75" height="58"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="75" id="tYA-r0-IUj"/>
                                     <constraint firstAttribute="height" constant="58" id="wTC-Cf-tkD"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="40"/>
-                                <state key="normal" title="40">
+                                <state key="normal" title="25">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="distance7Press:" destination="Kje-Ts-GEk" eventType="touchUpInside" id="vJZ-If-mjY"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="je7-RV-7pX">
-                                <rect key="frame" x="161" y="363" width="100" height="58"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="je7-RV-7pX">
+                                <rect key="frame" x="160" y="363" width="100" height="58"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="0Va-s4-2F8"/>
                                     <constraint firstAttribute="height" constant="58" id="kuI-2J-iPa"/>
@@ -2869,7 +2870,6 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="DX1-8m-Bua" firstAttribute="top" secondItem="I7U-Tw-AXO" secondAttribute="bottom" id="I8A-r1-6kR"/>
                                             <constraint firstItem="OEQ-GB-dJ2" firstAttribute="top" secondItem="8cT-rR-tW8" secondAttribute="bottom" constant="-35" id="ITG-DX-WlL"/>
                                             <constraint firstItem="Bfu-kw-HWs" firstAttribute="top" secondItem="wof-6L-VbM" secondAttribute="bottom" id="InT-7W-5z6"/>
-                                            <constraint firstItem="jYO-wn-FiG" firstAttribute="top" secondItem="Bfu-kw-HWs" secondAttribute="bottom" constant="20" id="JT0-MZ-f5L"/>
                                             <constraint firstItem="pCs-u8-t1A" firstAttribute="top" secondItem="MDS-UN-c76" secondAttribute="bottom" constant="19" id="Jjp-0k-O2H"/>
                                             <constraint firstAttribute="width" constant="320" id="KXX-tp-gM9"/>
                                             <constraint firstItem="bUB-Qg-yFJ" firstAttribute="top" secondItem="429-cp-IMw" secondAttribute="bottom" constant="3" id="LA6-07-n69"/>
@@ -2932,6 +2932,7 @@ Click continue when you're ready.</string>
                                             <constraint firstAttribute="bottom" secondItem="Bfu-kw-HWs" secondAttribute="bottom" constant="345" id="p7r-Bt-22i"/>
                                             <constraint firstAttribute="centerX" secondItem="8cT-rR-tW8" secondAttribute="centerX" id="pUI-rk-w44"/>
                                             <constraint firstItem="fZP-1x-ybf" firstAttribute="width" secondItem="wof-6L-VbM" secondAttribute="width" id="paM-i0-zBt"/>
+                                            <constraint firstItem="jYO-wn-FiG" firstAttribute="top" secondItem="fZP-1x-ybf" secondAttribute="bottom" constant="155" id="qFN-j9-qb2"/>
                                             <constraint firstItem="OEQ-GB-dJ2" firstAttribute="width" secondItem="5hW-kd-qt7" secondAttribute="width" multiplier="1.1" id="qFb-xf-z6N"/>
                                             <constraint firstItem="fZP-1x-ybf" firstAttribute="top" secondItem="PHv-2y-ZBG" secondAttribute="bottom" constant="22" id="qQO-QO-OfV"/>
                                             <constraint firstAttribute="trailing" secondItem="8lu-8u-jfO" secondAttribute="trailing" constant="20" id="qW9-CB-1LD"/>
@@ -3096,12 +3097,14 @@ Click continue when you're ready.</string>
                                     </mask>
                                 </variation>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U2K-8t-Wd7" customClass="EVNDefaultButton">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U2K-8t-Wd7" customClass="EVNDefaultButton">
                                 <rect key="frame" x="104" y="104" width="112" height="30"/>
                                 <color key="backgroundColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="7pG-A8-eRR"/>
                                     <constraint firstAttribute="width" constant="112" id="RvH-dW-1Og"/>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="112" id="f3E-Uu-kCG"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="pEs-uZ-CGc"/>
                                 </constraints>
                                 <state key="normal" title="Invite Friends">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -3135,7 +3138,9 @@ Click continue when you're ready.</string>
                             <constraint firstAttribute="centerX" secondItem="caj-O3-lWl" secondAttribute="centerX" id="PbI-Er-CcF"/>
                             <constraint firstItem="caj-O3-lWl" firstAttribute="top" secondItem="WEQ-g4-QdZ" secondAttribute="bottom" constant="8" id="Qc4-nd-x0W"/>
                             <constraint firstAttribute="trailing" secondItem="fXh-Of-N5Z" secondAttribute="trailing" id="RNQ-9R-Pnf"/>
+                            <constraint firstItem="U2K-8t-Wd7" firstAttribute="top" secondItem="WEQ-g4-QdZ" secondAttribute="bottom" constant="8" id="UN2-hl-Eza"/>
                             <constraint firstItem="WEQ-g4-QdZ" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leadingMargin" constant="20" id="Vow-hz-6fT"/>
+                            <constraint firstAttribute="centerX" secondItem="U2K-8t-Wd7" secondAttribute="centerX" id="aIE-lR-dz3"/>
                             <constraint firstAttribute="bottom" secondItem="fXh-Of-N5Z" secondAttribute="bottom" id="kVw-PW-Iu5"/>
                             <constraint firstItem="fXh-Of-N5Z" firstAttribute="top" secondItem="3BY-zL-Tby" secondAttribute="top" constant="150" id="saB-35-Gic"/>
                             <constraint firstAttribute="trailingMargin" secondItem="WEQ-g4-QdZ" secondAttribute="trailing" constant="20" id="v5g-Y9-hB3"/>
@@ -3151,6 +3156,7 @@ Click continue when you're ready.</string>
                     <size key="freeformSize" width="320" height="1500"/>
                     <connections>
                         <outlet property="commentsTable" destination="UAo-w8-gAK" id="m0D-cw-ZBJ"/>
+                        <outlet property="commentsTopVerticalConstraint" destination="qFN-j9-qb2" id="faY-V2-tns"/>
                         <outlet property="creatorName" destination="CeH-mV-5d8" id="EBV-Q4-ER9"/>
                         <outlet property="creatorPhoto" destination="429-cp-IMw" id="xPI-vY-GFw"/>
                         <outlet property="dateOfEventLabel" destination="5hW-kd-qt7" id="oXg-qy-Tjy"/>
@@ -4015,8 +4021,8 @@ Click continue when you're ready.</string>
         <image name="twitter" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="0HK-TD-lr3"/>
         <segue reference="lHf-uw-rZP"/>
-        <segue reference="hsO-YW-5Lp"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

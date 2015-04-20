@@ -33,9 +33,9 @@
     self.navigationController.navigationBar.alpha = 1;
     
     
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithTitle:@"X" style:UIBarButtonItemStylePlain target:self action:@selector(cancelComment)];
-    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithTitle:@"Comment" style:UIBarButtonItemStylePlain target:self action:@selector(submitComment)];
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"CommentCancel"] style:UIBarButtonItemStylePlain target:self action:@selector(cancelComment)];
     
+    UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"CommentSubmit"] style:UIBarButtonItemStylePlain target:self action:@selector(submitComment)];
 
     [self.navigationItem setLeftBarButtonItem:cancelButton];
     [self.navigationItem setRightBarButtonItem:submitButton];
