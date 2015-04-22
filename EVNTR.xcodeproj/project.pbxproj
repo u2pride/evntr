@@ -28,9 +28,7 @@
 		A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */; };
 		A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */; };
 		A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7F11A9BFF0900DF9ABE /* SearchVC.m */; };
-		A43760FD1AA50CF4000F544D /* EVNCustomButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A43760FC1AA50CF4000F544D /* EVNCustomButton.m */; };
 		A44661161AA7589C00E6C3C6 /* AddEventPrimaryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */; };
-		A446611C1AA75B0B00E6C3C6 /* CustomEventTypeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */; };
 		A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563231A7688BB00565BB6 /* AudioToolbox.framework */; };
 		A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563291A7688D300565BB6 /* CoreLocation.framework */; };
 		A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563271A7688CC00565BB6 /* CoreGraphics.framework */; };
@@ -43,8 +41,6 @@
 		A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C61AB9B8AB009D3BCC /* MapForEventView.m */; };
 		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
 		A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */; };
-		A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */ = {isa = PBXBuildFile; fileRef = A456C10D1A93F0D5009426AB /* Polygon.gif */; };
-		A45795F11AB74DE4004C7088 /* EVNDefaultButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */; };
 		A4628CFA1AB77C4B00EBD959 /* FullMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4628CF91AB77C4B00EBD959 /* FullMapVC.m */; };
 		A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A463633B1A9D00F100AD461D /* UIImageEffects.m */; };
 		A46472C91A9688E200D93401 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A46472C81A9688E200D93401 /* FacebookSDK.framework */; };
@@ -80,7 +76,6 @@
 		A4C4EDD21A95118C000BC3AD /* Lato-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4C4EDCE1A95118C000BC3AD /* Lato-Thin.ttf */; };
 		A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */; };
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
-		A4C935291AC04E3700BF174C /* EVNEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C935281AC04E3700BF174C /* EVNEvent.m */; };
 		A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */; };
 		A4C935321AC1E60800BF174C /* EVNParseEventHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C935311AC1E60800BF174C /* EVNParseEventHelper.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
@@ -101,7 +96,6 @@
 		A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */; };
 		A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B71A7AF65800614412 /* EVNConstants.m */; };
 		A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */; };
-		A4F615421A8D4E5C005E2F26 /* railway.gif in Resources */ = {isa = PBXBuildFile; fileRef = A4F615411A8D4E5C005E2F26 /* railway.gif */; };
 		A4F6C4BE1AA620C1001C68BA /* EventPictureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */; };
 		A4F6C4C11AA6317C001C68BA /* PictureFullScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */; };
 /* End PBXBuildFile section */
@@ -163,21 +157,14 @@
 		A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonPFExtended.m; sourceTree = "<group>"; };
 		A423F7F01A9BFF0900DF9ABE /* SearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchVC.h; sourceTree = "<group>"; };
 		A423F7F11A9BFF0900DF9ABE /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SearchVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A43760FB1AA50CF4000F544D /* EVNCustomButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EVNCustomButton.h; path = ../EVNCustomButton.h; sourceTree = "<group>"; };
-		A43760FC1AA50CF4000F544D /* EVNCustomButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EVNCustomButton.m; path = ../EVNCustomButton.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
 		A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddEventPrimaryVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomEventTypeButton.h; sourceTree = "<group>"; };
-		A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomEventTypeButton.m; sourceTree = "<group>"; };
 		A45638C51AB9B8AB009D3BCC /* MapForEventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapForEventView.h; sourceTree = "<group>"; };
 		A45638C61AB9B8AB009D3BCC /* MapForEventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapForEventView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A45638C81ABA2122009D3BCC /* EventPicturesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventPicturesVC.h; path = ../EventPicturesVC.h; sourceTree = "<group>"; };
 		A45638C91ABA2122009D3BCC /* EventPicturesVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventPicturesVC.m; path = ../EventPicturesVC.m; sourceTree = "<group>"; };
 		A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNNoResultsView.h; sourceTree = "<group>"; };
 		A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EVNNoResultsView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A456C10D1A93F0D5009426AB /* Polygon.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Polygon.gif; sourceTree = "<group>"; };
-		A45795EF1AB74DE4004C7088 /* EVNDefaultButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNDefaultButton.h; sourceTree = "<group>"; };
-		A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNDefaultButton.m; sourceTree = "<group>"; };
 		A4628CF81AB77C4B00EBD959 /* FullMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FullMapVC.h; path = ../FullMapVC.h; sourceTree = "<group>"; };
 		A4628CF91AB77C4B00EBD959 /* FullMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FullMapVC.m; path = ../FullMapVC.m; sourceTree = "<group>"; };
 		A463633A1A9D00F100AD461D /* UIImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageEffects.h; sourceTree = "<group>"; };
@@ -237,8 +224,6 @@
 		A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = InitialScreenVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabNavigationVC.h; sourceTree = "<group>"; };
 		A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabNavigationVC.m; sourceTree = "<group>"; };
-		A4C935271AC04E3700BF174C /* EVNEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNEvent.h; sourceTree = "<group>"; };
-		A4C935281AC04E3700BF174C /* EVNEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNEvent.m; sourceTree = "<group>"; };
 		A4C9352A1AC096E900BF174C /* BBBadgeBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBadgeBarButtonItem.h; sourceTree = "<group>"; };
 		A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBadgeBarButtonItem.m; sourceTree = "<group>"; };
 		A4C935301AC1E60800BF174C /* EVNParseEventHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNParseEventHelper.h; sourceTree = "<group>"; };
@@ -278,7 +263,6 @@
 		A4F2E9B61A7AF65800614412 /* EVNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EVNConstants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A4F2E9B71A7AF65800614412 /* EVNConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EVNConstants.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
-		A4F615411A8D4E5C005E2F26 /* railway.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = railway.gif; sourceTree = "<group>"; };
 		A4F6C4BC1AA620C1001C68BA /* EventPictureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPictureCell.h; sourceTree = "<group>"; };
 		A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventPictureCell.m; sourceTree = "<group>"; };
 		A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureFullScreenVC.h; path = ../PictureFullScreenVC.h; sourceTree = "<group>"; };
@@ -430,10 +414,6 @@
 		A425A1D11AE585DE00AF26E6 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
-				A43760FB1AA50CF4000F544D /* EVNCustomButton.h */,
-				A43760FC1AA50CF4000F544D /* EVNCustomButton.m */,
-				A45795EF1AB74DE4004C7088 /* EVNDefaultButton.h */,
-				A45795F01AB74DE4004C7088 /* EVNDefaultButton.m */,
 				A4B2BC5D1AB870370004B084 /* EVNButton.h */,
 				A4B2BC5E1AB870370004B084 /* EVNButton.m */,
 				A4AE41AB1AB796CB006270E2 /* EVNLocationButton.h */,
@@ -471,15 +451,6 @@
 				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
 			);
 			name = "View Controllers";
-			sourceTree = "<group>";
-		};
-		A425A1D51AE586B500AF26E6 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				A446611A1AA75B0B00E6C3C6 /* CustomEventTypeButton.h */,
-				A446611B1AA75B0B00E6C3C6 /* CustomEventTypeButton.m */,
-			);
-			name = Views;
 			sourceTree = "<group>";
 		};
 		A425A1D61AE586D000AF26E6 /* Comments */ = {
@@ -595,6 +566,8 @@
 		A49A9E2B1AAE479300358D65 /* Third Party Utilties */ = {
 			isa = PBXGroup;
 			children = (
+				A46DB25A1AAE7B0500208973 /* MBProgressHUD.h */,
+				A46DB25B1AAE7B0500208973 /* MBProgressHUD.m */,
 				A4C9352A1AC096E900BF174C /* BBBadgeBarButtonItem.h */,
 				A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */,
 				A4CEF7521AB1DB11002F02C8 /* FBShimmering */,
@@ -623,7 +596,6 @@
 				A4B2BC601AB8C7D40004B084 /* NewEventModel.h */,
 				A4B2BC611AB8C7D40004B084 /* NewEventModel.m */,
 				A425A1D41AE5868B00AF26E6 /* View Controllers */,
-				A425A1D51AE586B500AF26E6 /* Views */,
 				A49A9E2E1AAE487D00358D65 /* Location */,
 			);
 			name = "Add Event";
@@ -691,8 +663,6 @@
 				A4C4EDCC1A95118C000BC3AD /* Lato-Light.ttf */,
 				A4C4EDCD1A95118C000BC3AD /* Lato-Regular.ttf */,
 				A4C4EDCE1A95118C000BC3AD /* Lato-Thin.ttf */,
-				A456C10D1A93F0D5009426AB /* Polygon.gif */,
-				A4F615411A8D4E5C005E2F26 /* railway.gif */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -713,13 +683,14 @@
 		A4F2E9A61A7A806A00614412 /* Navigation - Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */,
-				A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */,
 				A4F2E9B31A7AF5CF00614412 /* EVNUtility.h */,
 				A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */,
+				A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */,
+				A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */,
 				A4F2E9B61A7AF65800614412 /* EVNConstants.h */,
 				A4F2E9B71A7AF65800614412 /* EVNConstants.m */,
 				A425A1D11AE585DE00AF26E6 /* Buttons */,
+				A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */,
 				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
 				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
 				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
@@ -728,12 +699,7 @@
 				A41B2A121ABCBE3F00F7CE44 /* SignUpTabVC.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
 				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
-				A46DB25A1AAE7B0500208973 /* MBProgressHUD.h */,
-				A46DB25B1AAE7B0500208973 /* MBProgressHUD.m */,
-				A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */,
 				A49A9E2B1AAE479300358D65 /* Third Party Utilties */,
-				A4C935271AC04E3700BF174C /* EVNEvent.h */,
-				A4C935281AC04E3700BF174C /* EVNEvent.m */,
 			);
 			name = "Navigation - Utilities";
 			sourceTree = "<group>";
@@ -839,7 +805,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4F615421A8D4E5C005E2F26 /* railway.gif in Resources */,
 				A4C4EDD21A95118C000BC3AD /* Lato-Thin.ttf in Resources */,
 				A4C4EDCF1A95118C000BC3AD /* Lato-Bold.ttf in Resources */,
 				A4E5D4C61AA909BD00E86410 /* UserLocationTableCell.xib in Resources */,
@@ -849,7 +814,6 @@
 				A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
-				A456C10E1A93F0D5009426AB /* Polygon.gif in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -884,7 +848,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A4C935291AC04E3700BF174C /* EVNEvent.m in Sources */,
 				A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
@@ -894,7 +857,6 @@
 				A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */,
 				A4E130481ADFDD41002E0862 /* EVNCommentsTableCell.m in Sources */,
 				A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */,
-				A45795F11AB74DE4004C7088 /* EVNDefaultButton.m in Sources */,
 				A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */,
 				A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
@@ -904,7 +866,6 @@
 				A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */,
 				A4F6C4BE1AA620C1001C68BA /* EventPictureCell.m in Sources */,
 				A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */,
-				A446611C1AA75B0B00E6C3C6 /* CustomEventTypeButton.m in Sources */,
 				A4F6C4C11AA6317C001C68BA /* PictureFullScreenVC.m in Sources */,
 				A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */,
 				A497BD9D1AD54A0D00619BF4 /* WalkthroughModel.m in Sources */,
@@ -944,7 +905,6 @@
 				A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */,
 				A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */,
 				A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */,
-				A43760FD1AA50CF4000F544D /* EVNCustomButton.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
 				A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,

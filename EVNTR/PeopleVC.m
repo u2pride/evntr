@@ -192,7 +192,7 @@
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"Hello?";
                     noResultsView.subHeaderText = @"Whoa, it's really empty in here.  Know where everyone went?";
-                    noResultsView.actionButton.titleText = @"Okay";
+                    noResultsView.actionButton.alpha = 0;
                     
                     [self.view addSubview:noResultsView];
                     
@@ -249,7 +249,7 @@
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No One to Invite";
                     noResultsView.subHeaderText = @"Once you start to follow users, you will be able to invite them to events.";
-                    noResultsView.actionButton.titleText = @"Got It";
+                    noResultsView.actionButton.alpha = 0;
                     
                     [self.view addSubview:noResultsView];
                     
@@ -319,7 +319,7 @@
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No One to Invite";
                     noResultsView.subHeaderText = @"Once you start to follow users, you will be able to invite them to events.";
-                    noResultsView.actionButton.titleText = @"Got It";
+                    noResultsView.actionButton.alpha = 0;
                     
                     [self.view addSubview:noResultsView];
                     
@@ -364,7 +364,7 @@
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Attendees";
                     noResultsView.subHeaderText = @"Looks like no one is attending this event yet. You could be the first.";
-                    noResultsView.actionButton.titleText = @"Got It";
+                    noResultsView.actionButton.alpha = 0;
                     
                     [self.view addSubview:noResultsView];
                     

@@ -16,7 +16,6 @@
 #import "EventDetailVC.h"
 #import "EventPictureCell.h"
 #import "IDTransitioningDelegate.h"
-#import "ImageViewPFExtended.h"
 #import "FullMapVC.h"
 #import "MapForEventView.h"
 #import "MBProgressHUD.h"
@@ -42,7 +41,7 @@
 }
 
 @property BOOL isGuestUser;
-@property BOOL isCurrentUserAttending;
+@property (nonatomic)  BOOL isCurrentUserAttending;
 @property BOOL isPublicApproved;
 @property BOOL isCurrentUsersEvent;
 
@@ -92,7 +91,6 @@
 
 
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
-
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *commentsTopVerticalConstraint;
 
 
@@ -139,6 +137,7 @@
     self.title = @"";
     
     [self.rsvpStatusButton startedTask];
+    self.rsvpStatusButton.isRounded = NO;
     
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEventAttenders)];
     tapgr.numberOfTapsRequired = 1;
@@ -198,6 +197,8 @@
     if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
         self.commentsTopVerticalConstraint.constant = 15;
         [self.view layoutIfNeeded];
+    } else {
+        self.commentsTopVerticalConstraint.constant = 155;
     }
     
     
@@ -427,6 +428,7 @@
                                 } else {
                                     self.rsvpStatusButton.isSelected = NO;
                                 }
+                                
                             }
                             
                             NSLog(@"Num3");
@@ -523,7 +525,7 @@
     
     //Getting Current Location and Comparing to Event Location
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    CLLocation *currentLocation = [[appDelegate locationManager] location];
+    CLLocation *currentLocation = [appDelegate.locationManagerGlobal location];
     
     NSLog(@"self.LocationOFevent: %@ and CurrentLocation: %@", self.locationOfEvent, currentLocation);
     
@@ -612,6 +614,13 @@
 }
 
 
+
+- (void)setIsCurrentUserAttending:(BOOL)isCurrentUserAttending {
+    
+    self.commentsController.allowAddingComments = isCurrentUserAttending;
+    
+    _isCurrentUserAttending = isCurrentUserAttending;
+}
 
 
 
@@ -720,9 +729,11 @@
         
         PFUser *currentUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
-        cell.profilePictureOfStandbyUser.image = [UIImage imageNamed:@"PersonDefault"];
+        cell.profilePictureOfStandbyUser.imageToUse = [UIImage imageNamed:@"PersonDefault"];
         cell.profilePictureOfStandbyUser.file = currentUser[@"profilePicture"];
-        [cell.profilePictureOfStandbyUser loadInBackground];
+        [cell.profilePictureOfStandbyUser loadInBackground:^(UIImage *image, NSError *error) {
+            cell.profilePictureOfStandbyUser.imageToUse = image;
+        }];
         
         
         cell.profilePictureOfStandbyUser.objectForImageView = currentUser;
@@ -884,6 +895,7 @@
                 
                 if (success) {
                     self.rsvpStatusButton.titleText = kRSVPedForEvent;
+                    self.rsvpStatusButton.isSelected = YES;
                     
                     NSMutableArray *updatedStandbyListWithCurrentUser = [NSMutableArray arrayWithArray:self.usersOnStandby];
                     [updatedStandbyListWithCurrentUser addObject:[PFUser currentUser]];
@@ -926,7 +938,8 @@
                 if (success) {
                     self.isCurrentUserAttending = NO;
                     self.rsvpStatusButton.titleText = kNotAttendingEvent;
-                    
+                    self.rsvpStatusButton.isSelected = NO;
+
                     //Notify Table Cell of Update in RSVP Count
                     id<EventDetailProtocol> strongDelegate = self.delegate;
                     if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
@@ -947,6 +960,7 @@
                 if (success) {
                     self.isCurrentUserAttending = YES;
                     self.rsvpStatusButton.titleText = kAttendingEvent;
+                    self.rsvpStatusButton.isSelected = YES;
                     
                     //Notify Table Cell of Update in RSVP Count
                     id<EventDetailProtocol> strongDelegate = self.delegate;
@@ -1027,6 +1041,8 @@
     if ([strongDelegate respondsToSelector:@selector(userCompletedEventEditing)]) {
         [strongDelegate userCompletedEventEditing];
     }
+    
+    [self recheckPublicApprovedAccess];
     
     [self.navigationController popViewControllerAnimated:YES];
 

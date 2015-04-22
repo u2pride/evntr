@@ -48,9 +48,7 @@
     self.searchController.searchResultsUpdater = self;
     self.searchController.hidesNavigationBarDuringPresentation = NO;
     self.searchController.dimsBackgroundDuringPresentation = NO;
-    //self.searchController.delegate = self;
     [self.searchController.searchBar sizeToFit];
-    //self.searchResultsTable.tableHeaderView = self.searchController.searchBar;
     
     self.navigationItem.titleView = self.searchController.searchBar;
     
@@ -195,8 +193,6 @@
         
         EventDetailVC *eventVC = (EventDetailVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
         
-        //EVNEvent *selectedEvent = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
-        
         eventVC.event = event;
         
         [self.navigationController pushViewController:eventVC animated:YES];
@@ -216,8 +212,7 @@
     
 }
 
--(void)dealloc
-{
+-(void)dealloc {
     NSLog(@"searchvc is being deallocated");
 }
 

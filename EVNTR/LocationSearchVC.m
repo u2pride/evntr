@@ -6,12 +6,14 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNConstants.h"
-#import "LocationSearchVC.h"
+#import "EVNLocationButton.h"
 #import "GoogleResult.h"
-#import "UserLocationTableCell.h"
-#import "EVNDefaultButton.h"
+#import "LocationSearchVC.h"
 #import "UIColor+EVNColors.h"
+#import "UserLocationTableCell.h"
+
 #import <AddressBookUI/AddressBookUI.h>
 
 #define kGOOGLE_API_KEY @"AIzaSyDbbFOj98Z6G6lUskNuUlDr0uYPvrR-cZo"
@@ -28,6 +30,7 @@
 @property (nonatomic, strong) NSNumber *latitude;
 @property (nonatomic, strong) NSNumber *longitude;
 @property (nonatomic) BOOL isEnteringCustomLocation;
+@property (nonatomic, strong) UIView *tapToDismissView;
 
 
 - (IBAction)cancelLocationSearch:(id)sender;
@@ -75,25 +78,17 @@
     
     [self.searchResultsTable registerNib:[UINib nibWithNibName:@"UserLocationTableCell" bundle:nil]forCellReuseIdentifier:@"CustomLocationCell"];
     
-    
     //Initialization
     self.definesPresentationContext = YES;
     self.isEnteringCustomLocation = NO;
     self.geoCoder = [[CLGeocoder alloc] init];
     
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    self.locationCurrent = appDelegate.locationManagerGlobal.location;
     
-    //Grab current User Location Before Appearing - Right now just use what is stored in NSUserDefaults
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *currentLocation = [userDefaults objectForKey:@"userLocation"];
-
-    self.latitude = [currentLocation objectForKey:@"latitude"];
-    self.longitude = [currentLocation objectForKey:@"longitude"];
-    
-    CLLocationDegrees lat = [self.latitude doubleValue];
-    CLLocationDegrees lng = [self.longitude doubleValue];
-    
-    self.locationCurrent = [[CLLocation alloc] initWithLatitude:lat longitude:lng];
-    
+    self.latitude = [NSNumber numberWithDouble:self.locationCurrent.coordinate.latitude];
+    self.longitude = [NSNumber numberWithDouble:self.locationCurrent.coordinate.longitude];
+        
 }
 
 
@@ -115,7 +110,6 @@
     
     
     url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    //Formulate the string as a URL object.
     NSURL *googleRequestURL=[NSURL URLWithString:url];
     
     
@@ -207,6 +201,8 @@
                 
                 self.customUserLocationCell = (UserLocationTableCell *) [tableView dequeueReusableCellWithIdentifier:@"CustomLocationCell"];
                 
+                self.customUserLocationCell.locationAddressTextView.delegate = self;
+                self.customUserLocationCell.locationNameTextField.delegate = self;
                 self.customUserLocationCell.locationAddressTextView.text = @"";
                 self.customUserLocationCell.locationNameTextField.text = @"Current Location";
                 
@@ -225,10 +221,10 @@
                 //return self.customLocationSaveCell;
                 
                 
-                EVNDefaultButton *useLocation = [[EVNDefaultButton alloc] init];
+                EVNLocationButton *useLocation = [[EVNLocationButton alloc] init];
                 [useLocation setTitle:@"Use Location" forState:UIControlStateNormal];
                 [useLocation setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-                [useLocation.titleLabel setFont:[UIFont fontWithName:@"Lato-Light" size:16]];
+                [useLocation.titleLabel setFont:[UIFont fontWithName:@"Lato-Light" size:18]];
                 [useLocation.titleLabel setTextAlignment:NSTextAlignmentCenter];
                 
                 useLocation.clipsToBounds = NO;
@@ -246,11 +242,11 @@
                 
                 [cell addConstraint:constraintCenterY];
                 
-                NSLayoutConstraint *constraintHeight = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeHeight multiplier:0.72f constant:0.0f];
+                NSLayoutConstraint *constraintHeight = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeHeight multiplier:1.0f constant:0.0f];
                 
                 [cell addConstraint:constraintHeight];
                 
-                NSLayoutConstraint *constraintWidth = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeWidth multiplier:0.72f constant:0.0f];
+                NSLayoutConstraint *constraintWidth = [NSLayoutConstraint constraintWithItem:useLocation attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:cell attribute:NSLayoutAttributeWidth multiplier:1.0f constant:0.0f];
                 
                 [cell addConstraint:constraintWidth];
                 
@@ -407,7 +403,14 @@
 }
 
 
-#pragma mark - UITextField Delegate
+#pragma mark - UITextField and View Delegate Methods
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    
+    return YES;
+}
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text {
@@ -423,6 +426,38 @@
 }
 
 
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    
+    self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.tapToDismissView.backgroundColor = [UIColor clearColor];
+    
+    [self.view addSubview:self.tapToDismissView];
+    
+    //Gesture Recognizer to Dismiss Keyboard on Tap in View
+    UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    tapToDismiss.cancelsTouchesInView = YES;
+    [self.tapToDismissView addGestureRecognizer:tapToDismiss];
+    
+    [textView becomeFirstResponder];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    [self.tapToDismissView removeFromSuperview];
+    
+    if ([textView.text isEqualToString:@""]) {
+        textView.text = @"Add details about your event...";
+        textView.textColor = [UIColor lightGrayColor]; //optional
+        NSLog(@"WE HERE");
+    }
+    
+    [textView resignFirstResponder];
+}
+
+
+- (void)tapToDismissKeyboard {
+    [self.view endEditing:YES];
+}
 
 #pragma mark - Button Actions
 
@@ -439,6 +474,7 @@
 - (IBAction)getCurrentLocation:(id)sender {
     
     self.isEnteringCustomLocation = YES;
+    [self.searchController.searchBar resignFirstResponder];
     
     [self.geoCoder reverseGeocodeLocation:self.locationCurrent completionHandler:^(NSArray *placemarks, NSError *error) {
         if (error) {

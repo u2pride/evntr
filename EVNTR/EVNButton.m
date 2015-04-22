@@ -32,6 +32,7 @@
         _isRounded = YES;
         _buttonColor = [UIColor orangeThemeColor];
         _isSelected = NO;
+        _hasBorder = YES;
         _titleText = @"Button";
         [self setupButton];
     }
@@ -51,6 +52,7 @@
         _isRounded = YES;
         _buttonColor = [UIColor orangeThemeColor];
         _isSelected = NO;
+        _hasBorder = YES;
         _titleText = @"Button";
         [self setupButton];
     }
@@ -89,7 +91,7 @@
 
     if (isSelected && !self.isStateless) {
         
-        [UIView animateWithDuration:1.0 animations:^{
+        [UIView animateWithDuration:0.8 animations:^{
             
             self.titleTextLabel.alpha = 1;
             self.backgroundColor = self.buttonColor;
@@ -102,7 +104,7 @@
         
     } else if (!isSelected && !self.isStateless) {
         
-        [UIView animateWithDuration:1.0 animations:^{
+        [UIView animateWithDuration:0.8 animations:^{
             
             self.titleTextLabel.alpha = 1;
             self.backgroundColor = self.buttonColorOpposing;
@@ -134,6 +136,26 @@
     
 }
 
+- (void) setHasBorder:(BOOL)hasBorder {
+    
+    [self setNeedsDisplay];
+    NSLog(@"set has border.");
+
+    if (hasBorder) {
+        self.layer.borderWidth = 1.0f;
+        self.layer.borderColor = _buttonColor.CGColor;
+    } else {
+        NSLog(@"updating layer borderwidth...");
+        self.layer.borderWidth = 0.0f;
+        self.layer.borderColor = _buttonColor.CGColor;
+    }
+
+    _hasBorder = hasBorder;
+
+    [self setNeedsDisplay];
+    
+}
+
 - (void) setupButton {
     
     self.layer.cornerRadius = (_isRounded) ? 10 : 0;
@@ -159,12 +181,9 @@
     _activityIndicator.hidesWhenStopped = YES;
     
     [self addSubview:_activityIndicator];
-    
-    
-    
+
     self.layer.borderWidth = 1.0f;
     self.layer.borderColor = _buttonColor.CGColor;
-    
 }
 
 
@@ -229,6 +248,7 @@
 }
 
 
+/*
 - (BOOL) beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     
     //touch started in control
@@ -311,7 +331,7 @@
 }
 
 
-
+*/
 
 
 - (void) startedTask {
@@ -345,9 +365,6 @@
 }
 
 - (void) endedTask {
-    
-
-    
     
     [UIView animateWithDuration:0.35 animations:^{
         

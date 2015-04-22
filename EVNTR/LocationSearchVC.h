@@ -13,7 +13,7 @@
 @protocol EventLocationSearch;
 
 
-@interface LocationSearchVC : UIViewController <UISearchBarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate>
+@interface LocationSearchVC : UIViewController <UISearchBarDelegate, UISearchControllerDelegate, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) id<EventLocationSearch> delegate;
 

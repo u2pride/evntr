@@ -181,7 +181,7 @@ static NSString * const reuseIdentifier = @"Cell";
     
     // Configure the cell
     
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"EventsTabIcon"]];
+    cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PersonDefault"]];
     
     PFFile *fileForPhoto = [[self.eventImages objectAtIndex:indexPath.row] objectForKey:@"pictureFile"];
     

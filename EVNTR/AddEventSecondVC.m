@@ -10,8 +10,6 @@
 #import "LocationSearchVC.h"
 #import "EVNButton.h"
 #import "UIColor+EVNColors.h"
-#import "EVNCustomButton.h"
-#import "EVNDefaultButton.h"
 #import "EVNLocationButton.h"
 #import "MBProgressHUD.h"
 
@@ -19,13 +17,13 @@
 
 @property (weak, nonatomic) IBOutlet UITextView *eventDescriptionText;
 @property (weak, nonatomic) IBOutlet UIDatePicker *eventDatePicker;
-@property (strong, nonatomic) IBOutlet EVNLocationButton *setLocationButton;
 @property (strong, nonatomic) IBOutlet EVNButton *createButton;
+@property (strong, nonatomic) IBOutlet EVNButton *setLocationButton;
 
 @property (nonatomic, strong) UIView *tapToDismissView;
 
 - (IBAction)createEvent:(id)sender;
-- (IBAction)setLocation:(id)sender;
+- (IBAction)setEventLocation:(id)sender;
 
 @end
 
@@ -52,6 +50,14 @@
     
     self.createButton.titleText = @"Create Event";
     self.createButton.isRounded = NO;
+    self.createButton.hasBorder = NO;
+    self.createButton.font = [UIFont fontWithName:@"Lato-Bold" size:21];
+    
+    self.setLocationButton.isRounded = NO;
+    self.setLocationButton.titleText = @"Set Location";
+    self.setLocationButton.hasBorder = NO;
+    [self.setLocationButton setIsSelected:NO];
+    
     
 
     NSLog(@"self.isEditingEvent: %@", [NSNumber numberWithBool:self.isEditingEvent]);
@@ -64,8 +70,9 @@
         self.eventDescriptionText.text = self.event.descriptionOfEvent;
         self.eventDescriptionText.textColor = [UIColor blackColor];
         
-        [self.setLocationButton setTitle:self.event.nameOfLocation forState:UIControlStateNormal];
-        [self.setLocationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        self.setLocationButton.titleText = self.event.nameOfLocation;
+        [self.setLocationButton setIsSelected:YES];
+        
         self.setLocationButton.backgroundColor = [UIColor orangeThemeColor];
         
         self.createButton.titleText = @"Update Event";
@@ -332,21 +339,24 @@
     
 }
 
-
-- (IBAction)setLocation:(id)sender {
+- (IBAction)setEventLocation:(id)sender {
     
     [self performSegueWithIdentifier:@"PresentLocationSearch" sender:nil];
-    
+
 }
+
 
 
 #pragma mark - Location Search Delegate Methods
 
 - (void) locationSearchDidCancel {
     
-    if ([self.setLocationButton.titleLabel.text isEqualToString:@"Set Location"]) {
-        [self.setLocationButton setSelected:NO];
-        [self.setLocationButton setHighlighted:NO];
+    if ([self.setLocationButton.titleText isEqualToString:@"Set Location"]) {
+        
+        [self.setLocationButton setIsSelected:NO];
+    } else {
+        
+        [self.setLocationButton setIsSelected:YES];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -359,10 +369,8 @@
     self.event.locationOfEvent = [PFGeoPoint geoPointWithLocation:location];
     self.event.nameOfLocation = name;
     
-    
-    [self.setLocationButton setTitle:name forState:UIControlStateNormal];
-    [self.setLocationButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    self.setLocationButton.backgroundColor = [UIColor orangeThemeColor];
+    [self.setLocationButton setIsSelected:YES];    
+    self.setLocationButton.titleText = name;
     
     [self dismissViewControllerAnimated:YES completion:nil];
     

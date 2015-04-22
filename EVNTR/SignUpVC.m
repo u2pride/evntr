@@ -64,8 +64,9 @@ typedef enum {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
 
-    //Setting Up TextFields and Other Elements
     self.usernameField.text = nil;
     self.usernameField.placeholder = @"username";
     
@@ -82,25 +83,22 @@ typedef enum {
     
     self.profileImageView.image = [EVNUtility maskImage:[UIImage imageNamed:@"PersonDefault"] withMask:[UIImage imageNamed:@"MaskImage"]];
     
-    //Allow the User to Tap the Image View to Update their Photo
     UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
     tapToAddPhoto.delegate = self;
     self.profileImageView.userInteractionEnabled = YES;
     [self.profileImageView addGestureRecognizer:tapToAddPhoto];
-    
     
     self.registerButton.titleText = @"Register";
     self.registerButton.isSelected = YES;
     self.registerButton.isStateless = YES;
     self.registerButton.font = [UIFont fontWithName:@"Lato-Light" size:21];
     self.registerButton.isRounded = NO;
+    self.registerButton.backgroundColor = [UIColor orangeThemeColor];
     
     self.viewIsPulledUpForTextInput = NO;
     
     self.connectWithFacebookButton.layer.cornerRadius = 5.0f;
 
-    
-    
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -115,32 +113,19 @@ typedef enum {
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     
-    //TODO:  Needed?
-    //if ([self.presentingViewController isKindOfClass:[LogInVC class]]) {
-        
-      //  [self grabUserDetailsFromFacebook];
-    //}
     
     if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:1.0 alpha:0.8] }];
-    } else {
-        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-        // TODO: Add fall-back code to set placeholder color.
     }
     
     if ([self.emailField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.emailField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.emailField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:1.0 alpha:0.8] }];
-    } else {
-        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-        // TODO: Add fall-back code to set placeholder color.
     }
     
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:1.0 alpha:0.8] }];
-    } else {
-        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-        // TODO: Add fall-back code to set placeholder color.
     }
+    
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -157,7 +142,6 @@ typedef enum {
     
     [self blurViewDuringLoginWithMessage:@"Signing Up..."];
     
-    // TODO:  Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
     // Login PFUser using Facebook
@@ -166,7 +150,6 @@ typedef enum {
         if (!user) {
 
             [self cleanUpBeforeTransition];
-            
             
             // Handles cases like Facebook password change or unverified Facebook accounts.
             NSString *alertMessage, *alertTitle;
@@ -212,16 +195,6 @@ typedef enum {
                 NSLog(@"User with facebook logged in!");
                 NSLog(@"User is already signed up, send them to home page.");
                 
-                /*
-                UILabel *loginInTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 50)];
-                loginInTextLabel.alpha = 0;
-                loginInTextLabel.text = @"WELCOME to EVNTR";
-                loginInTextLabel.font = [UIFont fontWithName:EVNFontRegular size:26];
-                loginInTextLabel.textAlignment = NSTextAlignmentCenter;
-                loginInTextLabel.textColor = [UIColor whiteColor];
-                loginInTextLabel.center = self.view.center;
-                [self.view addSubview:loginInTextLabel];
-                */
                 //Set isGuest Object
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];
@@ -504,7 +477,6 @@ typedef enum {
     self.blurMessage.textAlignment = NSTextAlignmentCenter;
     self.blurMessage.textColor = [UIColor whiteColor];
     self.blurMessage.center = self.view.center;
-    //[self.view addSubview:self.blurMessage];
     
     self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.shimmerView];
@@ -568,7 +540,7 @@ typedef enum {
     pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
     
     [self presentViewController:pictureOptionsMenu animated:YES completion:^{
-        //empt
+        
     }];
     
 }
@@ -578,8 +550,6 @@ typedef enum {
 #pragma mark - Delegate Methods for UIImagePickerController
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
-
     
     [picker dismissViewControllerAnimated:YES completion:^{
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -597,7 +567,6 @@ typedef enum {
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
-
     [picker dismissViewControllerAnimated:YES completion:^{
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
         [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
@@ -622,39 +591,16 @@ typedef enum {
     return YES;
 }
 
-//Adjust View When The User Starts Inputting Credentials
-/*
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    
-    if (!self.viewIsPulledUpForTextInput) {
-        [self moveLoginFieldsWithKeyboard:YES];
-    }
-    
-    return YES;
-}
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    
-    if ([textField isEqual:self.passwordField] && self.viewIsPulledUpForTextInput) {
-        [self moveLoginFieldsWithKeyboard:NO];
-    }
-    
-    return YES;
-}
-*/
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     
+    CGRect screenRect;
+    CGRect windowRect;
+    CGRect viewRect;
     
-    //NSValue * keyboardEndFrame;
-    CGRect    screenRect;
-    CGRect    windowRect;
-    CGRect    viewRect;
-    
-    // determine's keyboard height
-    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
-    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect = [self.view        convertRect:windowRect fromView:nil];
     
     int movement = viewRect.size.height * 0.8;
     
@@ -663,41 +609,18 @@ typedef enum {
         
     }
     
-    
-    /*
-     NSTimeInterval  duration;
-     CGRect          frame;
-     
-     // determine length of animation
-     duration  = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-     
-     // resize the view
-     frame              = self.view.frame;
-     frame.size.height -= viewRect.size.height;
-     
-     // animate view resize with the keyboard movement
-     [UIView beginAnimations:nil context:NULL];
-     [UIView setAnimationBeginsFromCurrentState:YES];
-     [UIView setAnimationDuration:duration];
-     self.view.frame = frame;
-     [UIView commitAnimations];
-     */
-    
 }
 
 
 - (void)keyboardWillHide:(NSNotification *)notification {
     
+    CGRect screenRect;
+    CGRect windowRect;
+    CGRect viewRect;
     
-    //NSValue * keyboardEndFrame;
-    CGRect    screenRect;
-    CGRect    windowRect;
-    CGRect    viewRect;
-    
-    // determine's keyboard height
-    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
-    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect = [self.view convertRect:windowRect fromView:nil];
     
     int movement = viewRect.size.height * 0.8;
     
@@ -710,8 +633,6 @@ typedef enum {
 
 
 - (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
-    
-    //TODO : Adjust According to Keyboard of System
     
     int movement = (up ? -distance : distance);
     
@@ -731,16 +652,12 @@ typedef enum {
 
 
 //Allow user to dismiss keyboard by tapping the View
-//TODO: Implement for all Use Cases of Tapping and Entering Return on Keyboard
-
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     if (self.viewIsPulledUpForTextInput) {
-        //self.viewIsPulledUpForTextInput = NO;
         [self.usernameField resignFirstResponder];
         [self.passwordField resignFirstResponder];
         [self.emailField resignFirstResponder];
-        //[self moveLoginFieldsWithKeyboard:NO];
     }
     
     
@@ -770,10 +687,8 @@ typedef enum {
 }
 
 
--(void)dealloc
-{
+-(void)dealloc {
     NSLog(@"signupvc is being deallocated");
-    
 }
 
 @end

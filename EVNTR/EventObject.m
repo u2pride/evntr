@@ -98,52 +98,38 @@
 - (BOOL) allowUserToAddPhotosAtThisTime {
     
     if ([self.objectId isEqual:[PFUser currentUser].objectId]) {
-        
-        NSLog(@"Same Creator and User");
-        
+                
         return YES;
         
     } else {
         
         NSDate *currentDate = [NSDate date];
-        
         double numMinutesBefore = 60;
-        
         double numSeconds = numMinutesBefore * 60;
-        
         NSDate *hourBeforeDate = [currentDate dateByAddingTimeInterval:numSeconds];
         
         NSComparisonResult dateCompare = [hourBeforeDate compare:self.dateOfEvent];
         
-        NSLog(@"hourBeforeDate: %@ and Event Date: %@", hourBeforeDate, self.dateOfEvent);
-        
         
         switch (dateCompare) {
             case NSOrderedSame: {
-                NSLog(@"SAME");
                 
                 return YES;
-                
                 break;
             }
             case NSOrderedAscending: {
-                NSLog(@"ASCENDING - Restrict Adding");
                 
                 return NO;
-                
                 break;
             }
             case NSOrderedDescending: {
-                NSLog(@"ASCENDING - Allow Adding");
                 
                 return YES;
-                
                 break;
             }
             default: {
                 
                 return NO;
-                
                 break;
             }
         }

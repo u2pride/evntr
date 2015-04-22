@@ -101,13 +101,17 @@
 
 - (void) submitComment {
     
-    self.navigationItem.rightBarButtonItem.enabled = NO;
-    
-    [self.commentTextView resignFirstResponder];
-    
-    id<EVNAddCommentProtocol> strongDelegate = self.delegate;
-    if ([strongDelegate respondsToSelector:@selector(submitCommentWithText:)]) {
-        [strongDelegate submitCommentWithText:self.commentTextView.text];
+    if (self.commentTextView.text.length > 0) {
+        
+        self.navigationItem.rightBarButtonItem.enabled = NO;
+        
+        [self.commentTextView resignFirstResponder];
+        
+        id<EVNAddCommentProtocol> strongDelegate = self.delegate;
+        if ([strongDelegate respondsToSelector:@selector(submitCommentWithText:)]) {
+            [strongDelegate submitCommentWithText:self.commentTextView.text];
+        }
+        
     }
     
 }

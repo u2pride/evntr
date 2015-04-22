@@ -64,15 +64,6 @@
     [self.peopleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.peopleLabel sizeToFit];
     
-    /*
-    self.separator = [[UILabel alloc] initWithFrame:CGRectMake(30, 30, 1.0, 20.0)];
-    self.separator.font = [UIFont fontWithName:EVNFontRegular size:20];
-    self.separator.text = @"";
-    self.separator.backgroundColor = [UIColor blackColor];
-    
-    [self.separator setTranslatesAutoresizingMaskIntoConstraints:NO];
-    //[self.separator sizeToFit];
-    */
     
     CALayer *separator = [CALayer layer];
     separator.frame = CGRectMake(self.center.x - 2, 10.0f, 0.5f, self.frame.size.height - 20);
@@ -81,7 +72,6 @@
     CALayer *bottomLayer = [CALayer layer];
     bottomLayer.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 1.0f);
     bottomLayer.backgroundColor = [UIColor orangeThemeColor].CGColor;
-    
     
     
     [self.layer addSublayer:separator];
@@ -124,74 +114,10 @@
                                                     multiplier:1.0
                                                       constant:0]];
     
-    /*
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.separator
-                                                     attribute:NSLayoutAttributeCenterY
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeCenterY
-                                                    multiplier:1.0
-                                                      constant:0]];
-    
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.separator
-                                                     attribute:NSLayoutAttributeCenterX
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeCenterX
-                                                    multiplier:1.0
-                                                      constant:0]];
-     */
-    
 
-    /*
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.eventLabel
-                                                     attribute:NSLayoutAttributeCenterX
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeCenterX
-                                                    multiplier:1.0
-                                                      constant:80]];
-    
-    
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.peopleLabel
-                                                     attribute:NSLayoutAttributeCenterX
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeCenterX
-                                                    multiplier:1.0
-                                                      constant:-70]];
-    // Height constraint
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerView
-                                                     attribute:NSLayoutAttributeHeight
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeHeight
-                                                    multiplier:0.5
-                                                      constant:0]];
-    
-    // Center horizontally
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerView
-                                                     attribute:NSLayoutAttributeCenterX
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeCenterX
-                                                    multiplier:1.0
-                                                      constant:0.0]];
-    
-    // Center vertically
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.centerView
-                                                     attribute:NSLayoutAttributeCenterY
-                                                     relatedBy:NSLayoutRelationEqual
-                                                        toItem:self
-                                                     attribute:NSLayoutAttributeCenterY
-                                                    multiplier:1.0
-                                                      constant:0.0]];
-     
-     */
 }
 
--(void)dealloc
-{
+-(void)dealloc{
     NSLog(@"searchheaderview is being deallocated");
 }
 

@@ -58,7 +58,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    //Initializing Variables and Objects
     self.isNewUserFromFacebook = NO;
     self.viewIsPulledUpForTextInput = NO;
     self.transitioningDelegateForModal = [[IDTransitioningDelegate alloc] init];
@@ -66,7 +65,6 @@
     self.usernameField.delegate = self;
     self.passwordField.delegate = self;
     
-    //Stying Elements
     self.usernameField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     self.usernameField.layer.borderWidth = 1.0f;
     self.usernameField.placeholder = @"username";
@@ -192,7 +190,6 @@
         if (!user) {
             
             [self cleanUpBeforeTransition];
-
             
             // Handles cases like Facebook password change or unverified Facebook accounts.
             NSString *alertMessage, *alertTitle;
@@ -286,10 +283,7 @@
             NSLog(@"FB User Data: %@", result);
             
             NSString *facebookID = userData[@"id"];
-            //NSString *name = userData[@"name"];
-            //NSString *location = userData[@"location"][@"name"];
-            //NSString *firstName = userData[@"first_name"];
-            //NSString *email = userData[@"email"];
+
             NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
             
             if (userData[@"id"]) {
@@ -378,7 +372,6 @@
     self.blurMessage.textAlignment = NSTextAlignmentCenter;
     self.blurMessage.textColor = [UIColor whiteColor];
     self.blurMessage.center = self.view.center;
-    //[self.view addSubview:self.blurMessage];
     
     self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.shimmerView];
@@ -393,7 +386,7 @@
         
 
     }];
-    
+   
 }
 
 
@@ -408,28 +401,6 @@
     resetPasswordModal.delegate = self;
     
     [self blurViewDuringLoginWithMessage:@""];
-     
-    //Add Blur Effect
-    /*
-    self.view.backgroundColor = [UIColor clearColor];
-    UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    self.blurViewForModal = [[UIVisualEffectView alloc] initWithEffect:blur];
-    self.blurViewForModal.frame = self.view.bounds;
-    self.blurViewForModal.alpha = 0;
-    [self.view addSubview:self.blurViewForModal];
-    
-    [UIView animateWithDuration:1.0f animations:^{
-        self.blurViewForModal.alpha = 1;
-    }];
-    
-     Swift Example
-     let visuaEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .Light))
-     visuaEffectView.frame = self.view.bounds
-     visuaEffectView.autoresizingMask = .FlexibleWidth | .FlexibleHeight
-     visuaEffectView.setTranslatesAutoresizingMaskIntoConstraints(true)
-     self.view.addSubview(visuaEffectView)
-     
-    */
     
     [self presentViewController:resetPasswordModal animated:YES completion:nil];
     
@@ -450,27 +421,6 @@
     return YES;
 }
 
-//Adjust View When The User Starts Inputting Credentials
-/*
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
- 
-    if (!self.viewIsPulledUpForTextInput) {
-        //[self moveLoginFieldsWithKeyboard:YES];
-    }
-
-    return YES;
-}
-*/
-/*
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
- 
-    if ([textField isEqual:self.passwordField] && self.viewIsPulledUpForTextInput) {
-        [self moveLoginFieldsWithKeyboard:NO];
-    }
-    
-    return YES;
-}
- */
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     
@@ -493,42 +443,18 @@
         
     }
     
-    
-    /*
-     NSTimeInterval  duration;
-     CGRect          frame;
-     
-     // determine length of animation
-     duration  = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-     
-     // resize the view
-     frame              = self.view.frame;
-     frame.size.height -= viewRect.size.height;
-     
-     // animate view resize with the keyboard movement
-     [UIView beginAnimations:nil context:NULL];
-     [UIView setAnimationBeginsFromCurrentState:YES];
-     [UIView setAnimationDuration:duration];
-     self.view.frame = frame;
-     [UIView commitAnimations];
-     */
-    
 }
 
 
 - (void)keyboardWillHide:(NSNotification *)notification {
     
-    NSLog(@"KEYBOARDWILL HIDE");
+    CGRect screenRect;
+    CGRect windowRect;
+    CGRect viewRect;
     
-    //NSValue * keyboardEndFrame;
-    CGRect    screenRect;
-    CGRect    windowRect;
-    CGRect    viewRect;
-    
-    // determine's keyboard height
-    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
-    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect = [self.view convertRect:windowRect fromView:nil];
     
     int movement = viewRect.size.height * 0.8;
     
@@ -555,10 +481,7 @@
         self.separatorLineRight.alpha = (up ? 0 : 1);
             
     } completion:^(BOOL finished) {
-        NSLog(@"self.viewIsPulledUP: %@", [NSNumber numberWithBool:self.viewIsPulledUpForTextInput]);
         self.viewIsPulledUpForTextInput = (up ? YES : NO);
-        NSLog(@"self.viewIsPulledUP: %@", [NSNumber numberWithBool:self.viewIsPulledUpForTextInput]);
-
     }];
 
 
@@ -566,20 +489,14 @@
  
 
 //Allow user to dismiss keyboard by tapping the View
-//TODO: Implement for all Use Cases of Tapping and Entering Return on Keyboard
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     if (self.viewIsPulledUpForTextInput) {
-        //self.viewIsPulledUpForTextInput = NO;
         [self.usernameField resignFirstResponder];
         [self.passwordField resignFirstResponder];
-        //[self moveLoginFieldsUp:NO withKeyboardSize:<#(int)#>]
-        //[self moveLoginFieldsWithKeyboard:NO];
     }
 
-
 }
-
 
 
 
@@ -602,8 +519,6 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
-
-
 }
 
 - (void) resetPasswordCanceled {
@@ -611,16 +526,7 @@
     NSLog(@"Canceled Reset");
 
     [self cleanUpBeforeTransition];
-    
 
-    /*
-    [UIView animateWithDuration:1.0f animations:^{
-        self.blurViewForModal.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self.blurViewForModal removeFromSuperview];
-    }];
-     */
-    
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
@@ -646,14 +552,10 @@
 }
 
 
--(void)dealloc
-{
+-(void)dealloc {
     NSLog(@"loginvc is being deallocated");
 
-
 }
-
-
 
 
 @end

@@ -6,18 +6,19 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "ImageViewPFExtended.h"
 #import "EVNUtility.h"
+#import "ImageViewPFExtended.h"
 
 @implementation ImageViewPFExtended
 
-
-- (void)setImage:(UIImage *)image {
+- (void)setImageToUse:(UIImage *)imageToUse {
     
-    UIImage *newImage = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+    UIImage *newImage = [EVNUtility maskImage:imageToUse withMask:[UIImage imageNamed:@"MaskImage"]];
     
     [super setImage:newImage];
-        
+    
+    _imageToUse = imageToUse;
+    
 }
 
 @end

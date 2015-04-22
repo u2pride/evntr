@@ -6,10 +6,6 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <Parse/Parse.h>
-#import <QuartzCore/QuartzCore.h>
-@import MediaPlayer;
-
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "GuestWelcomeVC.h"
@@ -20,6 +16,10 @@
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
+
+@import MediaPlayer;
+@import QuartzCore;
+#import <Parse/Parse.h>
 
 
 @interface InitialScreenVC ()
@@ -47,17 +47,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    //Update Font of Navigation Controller Title
-    //UIFont *font = [UIFont fontWithName:@"Lato-Light" size:12];
-    //NSDictionary *textAttributes = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
-    //[[UINavigationBar appearance] setTitleTextAttributes:textAttributes];
-    
-    //[UINavigationBar appearance].titleTextAttributes = @{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-Light" size:20.0], NSForegroundColorAttributeName: [UIColor redColor]};
-
-
-    
-    NSLog(@"ViewDidLoad Called");
     
     //TODO: for testing purposes
     [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor orangeThemeColor];
@@ -234,7 +223,6 @@
         
     } else if ([segue.identifier isEqualToString:@"currentUserExists"]) {
         
-        NSLog(@"User Already Logged In - now see tabs");
     }
     
 }
@@ -244,7 +232,10 @@
     [super viewDidAppear:animated];
     
     if ([PFUser currentUser]) {
+        
+        [self stopMoviePlayer];
         [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+        
     }
 }
 
@@ -340,8 +331,8 @@
     
 }
 
--(void)dealloc
-{
+-(void)dealloc {
+    
     NSLog(@"initialscreenvc is being deallocated");
     //super dealloc is called automatically with ARC
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"StopMoviePlayer" object:nil];

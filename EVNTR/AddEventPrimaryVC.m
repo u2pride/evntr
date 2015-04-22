@@ -8,7 +8,6 @@
 
 #import "AddEventPrimaryVC.h"
 #import "AddEventSecondVC.h"
-#import "CustomEventTypeButton.h"
 #import "EVNButton.h"
 #import "UIColor+EVNColors.h"
 
@@ -438,6 +437,7 @@
 
 - (void) eventCreationCanceled {
     
+    [self.eventTitleField resignFirstResponder];
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventTitleField.text = @"";
     self.selectedEventType = PUBLIC_EVENT_TYPE;

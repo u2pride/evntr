@@ -255,7 +255,7 @@
                          constraintWithItem:self.activityIndicator
                          attribute:NSLayoutAttributeCenterX
                          relatedBy:NSLayoutRelationEqual
-                         toItem:self.activityIndicator
+                         toItem:self.circleView
                          attribute:NSLayoutAttributeCenterX
                          multiplier:1.0
                          constant:0.0]];
@@ -265,22 +265,23 @@
                          constraintWithItem:self.activityIndicator
                          attribute:NSLayoutAttributeCenterY
                          relatedBy:NSLayoutRelationEqual
-                         toItem:self.activityIndicator
+                         toItem:self.circleView
                          attribute:NSLayoutAttributeCenterY
                          multiplier:1.0
-                         constant:-20.0]];
+                         constant:0.0]];
     
     //Width is 0.8 of Superview
+    /*
     [self addConstraint:[NSLayoutConstraint
                          constraintWithItem:self.activityIndicator
                          attribute:NSLayoutAttributeWidth
                          relatedBy:NSLayoutRelationEqual
-                         toItem:self.activityIndicator
+                         toItem:self.circleView
                          attribute:NSLayoutAttributeWidth
                          multiplier:0.7
                          constant:0.0]];
-    
-    
+    */
+
     ////////////////////////////////////////////////////////////////////
     //Miles Away Label
     

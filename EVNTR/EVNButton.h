@@ -18,6 +18,7 @@
 @property (nonatomic) BOOL isRounded;
 @property (nonatomic) BOOL isSelected;
 @property (nonatomic) BOOL isStateless;
+@property (nonatomic) BOOL hasBorder;
 
 - (void) startedTask;
 - (void) endedTask;

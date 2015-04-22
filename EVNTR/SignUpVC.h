@@ -18,6 +18,7 @@
 
 @end
 
+
 @protocol NewUserFacebookSignUpDelegate <NSObject>
 
 - (void) createFBRegisterVCWithDetailsFromSignUp:(NSDictionary *) userDetailsFromFB;

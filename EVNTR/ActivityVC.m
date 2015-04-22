@@ -10,10 +10,12 @@
 #import "ActivityVC.h"
 #import "EVNConstants.h"
 #import "EVNNoResultsView.h"
+#import "EVNUtility.h"
 #import "EventDetailVC.h"
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
+
 
 @interface ActivityVC ()
 
@@ -272,7 +274,7 @@
     }
     
     //Update Cell UI
-    activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
+    activityCell.leftSideImageView.imageToUse = [UIImage imageNamed:@"PersonDefault"];
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     
@@ -294,7 +296,7 @@
             PFFile *profilePictureFromParse = userFollow[@"profilePicture"];
             [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
                 if (!error) {
-                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
                 }
             }];
             activityCell.leftSideImageView.userInteractionEnabled = YES;
@@ -343,7 +345,7 @@
             PFFile *profilePictureFromParse = userInvite[@"profilePicture"];
             [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
                 if (!error) {
-                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
                 }
             }];
             activityCell.leftSideImageView.userInteractionEnabled = YES;
@@ -396,7 +398,7 @@
             PFFile *profilePictureFromParse = userRequestedAccess[@"profilePicture"];
             [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
                 if (!error) {
-                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
                 }
             }];
             activityCell.leftSideImageView.userInteractionEnabled = YES;
@@ -451,7 +453,7 @@
             PFFile *profilePicture = [userForAttend objectForKey:@"profilePicture"];
             [profilePicture getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
                 if (!error) {
-                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
                 }
             }];
             activityCell.leftSideImageView.userInteractionEnabled = YES;
@@ -522,7 +524,7 @@
             PFFile *profilePictureFromParse = userGrantedAccess[@"profilePicture"];
             [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
                 if (!error) {
-                    activityCell.leftSideImageView.image = [UIImage imageWithData:data];
+                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
                 }
             }];
             activityCell.leftSideImageView.userInteractionEnabled = YES;
@@ -598,8 +600,6 @@
     EventObject *object = viewButton.eventToView;
     
     EventDetailVC *eventDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
-    
-    //EVNEvent *eventToView = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
     
     eventDetailsVC.event = object;
     

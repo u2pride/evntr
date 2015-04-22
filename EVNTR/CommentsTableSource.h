@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) UITableView *commentsTable;
 @property (nonatomic, strong) NSMutableArray *commentsData;
+@property (nonatomic) BOOL allowAddingComments;
 
 @property (nonatomic, strong) id <EVNCommentsTableProtocol> delegate;
 

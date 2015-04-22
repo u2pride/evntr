@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "BBBadgeBarButtonItem.h"
 #import "EVNConstants.h"
-#import "EVNEvent.h"
 #import "EVNParseEventHelper.h"
 #import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
@@ -35,7 +34,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *eventsTableView;
 
 @property (nonatomic, strong) PFGeoPoint *currentUserLocation;
-@property (nonatomic) int searchRadius;
+@property (nonatomic) float searchRadius;
 
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
 @property (nonatomic, strong) BBBadgeBarButtonItem *filterBarButton;
@@ -49,29 +48,22 @@
 
 @implementation HomeScreenVC
 
-//Question:  What's best to do in initWithCoder v. ViewDidLoad?
-// anything related to view goes into viewdidload.
+
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
     if (self) {
         
-        //TODO - SHOULD NOT BE DOING THIS self.____ is not for init.
         self.title = @"Events";
         self.parseClassName = @"Events";
         self.pullToRefreshEnabled = YES;
-        //self.paginationEnabled = YES;
-        //self.objectsPerPage = 5;
         self.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         self.tabBarController.hidesBottomBarWhenPushed = YES;
-        //self.navigationController.hidesBarsOnSwipe = YES;
         
         //Get isGuest Object
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
         _isGuestUser = [standardDefaults boolForKey:kIsGuest];
-        
-        _searchRadius = 20;
-
+        _searchRadius = 20.0;
     }
     
     return self;
@@ -80,6 +72,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    NSLog(@"VIEWDIDLOAD");
     
     //Navigation Bar Font & Color
     NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
@@ -97,7 +91,7 @@
         self.navigationItem.rightBarButtonItem = searchButton;
     }
     
-    UIBarButtonItem *filterButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%d", self.searchRadius] style:UIBarButtonItemStylePlain target:self action:@selector(displayFilterView)];
+    UIBarButtonItem *filterButton = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%.f", self.searchRadius] style:UIBarButtonItemStylePlain target:self action:@selector(displayFilterView)];
     self.navigationItem.leftBarButtonItem = filterButton;
     
     //Subscribe to Location Updates
@@ -137,35 +131,14 @@
             break;
     }
     
-    
-    //Observe Changes in the Filter Radius Distance
-    //NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
-    //[defaultCenter addObserver:self selector:@selector(newFilterApplied:) name:@"FilterApplied" object:nil];
-    
+
 }
 
 
-
-- (void) viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-}
-
-
-- (void)viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
-    
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+#pragma mark - Search and Filtering
 
 //TODO: Create New View Controller and Add TableView Programmatically - change here and in SeachVC
 - (void)displaySearchController {
-    NSLog(@"Display Search Controller");
     
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     [self.navigationController pushViewController:searchController animated:YES];
@@ -177,45 +150,36 @@
     FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     filterVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    filterVC.selectedFilterDistance = [self.navigationItem.leftBarButtonItem.title intValue];
+    filterVC.selectedFilterDistance = [self.navigationItem.leftBarButtonItem.title floatValue];
     filterVC.delegate = self;
     
     [self.tabBarController presentViewController:filterVC animated:YES completion:nil];
     
-    
 }
 
-- (void) completedFiltering:(int)radius {
+- (void) completedFiltering:(float)radius {
 
     [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
     
     self.searchRadius = radius;
     
-    self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%d", self.searchRadius];
+    if (radius < 1) {
+        self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%.01f", self.searchRadius];
+    } else {
+        self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%.f", self.searchRadius];
+    }
+    
     
     //Reload Table View with New Search Radius
     [self loadObjects];
     
 }
 
-/*
-- (void) newFilterApplied:(NSNotification *)notification {
-    
-    [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
-    
-    UIButton *buttonPressedToFilter = (UIButton *)notification.object;
-    self.searchRadius = [buttonPressedToFilter.titleLabel.text intValue];
-    
-    self.navigationItem.leftBarButtonItem.title = [NSString stringWithFormat:@"%d", self.searchRadius];
-    
-    //Reload Table View with New Search Radius
-    [self loadObjects];
-    
-}
- */
 
+#pragma mark - Location Notification
 
 - (void) updatedLocation:(NSNotification *)notification {
+    
     if (!self.currentUserLocation) {
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
         self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
@@ -231,11 +195,9 @@
 - (void)objectsWillLoad {
     [super objectsWillLoad];
     
-    //TODO - Location Grabbing for Queries
-    
     //One Way to Do It
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManager.location];
+    self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManagerGlobal.location];
     
     //Ends up Grabbing the Last Location Stored if No Location in Location Manager
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -245,13 +207,9 @@
     NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
     
     if (userLocationDictionary) {
-        NSLog(@"Got the User Location from UserDefaults");
         self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
-        NSLog(@"location from userdefaults - %@", self.currentUserLocation);
+        NSLog(@"Got Location from userdefaults - %@", self.currentUserLocation);
     }
-    
-    CLLocation *currentLocationFromAppDelegate = appDelegate.locationManager.location;
-    NSLog(@"Current Location From AppDelegate: %@", currentLocationFromAppDelegate);
     
 }
 
@@ -264,29 +222,6 @@
     } else if (self.noResultsView) {
         [self hideNoResultsView];
     }
-    
-    /*
-    //Add New Results to All Events
-    for (PFObject *object in self.objects) {
-        
-        NSLog(@"Loggging all pfobjects - %@", object);
-        
-        EVNEvent *returnedEvent = [[EVNEvent alloc] initWithID:[object objectForKey:@"objectId"] name:[object objectForKey:@"title"] type:[object objectForKey:@"typeOfEvent"] creator:[object objectForKey:@"parent"] coverImage:[object objectForKey:@"coverPhoto"] description:[object objectForKey:@"description"] date:[object objectForKey:@"dateOfEvent"] locationGeoPoint:[object objectForKey:@"locationOfEvent"] locationName:[object objectForKey:@"nameOfLocation"] photos:[object objectForKey:@"eventImages"] invitedUsers:[object objectForKey:@"invitedUsers"] attendees:[object objectForKey:@"attenders"] backingObject:object];
-        
-        [self.allEvents addObject:returnedEvent];
-    
-    }
-    */
-    
-    //NSTimeZone *outputTimeZone = [NSTimeZone localTimeZone];
-    //NSDateFormatter *outputDateFormatter = [[NSDateFormatter alloc] init];
-    //[outputDateFormatter setTimeZone:outputTimeZone];
-    //[outputDateFormatter setDateStyle:NSDateFormatterFullStyle];
-    //[outputDateFormatter setTimeStyle:NSDateFormatterFullStyle];
-    
-    
-    //NSLog(@"Location Used for Search: %f and %f:", self.currentUserLocation.latitude, self.currentUserLocation.longitude);
-
 }
 
 
@@ -294,10 +229,14 @@
 
 - (PFQuery *)queryForTable {
     
-    //Return All Events for the Basic All Events View
-    //Return a Specific Username's events when you are viewing someone's events.
+    //Wait Until A Location Is Found
+    if (!self.currentUserLocation) {
+        return nil;
+    }
     
     PFQuery *eventsQuery = [PFQuery queryWithClassName:@"Events"];
+    
+    NSLog(@"self.typeOfEventTableView - %@", [NSNumber numberWithInt:self.typeOfEventTableView]);
     
     switch (self.typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
@@ -335,6 +274,8 @@
     }
     
     eventsQuery.limit = 50;
+    
+
     
     return eventsQuery;
 }
@@ -776,9 +717,9 @@
 
 
 
--(void)dealloc
-{
-    NSLog(@"homescreen is being deallocated");
+-(void)dealloc {
+    NSLog(@"homescreen is being deallocated - deregister notifications");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

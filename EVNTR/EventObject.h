@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSArray *eventImages;
 @property (nonatomic, strong) NSString *nameOfLocation;
 @property (nonatomic, strong) PFFile *coverPhoto;
-@property (nonatomic, strong) PFUser *parent; //TODO: Does this work?
+@property (nonatomic, strong) PFUser *parent;
 
 
 + (NSString *)parseClassName;

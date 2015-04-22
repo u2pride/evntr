@@ -18,35 +18,13 @@
 
 @interface AppDelegate ()
 
+@property (nonatomic, strong) NSTimer *locationUpdateTimer;
+
 @end
 
 @implementation AppDelegate
 
-@synthesize locationManager;
-
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    //User's Location for Queries of Local Events.
-    if (!self.locationManager) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-        self.locationManager.distanceFilter = 100;
-        self.locationManager.delegate = self;
-        
-        // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
-        //IS THIS FOR ASKING FOR LOCATION?? IF SO, ADD TO ONBBOARDING.
-        if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-            [self.locationManager requestWhenInUseAuthorization];
-        }
-        
-        //Check to see if locationServices is enabled.
-        //TODO: if not enabled, then alert the user.
-        if([CLLocationManager locationServicesEnabled]){
-            NSLog(@"Begun Monintoring Locations");
-            [self.locationManager startUpdatingLocation];
-        }
-    }
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
@@ -60,12 +38,13 @@
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    
     //Background Fetching for Server Updates
     [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
     
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
+    
+    [self startLocationManager];
     
     //Audio Session - Continue Playing Background Music
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -73,68 +52,80 @@
     
     
     return YES;
+
 }
 
 
-#pragma mark - Notifications
 
-//TODO: use to determine your current privileges granted by user.  gracefully degrade if not allowed anymore.
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
-    //UIUserNotificationType allowedTypes = [notificationSettings types];
-}
-
-//TODO: what needs to be accomplished here?
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+- (void) startLocationManager {
     
-    NSLog(@"NOTIFICATION Recieved");
-        UIApplicationState applicationState = application.applicationState;
-        if (applicationState == UIApplicationStateBackground) {
-            [application presentLocalNotificationNow:notification];
+    NSLog(@"Starting Location Manager....");
+    if (!self.locationManagerGlobal) {
+        self.locationManagerGlobal = [[CLLocationManager alloc] init];
+        self.locationManagerGlobal.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+        self.locationManagerGlobal.distanceFilter = 600;
+        self.locationManagerGlobal.delegate = self;
+        NSLog(@"Created Location Manager");
+    }
+    
+    if ([CLLocationManager locationServicesEnabled]) {
+        if ([self.locationManagerGlobal respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            NSLog(@"Requesting In Use Authorization");
+            [self.locationManagerGlobal requestWhenInUseAuthorization];
+            NSLog(@"Start Updating Locations");
+            [self.locationManagerGlobal startUpdatingLocation];
+        } else {
+            [self.locationManagerGlobal startUpdatingLocation];
         }
+    }
+    
 }
-
 
 
 #pragma mark -- CLLocationManager Delegate
 
-//CLLocation Manager updates the rest of the app with changes in user location.
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
-    NSLog(@"New locations");
+    NSLog(@"New location Found...");
     CLLocation *newLocation = [locations lastObject];
 
     //Check the most recent location update and make sure it's not cached and recent.
     NSDate *lastLocationDate = newLocation.timestamp;
     NSTimeInterval timeSinceLastLocation = [lastLocationDate timeIntervalSinceNow];
-    NSLog(@"Time since Last Location: %f", timeSinceLastLocation);
-    if (abs(timeSinceLastLocation) < 60) {
+    if (fabs(timeSinceLastLocation) < 60) {
         
         NSNumber *latitude = [NSNumber numberWithDouble:newLocation.coordinate.latitude];
         NSNumber *longitude = [NSNumber numberWithDouble:newLocation.coordinate.longitude];
         NSDictionary *userLocationDictionary = [NSDictionary dictionaryWithObjectsAndKeys:latitude, @"latitude", longitude, @"longitude", nil];
         
-        //TOODO: Doing Both UserDefaults and Notifications for Now - Pick one Later - Maybe Do Both Since NSUserDefaults is A Cache of Sorts
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults setObject:userLocationDictionary forKey:@"userLocation"];
         [userDefaults synchronize];
         
-        //Send out a notification that the user location has been updated
         [[NSNotificationCenter defaultCenter] postNotificationName:@"newLocationNotif" object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];
         
+        
+        NSLog(@"Stopping Location Manager - Fresh Location Found Found %@ and %@...", latitude, longitude);
+        [self.locationManagerGlobal stopUpdatingLocation];
+        
+        //Add a Timer to Get New Location Every 5 Mins & Invalidate After Close/Background
+        self.locationUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(startLocationManager) userInfo:nil repeats:YES];
+        
     }
+    
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error {
     
     switch ([error code]) {
         case kCLErrorDenied: {
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates Disabled" message:@"Please enable location updates for EVNTR.  Location updates are essential for finding events near you." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates Disabled" message:@"Please enable location updates for EVNTR.\n\nLocation updates are essential for finding events near you." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
             [errorAlert show];
             break;
         }
         case kCLErrorNetwork: {
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Network Error" message:@"Please check your network connection." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Network Error" message:@"Please check your network connection so Evntr can find events nearby." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
             [errorAlert show];
             break;
@@ -157,11 +148,12 @@
         case kCLAuthorizationStatusDenied: {
             NSLog(@"kCLAuthorizationStatusDenied");
             
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Location Services Not Enabled" message:@"The app can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Got It", nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Location Services Disabled" message:@"Evntr can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Got It", nil];
             [alertView show];
             break;
         }
         case kCLAuthorizationStatusAuthorizedWhenInUse: {
+            NSLog(@"App Has Been Authorized to Use Location While in Use");
             break;
         }
         case kCLAuthorizationStatusAuthorizedAlways: {
@@ -180,6 +172,23 @@
 //Note:  Source of code: http://stackoverflow.com/questions/26111631/ios-8-parse-com-update-and-pf-geopoint-current-location
 
 
+
+#pragma mark - Notifications
+
+//TODO: use to determine your current privileges granted by user.  gracefully degrade if not allowed anymore.
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    //UIUserNotificationType allowedTypes = [notificationSettings types];
+}
+
+//TODO: what needs to be accomplished here?
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    
+    NSLog(@"NOTIFICATION Recieved");
+    UIApplicationState applicationState = application.applicationState;
+    if (applicationState == UIApplicationStateBackground) {
+        [application presentLocalNotificationNow:notification];
+    }
+}
 
 
 
@@ -300,24 +309,26 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    NSLog(@"Invalidating Timer for Location Updates");
+    [self.locationUpdateTimer invalidate];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     
-    [self.locationManager stopUpdatingLocation];
+    [self.locationManagerGlobal stopUpdatingLocation];
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
-    //Restart Location Manager
-    [self.locationManager startUpdatingLocation];
-    
-    //Reset the Application Badge Count - Not sure if this is exactly the right place
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    NSLog(@"App Entered Foreground - Start Location Updates");
 
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
+    [self startLocationManager];
+
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 

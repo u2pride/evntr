@@ -49,6 +49,19 @@ NSString *const cellIdentifier = @"commentsCell";
 }
 
 
+- (void) setAllowAddingComments:(BOOL)allowAddingComments {
+        
+    if (allowAddingComments) {
+        if (!self.commentsTable.tableHeaderView) {
+            [self setupTableHeader];
+        }
+    } else {
+        self.commentsTable.tableHeaderView = nil;
+    }
+    
+    _allowAddingComments = allowAddingComments;
+}
+
 - (void) setupTableHeader {
     
     UIView *tableHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _commentsTable.frame.size.width, 50)];
@@ -106,23 +119,31 @@ NSString *const cellIdentifier = @"commentsCell";
     }
     
     
-    PFObject *comment;
+    if (self.commentsData.count == 0) {
+        commentCell.commentTextLabel.text = @"No comments yet for this event...";
+        commentCell.commentDateLabel.text = @"";
+    } else {
+        PFObject *comment;
+        
+        comment = [self.commentsData objectAtIndex:indexPath.row];
+        commentCell.commentTextLabel.text = comment[@"commentText"];
+        commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
+    }
     
-    comment = [self.commentsData objectAtIndex:indexPath.row];
-    commentCell.commentTextLabel.text = comment[@"commentText"];
-    commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
     commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
     commentCell.backgroundColor = [UIColor clearColor];
     commentCell.textLabel.textColor = [UIColor whiteColor];
     
     return commentCell;
-    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    return self.commentsData.count;
+    if (self.commentsData.count == 0) {
+        return 1;
+    } else {
+        return self.commentsData.count;
+    }
 }
 
 

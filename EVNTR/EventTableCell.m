@@ -33,7 +33,6 @@
 
 - (void) layoutSubviews {
     
-    NSLog(@"CREATING CIRCLE");
     /*
     if (!self.roundForEventTypeView) {
         

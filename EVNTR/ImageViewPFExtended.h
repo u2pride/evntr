@@ -13,6 +13,6 @@
 @interface ImageViewPFExtended : PFImageView
 
 @property (nonatomic, strong) PFObject *objectForImageView;
-@property (nonatomic, strong, setter= setImage:) UIImage *image;
+@property (nonatomic, strong) UIImage *imageToUse;
 
 @end

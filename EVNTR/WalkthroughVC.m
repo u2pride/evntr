@@ -21,7 +21,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UIImageView *backgroundImageForWalkthrough = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"cityBackground"]];
+    UIImageView *backgroundImageForWalkthrough = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"WalkthroughBackground"]];
     backgroundImageForWalkthrough.frame = self.view.frame;
     backgroundImageForWalkthrough.contentMode = UIViewContentModeScaleAspectFill;
     [self.view addSubview:backgroundImageForWalkthrough];

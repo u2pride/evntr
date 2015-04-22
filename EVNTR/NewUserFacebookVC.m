@@ -7,6 +7,7 @@
 //
 
 #import "EVNUtility.h"
+#import "EVNButton.h"
 #import "FBShimmeringView.h"
 #import "NewUserFacebookVC.h"
 #import <Parse/Parse.h>
@@ -14,7 +15,7 @@
 
 @interface NewUserFacebookVC ()
 
-@property (weak, nonatomic) IBOutlet UIButton *continueButton;
+@property (strong, nonatomic) IBOutlet EVNButton *continueButton;
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *nameField;
@@ -30,7 +31,7 @@
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
 
 
-- (IBAction)registerWithFBInformation:(id)sender;
+- (IBAction)registerWithFBInfo:(id)sender;
 
 @end
 
@@ -59,18 +60,7 @@
     self.firstName = ([self.informationFromFB objectForKey:@"firstName"]) ? (NSString *)[self.informationFromFB objectForKey:@"firstName"] : @"";
     self.location = ([self.informationFromFB objectForKey:@"location"]) ? (NSString *)[self.informationFromFB objectForKey:@"location"] : @"";
 
-    
     NSLog(@"%@ - %@ - %@ - %@ - %@ - %@", self.usernameField.text, self.emailField.text, self.nameField.text, self.facebookID, self.firstName, self.location);
-    
-    /*
-    self.usernameField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"firstName"]];
-    self.emailField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"email"]];
-    self.nameField.text = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"realName"]];
-    self.facebookID = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"ID"]];
-    self.firstName = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"firstName"]];
-    self.location = [NSString stringWithFormat:@"%@", [self.informationFromFB objectForKey:@"location"]];
-    //lesson learned... need to cast it or wrap it through a class method.  otherwise it's just an id type and doesn't work in other things.
-     */
      
 }
 
@@ -106,8 +96,7 @@
 }
 
 
-
-- (IBAction)registerWithFBInformation:(id)sender {
+- (IBAction)registerWithFBInfo:(id)sender {
     
     __block PFUser *currentUser = [PFUser currentUser];
     
@@ -121,7 +110,7 @@
         PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureDataForParse];
         
         [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        
+            
             if (succeeded){
                 currentUser[@"profilePicture"] = profilePictureFile;
                 
@@ -165,7 +154,6 @@
         
         [errorAlert show];
     }
-    
 
 }
 
@@ -216,7 +204,6 @@
 
 - (void) cleanUpBeforeTransition {
     
-    
     [UIView animateWithDuration:1.0 animations:^{
         
         self.blurMessage.alpha = 0;
@@ -234,10 +221,10 @@
     
 }
 
--(void)dealloc
-{
+-(void)dealloc {
     NSLog(@"newuserfacebokvc is being deallocated");
 }
+
 
 @end
 

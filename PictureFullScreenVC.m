@@ -122,7 +122,7 @@
 
     [self.view addSubview:self.removePhoto];
     
-    self.eventPhotoView.image = [UIImage imageNamed:@"EventsTabIcon"];
+    self.eventPhotoView.image = [UIImage imageNamed:@"PersonDefault"];
     self.eventPhotoView.file = [self.eventPictureObject objectForKey:@"pictureFile"];
     [self.eventPhotoView loadInBackground];
     
