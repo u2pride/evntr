@@ -10,13 +10,20 @@
 #import "MapForEventView.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface MapForEventView ()
+@interface MapForEventView () {
+    
+    float latitudeSF;
+    float longitudeSF;
+
+}
 
 @property (nonatomic, strong) UILabel *addressLabel;
 @property (nonatomic, strong) UILabel *distanceAwayLabel;
 @property (nonatomic, strong) UILabel *milesAwayLabel;
 @property (nonatomic, strong) UIView *circleView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+
+@property (nonatomic, strong) NSTimer *timerForRandomize;
 
 @end
 
@@ -47,6 +54,9 @@
 
 
 - (void) setup {
+    
+    latitudeSF = 37.749;
+    longitudeSF = -122.4167;
     
     _address = @"";
     _eventLocation = [[CLLocation alloc] init];
@@ -423,19 +433,38 @@
     if (isLocationVisible) {
         MKCoordinateRegion region = MKCoordinateRegionMake(self.eventLocation.coordinate, MKCoordinateSpanMake(0.05, 0.05));
         [self.mapView setRegion:region animated:YES];
+    } else {
+        [self randomizeLocation];
+        self.timerForRandomize = [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomizeLocation) userInfo:nil repeats:YES];
     }
     
     
     [self.activityIndicator stopAnimating];
 }
 
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+- (void) randomizeLocation {
+    
+    latitudeSF = latitudeSF + 0;
+    longitudeSF = longitudeSF + 1;
+    
+    if (longitudeSF > -84) {
+        longitudeSF = -122;
+    }
+    
+    NSLog(@"Lat: %f and Long: %f", latitudeSF, longitudeSF);
+    
+    CLLocation *randomLocation = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
+    
+    MKCoordinateRegion region = MKCoordinateRegionMake(randomLocation.coordinate, MKCoordinateSpanMake(10, 10));
+    
+    [self.mapView setRegion:region animated:YES];
+    
 }
-*/
+
+
+- (void) dealloc {
+    [self.timerForRandomize invalidate];
+}
+
 
 @end

@@ -207,7 +207,15 @@
     [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
         if (!error) {
             self.userPictureData = data;
-            self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"]];
+            
+            self.profileImageView.image = [UIImage imageWithData:data];
+
+            //[EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+                
+            //    self.profileImageView.image = maskedImage;
+            //}];
+        
+            //self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"]];
         }
     }];
     
@@ -518,7 +526,13 @@
         //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
         //NSString *bio = [stringDictionary objectForKey:@"bio"];
         
-        self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"]];
+        self.profileImageView.image = [UIImage imageWithData:imageData];
+
+        //[EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+            //self.profileImageView.image = maskedImage;
+        //}];
+        
+        //self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"]];
         self.nameLabel.text = username;
         
         self.userObjectID = [PFUser currentUser].objectId;

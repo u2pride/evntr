@@ -12,7 +12,6 @@
 #import "PeopleVC.h"
 #import "PersonCell.h"
 #import "ProfileVC.h"
-#import "EVNParseEventHelper.h"
 #import "UIColor+EVNColors.h"
 
 #import <CoreGraphics/CoreGraphics.h>
@@ -242,7 +241,7 @@
         }
         case VIEW_FOLLOWING: {
             
-            [EVNParseEventHelper queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
+            [self queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -262,39 +261,6 @@
                 
             }];
             
-            
-            /*
-            PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"from" equalTo:self.userProfile];
-            [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [query orderByAscending:@"createdAt"];
-            
-            [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
-                
-                if (error || usersFound.count == 0) {
-                    
-                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-                    noResultsView.headerText = @"No Users";
-                    noResultsView.subHeaderText = @"";
-                    noResultsView.actionButton.hidden = YES;
-                    
-                    [self.view addSubview:noResultsView];
-                    
-                } else {
-                    NSLog(@"Objects Found: %@", usersFound);
-                    
-                    for (PFObject *object in usersFound) {
-                        [self.usersMutableArray addObject:object[@"to"]];
-                    }
-                    
-                    self.usersArray = self.usersMutableArray;
-                    
-                    [self.collectionView reloadData];
-                }
-                
-            }];
-            */
-            
             break;
         }
             
@@ -312,7 +278,7 @@
                                                                            nil]
                                                                  forState:UIControlStateNormal];
             
-            [EVNParseEventHelper queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
+            [self queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -332,24 +298,6 @@
    
             }];
             
-            /*
-            PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"from" equalTo:self.profileUsername];
-            [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [query orderByAscending:@"createdAt"];
-            
-            [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
-                
-                for (PFObject *object in usersFound) {
-                    [self.usersMutableArray addObject:object[@"to"]];
-                }
-                
-                self.usersArray = self.usersMutableArray;
-                
-                [self.collectionView reloadData];
-            }];
-            */
-
             break;
         }
         
@@ -398,21 +346,22 @@
 
 //TODO: Move code to PersonCell View and Out of View Controller - Masking Code - Have isSelected-ish Property.
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
+    NSLog(@"Start CellForItemAtIndexPath");
+
     static NSString *cellIdentifier = @"personCell";
     
     PersonCell *cell = (PersonCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    
+    NSLog(@"Cell Now Dequeded");
+
     PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
-    
+    NSLog(@"Current User Determined");
+
     //Default Profile Pic Until User Information is Fetched in Background
     cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
+    NSLog(@"Default Profile Picture Attached");
     
     //Determine if the user has already been invited
     if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
-    
-    //if ([self.allInvitedUsers containsObject:currentUser]) {
-        
         
         //Add to Selected Indexes
         //[self.selectedPeople addObject:currentUser];
@@ -422,27 +371,83 @@
             
             NSLog(@"User Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
             
+            cell.personTitle.text = object[@"username"];
+            
+            PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
+            [profilePictureData getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+               
+                [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                    
+                    cell.profileImage.image = maskedImage;
+                    
+                }];
+                
+            }];
+            
+            /* Testing GetData
             cell.profileImage.file = (PFFile *)object[@"profilePicture"];
             cell.personTitle.text = object[@"username"];
             [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
+                
+                [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                   
+                    cell.profileImage.image = maskedImage;
+                    
+                }];
+                
+                //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
                 
             }];
+             */
         }];
         
     } else {
         
-        
+        NSLog(@"Starting Fetch In Background");
+
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
-            NSLog(@"User Not Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
+            //NSLog(@"User Not Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
+            /*
+            NSLog(@"User Fetched");
 
             cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+            NSLog(@"File pulled from Object");
+
             cell.personTitle.text = object[@"username"];
+            NSLog(@"Username title text assigned");
+            
+            NSLog(@"Start Loading Profile Image in Bacground");
+
+            
             [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+                NSLog(@"Came Back with Image - %ld", (long)indexPath.row);
+                [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+                    NSLog(@"Image Returned as Masked - %ld", (long) indexPath.row);
+                    cell.profileImage.image = maskedImage;
+                    NSLog(@"Assigned to Cell Profile Image Property - %ld", (long)indexPath.row);
+                }];
                 
             }];
+            
+            */
+            cell.personTitle.text = object[@"username"];
+            //cell.profileImage.file = (PFFile *) object[@"profilePicture"];
+            
+            //[cell.profileImage loadInBackground];
+            
+            PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
+            [profilePictureData getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+                
+                [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+                    
+                    cell.profileImage.image = maskedImage;
+                    
+                }];
+                
+            }];
+            
+            
         }];
         
     }
@@ -471,12 +476,21 @@
                 
                 NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
+                /* test for getdata
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 cell.personTitle.text = object[@"username"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                    cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+                    
+                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+                       
+                        cell.profileImage.image = maskedImage;
+                        
+                    }];
+                    
+                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
                     
                 }];
+                 */
             }];
             
             
@@ -491,12 +505,18 @@
                 
                 NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
+                /* Test for getData
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                     
                     cell.profileImage.alpha = 0;
-                    cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
-                    NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+                    
+                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                        
+                        cell.profileImage.image = maskedImage;
+                    }];
+                    
+                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
                     
                     cell.profileImage.alpha = 0.0;
                     cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
@@ -509,6 +529,7 @@
                     
                     
                 }];
+                */
             }];
             
             
@@ -556,12 +577,21 @@
                 
                 NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
+                /* test for getdata
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 cell.personTitle.text = object[@"username"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                    cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+                    
+                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+                       
+                        cell.profileImage.image = maskedImage;
+                        
+                    }];
+                    
+                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
                     
                 }];
+                 */
             }];
             
             
@@ -576,12 +606,19 @@
                 
                 NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
+                /* test for getdata
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                    
                     cell.profileImage.alpha = 0;
-                    cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
-                    NSLog(@"cell.profileimage.image = %@", cell.profileImage.image);
+                    
+                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                       
+                        cell.profileImage.image = maskedImage;
+                        
+                    }];
+                    
+                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
                     
                     cell.profileImage.alpha = 0.0;
                     cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
@@ -593,6 +630,7 @@
                     }];
                     
                 }];
+                 */
             }];
             
             
@@ -652,21 +690,50 @@
 
 
 
+- (void) queryForUsersFollowing:(PFUser *)user completion:(void (^)(NSArray *))completionBlock {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+    [query whereKey:@"from" equalTo:user];
+    [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [query includeKey:@"to"];
+    [query orderByAscending:@"createdAt"];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+        
+        NSLog(@"RESULTS OF QUERYFORUSERSFOLLOWING: %@", usersFound);
+        
+        NSMutableArray *finalResults = [[NSMutableArray alloc] init];
+        
+        if (!error) {
+            for (PFObject *object in usersFound) {
+                
+                PFUser *userFollowing = object[@"to"];
+                
+                if (![finalResults containsObject:userFollowing]) {
+                    
+                    if (userFollowing) {
+                        [finalResults addObject:userFollowing];
+                    }
+                    
+                } else {
+                    NSLog(@"Developer Note:  Duplicate attendee found.");
+                }
+            }
+        }
+        
+        completionBlock(finalResults);
+        
+    }];
+    
+}
+
+
+
+
 #pragma mark - EventAddVCDelegate Methods
 
 //TODO - Test this for large lists with scrolling.
 - (void)doneSelectingPeopleToInvite {
-    
-    /*
-    NSMutableArray *selectedPeople = [[NSMutableArray alloc] init];
-    NSArray *indexPaths = [self.collectionView indexPathsForSelectedItems];
-    
-    for (int i = 0; i < indexPaths.count; i++) {
-        NSIndexPath *currentIndex = indexPaths[i];
-        PFUser *selectedUser = (PFUser *)[self.usersArray objectAtIndex:currentIndex.row];
-        [selectedPeople addObject:selectedUser];
-    }
-    */
     
     NSMutableArray *newInvites = [[NSMutableArray alloc] init];
     
@@ -674,9 +741,10 @@
         
         if (![self isUser:user alreadyInArray:self.previouslyInvitedUsers]) {
             [newInvites addObject:user];
-            NSLog(@"NEWWWWWWWWWWWWWWW INVITEEEEEEEEEEEE");
+            NSLog(@"New Invite");
         }
     }
+    
     
     id<PeopleVCDelegate> strongDelegate = self.delegate;
     

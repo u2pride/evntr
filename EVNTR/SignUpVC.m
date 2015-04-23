@@ -13,6 +13,7 @@
 #import "LogInVC.h"
 #import "SignUpVC.h"
 #import "UIColor+EVNColors.h"
+#import "UIImage+EVNEffects.h"
 
 #import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
@@ -81,7 +82,15 @@ typedef enum {
     self.backgroundView.layer.borderWidth = 1.0f;
     self.backgroundView.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     
-    self.profileImageView.image = [EVNUtility maskImage:[UIImage imageNamed:@"PersonDefault"] withMask:[UIImage imageNamed:@"MaskImage"]];
+    self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
+    self.pictureData = UIImageJPEGRepresentation([UIImage imageNamed:@"PersonDefault"], 0.7);
+    
+    //[EVNUtility maskImage:[UIImage imageNamed:@"PersonDefault"] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+        
+        //self.profileImageView.image = maskedImage;
+    //}];
+    
+    //self.profileImageView.image = [EVNUtility maskImage:[UIImage imageNamed:@"PersonDefault"] withMask:[UIImage imageNamed:@"MaskImage"]];
     
     UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
     tapToAddPhoto.delegate = self;
@@ -557,10 +566,48 @@ typedef enum {
         
     }];
     
+    self.profileImageView.backgroundColor = [UIColor clearColor];
+    
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
-    self.profileImageView.image = [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"]];
-    self.pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
+    [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedFullyImage) {
+        
+        self.profileImageView.image = maskedFullyImage;
+        
+        UIImage *fullyMasked = [UIImage imageWithView:self.profileImageView];
+        
+        self.pictureData = UIImagePNGRepresentation(fullyMasked);
+        
+        
+    }];
+    
+    
+    self.profileImageView.image = chosenPicture;
+
+    UIImage *fullyMasked = [UIImage imageWithView:self.profileImageView];
+    
+    self.pictureData = UIImagePNGRepresentation(fullyMasked);
+
+    /*
+    [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletionBlock:^(CGImageRef *maskedImage) {
+       
+        //self.profileImageView.image = maskedImage;
+        UIImage *newImage = [UIImage imageWithCGImage:*maskedImage];
+
+        self.pictureData = UIImagePNGRepresentation(newImage);
+        
+        self.profileImageView.image = [UIImage imageWithData:self.pictureData];
+
+        UIImage *image2 = CFBridgingRelease(CGImageCreateWithMask(chosenPicture.CGImage, [UIImage imageNamed:@"MaskImage"].CGImage));
+
+        self.pictureData = UIImagePNGRepresentation(image2);
+        
+        self.profileImageView.image = image2;
+
+    }];
+    */
+    //self.profileImageView.image = [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"]];
+    //self.pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
     
 }
 

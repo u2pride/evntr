@@ -91,7 +91,14 @@
     self.bioTextField.text = self.bio;
     
     if (self.pictureData) {
-        self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"]];
+        
+        [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+           
+            self.profileImageView.image = maskedImage;
+            
+        }];
+        
+        //self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"]];
     }
     
     self.realNameTextField.delegate = self;
@@ -259,7 +266,13 @@
     
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
-    self.profileImageView.image = [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"]];
+    [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+       
+        self.profileImageView.image = maskedImage;
+        
+    }];
+    
+    //self.profileImageView.image = [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"]];
     
     self.pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
     PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];

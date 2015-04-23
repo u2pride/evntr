@@ -21,5 +21,6 @@
 
 - (void) startedLoading;
 - (void) finishedLoadingWithLocationAvailable:(BOOL)isLocationVisible;
+- (void) randomizeLocation;
 
 @end

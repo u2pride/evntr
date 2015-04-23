@@ -11,7 +11,6 @@
 #import "CommentsTableSource.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
-#import "EVNParseEventHelper.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
 #import "EventPictureCell.h"
@@ -27,17 +26,13 @@
 #import "UIImageEffects.h"
 #import "UIButtonPFExtended.h"
 
-
 #import <AddressBookUI/AddressBookUI.h>
 #import <Parse/Parse.h>
 
 
 @interface EventDetailVC () {
     
-    float latitudeSF;
-    float longitudeSF;
     int numNetworkCallsComplete;
-    
 }
 
 @property BOOL isGuestUser;
@@ -94,8 +89,6 @@
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *commentsTopVerticalConstraint;
 
 
-
-@property (nonatomic, strong) NSTimer *timerForLocation;
 @property (nonatomic) BOOL shouldRestoreNavBar;
 
 //Only YES if data model changes or viewing for first time.
@@ -116,8 +109,6 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         
-        latitudeSF = 37.749;
-        longitudeSF = -122.4167;
         _isPublicApproved = NO;
         _isCurrentUsersEvent = NO;
         _isCurrentUserAttending = NO;
@@ -254,7 +245,6 @@
         self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     }
     
-    [self.timerForLocation invalidate];
 }
 
 
@@ -315,7 +305,7 @@
 
         if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
             
-            [EVNParseEventHelper queryForStandbyUsersWithContent:self.event ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:nil completion:^(NSError *error, NSArray *users) {
+            [self.event queryForStandbyUsersWithIncludeKey:nil completion:^(NSError *error, NSArray *users) {
                 
                 if (error || users == nil) {
                     self.usersOnStandby = nil;
@@ -359,7 +349,7 @@
             switch (eventType) {
                 case PUBLIC_EVENT_TYPE: {
                     
-                    [EVNParseEventHelper queryRSVPForUserId:userObjectId atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status) {
                         
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
@@ -383,8 +373,8 @@
                 }
                 case PRIVATE_EVENT_TYPE: {
                     
-                    [EVNParseEventHelper queryRSVPForUserId:userObjectId atEvent:self.event completion:^(BOOL isAttending, NSString *status) {
-
+                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status) {
+                        
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
                             self.rsvpStatusButton.titleText = status;
@@ -412,7 +402,7 @@
                     //Determine the state of the user with the event
                     // Hasn't requested Accesss - Requested Access - Granted Acccess
                     
-                    [EVNParseEventHelper queryApprovalStatusOfUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL isAttending, NSString *status) {
+                    [self.event queryApprovalStatusOfUser:[PFUser currentUser] completion:^(BOOL isAttending, NSString *status) {
                         
                         if ([status isEqualToString:@"Error"]) {
                             //TODO: Error Handling
@@ -436,7 +426,7 @@
                         }
                         
                     }];
-                    
+                
                     break;
                 }
                     
@@ -492,11 +482,10 @@
     self.viewPicturesButton.isStateless = YES;
     self.viewPicturesButton.isSelected = NO;
     self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];
-    //self.numberOfPicturesLabel.text = [self.event numberOfPhotos];
-    [EVNParseEventHelper estimateNumberOfPhotosForEvent:self.event completion:^(int count) {
+
+    [self.event estimateNumberOfPhotosWithCompletion:^(int count) {
         self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", count];
     }];
-
 
     if (!self.isGuestUser) {
         
@@ -586,7 +575,13 @@
         self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
             
-            self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
+            [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+                
+                self.creatorPhoto.image = maskedImage;
+                
+            }];
+            
+            //self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
             
             NSLog(@"Num6");
             [self networkCallComplete]; //6
@@ -663,12 +658,9 @@
     NSLog(@"%@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending]);
     
     if ((self.isPublicApproved && !self.isCurrentUserAttending && !self.isCurrentUsersEvent) || self.isGuestUser) {
-        self.transparentTouchView.hidden = YES;
-        self.locationOfEvent = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
         
-        //Randomize the Map View and Have It Constantly Scroll
-        [self randomLocation];
-        self.timerForLocation = [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomLocation) userInfo:nil repeats:YES];
+        self.transparentTouchView.hidden = YES;
+        self.locationOfEvent = [[CLLocation alloc] initWithLatitude:37.749 longitude:-122.4167];
         
         self.entireMapView.address = [NSString stringWithFormat:@"Unknown"];
         self.entireMapView.distanceAway = 0.0f;
@@ -891,7 +883,7 @@
             
             self.rsvpStatusButton.enabled = NO;
             
-            [EVNParseEventHelper requestAccessForUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+            [self.event requestAccessForUser:[PFUser currentUser] completion:^(BOOL success) {
                 
                 if (success) {
                     self.rsvpStatusButton.titleText = kRSVPedForEvent;
@@ -903,9 +895,10 @@
                     [self.standbyUsersCollectionView reloadData];
                 }
                 self.rsvpStatusButton.enabled = YES;
+                
             }];
+
         }
-        
         
     } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
         
@@ -933,13 +926,13 @@
         //Updating the Activity Table (choose one?)
         if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
             
-            [EVNParseEventHelper unRSVPUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+            [self.event unRSVPUser:[PFUser currentUser] completion:^(BOOL success) {
                 
                 if (success) {
                     self.isCurrentUserAttending = NO;
                     self.rsvpStatusButton.titleText = kNotAttendingEvent;
                     self.rsvpStatusButton.isSelected = NO;
-
+                    
                     //Notify Table Cell of Update in RSVP Count
                     id<EventDetailProtocol> strongDelegate = self.delegate;
                     if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
@@ -951,11 +944,12 @@
                 
                 //Re-Enable RSVP Button
                 self.rsvpStatusButton.enabled = YES;
+                
             }];
             
         } else {
             
-            [EVNParseEventHelper rsvpUser:[PFUser currentUser] forEvent:self.event completion:^(BOOL success) {
+            [self.event rsvpUser:[PFUser currentUser] completion:^(BOOL success) {
                 
                 if (success) {
                     self.isCurrentUserAttending = YES;
@@ -1006,7 +1000,7 @@
         self.standbyUsersCollectionView.hidden = NO;
         self.standbyListTitle.hidden = NO;
         
-        [EVNParseEventHelper queryForStandbyUsersWithContent:updatedEvent ofType:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY] withIncludeKey:nil completion:^(NSError *error, NSArray *users) {
+        [updatedEvent queryForStandbyUsersWithIncludeKey:nil completion:^(NSError *error, NSArray *users) {
             
             if (error || users == nil) {
                 self.usersOnStandby = nil;
@@ -1015,16 +1009,18 @@
             }
             
             [self.standbyUsersCollectionView reloadData];
+            
         }];
         
     } else {
+        
         self.standbyUsersCollectionView.hidden = YES;
         self.standbyListTitle.hidden = YES;
+
     }
 
     
-    
-    //Not Working
+    //TODO: Not Working
     [updatedEvent coverImage:^(UIImage *image) {
         
         [self setBackgroundOfPictureSectionWithImage:image];
@@ -1063,38 +1059,14 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
-    //[self.navigationController popViewControllerAnimated:YES];
-    
-    [EVNParseEventHelper inviteUsers:selectedPeople toEvent:self.event completion:^(BOOL success) {
+    [self.event inviteUsers:selectedPeople completion:^(BOOL success) {
         NSLog(@"finished inviting users with : %@", [NSNumber numberWithBool:success]);
     }];
     
     [self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
         NSLog(@"Saved invite pfrelations");
-        
     }];
 
-}
-
-
-- (void) randomLocation {
-    
-    latitudeSF = latitudeSF + 0;
-    longitudeSF = longitudeSF + 1;
-    
-    if (longitudeSF > -84) {
-        longitudeSF = -122;
-    }
-    
-    NSLog(@"Lat: %f and Long: %f", latitudeSF, longitudeSF);
-    
-    CLLocation *randomLocation = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
-    
-    MKCoordinateRegion region = MKCoordinateRegionMake(randomLocation.coordinate, MKCoordinateSpanMake(10, 10));
-    
-    [self.entireMapView.mapView setRegion:region animated:YES];
-    
 }
 
 
@@ -1171,51 +1143,6 @@
     }];
     
 }
-    
-
-
-
-/*
- NSDate *dateFromParse = self.event.eventDate;
- 
- NSDateFormatter *dateForm = [[NSDateFormatter alloc] init];
- dateForm.doesRelativeDateFormatting = YES;
- dateForm.locale = [NSLocale currentLocale];
- dateForm.dateStyle = NSDateFormatterMediumStyle;
- dateForm.timeStyle = NSDateFormatterNoStyle;
- NSString *localDateString = [dateForm stringFromDate:dateFromParse];
- 
- dateForm.dateStyle = NSDateFormatterNoStyle;
- dateForm.timeStyle = NSDateFormatterShortStyle;
- NSString *localTimeString = [dateForm stringFromDate:dateFromParse];
- */
-
-/*
- [UIView animateWithDuration:0.2 animations:^{
- self.navigationController.navigationBar.alpha = 0;
- } completion:^(BOOL finished) {
- [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
- forBarMetrics:UIBarMetricsDefault];
- self.navigationController.navigationBar.shadowImage = [UIImage new];
- self.navigationController.navigationBar.translucent = YES;
- 
- [UIView animateWithDuration:0.5 animations:^{
- 
- self.navigationController.navigationBar.alpha = 1;
- 
- } completion:^(BOOL finished) {
- 
- }];
- }];
- */
-
-//float bigNumber = 85;
-//float smallNumber = -85;
-
-//float diff = bigNumber - smallNumber;
-//float latitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
-
-//float longitude = (((float) rand() / RAND_MAX) * diff) + smallNumber;
 
 
 -(void)dealloc

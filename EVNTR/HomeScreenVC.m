@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "BBBadgeBarButtonItem.h"
 #import "EVNConstants.h"
-#import "EVNParseEventHelper.h"
 #import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
 #import "EventObject.h"
@@ -648,14 +647,12 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
-    [EVNParseEventHelper inviteUsers:selectedPeople toEvent:self.eventForInvites completion:^(BOOL success) {
+    [self.eventForInvites inviteUsers:selectedPeople completion:^(BOOL success) {
         NSLog(@"finished inviting users with : %@", [NSNumber numberWithBool:success]);
     }];
     
     [self.eventForInvites saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
         NSLog(@"Saved invite pfrelations");
-        
     }];
 
     

@@ -57,6 +57,7 @@
 		A497BD621AD542F100619BF4 /* WalkthroughPageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A497BD611AD542F100619BF4 /* WalkthroughPageVC.m */; };
 		A497BD9D1AD54A0D00619BF4 /* WalkthroughModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A497BD9C1AD54A0D00619BF4 /* WalkthroughModel.m */; };
 		A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */; };
+		A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */; };
 		A4AE41AD1AB796CB006270E2 /* EVNLocationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
 		A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B2BC5E1AB870370004B084 /* EVNButton.m */; };
@@ -77,7 +78,6 @@
 		A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */; };
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
 		A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */; };
-		A4C935321AC1E60800BF174C /* EVNParseEventHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C935311AC1E60800BF174C /* EVNParseEventHelper.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
 		A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */; };
 		A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */; };
@@ -191,6 +191,8 @@
 		A497BD9C1AD54A0D00619BF4 /* WalkthroughModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WalkthroughModel.m; sourceTree = "<group>"; };
 		A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StandbyCollectionViewCell.h; sourceTree = "<group>"; };
 		A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StandbyCollectionViewCell.m; sourceTree = "<group>"; };
+		A4A1850A1AE91DC00009AC43 /* UIImage+EVNEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EVNEffects.h"; sourceTree = "<group>"; };
+		A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EVNEffects.m"; sourceTree = "<group>"; };
 		A4AE41AB1AB796CB006270E2 /* EVNLocationButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNLocationButton.h; sourceTree = "<group>"; };
 		A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNLocationButton.m; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
@@ -226,8 +228,6 @@
 		A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabNavigationVC.m; sourceTree = "<group>"; };
 		A4C9352A1AC096E900BF174C /* BBBadgeBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBadgeBarButtonItem.h; sourceTree = "<group>"; };
 		A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBadgeBarButtonItem.m; sourceTree = "<group>"; };
-		A4C935301AC1E60800BF174C /* EVNParseEventHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNParseEventHelper.h; sourceTree = "<group>"; };
-		A4C935311AC1E60800BF174C /* EVNParseEventHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNParseEventHelper.m; sourceTree = "<group>"; };
 		A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileVC.h; sourceTree = "<group>"; };
 		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditProfileVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4CEF7531AB1DB11002F02C8 /* FBShimmering-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBShimmering-Prefix.pch"; sourceTree = "<group>"; };
@@ -507,8 +507,6 @@
 			children = (
 				A4C2C1351ACEB4FB004C7F35 /* EventObject.h */,
 				A4C2C1361ACEB4FB004C7F35 /* EventObject.m */,
-				A4C935301AC1E60800BF174C /* EVNParseEventHelper.h */,
-				A4C935311AC1E60800BF174C /* EVNParseEventHelper.m */,
 				A49A9E301AAE48CF00358D65 /* All Events */,
 				A49A9E2F1AAE48A300358D65 /* Event Details */,
 				A49A9E2D1AAE484400358D65 /* Add Event */,
@@ -693,6 +691,8 @@
 				A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */,
 				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
 				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
+				A4A1850A1AE91DC00009AC43 /* UIImage+EVNEffects.h */,
+				A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */,
 				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
 				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
 				A41B2A111ABCBE3F00F7CE44 /* SignUpTabVC.h */,
@@ -875,7 +875,6 @@
 				A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */,
 				A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */,
 				A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */,
-				A4C935321AC1E60800BF174C /* EVNParseEventHelper.m in Sources */,
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
 				A497BD621AD542F100619BF4 /* WalkthroughPageVC.m in Sources */,
@@ -905,6 +904,7 @@
 				A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */,
 				A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */,
 				A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */,
+				A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
 				A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,

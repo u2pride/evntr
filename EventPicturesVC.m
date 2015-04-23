@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 #import "EventPicturesVC.h"
 #import "EVNConstants.h"
-#import "EVNParseEventHelper.h"
 #import "IDTransitioningDelegate.h"
 #import "UIColor+EVNColors.h"
 
@@ -64,26 +63,19 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [EVNParseEventHelper queryForImagesFromEvent:self.eventObject completion:^(NSArray *images) {
-       
+    [self.eventObject queryForImagesWithCompletion:^(NSArray *images) {
+        
         self.eventImages = [NSMutableArray arrayWithArray:images];
         
         if (self.eventImages.count == 0) {
-            
             [self showNoResultsView];
-            
         } else {
-            
             self.noResultsLabel.hidden = YES;
-            
             [self.collectionView reloadData];
-
         }
-        
-        
-    }];
     
-    //self.tabBarController.tabBar.hidden = YES;
+    }];
+
 }
 
 

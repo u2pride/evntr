@@ -81,9 +81,14 @@
                                    
                                    if (connectionError == nil && data != nil) {
                                        NSLog(@"got a fb profile image");
-                                       UIImage *profileImageFromData = [UIImage imageWithData:data];
-                                       self.profileImageView.image = [EVNUtility maskImage:profileImageFromData withMask:[UIImage imageNamed:@"MaskImage"]];
                                        
+                                       [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
+                                          
+                                           self.profileImageView.image = maskedImage;
+                                           
+                                       }];
+                                       
+                                       //self.profileImageView.image = [EVNUtility maskImage:profileImageFromData withMask:[UIImage imageNamed:@"MaskImage"]];
                                        
                                    } else {
                                        NSLog(@"didnt get a fb profile image");

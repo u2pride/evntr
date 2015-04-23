@@ -7,7 +7,6 @@
 //
 
 #import "CommentsTableSource.h"
-#import "EVNParseEventHelper.h"
 #import "NSDate+NVTimeAgo.h"
 #import "EVNCommentsTableCell.h"
 
@@ -84,15 +83,12 @@ NSString *const cellIdentifier = @"commentsCell";
 
 - (void) getCommentsForTableWithEvent:(EventObject *)event {
     
-    [EVNParseEventHelper queryForCommentsFromEvent:event completion:^(NSArray *comments) {
+    [event queryForCommentsWithCompletion:^(NSArray *comments) {
         
-        NSLog(@"Got Comments");
         _commentsData = [NSMutableArray arrayWithArray:comments];
-        
         [self.commentsTable reloadData];
         
     }];
-    
     
 }
 

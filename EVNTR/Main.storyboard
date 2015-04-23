@@ -3300,7 +3300,7 @@ Click continue when you're ready.</string>
                                 </view>
                                 <connections>
                                     <outlet property="personTitle" destination="NtV-Ja-JO0" id="qcV-Qp-86u"/>
-                                    <outlet property="profileImage" destination="d0I-1r-q2R" id="QpE-XE-ghy"/>
+                                    <outlet property="profileImage" destination="d0I-1r-q2R" id="zC1-9v-oau"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
