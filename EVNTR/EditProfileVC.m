@@ -10,6 +10,7 @@
 #import "EVNConstants.h"
 #import "EditProfileVC.h"
 #import "UIColor+EVNColors.h"
+#import "UIImage+EVNEffects.h"
 
 #import <Accounts/Accounts.h>
 #import <Parse/Parse.h>
@@ -91,14 +92,7 @@
     self.bioTextField.text = self.bio;
     
     if (self.pictureData) {
-        
-        [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-           
-            self.profileImageView.image = maskedImage;
-            
-        }];
-        
-        //self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:self.pictureData] withMask:[UIImage imageNamed:@"MaskImage"]];
+        self.profileImageView.image = [UIImage imageWithData:self.pictureData];
     }
     
     self.realNameTextField.delegate = self;
@@ -107,8 +101,6 @@
     self.bioTextField.delegate = self;
 
 }
-
-
 
 
 #pragma mark - TextField Delegate Method to Dismiss Keyboard
@@ -270,19 +262,12 @@
        
         self.profileImageView.image = maskedImage;
         
+        UIImage *fullyMaskedImageForData = [UIImage imageWithView:self.profileImageView];
+        
+        self.pictureData = UIImageJPEGRepresentation(fullyMaskedImageForData, 0.5);
+        
     }];
     
-    //self.profileImageView.image = [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"]];
-    
-    self.pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
-    PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
-    
-    [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded){
-            //[PFUser currentUser][@"profilePicture"] = profilePictureFile;
-            //[[PFUser currentUser] saveInBackground];
-        }
-    }];
     
     [self restoreSavedValues];
     

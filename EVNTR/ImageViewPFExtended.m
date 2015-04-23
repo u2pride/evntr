@@ -11,14 +11,6 @@
 
 @implementation ImageViewPFExtended
 
-- (void)setImageToUse:(UIImage *)imageToUse {
-    
-    //UIImage *newImage = [EVNUtility maskImage:imageToUse withMask:[UIImage imageNamed:@"MaskImage"]];
-    
-    [super setImage:imageToUse];
-    
-    _imageToUse = imageToUse;
-    
-}
+
 
 @end

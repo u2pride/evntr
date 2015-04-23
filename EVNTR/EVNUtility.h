@@ -12,8 +12,6 @@
 @interface EVNUtility : NSObject
 
 + (void)maskImage:(UIImage *)image withMask:(UIImage *)maskImage withCompletion:(void (^)(UIImage *))completionBlock;
-
-+ (void)maskImage:(UIImage *)image withMask:(UIImage *)maskImage withCompletionBlock:(void (^)(CGImageRef *))completionBlock;
 + (NSString *)getUTCFormateDate:(NSDate *)localDate;
 
 

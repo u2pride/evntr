@@ -902,8 +902,9 @@ Click continue when you're ready.</string>
                                                     <action selector="viewFollowing:" destination="DlN-Vu-yyh" eventType="touchUpInside" id="Msm-li-vOZ"/>
                                                 </connections>
                                             </button>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Zyc-PW-6UR">
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Zyc-PW-6UR" customClass="PFImageView">
                                                 <rect key="frame" x="94" y="15" width="133" height="133"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="133" id="5Lw-0A-Npy"/>
                                                     <constraint firstAttribute="width" constant="133" id="jrQ-6f-gzh"/>
@@ -1146,7 +1147,7 @@ Click continue when you're ready.</string>
                         <outlet property="numberEventsLabel" destination="Kmz-sb-2mR" id="Lhu-BW-cYB"/>
                         <outlet property="numberFollowersLabel" destination="cLb-di-5zP" id="Tc3-FJ-XLw"/>
                         <outlet property="numberFollowingLabel" destination="Fyz-kJ-guQ" id="JTn-d8-Nca"/>
-                        <outlet property="profileImageView" destination="Zyc-PW-6UR" id="bbO-VD-rfo"/>
+                        <outlet property="profileImageView" destination="Zyc-PW-6UR" id="Sgx-NK-diH"/>
                         <outlet property="scrollView" destination="fyM-3r-r5T" id="Qbh-Vl-c0Q"/>
                         <outlet property="twitterIcon" destination="8md-l0-X7z" id="pKx-GM-9Us"/>
                         <outlet property="viewAccessRequestsForMyEventsButton" destination="6oq-jJ-Ssm" id="LoD-zz-9Km"/>
@@ -2734,6 +2735,7 @@ Click continue when you're ready.</string>
                                             </view>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="429-cp-IMw" customClass="PFImageView">
                                                 <rect key="frame" x="120" y="823" width="80" height="80"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="80" id="1fO-U8-IyN"/>
                                                     <constraint firstAttribute="width" constant="91" id="Gou-ZT-Nqf"/>
@@ -2817,6 +2819,7 @@ Click continue when you're ready.</string>
                                                             <subviews>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="KYF-R7-w57" customClass="ImageViewPFExtended">
                                                                     <rect key="frame" x="0.0" y="0.0" width="58" height="59"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                 </imageView>
                                                             </subviews>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -3288,6 +3291,7 @@ Click continue when you're ready.</string>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d0I-1r-q2R" customClass="PFImageView">
                                             <rect key="frame" x="8" y="10" width="80" height="80"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="TITLE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NtV-Ja-JO0">
                                             <rect key="frame" x="11" y="88" width="79" height="24"/>
@@ -3358,6 +3362,7 @@ Click continue when you're ready.</string>
                                         </button>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="F1l-Om-R9D" customClass="ImageViewPFExtended">
                                             <rect key="frame" x="3" y="13" width="40" height="40"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="40" id="W59-0w-fTh"/>
                                                 <constraint firstAttribute="width" constant="40" id="nc4-9u-4Yb"/>
@@ -3576,8 +3581,8 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="takePicture" translatesAutoresizingMaskIntoConstraints="NO" id="r1A-qW-tQC">
-                                <rect key="frame" x="80" y="273" width="161" height="161"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="takePicture" translatesAutoresizingMaskIntoConstraints="NO" id="r1A-qW-tQC">
+                                <rect key="frame" x="77" y="278" width="166" height="166"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="r1A-qW-tQC" secondAttribute="height" multiplier="1:1" id="6Qy-th-Mie"/>
                                     <constraint firstAttribute="width" constant="288" id="FuE-CC-G0v"/>
@@ -3624,17 +3629,6 @@ Click continue when you're ready.</string>
                                     <action selector="selectedPrivate:" destination="q4z-iz-15h" eventType="touchUpInside" id="h2A-lR-SAr"/>
                                 </connections>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hMW-Zb-s5l" customClass="EVNButton">
-                                <rect key="frame" x="70" y="454" width="180" height="45"/>
-                                <color key="backgroundColor" red="0.1249488552" green="0.209113573" blue="0.46198266389999998" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="180" id="9V3-Cp-iUu"/>
-                                    <constraint firstAttribute="height" constant="45" id="tXh-vv-ndk"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="nextButtonPressed:" destination="q4z-iz-15h" eventType="touchUpInside" id="WE2-AK-ze8"/>
-                                </connections>
-                            </view>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Event Title" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Vyx-EZ-Pch">
                                 <rect key="frame" x="28" y="93" width="264" height="80"/>
                                 <constraints>
@@ -3643,13 +3637,29 @@ Click continue when you're ready.</string>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="55"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                             </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hMW-Zb-s5l" customClass="EVNButton">
+                                <rect key="frame" x="0.0" y="469" width="320" height="50"/>
+                                <color key="backgroundColor" red="0.1249488552" green="0.209113573" blue="0.46198266389999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="9V3-Cp-iUu"/>
+                                    <constraint firstAttribute="height" constant="50" id="tXh-vv-ndk"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="9V3-Cp-iUu"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <action selector="nextButtonPressed:" destination="q4z-iz-15h" eventType="touchUpInside" id="WE2-AK-ze8"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="rz5-9r-mWY" firstAttribute="top" secondItem="Vyx-EZ-Pch" secondAttribute="bottom" constant="40" id="0Pq-z0-X3r"/>
                             <constraint firstItem="Vyx-EZ-Pch" firstAttribute="leading" secondItem="P94-F3-mT6" secondAttribute="leadingMargin" constant="12" id="0bb-7R-wAi"/>
                             <constraint firstItem="hMW-Zb-s5l" firstAttribute="top" secondItem="r1A-qW-tQC" secondAttribute="bottom" constant="20" id="0cC-kP-7VM"/>
-                            <constraint firstItem="r1A-qW-tQC" firstAttribute="top" secondItem="rz5-9r-mWY" secondAttribute="bottom" constant="20" id="1PC-F2-vev"/>
+                            <constraint firstItem="r1A-qW-tQC" firstAttribute="top" secondItem="rz5-9r-mWY" secondAttribute="bottom" constant="25" id="1PC-F2-vev"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="leading" secondItem="Vyx-EZ-Pch" secondAttribute="leading" id="8KT-0b-gln"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="top" secondItem="P94-F3-mT6" secondAttribute="top" constant="280" id="92M-Pb-xdj"/>
                             <constraint firstAttribute="centerX" secondItem="hMW-Zb-s5l" secondAttribute="centerX" id="GsC-UM-AVK"/>
@@ -3666,8 +3676,11 @@ Click continue when you're ready.</string>
                             <constraint firstAttribute="centerX" secondItem="Vyx-EZ-Pch" secondAttribute="centerX" id="dJu-Ci-999"/>
                             <constraint firstItem="rz5-9r-mWY" firstAttribute="centerY" secondItem="YHL-DY-Q0O" secondAttribute="centerY" id="dig-bb-IVM"/>
                             <constraint firstItem="rz5-9r-mWY" firstAttribute="leading" secondItem="i3j-su-oM8" secondAttribute="trailing" constant="3" id="ejT-hm-bSg"/>
+                            <constraint firstItem="hMW-Zb-s5l" firstAttribute="top" secondItem="r1A-qW-tQC" secondAttribute="bottom" constant="25" id="enj-z7-moq"/>
+                            <constraint firstItem="mrI-Bi-3Mi" firstAttribute="top" secondItem="hMW-Zb-s5l" secondAttribute="bottom" id="ibZ-bF-PCh"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="trailing" secondItem="Vyx-EZ-Pch" secondAttribute="trailing" id="iqR-tu-gMh"/>
                             <constraint firstItem="r1A-qW-tQC" firstAttribute="leading" secondItem="P94-F3-mT6" secondAttribute="leadingMargin" id="prS-lu-otY"/>
+                            <constraint firstAttribute="width" secondItem="hMW-Zb-s5l" secondAttribute="width" id="sSk-sb-F5k"/>
                             <constraint firstItem="Vyx-EZ-Pch" firstAttribute="top" secondItem="IdU-Ix-d3t" secondAttribute="bottom" constant="29" id="y2U-c5-Kzk"/>
                         </constraints>
                         <variation key="default">
@@ -3678,6 +3691,8 @@ Click continue when you're ready.</string>
                                 <exclude reference="IMB-fi-Oja"/>
                                 <exclude reference="iqR-tu-gMh"/>
                                 <exclude reference="prS-lu-otY"/>
+                                <exclude reference="0cC-kP-7VM"/>
+                                <exclude reference="c2x-fx-j5V"/>
                             </mask>
                         </variation>
                     </view>
@@ -4034,7 +4049,7 @@ Click continue when you're ready.</string>
         <image name="Current Location" width="25" height="25"/>
         <image name="CustomBackButton" width="24" height="24"/>
         <image name="LoginBackground" width="2509" height="1673"/>
-        <image name="PersonDefault" width="649" height="659"/>
+        <image name="PersonDefault" width="100" height="100"/>
         <image name="SettingsIcon" width="25" height="25"/>
         <image name="WalkthroughEvent" width="921" height="929"/>
         <image name="WalkthroughFilter" width="200" height="400"/>
@@ -4048,7 +4063,7 @@ Click continue when you're ready.</string>
         <image name="tabHome" width="25" height="25"/>
         <image name="tabProfile" width="25" height="25"/>
         <image name="tabSignUp" width="25" height="25"/>
-        <image name="takePicture" width="300" height="300"/>
+        <image name="takePicture" width="500" height="369"/>
         <image name="twitter" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>

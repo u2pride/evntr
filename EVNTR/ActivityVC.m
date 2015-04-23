@@ -274,7 +274,7 @@
     }
     
     //Update Cell UI
-    activityCell.leftSideImageView.imageToUse = [UIImage imageNamed:@"PersonDefault"];
+    activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     
@@ -293,12 +293,9 @@
             PFUser *userFollow = object[@"from"];
             
             //Left Image Thumbnail
-            PFFile *profilePictureFromParse = userFollow[@"profilePicture"];
-            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                if (!error) {
-                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
-                }
-            }];
+            activityCell.leftSideImageView.file = userFollow[@"profilePicture"];
+            [activityCell.leftSideImageView loadInBackground];
+            
             activityCell.leftSideImageView.userInteractionEnabled = YES;
             activityCell.leftSideImageView.objectForImageView = userFollow;
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
@@ -340,14 +337,10 @@
             
             __block NSString *username = userInvite[@"username"];
             
-            
             //Left Image Thumbnail
-            PFFile *profilePictureFromParse = userInvite[@"profilePicture"];
-            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                if (!error) {
-                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
-                }
-            }];
+            activityCell.leftSideImageView.file = userInvite[@"profilePicture"];
+            [activityCell.leftSideImageView loadInBackground];
+            
             activityCell.leftSideImageView.userInteractionEnabled = YES;
             activityCell.leftSideImageView.objectForImageView = userInvite;
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
@@ -395,12 +388,9 @@
 
             
             //Left Image Thumbnail
-            PFFile *profilePictureFromParse = userRequestedAccess[@"profilePicture"];
-            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                if (!error) {
-                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
-                }
-            }];
+            activityCell.leftSideImageView.file = userRequestedAccess[@"profilePicture"];
+            [activityCell.leftSideImageView loadInBackground];
+            
             activityCell.leftSideImageView.userInteractionEnabled = YES;
             activityCell.leftSideImageView.objectForImageView = userRequestedAccess;
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
@@ -450,12 +440,9 @@
 
             
             //Left Image Thumbnail
-            PFFile *profilePicture = [userForAttend objectForKey:@"profilePicture"];
-            [profilePicture getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                if (!error) {
-                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
-                }
-            }];
+            activityCell.leftSideImageView.file = userForAttend[@"profilePicture"];
+            [activityCell.leftSideImageView loadInBackground];
+            
             activityCell.leftSideImageView.userInteractionEnabled = YES;
             activityCell.leftSideImageView.objectForImageView = userForAttend;
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
@@ -521,12 +508,9 @@
 
             
             //Left Side Thumbnail
-            PFFile *profilePictureFromParse = userGrantedAccess[@"profilePicture"];
-            [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-                if (!error) {
-                    activityCell.leftSideImageView.imageToUse = [UIImage imageWithData:data];
-                }
-            }];
+            activityCell.leftSideImageView.file = userGrantedAccess[@"profilePicture"];
+            [activityCell.leftSideImageView loadInBackground];
+            
             activityCell.leftSideImageView.userInteractionEnabled = YES;
             activityCell.leftSideImageView.objectForImageView = userGrantedAccess;
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];

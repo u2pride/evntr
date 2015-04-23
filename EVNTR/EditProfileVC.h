@@ -28,7 +28,7 @@
 
 @protocol ProfileEditDelegate <NSObject>
 
--(void)canceledEditingProfile;
+- (void) canceledEditingProfile;
 -(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData;
 
 @end

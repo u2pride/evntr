@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "EventCoverPhoto-2.png"
+      "filename" : "EventDefault.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "EventCoverPhoto-1.png"
+      "filename" : "EventDefault-1.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "EventCoverPhoto.png"
+      "filename" : "EventDefault-2.png"
     }
   ],
   "info" : {

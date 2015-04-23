@@ -109,7 +109,7 @@
         [self.locationManagerGlobal stopUpdatingLocation];
         
         //Add a Timer to Get New Location Every 5 Mins & Invalidate After Close/Background
-        self.locationUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(startLocationManager) userInfo:nil repeats:YES];
+        self.locationUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:300 target:self selector:@selector(startLocationManager) userInfo:nil repeats:YES];
         
     }
     

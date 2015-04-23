@@ -81,11 +81,13 @@ NSString *const cellIdentifier = @"commentsCell";
     
 }
 
+
 - (void) getCommentsForTableWithEvent:(EventObject *)event {
     
     [event queryForCommentsWithCompletion:^(NSArray *comments) {
         
         _commentsData = [NSMutableArray arrayWithArray:comments];
+                
         [self.commentsTable reloadData];
         
     }];
@@ -106,6 +108,8 @@ NSString *const cellIdentifier = @"commentsCell";
 #pragma mark - Comments Table View DataSource Methods
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    NSLog(@"cellForRowAtIndexPath: %ld", (long)indexPath.row);
+    
     EVNCommentsTableCell *commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if (!commentCell) {
@@ -115,16 +119,11 @@ NSString *const cellIdentifier = @"commentsCell";
     }
     
     
-    if (self.commentsData.count == 0) {
-        commentCell.commentTextLabel.text = @"No comments yet for this event...";
-        commentCell.commentDateLabel.text = @"";
-    } else {
-        PFObject *comment;
+    PFObject *comment;
         
-        comment = [self.commentsData objectAtIndex:indexPath.row];
-        commentCell.commentTextLabel.text = comment[@"commentText"];
-        commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
-    }
+    comment = [self.commentsData objectAtIndex:indexPath.row];
+    commentCell.commentTextLabel.text = comment[@"commentText"];
+    commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
     
     commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
     commentCell.backgroundColor = [UIColor clearColor];
@@ -135,18 +134,14 @@ NSString *const cellIdentifier = @"commentsCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (self.commentsData.count == 0) {
-        return 1;
-    } else {
-        return self.commentsData.count;
-    }
+    return self.commentsData.count;
+
 }
 
 
 #pragma mark - Comments Table View Delegate Methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     
     NSLog(@"Did select table cell for comment - %ld", (long)indexPath.row);
     

@@ -575,17 +575,8 @@
         self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
         [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
             
-            [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-                
-                self.creatorPhoto.image = maskedImage;
-                
-            }];
-            
-            //self.creatorPhoto.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
-            
             NSLog(@"Num6");
             [self networkCallComplete]; //6
-            
         }];
         
         NSLog(@"Num7");
@@ -721,13 +712,10 @@
         
         PFUser *currentUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
-        cell.profilePictureOfStandbyUser.imageToUse = [UIImage imageNamed:@"PersonDefault"];
+        cell.profilePictureOfStandbyUser.image = [UIImage imageNamed:@"PersonDefault"];
         cell.profilePictureOfStandbyUser.file = currentUser[@"profilePicture"];
-        [cell.profilePictureOfStandbyUser loadInBackground:^(UIImage *image, NSError *error) {
-            cell.profilePictureOfStandbyUser.imageToUse = image;
-        }];
-        
-        
+        [cell.profilePictureOfStandbyUser loadInBackground];
+    
         cell.profilePictureOfStandbyUser.objectForImageView = currentUser;
         
         return cell;
@@ -1127,12 +1115,12 @@
             NSLog(@"saved comment");
             
             [self dismissViewControllerAnimated:YES completion:^{
-                [self.commentsController.commentsData insertObject:newComment atIndex:0];
                 
                 NSArray *firstIndexPath = [NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]];
-                
+
+                [self.commentsController.commentsData insertObject:newComment atIndex:0];
                 [self.commentsController.commentsTable insertRowsAtIndexPaths:firstIndexPath withRowAnimation:UITableViewRowAnimationFade];
-                
+
             }];
 
             

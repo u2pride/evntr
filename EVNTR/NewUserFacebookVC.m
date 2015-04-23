@@ -10,8 +10,10 @@
 #import "EVNButton.h"
 #import "FBShimmeringView.h"
 #import "NewUserFacebookVC.h"
-#import <Parse/Parse.h>
 #import "EVNConstants.h"
+#import "UIImage+EVNEffects.h"
+
+#import <Parse/Parse.h>
 
 @interface NewUserFacebookVC ()
 
@@ -88,10 +90,10 @@
                                            
                                        }];
                                        
-                                       //self.profileImageView.image = [EVNUtility maskImage:profileImageFromData withMask:[UIImage imageNamed:@"MaskImage"]];
                                        
                                    } else {
-                                       NSLog(@"didnt get a fb profile image");
+                                       //TODO:  Allow User to Select a Photo When One Isn't Pulled From FB.
+                                       NSLog(@"DEVLOPER NOTE:  didnt get a fb profile image");
                                    }
                                }];
         
@@ -110,7 +112,9 @@
     //Validate that the user has submitted a user name and password
     if (self.usernameField.text.length > 3 && self.nameField.text.length > 3 && self.emailField.text.length > 0) {
         
-        NSData *pictureDataForParse = UIImageJPEGRepresentation(self.profileImageView.image, 0.5);
+        self.profileImageView.backgroundColor = [UIColor clearColor];
+        UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
+        NSData *pictureDataForParse = UIImagePNGRepresentation(fullyMaskedForData);
         
         PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureDataForParse];
         

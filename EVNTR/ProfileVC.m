@@ -29,7 +29,7 @@
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationItemWithSettingsBarItem;
 
 //User Information
-@property (strong, nonatomic) IBOutlet UIImageView *profileImageView;
+@property (strong, nonatomic) IBOutlet PFImageView *profileImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *numberEventsLabel;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowersLabel;
@@ -204,19 +204,9 @@
     
     //Profile Picture
     PFFile *profilePictureFromParse = self.userForProfileView[@"profilePicture"];
-    [profilePictureFromParse getDataInBackgroundWithBlock:^(NSData *data, NSError *error){
-        if (!error) {
-            self.userPictureData = data;
-            
-            self.profileImageView.image = [UIImage imageWithData:data];
-
-            //[EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-                
-            //    self.profileImageView.image = maskedImage;
-            //}];
-        
-            //self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"]];
-        }
+    self.profileImageView.file = profilePictureFromParse;
+    [self.profileImageView loadInBackground:^(UIImage *image, NSError *error) {
+        self.userPictureData = UIImagePNGRepresentation(image);
     }];
     
     
@@ -527,12 +517,7 @@
         //NSString *bio = [stringDictionary objectForKey:@"bio"];
         
         self.profileImageView.image = [UIImage imageWithData:imageData];
-
-        //[EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-            //self.profileImageView.image = maskedImage;
-        //}];
         
-        //self.profileImageView.image = [EVNUtility maskImage:[UIImage imageWithData:imageData] withMask:[UIImage imageNamed:@"MaskImage"]];
         self.nameLabel.text = username;
         
         self.userObjectID = [PFUser currentUser].objectId;

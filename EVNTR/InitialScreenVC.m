@@ -97,7 +97,6 @@
     [self.registerButton addGestureRecognizer:tapgr];
     [self.loginButton addGestureRecognizer:tapgr2];
     
-    [self.moviePlayer play];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
 
@@ -153,8 +152,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    NSLog(@"ViewWillAppear Called");
 
+    [self.moviePlayer play];
 
 }
 

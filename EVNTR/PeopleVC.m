@@ -370,83 +370,34 @@
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
             NSLog(@"User Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
-            
-            cell.personTitle.text = object[@"username"];
-            
+
             PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
-            [profilePictureData getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-               
-                [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
-                    
-                    cell.profileImage.image = maskedImage;
-                    
-                }];
-                
-            }];
             
-            /* Testing GetData
-            cell.profileImage.file = (PFFile *)object[@"profilePicture"];
             cell.personTitle.text = object[@"username"];
+            cell.profileImage.file = profilePictureData;
             [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                 
                 [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
-                   
+                    
                     cell.profileImage.image = maskedImage;
                     
                 }];
                 
-                //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
-                
             }];
-             */
+            
         }];
         
     } else {
         
-        NSLog(@"Starting Fetch In Background");
-
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
-            //NSLog(@"User Not Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
-            /*
-            NSLog(@"User Fetched");
+            NSLog(@"User Not Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
+            
 
             cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-            NSLog(@"File pulled from Object");
-
             cell.personTitle.text = object[@"username"];
-            NSLog(@"Username title text assigned");
             
-            NSLog(@"Start Loading Profile Image in Bacground");
-
-            
-            [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                NSLog(@"Came Back with Image - %ld", (long)indexPath.row);
-                [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-                    NSLog(@"Image Returned as Masked - %ld", (long) indexPath.row);
-                    cell.profileImage.image = maskedImage;
-                    NSLog(@"Assigned to Cell Profile Image Property - %ld", (long)indexPath.row);
-                }];
-                
-            }];
-            
-            */
-            cell.personTitle.text = object[@"username"];
-            //cell.profileImage.file = (PFFile *) object[@"profilePicture"];
-            
-            //[cell.profileImage loadInBackground];
-            
-            PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
-            [profilePictureData getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                
-                [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-                    
-                    cell.profileImage.image = maskedImage;
-                    
-                }];
-                
-            }];
-            
+            [cell.profileImage loadInBackground];
             
         }];
         
@@ -476,21 +427,9 @@
                 
                 NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
-                /* test for getdata
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-                cell.personTitle.text = object[@"username"];
-                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                    
-                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-                       
-                        cell.profileImage.image = maskedImage;
-                        
-                    }];
-                    
-                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
-                    
-                }];
-                 */
+                [cell.profileImage loadInBackground];
+                
             }];
             
             
@@ -505,7 +444,6 @@
                 
                 NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
-                /* Test for getData
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                     
@@ -515,8 +453,6 @@
                         
                         cell.profileImage.image = maskedImage;
                     }];
-                    
-                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
                     
                     cell.profileImage.alpha = 0.0;
                     cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
@@ -529,7 +465,6 @@
                     
                     
                 }];
-                */
             }];
             
             
@@ -555,6 +490,22 @@
 }
 
 
+- (void) collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    cell.alpha = 0;
+    cell.transform = CGAffineTransformMakeScale(0.2, 0.2);
+    
+    [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction animations:^{
+        
+        cell.alpha = 1;
+        cell.transform = CGAffineTransformIdentity;
+        
+    } completion:^(BOOL finished) {
+        
+        
+    }];
+}
+
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -577,23 +528,11 @@
                 
                 NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
-                /* test for getdata
-                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-                cell.personTitle.text = object[@"username"];
-                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                    
-                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
-                       
-                        cell.profileImage.image = maskedImage;
-                        
-                    }];
-                    
-                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
-                    
-                }];
-                 */
+                
+                cell.profileImage.file = (PFFile *) object[@"profilePicture"];
+                [cell.profileImage loadInBackground];
+                
             }];
-            
             
         } else {
             //Not Selected - Now Select
@@ -606,7 +545,6 @@
                 
                 NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
 
-                /* test for getdata
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                    
@@ -618,8 +556,6 @@
                         
                     }];
                     
-                    //cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"]];
-                    
                     cell.profileImage.alpha = 0.0;
                     cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
                     
@@ -630,7 +566,6 @@
                     }];
                     
                 }];
-                 */
             }];
             
             

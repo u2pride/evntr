@@ -26,14 +26,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         
-        _buttonColorOpposing = [UIColor whiteColor];
-        _isStateless = NO;
-        _font = [UIFont fontWithName:EVNFontRegular size:14.0];
-        _isRounded = YES;
-        _buttonColor = [UIColor orangeThemeColor];
-        _isSelected = NO;
-        _hasBorder = YES;
-        _titleText = @"Button";
         [self setupButton];
     }
     
@@ -46,14 +38,6 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         
-        _buttonColorOpposing = [UIColor whiteColor];
-        _isStateless = NO;
-        _font = [UIFont fontWithName:EVNFontRegular size:14.0];
-        _isRounded = YES;
-        _buttonColor = [UIColor orangeThemeColor];
-        _isSelected = NO;
-        _hasBorder = YES;
-        _titleText = @"Button";
         [self setupButton];
     }
     
@@ -64,6 +48,17 @@
 - (void) setTitleText:(NSString *)titleText {
     
     self.titleTextLabel.text = titleText;
+    
+    if ([titleText isEqualToString:@"Follow"]) {
+        [self setIsSelected:NO];
+    } else if ([titleText isEqualToString:@"Following"]) {
+        [self setIsSelected:YES];
+    } else if ([titleText isEqualToString:@"Let In"]) {
+        [self setIsSelected:NO];
+    } else if ([titleText isEqualToString:@"Revoke"]) {
+        [self setIsSelected:YES];
+    }
+    
     _titleText = titleText;
     
 }
@@ -91,8 +86,14 @@
 
     if (isSelected && !self.isStateless) {
         
-        [UIView animateWithDuration:0.8 animations:^{
+        self.titleTextLabel.alpha = 1;
+        self.backgroundColor = self.buttonColor;
+        self.titleTextLabel.textColor = [UIColor whiteColor];
+        
+        [UIView animateWithDuration:0.5 animations:^{
             
+            NSLog(@"changing background color to orangethemecolor");
+
             self.titleTextLabel.alpha = 1;
             self.backgroundColor = self.buttonColor;
             self.titleTextLabel.textColor = [UIColor whiteColor];
@@ -104,13 +105,21 @@
         
     } else if (!isSelected && !self.isStateless) {
         
-        [UIView animateWithDuration:0.8 animations:^{
+        
+        self.titleTextLabel.alpha = 1;
+        self.backgroundColor = self.buttonColorOpposing;
+        self.titleTextLabel.textColor = self.buttonColor;
+        
+        [UIView animateWithDuration:0.5 animations:^{
             
+            NSLog(@"changing background color to whitecolor");
+
             self.titleTextLabel.alpha = 1;
             self.backgroundColor = self.buttonColorOpposing;
             self.titleTextLabel.textColor = self.buttonColor;
             
         } completion:^(BOOL finished) {
+            
             
         }];
         
@@ -157,6 +166,15 @@
 }
 
 - (void) setupButton {
+    
+    _buttonColorOpposing = [UIColor whiteColor];
+    _isStateless = NO;
+    _font = [UIFont fontWithName:EVNFontRegular size:14.0];
+    _isRounded = YES;
+    _buttonColor = [UIColor orangeThemeColor];
+    _isSelected = NO;
+    _hasBorder = YES;
+    _titleText = @"Button";
     
     self.layer.cornerRadius = (_isRounded) ? 10 : 0;
     self.clipsToBounds = YES;
@@ -340,7 +358,7 @@
 
     NSLog(@"started task");
     
-    [UIView animateWithDuration:0.35 animations:^{
+    [UIView animateWithDuration:0.25 animations:^{
         
         self.titleTextLabel.alpha = 0;
         self.backgroundColor = [self.backgroundColor colorWithAlphaComponent:0.6];
@@ -366,7 +384,7 @@
 
 - (void) endedTask {
     
-    [UIView animateWithDuration:0.35 animations:^{
+    [UIView animateWithDuration:0.25 animations:^{
         
         self.titleTextLabel.alpha = 1;
         self.backgroundColor = [self.backgroundColor colorWithAlphaComponent:1.0];

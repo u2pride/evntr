@@ -73,6 +73,7 @@
     self.publicApprovedButton.titleText = @"Public-Approved";
     self.privateButton.titleText = @"Private";
     self.nextButton.titleText = @"Next";
+    self.nextButton.font = [UIFont fontWithName:@"Lato-Light" size:21];
     self.nextButton.isSelected = YES;
     self.nextButton.isRounded = NO;
     self.nextButton.isStateless = YES;
