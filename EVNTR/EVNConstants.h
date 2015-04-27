@@ -8,7 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#pragma mark - General Use
+extern NSString *const kFirstLoginNewBuild;
 extern NSString *const kAppName;
+extern NSString *const kLocationCurrent;
 
 
 #pragma mark - View Controllers on Tab 
@@ -118,6 +121,7 @@ extern NSString *const EVNFontBold;
 extern NSString *const EVNFontRegular;
 extern NSString *const EVNFontLight;
 extern NSString *const EVNFontThin;
+
 
 
 

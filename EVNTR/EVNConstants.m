@@ -9,6 +9,10 @@
 #import "EVNConstants.h"
 
 NSString *const kAppName = @"EVNTR";
+NSString *const kLocationCurrent = @"CURRENT_LOCATION";
+NSString *const kFirstLoginNewBuild = @"FIRST_LOGIN_NEW_BUILD";
+
+
 NSString *const kNumberOfNotifications = @"NUM_NOTIFICATIONS";
 NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
 

@@ -506,8 +506,6 @@
 
 - (void) setupMapComponent {
     
-    NSLog(@"Setting up map component");
-    
     [self.entireMapView startedLoading];
     
     self.locationOfEvent = [[CLLocation alloc] initWithLatitude:self.event.locationOfEvent.latitude longitude:self.event.locationOfEvent.longitude];
@@ -516,10 +514,20 @@
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     CLLocation *currentLocation = [appDelegate.locationManagerGlobal location];
     
-    NSLog(@"self.LocationOFevent: %@ and CurrentLocation: %@", self.locationOfEvent, currentLocation);
-    
+    if (!currentLocation) {
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSDictionary *userLocationDictionary = [userDefaults objectForKey:kLocationCurrent];
+        
+        NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
+        NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
+        
+        currentLocation = [[CLLocation alloc] initWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+        
+        [PFAnalytics trackEvent:@"Current Location Nil"];
+    }
+
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
-    
+
     self.entireMapView.distanceAway = (float) distance * 0.000621371;
     self.entireMapView.eventLocation = self.locationOfEvent;
     
@@ -550,13 +558,10 @@
         
     }
     
-    
 }
 
 - (void) setupCreatorComponent {
-    
-    NSLog(@"setup creator component - %@", [self.event.parent class]);
-    
+        
     //Tap Gesture for Event Creator Photo
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
     self.creatorPhoto.userInteractionEnabled = YES;

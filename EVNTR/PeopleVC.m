@@ -246,8 +246,8 @@
                 if (following.count == 0) {
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-                    noResultsView.headerText = @"No One to Invite";
-                    noResultsView.subHeaderText = @"Once you start to follow users, you will be able to invite them to events.";
+                    noResultsView.headerText = @"Following No Users";
+                    noResultsView.subHeaderText = @"";
                     noResultsView.actionButton.alpha = 0;
                     
                     [self.view addSubview:noResultsView];
@@ -406,69 +406,14 @@
     return cell;
 }
 
+
+#pragma mark - Collection View Delegate Methods
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    NSLog(@"DIDSELECT CALLED");
-
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
 
-        PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
-        
-        //already selected - deselect
-        if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
-            
-            [self removeUser:currentUser fromArray:self.allInvitedUsers];
-            //[self.allInvitedUsers removeObject:currentUser];
-            
-            [self.usersAlreadyInvited removeObject:currentUser];
-            
-            [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                
-                NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
-
-                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-                [cell.profileImage loadInBackground];
-                
-            }];
-            
-            
-        } else {
-            //Not Selected - Now Select
-            
-            [self.allInvitedUsers addObject:currentUser];
-            
-            [self.usersAlreadyInvited addObject:currentUser];
-            
-            [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                
-                NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
-
-                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                    
-                    cell.profileImage.alpha = 0;
-                    
-                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
-                        
-                        cell.profileImage.image = maskedImage;
-                    }];
-                    
-                    cell.profileImage.alpha = 0.0;
-                    cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
-
-                    [UIView animateWithDuration:0.24 animations:^{
-                        
-                        cell.profileImage.alpha = 1.0;
-                        cell.profileImage.layer.transform = CATransform3DIdentity;
-                    }];
-                    
-                    
-                }];
-            }];
-            
-            
-        }
+        [self determineSelectionStateForIndexPath:indexPath];
         
     } else {
         
@@ -483,9 +428,13 @@
             [self.navigationController pushViewController:viewUserProfileVC animated:YES];
             
         }];
-        
-
     }
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self determineSelectionStateForIndexPath:indexPath];
     
 }
 
@@ -507,13 +456,18 @@
 }
 
 
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"DIDDESELCT CALLED");
+
+
+
+
+
+#pragma mark - Helper Methods for Invite Selection
+
+- (void) determineSelectionStateForIndexPath:(NSIndexPath *)indexPath {
     
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
         
-        PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
+        PersonCell *cell = (PersonCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
         
         //already selected - deselect
@@ -527,7 +481,7 @@
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 
                 NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
-
+                
                 
                 cell.profileImage.file = (PFFile *) object[@"profilePicture"];
                 [cell.profileImage loadInBackground];
@@ -544,14 +498,14 @@
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 
                 NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
-
+                
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                   
+                    
                     cell.profileImage.alpha = 0;
                     
                     [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
-                       
+                        
                         cell.profileImage.image = maskedImage;
                         
                     }];
@@ -572,25 +526,8 @@
         }
         
     }
-    /*
-    if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
-
-        PersonCell *cell = (PersonCell *)[collectionView cellForItemAtIndexPath:indexPath];
-        
-        PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
-        
-        [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-            [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                cell.profileImage.image = [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"MaskImage"]];
-                
-            }];
-        }];
-    }
-     
-     */
+    
 }
-
 
 
 - (BOOL) isUser:(PFUser *)user alreadyInArray:(NSMutableArray *) array  {

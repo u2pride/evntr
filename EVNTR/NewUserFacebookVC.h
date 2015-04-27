@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NewUserFacebookVC : UIViewController <UITextFieldDelegate>
+@interface NewUserFacebookVC : UIViewController <UITextFieldDelegate, UIGestureRecognizerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) NSDictionary *informationFromFB;
 

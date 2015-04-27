@@ -99,7 +99,7 @@
         NSDictionary *userLocationDictionary = [NSDictionary dictionaryWithObjectsAndKeys:latitude, @"latitude", longitude, @"longitude", nil];
         
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setObject:userLocationDictionary forKey:@"userLocation"];
+        [userDefaults setObject:userLocationDictionary forKey:kLocationCurrent];
         [userDefaults synchronize];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"newLocationNotif" object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];

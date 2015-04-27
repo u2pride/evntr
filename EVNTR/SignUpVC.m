@@ -259,7 +259,7 @@ typedef enum {
             }
             
             if (userData[@"location"][@"name"]) {
-                [userDetailsForFBRegistration setObject:userData[@"location"] forKey:@"location"];
+                [userDetailsForFBRegistration setObject:userData[@"location"][@"name"] forKey:@"location"];
             }
             
             if (userData[@"first_name"]) {

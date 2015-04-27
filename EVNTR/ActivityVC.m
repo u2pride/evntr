@@ -238,6 +238,7 @@
     
     self.noResultsView.headerText = @"Where is Everyone?";
     self.noResultsView.subHeaderText = @"Looks like there's no activity yet.  Once you start attending and creating events, you'll see your activity in here.";
+    self.noResultsView.actionButton.hidden = YES;
     
     [self.view addSubview:self.noResultsView];
     
@@ -619,8 +620,18 @@
             [previousGrantActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
                 if (succeeded){
-                    grantButton.titleText = kGrantAccess;
-                    //[grantButton setTitle:kGrantAccess forState:UIControlStateNormal];
+                    
+                    EventObject *event = grantButton.eventToGrantAccess;
+                    PFRelation *attendingRelation = [event relationForKey:@"attenders"];
+                    [attendingRelation removeObject:grantButton.personToGrantAccess];
+                    [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        
+                        if (succeeded) {
+                            grantButton.titleText = kGrantAccess;
+                        }
+                        
+                    }];
+                    
                     
                 } else {
                     NSLog(@"Error Deleting Grant Access Activity");

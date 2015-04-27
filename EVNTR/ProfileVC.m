@@ -86,8 +86,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-
-    
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
@@ -103,7 +101,9 @@
     // image respects tint color
     self.instagramIcon.image = [[UIImage imageNamed:@"instagram"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.twitterIcon.image = [[UIImage imageNamed:@"twitter"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        
+    
+    self.editProfileButton.hidden = YES;
+    self.followButton.hidden = YES;
 }
 
 
@@ -241,24 +241,31 @@
     PFQuery *countEventsQuery = [PFQuery queryWithClassName:@"Events"];
     [countEventsQuery whereKey:@"parent" equalTo:self.userForProfileView];
     [countEventsQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", number];
+        if (!error) {
+            self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", number];
+            self.numberEventsLabel.textColor = [UIColor blackColor];
+        }
     }];
     
     PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
     [countFollowersQuery whereKey:@"to" equalTo:self.userForProfileView];
     [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
+        if (!error) {
+            self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
+            self.numberFollowersLabel.textColor = [UIColor blackColor];
+        }
     }];
     
     PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
     [countFollowingQuery whereKey:@"from" equalTo:self.userForProfileView];
     [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
+        if (!error) {
+            self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
+            self.numberFollowingLabel.textColor = [UIColor blackColor];
+        }
     }];
-    
-    
     
 }
 

@@ -60,7 +60,7 @@
     //_subHeaderTextLabel.backgroundColor = [UIColor purpleColor];
     
     _actionButton = [[EVNButton alloc] init];
-    _actionButton.titleText = @"I'm Lonely";
+    _actionButton.titleText = @"";
     _actionButton.font = [UIFont fontWithName:EVNFontRegular size:15.0];
     
     _headerTextLabel.textColor = [UIColor blackColor];
@@ -71,8 +71,8 @@
     _subHeaderTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _subHeaderTextLabel.numberOfLines = 0;
     
-    _headerTextLabel.text = @"HeaderText";
-    _subHeaderTextLabel.text = @"SubHeaderText";
+    _headerTextLabel.text = @"";
+    _subHeaderTextLabel.text = @"";
     _headerTextLabel.font = [UIFont fontWithName:EVNFontRegular size:HEADER_FONT_SIZE];
     _subHeaderTextLabel.font = [UIFont fontWithName:EVNFontLight size:SUBHEADER_FONT_SIZE];
     

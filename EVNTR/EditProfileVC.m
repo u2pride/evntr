@@ -80,6 +80,8 @@
     //default profile image
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.profileImageView.userInteractionEnabled = YES;
+    //clear for transparency/masking
+    self.profileImageView.backgroundColor = [UIColor clearColor];
     
     //Add Tap Gesture Recognizer to UIImageView to Update Profile Picture
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(updateProfilePicture)];
@@ -260,6 +262,7 @@
     
     [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
        
+        
         self.profileImageView.image = maskedImage;
         
         UIImage *fullyMaskedImageForData = [UIImage imageWithView:self.profileImageView];

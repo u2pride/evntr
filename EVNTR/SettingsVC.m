@@ -10,6 +10,8 @@
 #import <Parse/Parse.h>
 #import "ProfileVC.h"
 
+@import Social;
+
 
 @interface SettingsVC ()
 
@@ -55,6 +57,43 @@
     [self presentViewController:mailVC animated:YES completion:nil];
     
 }
+
+- (IBAction)tweetEvntr:(id)sender {
+    
+    if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
+        
+        SLComposeViewController *twitterVC = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+        [twitterVC setInitialText:@"@EvntrApp @U2Pride14"];
+        
+        [self presentViewController:twitterVC animated:YES completion:nil];
+        
+    } else {
+        
+        
+        
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Twitter Account" message:@"To tweet, make sure to setup Twitter in your iPhone settings.  Click on Settings, back out one page, then look for Twitter." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+        
+        [errorAlert addButtonWithTitle:@"Settings"];
+        
+        
+        
+        [errorAlert show];
+        
+    }
+    
+    
+}
+
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (buttonIndex == 1) {
+        NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+        [[UIApplication sharedApplication] openURL:appSettings];
+    }
+    
+}
+
 
 #pragma mark - MFMailViewController Delegate Methods
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {

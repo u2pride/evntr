@@ -11,6 +11,7 @@
 #import "FBShimmeringView.h"
 #import "NewUserFacebookVC.h"
 #import "EVNConstants.h"
+#import "UIColor+EVNColors.h"
 #import "UIImage+EVNEffects.h"
 
 #import <Parse/Parse.h>
@@ -46,12 +47,16 @@
     self.usernameField.delegate = self;
     self.emailField.delegate = self;
     self.nameField.delegate = self;
-}
-
-- (void) viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];
-
+    self.continueButton.titleText = @"Continue";
+    self.continueButton.isSelected = YES;
+    self.continueButton.hasBorder = NO;
+    
+    UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePhoto)];
+    tapToAddPhoto.delegate = self;
+    self.profileImageView.userInteractionEnabled = YES;
+    [self.profileImageView addGestureRecognizer:tapToAddPhoto];
+    
     NSLog(@"Passed informationFromFB: %@", self.informationFromFB);
     
     self.usernameField.text = ([self.informationFromFB objectForKey:@"firstName"]) ? (NSString *)[self.informationFromFB objectForKey:@"firstName"] : @"";
@@ -61,10 +66,12 @@
     self.facebookID = ([self.informationFromFB objectForKey:@"ID"]) ? (NSString *)[self.informationFromFB objectForKey:@"ID"] : @"";
     self.firstName = ([self.informationFromFB objectForKey:@"firstName"]) ? (NSString *)[self.informationFromFB objectForKey:@"firstName"] : @"";
     self.location = ([self.informationFromFB objectForKey:@"location"]) ? (NSString *)[self.informationFromFB objectForKey:@"location"] : @"";
-
+    
     NSLog(@"%@ - %@ - %@ - %@ - %@ - %@", self.usernameField.text, self.emailField.text, self.nameField.text, self.facebookID, self.firstName, self.location);
-     
+    
 }
+
+
 
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -165,6 +172,103 @@
     }
 
 }
+
+
+
+
+
+#pragma mark - Upload Image Sheet
+
+- (void) changePhoto {
+    
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }];
+    
+    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.view.tintColor = [UIColor orangeThemeColor];
+        
+        [self presentViewController:imagePicker animated:YES completion:^{
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+            
+        }];
+        
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    //Check to see if device has a camera
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [pictureOptionsMenu addAction:takePhoto];
+    }
+    
+    [pictureOptionsMenu addAction:choosePhoto];
+    [pictureOptionsMenu addAction:cancelAction];
+    
+    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:^{
+        
+    }];
+    
+}
+
+
+
+#pragma mark - Delegate Methods for UIImagePickerController
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        
+    }];
+    
+    self.profileImageView.backgroundColor = [UIColor clearColor];
+    
+    UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
+    
+    [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedFullyImage) {
+        
+        self.profileImageView.image = maskedFullyImage;
+        
+    }];
+    
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        
+    }];
+    
+}
+
+
+
+
+
+
+
+
+
 
 
 - (void) blurViewDuringLoginWithMessage:(NSString *)message {

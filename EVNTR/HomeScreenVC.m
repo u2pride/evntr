@@ -200,12 +200,12 @@
     
     //Ends up Grabbing the Last Location Stored if No Location in Location Manager
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *userLocationDictionary = [userDefaults objectForKey:@"userLocation"];
+    NSDictionary *userLocationDictionary = [userDefaults objectForKey:kLocationCurrent];
     
     NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
     NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
     
-    if (userLocationDictionary) {
+    if (userLocationDictionary && !self.currentUserLocation) {
         self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
         NSLog(@"Got Location from userdefaults - %@", self.currentUserLocation);
     }

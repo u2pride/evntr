@@ -36,14 +36,15 @@
 
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 
+
+- (IBAction)showBetaInformation:(id)sender;
+- (IBAction)showBuildInformation:(id)sender;
+
 @end
 
 
 
 @implementation InitialScreenVC
-
-
-
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -99,7 +100,6 @@
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopMoviePlayer) name:@"StopMoviePlayer" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:@"RestartMoviePlayer" object:nil];
 
@@ -108,6 +108,20 @@
 
 }
 
+
+- (IBAction)showBetaInformation:(id)sender {
+    
+    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Welcome to the Beta" message:@"Just a couple of quick things... First, each new build includes a database wipe - which explains why you sometimes log in and all your data is gone.  Next, if you are having issues logging in, delete the app and reinstall from TestFlight.  Finally, if you have feedback - send us an email.  We would love to hear from you!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+    
+    [errorAlert show];
+}
+
+- (IBAction)showBuildInformation:(id)sender {
+    
+    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 6 - Build 11" message:@"Thanks for downloading the latest build. The majority of the changes in this build are behind the scenes.  However, you'll notice some visual updates to the create event process. As usual, if you run into issues, shoot us an email from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+    
+    [errorAlert show];
+}
 
 - (MPMoviePlayerController *)moviePlayer
 {
@@ -230,12 +244,26 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if ([PFUser currentUser]) {
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
+    
+    if ([versionBuildNumber isEqualToString:@"V0.60Build1"]) {
         
-        [self stopMoviePlayer];
-        [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+        if ([PFUser currentUser]) {
+            
+            [self stopMoviePlayer];
+            [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+            
+        }
+        
+    } else {
+        
+        [standardDefaults setObject:@"V0.60Build1" forKey:kFirstLoginNewBuild];
+        [standardDefaults synchronize];
         
     }
+
 }
 
 

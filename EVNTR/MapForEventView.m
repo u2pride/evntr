@@ -394,7 +394,7 @@
     if (distanceAway >= 100.0) {
         self.distanceAwayLabel.text = [NSString stringWithFormat:@"%.f", distanceAway];
     } else {
-        self.distanceAwayLabel.text = [NSString stringWithFormat:@"%.01lf", distanceAway];
+        self.distanceAwayLabel.text = [NSString stringWithFormat:@"%.1f", distanceAway];
     }
     
     _distanceAway = distanceAway;
