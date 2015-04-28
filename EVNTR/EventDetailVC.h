@@ -26,7 +26,7 @@
 @interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate, EventModalProtocol, EventCreationCompleted, EventPicturesProtocol, EVNAddCommentProtocol, EVNCommentsTableProtocol>
 
 @property (nonatomic, strong) EventObject *event;
-@property (nonatomic, strong) id <EventDetailProtocol> delegate;
+@property (nonatomic, weak) id <EventDetailProtocol> delegate;
 
 @end
 

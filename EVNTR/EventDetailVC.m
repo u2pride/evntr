@@ -331,6 +331,10 @@
         
         if (self.isGuestUser) {
             
+            self.isCurrentUserAttending = NO;
+            self.isCurrentUsersEvent = NO;
+            self.standbyUsersCollectionView.allowsSelection = NO;
+            
             self.rsvpStatusButton.titleText = @"Sign Up Required";
             self.viewAttending.text = @"Sign Up to View Attending Users";
             [self.inviteButton setTitle:@"Sign Up to Attend" forState:UIControlStateNormal];
@@ -340,6 +344,8 @@
                 self.standbyUsersCollectionView.hidden = YES;
                 self.standbyListTitle.hidden = YES;
             }
+            
+            [self networkCallComplete]; //3
             
         } else {
             
@@ -1140,6 +1146,8 @@
 
 -(void)dealloc
 {
+    [self.entireMapView.timerForRandomize invalidate];
+    
     NSLog(@"eventdetailsvc is being deallocated");
 }
 

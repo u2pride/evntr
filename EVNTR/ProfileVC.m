@@ -96,6 +96,7 @@
     //Setup the View
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.editProfileButton.hidden = YES;
+    self.followButton.hidden  = YES;
     self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     
     // image respects tint color

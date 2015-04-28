@@ -43,8 +43,6 @@ typedef enum {
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 
 //Users Picture Data
-@property (nonatomic, strong) NSData *pictureData;
-
 @property (strong, nonatomic) UIVisualEffectView *blurOutLogInScreen;
 @property (nonatomic, strong) UILabel *blurMessage;
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
@@ -66,8 +64,6 @@ typedef enum {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-
     self.usernameField.text = nil;
     self.usernameField.placeholder = @"username";
     
@@ -84,8 +80,6 @@ typedef enum {
     
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.profileImageView.backgroundColor = [UIColor clearColor];
-    self.pictureData = UIImageJPEGRepresentation([UIImage imageNamed:@"PersonDefault"], 0.7);
-    
     
     UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
     tapToAddPhoto.delegate = self;
@@ -330,35 +324,51 @@ typedef enum {
     newUser.email = self.emailField.text;
     
     //Validate that the user has submitted a user name and password
-    if (self.usernameField.text.length > 3 && self.passwordField.text.length > 3 && self.emailField.text.length > 0 && self.pictureData) {
+    if (self.usernameField.text.length > 3 && self.passwordField.text.length > 3 && self.emailField.text.length > 0) {
         
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
             if (!error) {
                 
+                UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
+                NSData *pictureDataForParse = UIImagePNGRepresentation(fullyMaskedForData);
+                
                 //Create user then save profile picture and other information.
-                PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
+                PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureDataForParse];
                 
                 [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (succeeded){
                         newUser[@"profilePicture"] = profilePictureFile;
-                        [newUser saveInBackground];
+                        [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                            
+                            if (succeeded) {
+                                
+                                //Set isGuest Object
+                                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                                [standardDefaults setBool:NO forKey:kIsGuest];
+                                [standardDefaults synchronize];
+                                
+                                [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
+                                
+                                /*
+                                double delayInSeconds = 1.0;
+                                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                    [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
+                                    [self cleanUpBeforeTransition];
+                                });
+                                */
+                                
+                            } else {
+                                
+                                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"We're having problems on our side.  Don't worry, it should work if you try again.  If not, contact us from settings and we'll figure out your problem together." delegate:self cancelButtonTitle:@"Thanks" otherButtonTitles: nil];
+                                
+                                [errorAlert show];
+                            }
+                            
+                        }];
                     }
                 }];
-                
-                //Set isGuest Object
-                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-                [standardDefaults setBool:NO forKey:kIsGuest];
-                [standardDefaults synchronize];
-                
-                double delayInSeconds = 2.0;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
-                    [self cleanUpBeforeTransition];
-                });
-
-                
                 
             } else {
                 
@@ -417,23 +427,17 @@ typedef enum {
                 }
                 
                 
-                [self cleanUpBeforeTransition];
 
             }
             
+            [self cleanUpBeforeTransition];
 
             
         }];
         
     } else {
-        
-        if (!self.pictureData) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Profile Picture" message:@"Click on the photo to choose a profile picture." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-        } else if (self.emailField.text.length < 1) {
+        if (self.emailField.text.length < 1) {
             
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Email" message:@"Add your email before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
@@ -568,10 +572,6 @@ typedef enum {
     [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedFullyImage) {
         
         self.profileImageView.image = maskedFullyImage;
-        
-        UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
-        
-        self.pictureData = UIImagePNGRepresentation(fullyMaskedForData);
         
     }];
     

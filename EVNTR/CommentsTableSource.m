@@ -73,8 +73,7 @@ NSString *const cellIdentifier = @"commentsCell";
     [addCommentButton addTarget:self action:@selector(createNewComment) forControlEvents:UIControlEventTouchUpInside];
     addCommentButton.backgroundColor = [UIColor whiteColor];
     addCommentButton.layer.cornerRadius = 20;
-    addCommentButton.layer.anchorPoint = CGPointMake(0.5, 0);
-    addCommentButton.frame = CGRectMake(self.commentsTable.center.x, 0, 40, 40);
+    addCommentButton.frame = CGRectMake(self.commentsTable.center.x - 40, 0, 40, 40);
     
     [tableHeader addSubview:addCommentButton];
     

@@ -23,7 +23,6 @@
 @property (nonatomic, strong) UIView *circleView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
-@property (nonatomic, strong) NSTimer *timerForRandomize;
 
 @end
 
@@ -463,7 +462,7 @@
 
 
 - (void) dealloc {
-    [self.timerForRandomize invalidate];
+    NSLog(@"Dealloc mapview");
 }
 
 

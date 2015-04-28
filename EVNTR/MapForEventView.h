@@ -18,6 +18,7 @@
 @property (nonatomic) float distanceAway;
 @property (nonatomic, strong) MKMapView *mapView;
 
+@property (nonatomic, strong) NSTimer *timerForRandomize;
 
 - (void) startedLoading;
 - (void) finishedLoadingWithLocationAvailable:(BOOL)isLocationVisible;

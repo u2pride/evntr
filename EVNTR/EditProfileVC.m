@@ -258,16 +258,17 @@
         
     }];
     
+    self.profileImageView.backgroundColor = [UIColor clearColor];
+
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
     [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
        
-        
         self.profileImageView.image = maskedImage;
         
         UIImage *fullyMaskedImageForData = [UIImage imageWithView:self.profileImageView];
         
-        self.pictureData = UIImageJPEGRepresentation(fullyMaskedImageForData, 0.5);
+        self.pictureData = UIImagePNGRepresentation(fullyMaskedImageForData);
         
     }];
     

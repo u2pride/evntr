@@ -13,7 +13,6 @@
 		A41562C71A767D3A00565BB6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C61A767D3A00565BB6 /* main.m */; };
 		A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C91A767D3A00565BB6 /* AppDelegate.m */; };
 		A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A41562D11A767D3A00565BB6 /* Images.xcassets */; };
-		A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = A41562D31A767D3A00565BB6 /* LaunchScreen.xib */; };
 		A41562E11A767D3A00565BB6 /* EVNTRTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562E01A767D3A00565BB6 /* EVNTRTests.m */; };
 		A41563211A76885400565BB6 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415631F1A76885400565BB6 /* Bolts.framework */; };
 		A41563221A76885500565BB6 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563201A76885400565BB6 /* Parse.framework */; };
@@ -53,8 +52,6 @@
 		A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A488B35B1A801FE800738B4F /* MapKit.framework */; };
 		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
-		A490C99F1AD69C0400182B5E /* WalkthroughVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A490C99E1AD69C0400182B5E /* WalkthroughVC.m */; };
-		A497BD621AD542F100619BF4 /* WalkthroughPageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A497BD611AD542F100619BF4 /* WalkthroughPageVC.m */; };
 		A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */; };
 		A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */; };
 		A4AE41AD1AB796CB006270E2 /* EVNLocationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */; };
@@ -183,10 +180,6 @@
 		A48EEFEC1A797B82007145E3 /* EventDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailVC.h; sourceTree = "<group>"; };
 		A48EEFED1A797B82007145E3 /* EventDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailVC.m; sourceTree = "<group>"; };
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		A490C99D1AD69C0400182B5E /* WalkthroughVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WalkthroughVC.h; sourceTree = "<group>"; };
-		A490C99E1AD69C0400182B5E /* WalkthroughVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WalkthroughVC.m; sourceTree = "<group>"; };
-		A497BD601AD542F100619BF4 /* WalkthroughPageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WalkthroughPageVC.h; sourceTree = "<group>"; };
-		A497BD611AD542F100619BF4 /* WalkthroughPageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WalkthroughPageVC.m; sourceTree = "<group>"; };
 		A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StandbyCollectionViewCell.h; sourceTree = "<group>"; };
 		A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StandbyCollectionViewCell.m; sourceTree = "<group>"; };
 		A4A1850A1AE91DC00009AC43 /* UIImage+EVNEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EVNEffects.h"; sourceTree = "<group>"; };
@@ -332,8 +325,6 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
-				A4B68BC21AEE7F4D003EB822 /* WalkthroughScreensPVC.h */,
-				A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Tabs */,
@@ -543,10 +534,8 @@
 		A497BD9E1AD54A2600619BF4 /* Walkthrough */ = {
 			isa = PBXGroup;
 			children = (
-				A490C99D1AD69C0400182B5E /* WalkthroughVC.h */,
-				A490C99E1AD69C0400182B5E /* WalkthroughVC.m */,
-				A497BD601AD542F100619BF4 /* WalkthroughPageVC.h */,
-				A497BD611AD542F100619BF4 /* WalkthroughPageVC.m */,
+				A4B68BC21AEE7F4D003EB822 /* WalkthroughScreensPVC.h */,
+				A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */,
 			);
 			name = Walkthrough;
 			sourceTree = "<group>";
@@ -811,7 +800,6 @@
 				A4B2E2421AC990E200279C99 /* evntrappbr.mov in Resources */,
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
-				A41562D51A767D3A00565BB6 /* LaunchScreen.xib in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
@@ -876,7 +864,6 @@
 				A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */,
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
-				A497BD621AD542F100619BF4 /* WalkthroughPageVC.m in Sources */,
 				A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */,
 				A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
@@ -889,7 +876,6 @@
 				A41B2A131ABCBE3F00F7CE44 /* SignUpTabVC.m in Sources */,
 				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
-				A490C99F1AD69C0400182B5E /* WalkthroughVC.m in Sources */,
 				A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */,
 				A4C2C1371ACEB4FB004C7F35 /* EventObject.m in Sources */,
 				A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */,
@@ -1021,6 +1007,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1039,6 +1026,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (

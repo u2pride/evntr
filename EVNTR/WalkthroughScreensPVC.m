@@ -38,8 +38,7 @@
     self.currentIndex = 0;
     
     self.pageControl = [[UIPageControl alloc] init];
-    self.pageControl.center = self.view.center;
-    self.pageControl.frame = CGRectMake(self.view.frame.size.width - 120, self.pageControl.frame.origin.y, 200, 20);
+    self.pageControl.frame = CGRectMake(self.view.frame.size.width - 120, self.view.frame.size.height - 125, 200, 20);
     self.pageControl.transform = CGAffineTransformMakeRotation(M_PI_2);
     self.pageControl.currentPage = 0;
     self.pageControl.numberOfPages = self.walkthroughImages.count;
@@ -96,7 +95,6 @@
     
     [walkthroughVC.view addSubview:imageScreen];
     
-    
     if (index == 7) {
         
         UIView *transparentClickView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height / 2, self.view.frame.size.width, self.view.frame.size.height)];
@@ -115,6 +113,8 @@
 - (void) endWalkthrough {
     
     NSLog(@"End the Walkthrough");
+    
+    [self performSegueWithIdentifier:@"WalkthroughToApp" sender:self];
     
 }
 

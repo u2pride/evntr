@@ -111,14 +111,14 @@
 
 - (IBAction)showBetaInformation:(id)sender {
     
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Welcome to the Beta" message:@"Just a couple of quick things... First, each new build includes a database wipe - which explains why you sometimes log in and all your data is gone.  Next, if you are having issues logging in, delete the app and reinstall from TestFlight.  Finally, if you have feedback - send us an email.  We would love to hear from you!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Welcome to the Beta" message:@"Just a couple of quick things... First, each new major update includes a database wipe - which explains why you sometimes log in and all your data is gone.  If you are having issues logging in, delete the app and reinstall from TestFlight.  Finally, if you have feedback - send us an email.  We would love to hear from you!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
     
     [errorAlert show];
 }
 
 - (IBAction)showBuildInformation:(id)sender {
     
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 6 - Build 11" message:@"Thanks for downloading the latest build. The majority of the changes in this build are behind the scenes.  However, you'll notice some visual updates to the create event process. As usual, if you run into issues, shoot us an email from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 0.60 - Build 13" message:@"Thanks for downloading the latest build. The majority of the changes in this build are behind the scenes.  However, you'll notice some visual updates to the create event process and a brand new walkthrough for first time users. As usual, if you run into issues, shoot us an email from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
     
     [errorAlert show];
 }
@@ -248,7 +248,7 @@
     
     NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
     
-    if ([versionBuildNumber isEqualToString:@"V0.60Build1"]) {
+    if ([versionBuildNumber isEqualToString:@"V0.60Build14"]) {
         
         if ([PFUser currentUser]) {
             
@@ -259,7 +259,7 @@
         
     } else {
         
-        [standardDefaults setObject:@"V0.60Build1" forKey:kFirstLoginNewBuild];
+        [standardDefaults setObject:@"V0.60Build14" forKey:kFirstLoginNewBuild];
         [standardDefaults synchronize];
         
     }

@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSMutableArray *commentsData;
 @property (nonatomic) BOOL allowAddingComments;
 
-@property (nonatomic, strong) id <EVNCommentsTableProtocol> delegate;
+@property (nonatomic, weak) id <EVNCommentsTableProtocol> delegate;
 
 //Designated Initializer
 - (instancetype)initWithEvent:(EventObject *)event withTable:(UITableView *)table;

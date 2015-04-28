@@ -13,7 +13,7 @@
 
 @interface EVNAddCommentVC : UIViewController <UITextViewDelegate>
 
-@property (nonatomic, strong) id <EVNAddCommentProtocol> delegate;
+@property (nonatomic, weak) id <EVNAddCommentProtocol> delegate;
 
 @end
 
