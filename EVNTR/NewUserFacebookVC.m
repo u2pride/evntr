@@ -18,6 +18,10 @@
 
 @interface NewUserFacebookVC ()
 
+@property (strong, nonatomic) IBOutlet UILabel *usernameLabel;
+@property (strong, nonatomic) IBOutlet UILabel *emailLabel;
+@property (strong, nonatomic) IBOutlet UILabel *realNameLabel;
+
 @property (strong, nonatomic) IBOutlet EVNButton *continueButton;
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
@@ -33,6 +37,8 @@
 @property (nonatomic, strong) UILabel *blurMessage;
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
 
+@property (nonatomic) BOOL viewIsPulledUpForTextInput;
+
 
 - (IBAction)registerWithFBInfo:(id)sender;
 
@@ -47,6 +53,8 @@
     self.usernameField.delegate = self;
     self.emailField.delegate = self;
     self.nameField.delegate = self;
+    
+    self.viewIsPulledUpForTextInput = NO;
     
     self.continueButton.titleText = @"Continue";
     self.continueButton.isSelected = YES;
@@ -71,6 +79,29 @@
     
 }
 
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
 
 
 
@@ -312,6 +343,81 @@
     
     return YES;
 }
+
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    NSLog(@"KEYBOARDWILL SHOW");
+    
+    //NSValue * keyboardEndFrame;
+    CGRect    screenRect;
+    CGRect    windowRect;
+    CGRect    viewRect;
+    
+    // determine's keyboard height
+    screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect      = [self.view        convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (!self.viewIsPulledUpForTextInput && self.nameField.isFirstResponder) {
+        [self moveLoginFieldsUp:YES withKeyboardSize:movement];
+        
+    }
+    
+}
+
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
+    CGRect screenRect;
+    CGRect windowRect;
+    CGRect viewRect;
+    
+    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect = [self.view convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (self.viewIsPulledUpForTextInput && self.nameField.isFirstResponder) {
+        [self moveLoginFieldsUp:NO withKeyboardSize:movement];
+        
+    }
+    
+}
+
+
+- (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
+    
+    int movement = (up ? -distance : distance);
+    
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        
+        self.view.frame = CGRectOffset(self.view.frame, 0, movement);
+        self.usernameField.hidden = (up ? 1 : 0);
+        self.emailField.hidden = (up ? 1 : 0);
+        self.usernameLabel.hidden = (up ? 1 : 0);
+        self.emailLabel.hidden = (up ? 1 : 0);
+
+    } completion:^(BOOL finished) {
+        self.viewIsPulledUpForTextInput = (up ? YES : NO);
+    }];
+    
+    
+}
+
+
+//Allow user to dismiss keyboard by tapping the View
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    [self.usernameField resignFirstResponder];
+    [self.emailField resignFirstResponder];
+    [self.nameField resignFirstResponder];
+    
+}
+
 
 #pragma mark - private methods
 

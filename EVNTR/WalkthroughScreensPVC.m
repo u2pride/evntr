@@ -21,6 +21,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"WalkthroughBackground"]];
+    
     //Walkthrough Model
     self.walkthroughImages = [[NSMutableArray alloc] init];
     [self.walkthroughImages addObject:[UIImage imageNamed:@"WalkthroughOne"]];

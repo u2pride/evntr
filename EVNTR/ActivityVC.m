@@ -48,7 +48,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
     //Navigation Bar Font & Color
     NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
     self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
@@ -60,12 +59,88 @@
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
+    
     switch (self.typeOfActivityView) {
         case ACTIVITIES_ALL: {
-            self.navigationItem.title = @"Notifications";
+            
+            UILabel *titleLabel = [UILabel new];
+
+            UIFont *boldFont = [UIFont fontWithName:@"Lato-Bold" size:kFontSize];
+            UIFont *regularFont = [UIFont fontWithName:@"Lato-Regular" size:kFontSize];
+            UIColor *foregroundColor = [UIColor whiteColor];
+            
+            // Create the attributes
+            NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
+                                   regularFont, NSFontAttributeName,
+                                   foregroundColor, NSForegroundColorAttributeName, nil];
+            NSDictionary *subAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
+                                      boldFont, NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+            const NSRange range = NSMakeRange(14, 1);
+            
+            // Create the attributed string (text + attributes)
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:@"Notifications  v" attributes:attrs];
+            [attributedText setAttributes:subAttrs range:range];
+            
+            // Set it in our UILabel and we are done!
+            [titleLabel setAttributedText:attributedText];
+            [titleLabel sizeToFit];
+
+            
+            self.navigationItem.titleView = titleLabel;
+            
+            /*
+            NSString *baseString = @"Notifications ";
+            //NSString *fullString = [baseString stringByAppendingString:@"\u25BC"];
+            
+
+            
+            NSDictionary *moreAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                             NSFontAttributeName: [UIFont fontWithName:@"Lato-Bold" size:kFontSize],
+                                         NSUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]};
+            
+            
+            NSAttributedString *downCarrot = [[NSAttributedString alloc] initWithString:@"v" attributes:moreAttributes];
+            
+            
+            NSString *fullString = [baseString stringByAppendingString:downCarrot.string];
+            
+            
+            
+            titleLabel.text = fullString;
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                         NSUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]};
+            titleLabel.attributedText = [[NSAttributedString alloc] initWithString:titleLabel.text attributes:attributes];
+            [titleLabel sizeToFit];
+            self.navigationItem.titleView = titleLabel;
+            */
+            
+            //NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
+            //[attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"Notifications" attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)}]];
+
+            
+            //NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+            
+            //NSString *notificationsTitle = @"Notifications";
+            //NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:notificationsTitle attributes:underlineAttribute];
+            //self.navigationItem.title = attributedString.string;
+            //self.navigationItem.title = @"Notifications";
             break;
         }
         case ACTIVITIES_INVITES: {
+            
+            /*
+            UILabel *titleLabel = [UILabel new];
+            titleLabel.text = @"Invites";
+            NSDictionary *attributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                         NSFontAttributeName: [UIFont fontWithName:@"Lato-Light" size:20.0],
+                                         NSUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]};
+            titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.navigationItem.title attributes:attributes];
+            [titleLabel sizeToFit];
+            self.navigationItem.titleView = titleLabel;
+            */
+            
             self.navigationItem.title = @"Invites";
             break;
         }

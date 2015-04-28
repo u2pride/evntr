@@ -403,7 +403,28 @@
     //Gesture Recognizer to Dismiss Keyboard on Tap in View
     UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
     tapToDismiss.cancelsTouchesInView = YES;
+    
+    UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    swipeUp.direction = UISwipeGestureRecognizerDirectionDown;
+    swipeUp.cancelsTouchesInView = YES;
+    
+    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    swipeDown.direction = UISwipeGestureRecognizerDirectionUp;
+    swipeDown.cancelsTouchesInView = YES;
+    
+    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+    swipeLeft.cancelsTouchesInView = YES;
+    
+    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+    swipeRight.cancelsTouchesInView = YES;
+    
     [self.tapToDismissView addGestureRecognizer:tapToDismiss];
+    [self.tapToDismissView addGestureRecognizer:swipeUp];
+    [self.tapToDismissView addGestureRecognizer:swipeDown];
+    [self.tapToDismissView addGestureRecognizer:swipeLeft];
+    [self.tapToDismissView addGestureRecognizer:swipeRight];
     
     [textView becomeFirstResponder];
 }

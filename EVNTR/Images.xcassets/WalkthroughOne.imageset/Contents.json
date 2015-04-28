@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "walkthroughs.png"
+      "filename" : "walkthrough1@2x-1.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "walkthroughs-1.png"
+      "filename" : "walkthrough1@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "walkthroughs-2.png"
+      "filename" : "walkthrough1@3x.png"
     }
   ],
   "info" : {

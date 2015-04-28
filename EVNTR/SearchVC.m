@@ -50,6 +50,10 @@
     self.searchController.dimsBackgroundDuringPresentation = NO;
     [self.searchController.searchBar sizeToFit];
     
+    //Tint Color for Cancel on Search Bar
+    [self.searchController.searchBar setTintColor:[UIColor whiteColor]];
+    [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTintColor:[UIColor orangeThemeColor]];
+    
     self.navigationItem.titleView = self.searchController.searchBar;
     
     self.searchTypeSelectionView = [[SearchHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
@@ -64,7 +68,7 @@
 
     [self.searchTypeSelectionView.eventLabel addGestureRecognizer:tapEvents];
     [self.searchTypeSelectionView.peopleLabel addGestureRecognizer:tapPeople];
-    
+
 
     
 }
@@ -209,6 +213,15 @@
     }
     
 
+    
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [self.searchController.searchBar resignFirstResponder];
+    
     
 }
 
