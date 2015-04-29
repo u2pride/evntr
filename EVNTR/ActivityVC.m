@@ -770,43 +770,66 @@
     PFUser *userToChangeFollowState = followButton.personToFollow;
     
     followButton.enabled = NO;
-    
+    [followButton startedTask];
+
     //Follow User or Unfollow User Depending on Current Button State
     if ([followButton.titleText isEqualToString:@"Following"]) {
 
-        //Find and Delete Old Follow Activity
-        PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
+        UIAlertController *unfollowSheet = [UIAlertController alertControllerWithTitle:userToChangeFollowState.username message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         
-        [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-        [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
-        [findFollowActivity whereKey:@"to" equalTo:userToChangeFollowState];
-        
-        [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        UIAlertAction *unfollow = [UIAlertAction actionWithTitle:@"Unfollow" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
             
-            PFObject *previousFollowActivity = [objects firstObject];
-            [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-
-                if (succeeded) {
-                    
-                    followButton.titleText = @"Follow";
-                    
-                    //Notify Profile View of Update
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-                } else {
-                    
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                    
-                    [errorAlert show];
-                }
+            //Find and Delete Old Follow Activity
+            PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
+            
+            [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+            [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [findFollowActivity whereKey:@"to" equalTo:userToChangeFollowState];
+            
+            [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                //Re-Enable Button
-                followButton.enabled = YES;
-                [followButton endedTask];
-                
+                PFObject *previousFollowActivity = [objects firstObject];
+                [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    
+                    if (succeeded) {
+                        
+                        followButton.titleText = @"Follow";
+                        
+                        //Notify Profile View of Update
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
+                    } else {
+                        
+                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                        
+                        [errorAlert show];
+                    }
+                    
+                    //Re-Enable Button
+                    followButton.enabled = YES;
+                    [followButton endedTask];
+                    
+                }];
             }];
+            
         }];
         
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+            
+            followButton.enabled = YES;
+            [followButton endedTask];
+            
+        }];
+        
+        
+        [unfollowSheet addAction:unfollow];
+        [unfollowSheet addAction:cancelAction];
+        
+        [self presentViewController:unfollowSheet animated:YES completion:nil];
+        
+        
     } else if ([followButton.titleText isEqualToString:@"Follow"]) {
+        
+        
         
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
         

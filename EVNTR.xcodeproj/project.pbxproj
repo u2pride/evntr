@@ -27,6 +27,7 @@
 		A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */; };
 		A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */; };
 		A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7F11A9BFF0900DF9ABE /* SearchVC.m */; };
+		A43C57941AF15B48008E8EA2 /* SplashScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */; };
 		A44661161AA7589C00E6C3C6 /* AddEventPrimaryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */; };
 		A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563231A7688BB00565BB6 /* AudioToolbox.framework */; };
 		A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563291A7688D300565BB6 /* CoreLocation.framework */; };
@@ -154,6 +155,8 @@
 		A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonPFExtended.m; sourceTree = "<group>"; };
 		A423F7F01A9BFF0900DF9ABE /* SearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchVC.h; sourceTree = "<group>"; };
 		A423F7F11A9BFF0900DF9ABE /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SearchVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashScreenVC.h; sourceTree = "<group>"; };
+		A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
 		A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddEventPrimaryVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A45638C51AB9B8AB009D3BCC /* MapForEventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapForEventView.h; sourceTree = "<group>"; };
@@ -325,6 +328,8 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
+				A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */,
+				A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Tabs */,
@@ -837,6 +842,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */,
+				A43C57941AF15B48008E8EA2 /* SplashScreenVC.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
 				A4B2BC621AB8C7D40004B084 /* NewEventModel.m in Sources */,

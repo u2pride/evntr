@@ -410,4 +410,37 @@
 
 
 
+
+
+//Adding New
+
+- (BOOL) beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    
+    [super beginTrackingWithTouch:touch withEvent:event];
+    
+    
+    [UIView animateWithDuration:0.2 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        self.transform = CGAffineTransformMakeScale(0.9, 0.9);
+        
+        
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.2 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+            self.transform = CGAffineTransformIdentity;
+            
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+
+    }];
+    
+    return YES;
+    
+}
+
+
+
 @end

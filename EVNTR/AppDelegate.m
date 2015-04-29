@@ -44,7 +44,13 @@
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
     
-    [self startLocationManager];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        [self startLocationManager];
+
+    });
+    
     
     //Audio Session - Continue Playing Background Music
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -231,7 +237,7 @@
                         
                         //Scheduling Local Notification
                         UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-                        localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:30];
+                        localNotification.fireDate = [NSDate date];
                         localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!", userWhoInvited[@"username"]];
                         localNotification.alertAction = nil;
                         localNotification.timeZone = [NSTimeZone defaultTimeZone];
@@ -254,7 +260,7 @@
                     
                     // Schedule a Local Notification
                     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-                    localNotification.fireDate = [NSDate dateWithTimeIntervalSinceNow:30];
+                    localNotification.fireDate = [NSDate date];
                     localNotification.alertBody = @"You've been invited to more than one event. You're popular.";
                     localNotification.alertAction = @"See the Events!";
                     localNotification.timeZone = [NSTimeZone defaultTimeZone];

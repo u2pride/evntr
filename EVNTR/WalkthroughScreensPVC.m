@@ -40,7 +40,7 @@
     self.currentIndex = 0;
     
     self.pageControl = [[UIPageControl alloc] init];
-    self.pageControl.frame = CGRectMake(self.view.frame.size.width - 120, self.view.frame.size.height - 125, 200, 20);
+    self.pageControl.frame = CGRectMake(self.view.frame.size.width - 120, self.view.frame.size.height - 150, 200, 20);
     self.pageControl.transform = CGAffineTransformMakeRotation(M_PI_2);
     self.pageControl.currentPage = 0;
     self.pageControl.numberOfPages = self.walkthroughImages.count;

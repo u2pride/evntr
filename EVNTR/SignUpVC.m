@@ -51,6 +51,7 @@ typedef enum {
 @property (strong, nonatomic) IBOutlet UIButton *connectWithFacebookButton;
 
 @property (nonatomic) BOOL viewIsPulledUpForTextInput;
+@property (nonatomic) BOOL userPickedProfileImage;
 
 - (IBAction)signUpWithFacebook:(id)sender;
 - (IBAction)signUp:(id)sender;
@@ -78,7 +79,7 @@ typedef enum {
     self.backgroundView.layer.borderWidth = 1.0f;
     self.backgroundView.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     
-    self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
+    self.profileImageView.image = [UIImage imageNamed:@"PersonDefaultAdd"];
     self.profileImageView.backgroundColor = [UIColor clearColor];
     
     UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
@@ -94,6 +95,7 @@ typedef enum {
     self.registerButton.backgroundColor = [UIColor orangeThemeColor];
     
     self.viewIsPulledUpForTextInput = NO;
+    self.userPickedProfileImage = NO;
     
     self.connectWithFacebookButton.layer.cornerRadius = 5.0f;
 
@@ -330,6 +332,10 @@ typedef enum {
             
             if (!error) {
                 
+                if (!self.userPickedProfileImage) {
+                    self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
+                }
+                
                 UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
                 NSData *pictureDataForParse = UIImagePNGRepresentation(fullyMaskedForData);
                 
@@ -565,6 +571,7 @@ typedef enum {
         
     }];
     
+    self.userPickedProfileImage = YES;
     self.profileImageView.backgroundColor = [UIColor clearColor];
     
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];

@@ -11,6 +11,7 @@
 #import "EVNButton.h"
 #import "UIColor+EVNColors.h"
 
+@import Photos;
 #import <Parse/Parse.h>
 
 @interface AddEventPrimaryVC ()
@@ -81,6 +82,8 @@
     [self.publicApprovedButton sizeToFit];
     
     // Initialize ImageView & Attach Tap Gesture
+    self.eventCoverPhotoView.clipsToBounds = YES;
+    self.eventCoverPhotoView.contentMode = UIViewContentModeScaleAspectFill;
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventCoverPhotoView.userInteractionEnabled = YES;
     UIGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectEventPhoto)];
@@ -146,9 +149,6 @@
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
         self.navigationItem.leftBarButtonItem = cancelButton;
     }
-    
-    
-
     
 }
 
@@ -238,8 +238,40 @@
         
     }];
     
+    UIAlertAction *lastPhoto = [UIAlertAction actionWithTitle:@"Use Last Photo Taken" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+       
+        PHFetchOptions *fetchOptions = [PHFetchOptions new];
+        fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO],
+                                         ];
+        
+        PHFetchResult *fetchResults = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:fetchOptions];
+        
+        PHAsset *lastPhotoAsset = [fetchResults firstObject];
+        
+        PHImageManager *defaultManager = [PHImageManager defaultManager];
+        
+        PHImageRequestOptions *requestOptions = [PHImageRequestOptions new];
+        requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+        
+        [defaultManager requestImageForAsset:lastPhotoAsset targetSize:CGSizeMake(200, 200) contentMode:PHImageContentModeAspectFill options:requestOptions resultHandler:^(UIImage *result, NSDictionary *info) {
+            
+            self.eventCoverPhotoView.image = result;
+            
+            NSData *pictureData = UIImageJPEGRepresentation(result, 0.5);
+            self.coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
+            
+            //Editing Event - Add New Cover Photo to the Event
+            if (isEditing) {
+                self.eventToEdit.coverPhoto = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
+            }
+            
+        }];
+        
+    }];
+    
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     
+    [pictureOptionsMenu addAction:lastPhoto];
     [pictureOptionsMenu addAction:takePhoto];
     [pictureOptionsMenu addAction:choosePhoto];
     [pictureOptionsMenu addAction:cancelAction];

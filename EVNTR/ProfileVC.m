@@ -403,37 +403,58 @@
         
     } else if ([self.followButton.titleText isEqualToString:@"Following"]) {
         
-        PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
+        UIAlertController *unfollowSheet = [UIAlertController alertControllerWithTitle:self.userForProfileView.username message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         
-        [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-        [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
-        [findFollowActivity whereKey:@"to" equalTo:self.userForProfileView];
-        
-        [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        UIAlertAction *unfollow = [UIAlertAction actionWithTitle:@"Unfollow" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
             
-            PFObject *previousFollowActivity = [objects firstObject];
-            [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
+            
+            [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+            [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [findFollowActivity whereKey:@"to" equalTo:self.userForProfileView];
+            
+            [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                if (succeeded) {
+                PFObject *previousFollowActivity = [objects firstObject];
+                [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
-                    self.followButton.titleText = @"Follow";
+                    if (succeeded) {
+                        
+                        self.followButton.titleText = @"Follow";
+                        
+                        //Notify View Controllers of a New Follow
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
+                    } else {
+                        
+                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                        
+                        [errorAlert show];
+                        
+                    }
                     
-                    //Notify View Controllers of a New Follow
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-                } else {
+                    self.followButton.enabled = YES;
+                    [self.followButton endedTask];
                     
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                    
-                    [errorAlert show];
-                    
-                }
-                
-                self.followButton.enabled = YES;
-                [self.followButton endedTask];
-                
+                }];
             }];
+
+            
         }];
         
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+            
+            self.followButton.enabled = YES;
+            [self.followButton endedTask];
+            
+        }];
+        
+        
+        [unfollowSheet addAction:unfollow];
+        [unfollowSheet addAction:cancelAction];
+                
+        [self presentViewController:unfollowSheet animated:YES completion:nil];
+        
+                
     } else {
         NSLog(@"Weird error - need to notify user");
         self.followButton.enabled = YES;

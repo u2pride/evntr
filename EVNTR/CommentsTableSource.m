@@ -14,7 +14,7 @@ NSString *const cellIdentifier = @"commentsCell";
 
 @interface CommentsTableSource ()
 
-
+@property (nonatomic, strong) UIButton *addCommentButton;
 
 @end
 
@@ -66,16 +66,16 @@ NSString *const cellIdentifier = @"commentsCell";
     UIView *tableHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _commentsTable.frame.size.width, 50)];
     tableHeader.backgroundColor = [UIColor clearColor];
     
-    UIButton *addCommentButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [addCommentButton setTitle:@"+" forState:UIControlStateNormal];
-    [addCommentButton.titleLabel setFont:[UIFont fontWithName:@"Lato-Regular" size:20]];
-    [addCommentButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [addCommentButton addTarget:self action:@selector(createNewComment) forControlEvents:UIControlEventTouchUpInside];
-    addCommentButton.backgroundColor = [UIColor whiteColor];
-    addCommentButton.layer.cornerRadius = 20;
-    addCommentButton.frame = CGRectMake(self.commentsTable.center.x - 40, 0, 40, 40);
+    self.addCommentButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    [self.addCommentButton setTitle:@"+" forState:UIControlStateNormal];
+    [self.addCommentButton.titleLabel setFont:[UIFont fontWithName:@"Lato-Regular" size:20]];
+    [self.addCommentButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.addCommentButton addTarget:self action:@selector(createNewComment) forControlEvents:UIControlEventTouchUpInside];
+    self.addCommentButton.backgroundColor = [UIColor whiteColor];
+    self.addCommentButton.layer.cornerRadius = 20;
+    self.addCommentButton.frame = CGRectMake(self.commentsTable.center.x - 40, 0, 40, 40);
     
-    [tableHeader addSubview:addCommentButton];
+    [tableHeader addSubview:self.addCommentButton];
     
     [_commentsTable setTableHeaderView:tableHeader];
     
@@ -101,6 +101,22 @@ NSString *const cellIdentifier = @"commentsCell";
     if ([strongDelegate respondsToSelector:@selector(addNewComment)]) {
         [strongDelegate addNewComment];
     }
+    
+    [UIView animateWithDuration:0.2 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        
+        self.addCommentButton.transform = CGAffineTransformMakeScale(0.9, 0.9);
+        
+    } completion:^(BOOL finished) {
+        
+        [UIView animateWithDuration:0.2 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+            self.addCommentButton.transform = CGAffineTransformIdentity;
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }];
     
 }
 

@@ -170,9 +170,7 @@
                                 [HUD hide:YES afterDelay:1.0];
                             });
                             
-    
-                            
-                            
+                                
                         } else {
                             
                             NSLog(@"Failed saving event");
