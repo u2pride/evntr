@@ -16,7 +16,9 @@
 
 #import <Parse/Parse.h>
 
-@interface NewUserFacebookVC ()
+@interface NewUserFacebookVC () {
+    BOOL userIsAddingCustomPicture;
+}
 
 @property (strong, nonatomic) IBOutlet UILabel *usernameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *emailLabel;
@@ -55,6 +57,7 @@
     self.nameField.delegate = self;
     
     self.viewIsPulledUpForTextInput = NO;
+    userIsAddingCustomPicture = NO;
     
     self.continueButton.titleText = @"Continue";
     self.continueButton.isSelected = YES;
@@ -124,7 +127,9 @@
                                        
                                        [EVNUtility maskImage:[UIImage imageWithData:data] withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedImage) {
                                           
-                                           self.profileImageView.image = maskedImage;
+                                           if (!userIsAddingCustomPicture) {
+                                               self.profileImageView.image = maskedImage;
+                                           }
                                            
                                        }];
                                        
@@ -211,6 +216,8 @@
 #pragma mark - Upload Image Sheet
 
 - (void) changePhoto {
+    
+    userIsAddingCustomPicture = YES;
     
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     

@@ -20,6 +20,8 @@
 @interface ActivityVC ()
 
 @property (nonatomic) EVNNoResultsView *noResultsView;
+@property (nonatomic, strong) NSString *navigationBarTitleText;
+@property (nonatomic, strong) UILabel *titleLabel;
 
 @end
 
@@ -45,6 +47,35 @@
     
 }
 
+
+- (void) setNavigationBarTitleText:(NSString *)navigationBarTitleText {
+    
+    UIFont *boldFont = [UIFont fontWithName:@"Lato-Bold" size:kFontSize];
+    UIFont *regularFont = [UIFont fontWithName:@"Lato-Regular" size:kFontSize];
+    UIColor *foregroundColor = [UIColor whiteColor];
+    
+    // Create the attributes
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+                           [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
+                           regularFont, NSFontAttributeName,
+                           foregroundColor, NSForegroundColorAttributeName, nil];
+    //NSDictionary *subAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
+    //                          [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
+    //                          boldFont, NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    //const NSRange range = NSMakeRange(14, 1);
+    
+    // Create the attributed string (text + attributes)
+    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@  v", navigationBarTitleText] attributes:attrs];
+    //[attributedText setAttributes:subAttrs range:range];
+    
+    // Set it in our UILabel and we are done!
+    [self.titleLabel setAttributedText:attributedText];
+    [self.titleLabel sizeToFit];
+
+}
+
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -63,32 +94,33 @@
     switch (self.typeOfActivityView) {
         case ACTIVITIES_ALL: {
             
-            UILabel *titleLabel = [UILabel new];
+            self.titleLabel = [UILabel new];
+            self.titleLabel.textAlignment = NSTextAlignmentCenter;
+            self.navigationBarTitleText = @"Notifications";
 
-            UIFont *boldFont = [UIFont fontWithName:@"Lato-Bold" size:kFontSize];
-            UIFont *regularFont = [UIFont fontWithName:@"Lato-Regular" size:kFontSize];
-            UIColor *foregroundColor = [UIColor whiteColor];
+            self.titleLabel.userInteractionEnabled = YES;
+            self.navigationItem.titleView = self.titleLabel;
             
-            // Create the attributes
-            NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                   [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
-                                   regularFont, NSFontAttributeName,
-                                   foregroundColor, NSForegroundColorAttributeName, nil];
-            NSDictionary *subAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                                      [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
-                                      boldFont, NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-            const NSRange range = NSMakeRange(14, 1);
             
-            // Create the attributed string (text + attributes)
-            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:@"Notifications  v" attributes:attrs];
-            [attributedText setAttributes:subAttrs range:range];
+            UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterActivityTable)];
+            tapgr.numberOfTapsRequired = 1;
+            tapgr.numberOfTouchesRequired = 1;
+            tapgr.delegate = self;
+            [self.navigationItem.titleView addGestureRecognizer:tapgr];
             
-            // Set it in our UILabel and we are done!
-            [titleLabel setAttributedText:attributedText];
-            [titleLabel sizeToFit];
-
             
-            self.navigationItem.titleView = titleLabel;
+            /* sample code
+             
+             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
+             [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"test "
+             attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)}]];
+             [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"s"
+             attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
+             NSBackgroundColorAttributeName: [UIColor clearColor]}]];
+             [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"tring"]];
+             */
+            
+            
             
             /*
             NSString *baseString = @"Notifications ";
@@ -634,6 +666,58 @@
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     
     NSLog(@"Did Select Row at Index Path - %@", indexPath);
+    
+}
+
+
+#pragma mark - 
+#pragma mark - Filter Activity Table Type
+
+- (void) filterActivityTable {
+    
+    NSLog(@"Filter Activity Table");
+    
+    UIAlertController *filterOptions = [UIAlertController alertControllerWithTitle:@"Notification Types" message:@"Select the notifications you want to see" preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *eventsAttendedAction = [UIAlertAction actionWithTitle:@"Events Attended" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        self.typeOfActivityView = ACTIVITIES_ATTENDED;
+        self.navigationBarTitleText = @"Attended";
+        [self loadObjects];
+    }];
+    
+    UIAlertAction *accessRequestsAction = [UIAlertAction actionWithTitle:@"Requests to Your Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        self.typeOfActivityView = ACTIVITIES_REQUESTS_TO_ME;
+        self.navigationBarTitleText = @"Requests";
+        [self loadObjects];
+    }];
+    
+    UIAlertAction *accessResponsesAction = [UIAlertAction actionWithTitle:@"Your Requests to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        self.typeOfActivityView = ACTIVITIES_MY_REQUESTS_STATUS;
+        self.navigationBarTitleText = @"Responses";
+        [self loadObjects];
+    }];
+    
+    UIAlertAction *invitationsAction = [UIAlertAction actionWithTitle:@"Invitations to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        self.typeOfActivityView = ACTIVITIES_INVITES;
+        self.navigationBarTitleText = @"Invitations";
+        [self loadObjects];
+    }];
+    
+    UIAlertAction *allAction = [UIAlertAction actionWithTitle:@"All Notifications" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        self.typeOfActivityView = ACTIVITIES_ALL;
+        self.navigationBarTitleText = @"Notifications";
+        [self loadObjects];
+    }];
+    
+    [filterOptions addAction:eventsAttendedAction];
+    [filterOptions addAction:accessRequestsAction];
+    [filterOptions addAction:accessResponsesAction];
+    [filterOptions addAction:invitationsAction];
+    [filterOptions addAction:allAction];
+    
+    filterOptions.view.tintColor = [UIColor orangeThemeColor];
+    
+    [self presentViewController:filterOptions animated:YES completion:nil];
     
 }
 

@@ -9,7 +9,7 @@
 #import <ParseUI/ParseUI.h>
 #import <Parse/Parse.h>
 
-@interface ActivityVC : PFQueryTableViewController
+@interface ActivityVC : PFQueryTableViewController <UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign) int typeOfActivityView;
 @property (nonatomic, strong) PFUser *userForActivities;

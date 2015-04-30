@@ -27,6 +27,7 @@
 		A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */; };
 		A423F7EE1A9BC46600DF9ABE /* UIButtonPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */; };
 		A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7F11A9BFF0900DF9ABE /* SearchVC.m */; };
+		A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A430EE091AF264B30090ECB6 /* EVNUser.m */; };
 		A43C57941AF15B48008E8EA2 /* SplashScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */; };
 		A44661161AA7589C00E6C3C6 /* AddEventPrimaryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */; };
 		A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563231A7688BB00565BB6 /* AudioToolbox.framework */; };
@@ -155,6 +156,8 @@
 		A423F7ED1A9BC46600DF9ABE /* UIButtonPFExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonPFExtended.m; sourceTree = "<group>"; };
 		A423F7F01A9BFF0900DF9ABE /* SearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchVC.h; sourceTree = "<group>"; };
 		A423F7F11A9BFF0900DF9ABE /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SearchVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A430EE081AF264B30090ECB6 /* EVNUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNUser.h; sourceTree = "<group>"; };
+		A430EE091AF264B30090ECB6 /* EVNUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNUser.m; sourceTree = "<group>"; };
 		A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashScreenVC.h; sourceTree = "<group>"; };
 		A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
@@ -328,9 +331,9 @@
 				A41562C81A767D3A00565BB6 /* AppDelegate.h */,
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
+				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */,
 				A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */,
-				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Tabs */,
 				A4F2E9A61A7A806A00614412 /* Navigation - Utilities */,
@@ -504,6 +507,8 @@
 			isa = PBXGroup;
 			children = (
 				A4C2C1351ACEB4FB004C7F35 /* EventObject.h */,
+				A430EE081AF264B30090ECB6 /* EVNUser.h */,
+				A430EE091AF264B30090ECB6 /* EVNUser.m */,
 				A4C2C1361ACEB4FB004C7F35 /* EventObject.m */,
 				A49A9E301AAE48CF00358D65 /* All Events */,
 				A49A9E2F1AAE48A300358D65 /* Event Details */,
@@ -881,6 +886,7 @@
 				A46DB25C1AAE7B0500208973 /* MBProgressHUD.m in Sources */,
 				A41B2A131ABCBE3F00F7CE44 /* SignUpTabVC.m in Sources */,
 				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
+				A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */,
 				A4C2C1371ACEB4FB004C7F35 /* EventObject.m in Sources */,
