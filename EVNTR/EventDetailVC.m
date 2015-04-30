@@ -11,6 +11,7 @@
 #import "CommentsTableSource.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
+#import "EVNUser.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
 #import "EventPictureCell.h"
@@ -148,10 +149,10 @@
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
 
     
-    NSLog(@"PARENT OBJECT ID: %@ and CURRENT USER ID: %@", self.event.parent.objectId, [PFUser currentUser].objectId);
+    NSLog(@"PARENT OBJECT ID: %@ and CURRENT USER ID: %@", self.event.parent.objectId, [EVNUser currentUser].objectId);
     
     //Determine if the Event Creator is the Current User
-    if ([self.event.parent.objectId isEqualToString:[PFUser currentUser].objectId]) {
+    if ([self.event.parent.objectId isEqualToString:[EVNUser currentUser].objectId]) {
         self.isCurrentUsersEvent = YES;
         NSLog(@"Current User's Event ");
     }
@@ -350,7 +351,7 @@
         } else {
             
             int eventType = [self.event.typeOfEvent intValue];
-            NSString *userObjectId = [PFUser currentUser].objectId;
+            NSString *userObjectId = [EVNUser currentUser].objectId;
             
             switch (eventType) {
                 case PUBLIC_EVENT_TYPE: {
@@ -408,7 +409,7 @@
                     //Determine the state of the user with the event
                     // Hasn't requested Accesss - Requested Access - Granted Acccess
                     
-                    [self.event queryApprovalStatusOfUser:[PFUser currentUser] completion:^(BOOL isAttending, NSString *status) {
+                    [self.event queryApprovalStatusOfUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status) {
                         
                         if ([status isEqualToString:@"Error"]) {
                             //TODO: Error Handling
@@ -721,7 +722,7 @@
         
         StandbyCollectionViewCell *cell = (StandbyCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:standbyCellID forIndexPath:indexPath];
         
-        PFUser *currentUser = [self.usersOnStandby objectAtIndex:indexPath.row];
+        EVNUser *currentUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
         cell.profilePictureOfStandbyUser.image = [UIImage imageNamed:@"PersonDefault"];
         cell.profilePictureOfStandbyUser.file = currentUser[@"profilePicture"];
@@ -738,7 +739,7 @@
     
     if (!self.isGuestUser) {
         
-        PFUser *selectedUser = [self.usersOnStandby objectAtIndex:indexPath.row];
+        EVNUser *selectedUser = [self.usersOnStandby objectAtIndex:indexPath.row];
         
         ProfileVC *profileView = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
         profileView.userObjectID = selectedUser.objectId;
@@ -793,7 +794,7 @@
         
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
-        invitePeopleVC.userProfile = [PFUser currentUser];
+        invitePeopleVC.userProfile = [EVNUser currentUser];
         invitePeopleVC.usersAlreadyInvited = self.event.invitedUsers;
         invitePeopleVC.delegate = self;
         
@@ -882,14 +883,14 @@
             
             self.rsvpStatusButton.enabled = NO;
             
-            [self.event requestAccessForUser:[PFUser currentUser] completion:^(BOOL success) {
+            [self.event requestAccessForUser:[EVNUser currentUser] completion:^(BOOL success) {
                 
                 if (success) {
                     self.rsvpStatusButton.titleText = kRSVPedForEvent;
                     self.rsvpStatusButton.isSelected = YES;
                     
                     NSMutableArray *updatedStandbyListWithCurrentUser = [NSMutableArray arrayWithArray:self.usersOnStandby];
-                    [updatedStandbyListWithCurrentUser addObject:[PFUser currentUser]];
+                    [updatedStandbyListWithCurrentUser addObject:[EVNUser currentUser]];
                     self.usersOnStandby = [NSArray arrayWithArray:updatedStandbyListWithCurrentUser];
                     [self.standbyUsersCollectionView reloadData];
                 }
@@ -907,7 +908,7 @@
         //Updating Relation
         if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
             
-            [attendersRelation removeObject:[PFUser currentUser]];
+            [attendersRelation removeObject:[EVNUser currentUser]];
             [self.event saveInBackground];
             
             //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
@@ -915,7 +916,7 @@
         } else {
             
             //Create New Relation and Add User to List of Attenders for Event
-            [attendersRelation addObject:[PFUser currentUser]];
+            [attendersRelation addObject:[EVNUser currentUser]];
             [self.event saveInBackground];
             
             //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
@@ -925,7 +926,7 @@
         //Updating the Activity Table (choose one?)
         if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
             
-            [self.event unRSVPUser:[PFUser currentUser] completion:^(BOOL success) {
+            [self.event unRSVPUser:[EVNUser currentUser] completion:^(BOOL success) {
                 
                 if (success) {
                     self.isCurrentUserAttending = NO;
@@ -948,7 +949,7 @@
             
         } else {
             
-            [self.event rsvpUser:[PFUser currentUser] completion:^(BOOL success) {
+            [self.event rsvpUser:[EVNUser currentUser] completion:^(BOOL success) {
                 
                 if (success) {
                     self.isCurrentUserAttending = YES;
@@ -1117,7 +1118,7 @@
     //Add Event To Comment and Save to Backend
     PFObject *newComment = [PFObject objectWithClassName:@"Comments"];
     newComment[@"commentText"] = commentString;
-    newComment[@"commentParent"] = [PFUser currentUser];
+    newComment[@"commentParent"] = [EVNUser currentUser];
     newComment[@"commentEvent"] = self.event;
     
     [newComment saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

@@ -9,6 +9,7 @@
 #import "SettingsVC.h"
 #import <Parse/Parse.h>
 #import "ProfileVC.h"
+#import "EVNUser.h"
 
 @import Social;
 
@@ -36,7 +37,7 @@
 
 - (IBAction)logOut:(id)sender {
     
-    [PFUser logOut];
+    [EVNUser logOut];
     
     [self performSegueWithIdentifier:@"SettingsToInitialScreen" sender:self];
     

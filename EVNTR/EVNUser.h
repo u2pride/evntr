@@ -9,12 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-@interface EVNUser : PFObject <PFSubclassing>
+@interface EVNUser : PFUser <PFSubclassing>
 
+//@property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) PFFile *profilePicture;
 
 @property (nonatomic, strong) NSString *hometown;
 @property (nonatomic, strong) NSString *realName;
+//@property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *bio;
 @property (nonatomic, strong) NSString *twitterHandle;
 @property (nonatomic, strong) NSString *instagramHandle;

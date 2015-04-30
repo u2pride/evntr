@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNUser.h"
 #import <Foundation/Foundation.h>
 
 #pragma mark - General Use
@@ -98,7 +99,7 @@ extern NSString *const kRevokeAccess;
 // 3 - {from} requested that {to} give access to {activityContent}
 // 4 - {to} is attending {activityContent}
 // 5 - {from} let {to} in to {activityContent}
-// Notifications Query - for all Activities in which {to} matches [PFUser CurrentUser]
+// Notifications Query - for all Activities in which {to} matches [EVNUser CurrentUser]
 
 #pragma mark - Event Types
 

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
+#import "EVNUser.h"
+
 
 @interface EventObject : PFObject <PFSubclassing>
 
@@ -21,7 +23,7 @@
 @property (nonatomic, strong) NSArray *eventImages;
 @property (nonatomic, strong) NSString *nameOfLocation;
 @property (nonatomic, strong) PFFile *coverPhoto;
-@property (nonatomic, strong) PFUser *parent;
+@property (nonatomic, strong) EVNUser *parent;
 
 + (NSString *)parseClassName;
 
@@ -36,11 +38,11 @@
 - (void) queryForStandbyUsersWithIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *users))completionBlock;
 
 - (void) queryRSVPForUserId:(NSString *)userObjectId completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
-- (void) queryApprovalStatusOfUser:(PFUser *)user completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
+- (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
 
-- (void) requestAccessForUser:(PFUser *)user completion:(void (^)(BOOL success))completionBlock;
-- (void) rsvpUser:(PFUser *)user completion:(void (^)(BOOL success))completionBlock;
-- (void) unRSVPUser:(PFUser *)user completion:(void (^)(BOOL success))completionBlock;
+- (void) requestAccessForUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
+- (void) rsvpUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
+- (void) unRSVPUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
 - (void) inviteUsers:(NSArray *)users completion:(void (^)(BOOL success))completionBlock;
 
 - (void) estimateNumberOfPhotosWithCompletion:(void (^)(int count))completionBlock;
@@ -56,7 +58,7 @@
  
  You should create new objects with the object class method. This constructs an autoreleased instance of your type and correctly handles further subclassing. To create a reference to an existing object, use objectWithoutDataWithObjectId:.
  
- + (void) queryForActivitiesWithContent:(PFObject *)object ofType:(NSNumber *)type from:(PFUser *)fromUser to:(PFUser *)toUser withIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *activities))completionBlock;
+ + (void) queryForActivitiesWithContent:(PFObject *)object ofType:(NSNumber *)type from:(EVNUser *)fromUser to:(EVNUser *)toUser withIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *activities))completionBlock;
 
 */
 

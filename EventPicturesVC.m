@@ -196,7 +196,7 @@ static NSString * const reuseIdentifier = @"Cell";
     [self animateBackgroundDarkBlur];
     
     PFObject *pictureObject = (PFObject *) [self.eventImages objectAtIndex:indexPath.row];
-    PFUser *pictureTakenBy = (PFUser *)[pictureObject objectForKey:@"takenBy"];
+    EVNUser *pictureTakenBy = (EVNUser *)[pictureObject objectForKey:@"takenBy"];
     
     PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.navigationController.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
     
@@ -205,10 +205,10 @@ static NSString * const reuseIdentifier = @"Cell";
     displayFullScreenPhoto.eventPictureObject = pictureObject;
     displayFullScreenPhoto.delegate = self;
     
-    if ([self.eventObject.parent.objectId isEqualToString:[PFUser currentUser].objectId]) {
+    if ([self.eventObject.parent.objectId isEqualToString:[EVNUser currentUser].objectId]) {
         displayFullScreenPhoto.showRemovePhotoAction = YES;
     } else {
-        if ([pictureTakenBy.objectId isEqualToString:[PFUser currentUser].objectId]) {
+        if ([pictureTakenBy.objectId isEqualToString:[EVNUser currentUser].objectId]) {
             displayFullScreenPhoto.showRemovePhotoAction = YES;
         } else {
             displayFullScreenPhoto.showRemovePhotoAction = NO;
@@ -286,7 +286,7 @@ static NSString * const reuseIdentifier = @"Cell";
             //create new picture pfobject and save
             PFObject *picture = [PFObject objectWithClassName:@"Pictures"];
             picture[@"pictureFile"] = profilePictureFile;
-            picture[@"takenBy"] = [PFUser currentUser];
+            picture[@"takenBy"] = [EVNUser currentUser];
             picture[@"eventParent"] = self.eventObject;
             
             [picture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

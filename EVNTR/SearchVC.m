@@ -9,6 +9,7 @@
 #import "SearchVC.h"
 #import <Parse/Parse.h>
 #import "EVNConstants.h"
+#import "EVNUser.h"
 #import "EventDetailVC.h"
 #import "SearchHeaderView.h"
 #import "ProfileVC.h"
@@ -122,7 +123,7 @@
             
         } else {
             
-            PFQuery *peopleSearchQuery = [PFUser query];
+            PFQuery *peopleSearchQuery = [EVNUser query];
             [peopleSearchQuery whereKey:@"username" matchesRegex:self.searchController.searchBar.text modifiers:@"i"];
             //[peopleSearchQuery whereKey:@"username" containsString:self.searchController.searchBar.text];
             //[peopleSearchQuery whereKey:@"realName" containsString:self.searchController.searchBar.text];
@@ -164,7 +165,7 @@
         
         cell.textLabel.font = [UIFont fontWithName:EVNFontRegular size:15];
         
-        PFUser *currentUser = (PFUser *) [self.searchResultsArray objectAtIndex:indexPath.row];
+        EVNUser *currentUser = (EVNUser *) [self.searchResultsArray objectAtIndex:indexPath.row];
         cell.textLabel.text = currentUser.username;
         
     }
@@ -203,7 +204,7 @@
         
     } else {
         
-        PFUser *selectedUser = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
+        EVNUser *selectedUser = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
         
         ProfileVC *profileVC = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
         profileVC.userObjectID = selectedUser.objectId;

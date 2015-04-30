@@ -669,7 +669,7 @@
         
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
-        invitePeopleVC.userProfile = [PFUser currentUser];
+        invitePeopleVC.userProfile = [EVNUser currentUser];
         invitePeopleVC.usersAlreadyInvited = nil;
         invitePeopleVC.delegate = self;
         

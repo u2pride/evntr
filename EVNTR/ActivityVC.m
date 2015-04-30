@@ -37,7 +37,7 @@
         self.parseClassName = @"Activities";
         self.pullToRefreshEnabled = YES;
         self.paginationEnabled = YES;
-        self.userForActivities = [PFUser currentUser];
+        self.userForActivities = [EVNUser currentUser];
         self.objectsPerPage = 15;
         _typeOfActivityView = ACTIVITIES_ALL;
         
@@ -275,7 +275,7 @@
             
             //Get all events by User
             PFQuery *innerQueryForAuthor = [PFQuery queryWithClassName:@"Events"];
-            [innerQueryForAuthor whereKey:@"parent" equalTo:[PFUser currentUser]];
+            [innerQueryForAuthor whereKey:@"parent" equalTo:[EVNUser currentUser]];
             
             //Get all request access activities
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
@@ -398,7 +398,7 @@
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
             
-            PFUser *userFollow = object[@"from"];
+            EVNUser *userFollow = object[@"from"];
             
             //Left Image Thumbnail
             activityCell.leftSideImageView.file = userFollow[@"profilePicture"];
@@ -417,7 +417,7 @@
             
             //Right Action Button
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-            [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
             [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [followActivity whereKey:@"to" equalTo:userFollow];
             [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -441,7 +441,7 @@
         }
         case INVITE_ACTIVITY: {
             
-            PFUser *userInvite = object[@"from"];
+            EVNUser *userInvite = object[@"from"];
             
             __block NSString *username = userInvite[@"username"];
             
@@ -491,7 +491,7 @@
         }
         case REQUEST_ACCESS_ACTIVITY: {
             
-            PFUser *userRequestedAccess = object[@"from"];
+            EVNUser *userRequestedAccess = object[@"from"];
             EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
 
             
@@ -519,7 +519,7 @@
             
             
             PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
-            [grantedActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [grantedActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
             [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
             [grantedActivity whereKey:@"to" equalTo:userRequestedAccess];
             [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
@@ -543,7 +543,7 @@
         }
         case ATTENDING_ACTIVITY: {
             
-            PFUser *userForAttend = object[@"to"];
+            EVNUser *userForAttend = object[@"to"];
             EventObject *eventAttending = object[@"activityContent"];
 
             
@@ -563,7 +563,7 @@
             NSComparisonResult dateComparison = [currentDate compare:eventAttending.dateOfEvent];
             
             //Build the description string based off Time of Event and Current User
-            if ([self.userForActivities.objectId isEqualToString:[PFUser currentUser].objectId] ) {
+            if ([self.userForActivities.objectId isEqualToString:[EVNUser currentUser].objectId] ) {
                 
                 if (dateComparison == NSOrderedAscending) {
                     activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", eventAttending.title];
@@ -611,7 +611,7 @@
         }
         case ACCESS_GRANTED_ACTIVITY: {
             
-            PFUser *userGrantedAccess = object[@"from"];
+            EVNUser *userGrantedAccess = object[@"from"];
             EventObject *eventGrantedAccess = (EventObject *) object[@"activityContent"];
 
             
@@ -729,7 +729,7 @@
 - (void)viewProfile:(UITapGestureRecognizer *)tapgr {
     
     ImageViewPFExtended *tappedImage = (ImageViewPFExtended *)tapgr.view;
-    PFUser *userProfle = (PFUser *)tappedImage.objectForImageView;
+    EVNUser *userProfle = (EVNUser *)tappedImage.objectForImageView;
     
     ProfileVC *followerProfileVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
     followerProfileVC.userObjectID = userProfle.objectId;
@@ -851,7 +851,7 @@
     
     UIButtonPFExtended *followButton = (UIButtonPFExtended *)sender;
     [followButton startedTask];
-    PFUser *userToChangeFollowState = followButton.personToFollow;
+    EVNUser *userToChangeFollowState = followButton.personToFollow;
     
     followButton.enabled = NO;
     [followButton startedTask];
@@ -867,7 +867,7 @@
             PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
             
             [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [findFollowActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
             [findFollowActivity whereKey:@"to" equalTo:userToChangeFollowState];
             
             [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -917,7 +917,7 @@
         
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
         
-        newFollowActivity[@"from"] = [PFUser currentUser];
+        newFollowActivity[@"from"] = [EVNUser currentUser];
         newFollowActivity[@"to"] = userToChangeFollowState;
         newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
         

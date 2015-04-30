@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "ActivityVC.h"
 #import "EVNConstants.h"
+#import "EVNUser.h"
 #import "HomeScreenVC.h"
 #import "IDTransitionControllerTab.h"
 #import "IDTransitioningDelegate.h"
@@ -128,7 +129,7 @@
         HomeScreenVC *eventsView = navVC.childViewControllers.firstObject;
         
         eventsView.typeOfEventTableView = ALL_PUBLIC_EVENTS;
-        eventsView.userForEventsQuery = [PFUser currentUser];
+        eventsView.userForEventsQuery = [EVNUser currentUser];
         
 
     //Add Event VC
@@ -146,7 +147,7 @@
         [navVC popToRootViewControllerAnimated:NO];
         
         ActivityVC *activityVC = (ActivityVC *)navVC.childViewControllers.firstObject;
-        activityVC.userForActivities = [PFUser currentUser];
+        activityVC.userForActivities = [EVNUser currentUser];
         activityVC.typeOfActivityView = ACTIVITIES_ALL;
         
     //Profile VC
@@ -161,7 +162,7 @@
         //[navVC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         
         ProfileVC *profileView = navVC.childViewControllers.firstObject;
-        profileView.userObjectID = [PFUser currentUser].objectId;
+        profileView.userObjectID = [EVNUser currentUser].objectId;
         profileView.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     }
     

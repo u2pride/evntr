@@ -13,6 +13,7 @@
 @interface SplashScreenVC ()
 @property (strong, nonatomic) IBOutlet UIImageView *splashScreenEmptyMiddle;
 @property (strong, nonatomic) IBOutlet UIImageView *evntrSingleImage;
+@property (strong, nonatomic) IBOutlet UILabel *taglineLabel;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
 @end
@@ -25,6 +26,7 @@
     
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
 
+    self.taglineLabel.alpha = 0;
     
 }
 
@@ -47,8 +49,10 @@
             
             [UIView animateWithDuration:0.5 animations:^{
                 
-                self.evntrSingleImage.transform = CGAffineTransformMakeScale(10, 10);
-                self.evntrSingleImage.alpha = 0;
+                //self.evntrSingleImage.transform = CGAffineTransformMakeScale(10, 10);
+                //self.evntrSingleImage.alpha = 0;
+                
+                self.taglineLabel.alpha = 1;
                 
             } completion:^(BOOL finished) {
                

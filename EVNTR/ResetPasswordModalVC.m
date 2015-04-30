@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNUser.h"
 #import "IDTransitioningDelegate.h"
 #import "ResetPasswordModalVC.h"
 #import <Parse/Parse.h>
@@ -40,7 +41,7 @@
     if (self.emailTextField.text.length > 0) {
         
         //TODO : Add Support for Errors - Codes
-        [PFUser requestPasswordResetForEmailInBackground:self.emailTextField.text block:^(BOOL succeeded, NSError *error) {
+        [EVNUser requestPasswordResetForEmailInBackground:self.emailTextField.text block:^(BOOL succeeded, NSError *error) {
             
             if (succeeded && !error) {
                 

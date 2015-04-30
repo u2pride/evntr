@@ -87,7 +87,7 @@
                
                 NSLog(@"List of Users Already Invited: %@", objects);
 
-                for (PFUser *user in objects) {
+                for (EVNUser *user in objects) {
                     //Save User IDs to Compare to Full List of Following
                     [self.previouslyInvitedUsers addObject:user];
                 }
@@ -181,7 +181,7 @@
     switch (self.typeOfUsers) {
         case VIEW_ALL_PEOPLE: {
             
-            PFQuery *query = [PFUser query];
+            PFQuery *query = [EVNUser query];
             [query orderByAscending:@"username"];
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
@@ -353,7 +353,7 @@
     PersonCell *cell = (PersonCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     NSLog(@"Cell Now Dequeded");
 
-    PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
+    EVNUser *currentUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
     NSLog(@"Current User Determined");
 
     //Default Profile Pic Until User Information is Fetched in Background
@@ -417,7 +417,7 @@
         
     } else {
         
-        PFUser *selectedUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
+        EVNUser *selectedUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
         
         [selectedUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
@@ -468,7 +468,7 @@
     if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
         
         PersonCell *cell = (PersonCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-        PFUser *currentUser = (PFUser *)[self.usersArray objectAtIndex:indexPath.row];
+        EVNUser *currentUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
         
         //already selected - deselect
         if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
@@ -530,9 +530,9 @@
 }
 
 
-- (BOOL) isUser:(PFUser *)user alreadyInArray:(NSMutableArray *) array  {
+- (BOOL) isUser:(EVNUser *)user alreadyInArray:(NSMutableArray *) array  {
     
-    for (PFUser *userInArray in array) {
+    for (EVNUser *userInArray in array) {
         if ([userInArray.objectId isEqualToString:user.objectId]) {
             return YES;
         }
@@ -543,11 +543,11 @@
 }
 
 
-- (void) removeUser:(PFUser *)user fromArray:(NSMutableArray *)arrayOfUsers {
+- (void) removeUser:(EVNUser *)user fromArray:(NSMutableArray *)arrayOfUsers {
     
-    PFUser *userToRemove;
+    EVNUser *userToRemove;
     
-    for (PFUser *userInArray in arrayOfUsers) {
+    for (EVNUser *userInArray in arrayOfUsers) {
         if ([userInArray.objectId isEqualToString:user.objectId]) {
             userToRemove = userInArray;
         }
@@ -562,7 +562,7 @@
 
 
 
-- (void) queryForUsersFollowing:(PFUser *)user completion:(void (^)(NSArray *))completionBlock {
+- (void) queryForUsersFollowing:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock {
     
     PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
     [query whereKey:@"from" equalTo:user];
@@ -579,7 +579,7 @@
         if (!error) {
             for (PFObject *object in usersFound) {
                 
-                PFUser *userFollowing = object[@"to"];
+                EVNUser *userFollowing = object[@"to"];
                 
                 if (![finalResults containsObject:userFollowing]) {
                     
@@ -609,7 +609,7 @@
     
     NSMutableArray *newInvites = [[NSMutableArray alloc] init];
     
-    for (PFUser *user in self.allInvitedUsers) {
+    for (EVNUser *user in self.allInvitedUsers) {
         
         if (![self isUser:user alreadyInArray:self.previouslyInvitedUsers]) {
             [newInvites addObject:user];

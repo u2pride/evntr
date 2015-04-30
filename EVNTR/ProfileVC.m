@@ -9,6 +9,7 @@
 #import "ActivityVC.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
+#import "EVNUser.h"
 #import "EVNUtility.h"
 #import "EditProfileVC.h"
 #import "HomeScreenVC.h"
@@ -20,7 +21,7 @@
 
 @interface ProfileVC ()
 
-@property (nonatomic, strong) PFUser *userForProfileView;
+@property (nonatomic, strong) EVNUser *userForProfileView;
 @property (nonatomic) int profileType;
 @property (nonatomic, strong) NSData *userPictureData;
 
@@ -72,8 +73,8 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         //initial values
-        self.userForProfileView = [PFUser currentUser];
-        self.userObjectID = [PFUser currentUser].objectId;
+        self.userForProfileView = [EVNUser currentUser];
+        self.userObjectID = [EVNUser currentUser].objectId;
         _isDismissedAlreadyCancel = NO;
         _isDismissedAlreadyUpdate = NO;
         
@@ -120,17 +121,17 @@
     self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     
     //Query Parse for the User.
-    PFQuery *usernameQuery = [PFUser query];
+    PFQuery *usernameQuery = [EVNUser query];
     [usernameQuery whereKey:@"objectId" equalTo:self.userObjectID];
     [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        self.userForProfileView = (PFUser *)object;
+        self.userForProfileView = (EVNUser *)object;
         
         //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
         //TODO: Separate out what actually needs to be updated from database instead of updating all with updateUIWithUser
         // make sure to include follow status and following and followers counts.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUIDueToNewFollow:) name:kFollowActivity object:nil];
         
-        if ([self.userObjectID isEqualToString:[PFUser currentUser].objectId]) {
+        if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
             self.profileType = CURRENT_USER_PROFILE;
             
             //Register for Notifications when Current User Creates a New Event
@@ -172,7 +173,7 @@
             
             //Determine whether the current user is following this user
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-            [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
             [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [followActivity whereKey:@"to" equalTo:self.userForProfileView];
             [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -280,10 +281,10 @@
     
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
-    if ([self.userObjectID isEqualToString:[PFUser currentUser].objectId]) {
+    if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
         NSLog(@"Current user events from profile page");
         eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
-        eventVC.userForEventsQuery = [PFUser currentUser];
+        eventVC.userForEventsQuery = [EVNUser currentUser];
     } else {
         NSLog(@"Other user events from profile page");
         eventVC.typeOfEventTableView = OTHER_USER_EVENTS;
@@ -321,7 +322,7 @@
     ActivityVC *viewPendingRequests = [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
     
     viewPendingRequests.typeOfActivityView = ACTIVITIES_REQUESTS_TO_ME;
-    viewPendingRequests.userForActivities = [PFUser currentUser];
+    viewPendingRequests.userForActivities = [EVNUser currentUser];
     
     [self.navigationController pushViewController:viewPendingRequests animated:YES];
 
@@ -355,7 +356,7 @@
     ActivityVC *viewMyRequests = [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
     
     viewMyRequests.typeOfActivityView = ACTIVITIES_MY_REQUESTS_STATUS;
-    viewMyRequests.userForActivities = [PFUser currentUser];
+    viewMyRequests.userForActivities = [EVNUser currentUser];
     
     [self.navigationController pushViewController:viewMyRequests animated:YES];
     
@@ -377,7 +378,7 @@
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
         
         newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
-        newFollowActivity[@"from"] = [PFUser currentUser];
+        newFollowActivity[@"from"] = [EVNUser currentUser];
         newFollowActivity[@"to"] = self.userForProfileView;
         
         [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -402,7 +403,7 @@
         
         
     } else if ([self.followButton.titleText isEqualToString:@"Following"]) {
-        
+                
         UIAlertController *unfollowSheet = [UIAlertController alertControllerWithTitle:self.userForProfileView.username message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         
         UIAlertAction *unfollow = [UIAlertAction actionWithTitle:@"Unfollow" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
@@ -410,7 +411,7 @@
             PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
             
             [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [findFollowActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+            [findFollowActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
             [findFollowActivity whereKey:@"to" equalTo:self.userForProfileView];
             
             [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -549,8 +550,8 @@
         
         self.nameLabel.text = username;
         
-        self.userObjectID = [PFUser currentUser].objectId;
-        self.userForProfileView = [PFUser currentUser];
+        self.userObjectID = [EVNUser currentUser].objectId;
+        self.userForProfileView = [EVNUser currentUser];
         
         [self dismissViewControllerAnimated:YES completion:^{
             
@@ -607,7 +608,7 @@
         
         //Update the Button For Following/Follow
         PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-        [followActivity whereKey:@"from" equalTo:[PFUser currentUser]];
+        [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
         [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
         [followActivity whereKey:@"to" equalTo:self.userForProfileView];
         [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -648,7 +649,7 @@
          UINavigationController *navController = (UINavigationController *)[segue destinationViewController];
          EditProfileVC *editProfileView = (EditProfileVC *)[[navController childViewControllers] lastObject];
          
-         PFUser *currentUser = [PFUser currentUser];
+         EVNUser *currentUser = [EVNUser currentUser];
 
          editProfileView.username = currentUser[@"username"];
          editProfileView.realName = currentUser[@"realName"];

@@ -8,6 +8,7 @@
 
 #import "EVNButton.h"
 #import "EVNConstants.h"
+#import "EVNUser.h"
 #import "GuestWelcomeVC.h"
 #import "IDTransitioningDelegate.h"
 #import "InitialScreenVC.h"
@@ -250,7 +251,7 @@
     
     if ([versionBuildNumber isEqualToString:@"V0.60Build14"]) {
         
-        if ([PFUser currentUser]) {
+        if ([EVNUser currentUser]) {
             
             [self stopMoviePlayer];
             [self performSegueWithIdentifier:@"currentUserExists" sender:nil];

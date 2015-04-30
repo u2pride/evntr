@@ -97,7 +97,7 @@
 //Creators of the Event Can Post Photos At All Times
 - (BOOL) allowUserToAddPhotosAtThisTime {
     
-    if ([self.objectId isEqual:[PFUser currentUser].objectId]) {
+    if ([self.objectId isEqual:[EVNUser currentUser].objectId]) {
                 
         return YES;
         
@@ -140,7 +140,7 @@
 
 
 /*
-+ (void) queryForActivitiesWithContent:(PFObject *)object ofType:(NSNumber *)type from:(PFUser *)fromUser to:(PFUser *)toUser withIncludeKey:(NSString *)key completion:(void (^)(NSError *, NSArray *))completionBlock {
++ (void) queryForActivitiesWithContent:(PFObject *)object ofType:(NSNumber *)type from:(EVNUser *)fromUser to:(EVNUser *)toUser withIncludeKey:(NSString *)key completion:(void (^)(NSError *, NSArray *))completionBlock {
     
     PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
     [queryForStandbyUsers whereKey:@"activityContent" equalTo:object];
@@ -176,7 +176,7 @@
             for (PFObject *activity in standbyActivities) {
                 
                 NSLog(@"activity: %@", activity);
-                PFUser *userOnStandby = activity[@"from"];
+                EVNUser *userOnStandby = activity[@"from"];
                 NSLog(@"User Found in Query One: %@", userOnStandby);
                 
                 if (userOnStandby) {
@@ -202,7 +202,7 @@
                     
                     for (PFObject *activity2 in accessActivities) {
                         
-                        PFUser *userGrantedAcesss = activity2[@"to"];
+                        EVNUser *userGrantedAcesss = activity2[@"to"];
                         
                         NSLog(@"User Found in Query Two: %@", userGrantedAcesss);
                         
@@ -212,11 +212,11 @@
                     
                     NSMutableArray *finalResults = [[NSMutableArray alloc] init];
                     
-                    for (PFUser *requestedAccessUser in usersOnStandby) {
+                    for (EVNUser *requestedAccessUser in usersOnStandby) {
                         
                         BOOL tempFlag = 0;
                         
-                        for (PFUser *grantedAccessUser in usersGrantedAccess) {
+                        for (EVNUser *grantedAccessUser in usersGrantedAccess) {
                             
                             if ([requestedAccessUser.objectId isEqualToString:grantedAccessUser.objectId]) {
                                 tempFlag = 1;
@@ -261,7 +261,7 @@
     
 }
 
-- (void) queryApprovalStatusOfUser:(PFUser *)user completion:(void (^)(BOOL, NSString *))completionBlock {
+- (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL, NSString *))completionBlock {
     
     PFQuery *requestedAccessQuery = [PFQuery queryWithClassName:@"Activities"];
     [requestedAccessQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
@@ -319,7 +319,7 @@
     
 }
 
-- (void) requestAccessForUser:(PFUser *)user completion:(void (^)(BOOL))completionBlock {
+- (void) requestAccessForUser:(EVNUser *)user completion:(void (^)(BOOL))completionBlock {
     
     //RSVP User for Event
     PFObject *rsvpActivity = [PFObject objectWithClassName:@"Activities"];
@@ -338,7 +338,7 @@
 
 
 
-- (void) rsvpUser:(PFUser *)user completion:(void (^)(BOOL))completionBlock {
+- (void) rsvpUser:(EVNUser *)user completion:(void (^)(BOOL))completionBlock {
     
     PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
     newAttendingActivity[@"to"] = user;
@@ -353,7 +353,7 @@
 }
 
 
-- (void) unRSVPUser:(PFUser *)user completion:(void (^)(BOOL))completionBlock {
+- (void) unRSVPUser:(EVNUser *)user completion:(void (^)(BOOL))completionBlock {
     
     PFQuery *queryForRSVP = [PFQuery queryWithClassName:@"Activities"];
     [queryForRSVP whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
@@ -380,14 +380,14 @@
     
     __block BOOL success = YES;
     
-    for (PFUser *user in users) {
+    for (EVNUser *user in users) {
         
         //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
         
         PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
         
         newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
-        newInvitationActivity[@"from"] = [PFUser currentUser];
+        newInvitationActivity[@"from"] = [EVNUser currentUser];
         newInvitationActivity[@"to"] = user;
         newInvitationActivity[@"activityContent"] = self;
         
@@ -421,7 +421,7 @@
 - (void) queryForImagesWithCompletion:(void (^)(NSArray *))completionBlock {
     
     PFQuery *imagesQuery = [PFQuery queryWithClassName:@"Pictures"];
-    [imagesQuery includeKey:@"takenBy"]; /* Include the PFUser who took the photo */
+    [imagesQuery includeKey:@"takenBy"]; /* Include the EVNUser who took the photo */
     [imagesQuery whereKey:@"eventParent" equalTo:self];
     [imagesQuery orderByDescending:@"createdAt"];
     
@@ -437,7 +437,7 @@
 - (void) estimateNumberOfPhotosWithCompletion:(void (^)(int))completionBlock {
     
     PFQuery *imagesQuery = [PFQuery queryWithClassName:@"Pictures"];
-    [imagesQuery includeKey:@"takenBy"]; /* Include the PFUser who took the photo */
+    [imagesQuery includeKey:@"takenBy"]; /* Include the EVNUser who took the photo */
     [imagesQuery whereKey:@"eventParent" equalTo:self];
     [imagesQuery orderByAscending:@"createdAt"];
     

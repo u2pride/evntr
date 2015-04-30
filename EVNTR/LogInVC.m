@@ -8,6 +8,7 @@
 
 #import "EVNConstants.h"
 #import "EVNButton.h"
+#import "EVNUser.h"
 #import "FacebookSDK/FacebookSDK.h"
 #import "HomeScreenVC.h"
 #import "IDTransitioningDelegate.h"
@@ -135,7 +136,7 @@
     
     [self blurViewDuringLoginWithMessage:@"Logging you in..."];
     
-    [PFUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
+    [EVNUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         if (user) {
             
             //Set isGuest Object
@@ -184,7 +185,7 @@
     // TODO:  Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
-    // Login PFUser using Facebook
+    // Login EVNUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
         if (!user) {
@@ -227,7 +228,7 @@
                 double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [self grabUserDetailsFromFacebookWithUser:user];
+                    [self grabUserDetailsFromFacebookWithUser:(EVNUser *)user];
                     [self cleanUpBeforeTransition];
 
                 });
@@ -262,7 +263,7 @@
 
 
 
-- (void) grabUserDetailsFromFacebookWithUser:(PFUser *)newUser {
+- (void) grabUserDetailsFromFacebookWithUser:(EVNUser *)newUser {
     
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     activityIndicator.hidesWhenStopped = YES;

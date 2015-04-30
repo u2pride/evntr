@@ -9,14 +9,15 @@
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 #import "EVNButton.h"
+#import "EVNUser.h"
 #import "EventObject.h"
 
 @interface UIButtonPFExtended : EVNButton
 
 @property (nonatomic, strong) EventObject *eventToView;
-@property (nonatomic, strong) PFUser *personToFollow;
+@property (nonatomic, strong) EVNUser *personToFollow;
 
-@property (nonatomic, strong) PFUser *personToGrantAccess;
+@property (nonatomic, strong) EVNUser *personToGrantAccess;
 @property (nonatomic, strong) EventObject *eventToGrantAccess;
 
 @end

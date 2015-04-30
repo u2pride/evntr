@@ -8,6 +8,7 @@
 
 #import "EVNUtility.h"
 #import "EVNButton.h"
+#import "EVNUser.h"
 #import "FBShimmeringView.h"
 #import "NewUserFacebookVC.h"
 #import "EVNConstants.h"
@@ -148,7 +149,7 @@
 
 - (IBAction)registerWithFBInfo:(id)sender {
     
-    __block PFUser *currentUser = [PFUser currentUser];
+    __block EVNUser *currentUser = [EVNUser currentUser];
     
     [self blurViewDuringLoginWithMessage:@"Registering..."];
     

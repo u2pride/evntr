@@ -9,6 +9,7 @@
 #import "AddEventSecondVC.h"
 #import "LocationSearchVC.h"
 #import "EVNButton.h"
+#import "EVNUser.h"
 #import "UIColor+EVNColors.h"
 #import "EVNLocationButton.h"
 #import "MBProgressHUD.h"
@@ -114,7 +115,7 @@
             self.event[@"title"] = self.event.title;
             self.event[@"descriptionOfEvent"] = self.eventDescriptionText.text;
             self.event[@"typeOfEvent"] = [NSNumber numberWithInt:self.eventToCreate.eventType];
-            self.event[@"parent"] = [PFUser currentUser];
+            self.event[@"parent"] = [EVNUser currentUser];
             self.event[@"dateOfEvent"] = self.eventToCreate.eventDate;
             self.event[@"locationOfEvent"] = self.eventToCreate.eventCoordinates;
             self.event[@"nameOfLocation"] = self.eventToCreate.eventLocationName;
@@ -222,13 +223,13 @@
             newEvent[@"title"] = self.eventToCreate.eventTitle;
             newEvent[@"description"] = self.eventDescriptionText.text;
             newEvent[@"typeOfEvent"] = [NSNumber numberWithInt:self.eventToCreate.eventType];
-            newEvent[@"parent"] = [PFUser currentUser];
+            newEvent[@"parent"] = [EVNUser currentUser];
             newEvent[@"dateOfEvent"] = self.eventToCreate.eventDate;
             newEvent[@"locationOfEvent"] = self.eventToCreate.eventCoordinates;
             newEvent[@"nameOfLocation"] = self.eventToCreate.eventLocationName;
             */
             
-            self.event[@"parent"] = [PFUser currentUser];
+            self.event[@"parent"] = [EVNUser currentUser];
 
             
             //Transition Blur

@@ -8,6 +8,7 @@
 
 #import "EVNUtility.h"
 #import "EVNConstants.h"
+#import "EVNUser.h"
 #import "EditProfileVC.h"
 #import "UIColor+EVNColors.h"
 #import "UIImage+EVNEffects.h"
@@ -323,13 +324,13 @@
     
     [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (succeeded){
-            [PFUser currentUser][@"profilePicture"] = profilePictureFile;
+            [EVNUser currentUser][@"profilePicture"] = profilePictureFile;
 
-            [[PFUser currentUser] setUsername:self.usernameTextField.text];
-            [[PFUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
-            [[PFUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
-            [[PFUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
-            [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            [[EVNUser currentUser] setUsername:self.usernameTextField.text];
+            [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
+            [[EVNUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
+            [[EVNUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
+            [[EVNUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
                 if (succeeded) {
                     NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
@@ -370,8 +371,8 @@
     
     if ([accountsArray count] > 0) {
         ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
-        [PFUser currentUser][@"twitterHandle"] = twitterAccount.username;
-        [[PFUser currentUser] saveInBackground];
+        [EVNUser currentUser][@"twitterHandle"] = twitterAccount.username;
+        [[EVNUser currentUser] saveInBackground];
     }
     
     [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error) {
@@ -381,8 +382,8 @@
             if ([accountsArray count] > 0) {
                 ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
                 
-                [PFUser currentUser][@"twitterHandle"] = twitterAccount.username;
-                [[PFUser currentUser] saveInBackground];
+                [EVNUser currentUser][@"twitterHandle"] = twitterAccount.username;
+                [[EVNUser currentUser] saveInBackground];
                 
                 self.connectWithTwitterButton.titleLabel.text = @"Connected With Twitter";
                 

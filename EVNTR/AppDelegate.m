@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "EVNUser.h"
 #import <Parse/Parse.h>
 #import <Bolts/Bolts.h>
 
@@ -203,7 +204,7 @@
 //Background Fetch - Currently just looks for new invites from the activity table and alerts the user to how many are new.
 //Add a last fetch date to the user property?  How does the nsuserdefaults work for multiple users?  Will objects/keys be overwritten if a new user signs in???  Maybe I should add all these properties to the user and saveInBackgroundEventually?
 //Append username to kLastBackgroundFetchDate? - http://stackoverflow.com/questions/19023544/best-approach-to-persist-preferences-of-several-user-nsuserdefaults-xml-file
-//wonder what this does when no user is logged in? what does [pfuser currentuser] return?
+//wonder what this does when no user is logged in? what does [EVNUser currentuser] return?
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     
@@ -216,12 +217,12 @@
     }
     
     //Perform Fetch Only if User is Logged In
-    if ([PFUser currentUser]) {
+    if ([EVNUser currentUser]) {
     
         //Querying for Invite Activities that Are New
         PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];
         [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
-        [queryForInvites whereKey:@"to" equalTo:[PFUser currentUser]];
+        [queryForInvites whereKey:@"to" equalTo:[EVNUser currentUser]];
         [queryForInvites whereKey:@"createdAt" greaterThanOrEqualTo:lastFetchTime];
         [queryForInvites findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (error) {
@@ -231,7 +232,7 @@
                 
                 if (numberOfNewInvites == 1) {
                     PFObject *newInviteActivity = [objects firstObject];
-                    PFUser *userWhoInvited = newInviteActivity[@"from"];
+                    EVNUser *userWhoInvited = newInviteActivity[@"from"];
                     
                     [userWhoInvited fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                         

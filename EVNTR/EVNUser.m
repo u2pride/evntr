@@ -19,7 +19,7 @@
 }
 
 + (NSString *) parseClassName {
-    return @"User";
+    return @"_User";
 }
 
 + (EVNUser *) currentUser {

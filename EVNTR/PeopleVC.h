@@ -8,6 +8,7 @@
 
 #import <ParseUI/ParseUI.h>
 #import "EventObject.h"
+#import "EVNUser.h"
 
 @protocol PeopleVCDelegate;
 @class EventAddVC;
@@ -16,7 +17,7 @@
 
 @property (nonatomic, weak) id<PeopleVCDelegate> delegate;
 @property (nonatomic, assign) int typeOfUsers;
-@property (nonatomic, strong) PFUser *userProfile;
+@property (nonatomic, strong) EVNUser *userProfile;
 @property (nonatomic, strong) EventObject *eventToViewAttenders;
 
 //Property for Invitation PeopleVC

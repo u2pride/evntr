@@ -8,10 +8,11 @@
 
 #import <ParseUI/ParseUI.h>
 #import <Parse/Parse.h>
+#import "EVNUser.h"
 
 @interface ActivityVC : PFQueryTableViewController <UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign) int typeOfActivityView;
-@property (nonatomic, strong) PFUser *userForActivities;
+@property (nonatomic, strong) EVNUser *userForActivities;
 
 @end

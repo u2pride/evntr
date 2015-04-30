@@ -8,6 +8,7 @@
 
 #import "EVNButton.h"
 #import "EVNConstants.h"
+#import "EVNUser.h"
 #import "EVNUtility.h"
 #import "FBShimmeringView.h"
 #import "LogInVC.h"
@@ -144,7 +145,7 @@ typedef enum {
     
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
-    // Login PFUser using Facebook
+    // Login EVNUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
         if (!user) {
@@ -186,7 +187,7 @@ typedef enum {
                 double delayInSeconds = 3.0;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [self grabUserDetailsFromFacebookWithUser:user];
+                    [self grabUserDetailsFromFacebookWithUser:(EVNUser *)user];
                     [self cleanUpBeforeTransition];
                     
                 });
@@ -219,7 +220,7 @@ typedef enum {
 }
 
 
-- (void) grabUserDetailsFromFacebookWithUser:(PFUser *)newUser {
+- (void) grabUserDetailsFromFacebookWithUser:(EVNUser *)newUser {
     
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     activityIndicator.hidesWhenStopped = YES;
@@ -320,7 +321,7 @@ typedef enum {
     
     [self blurViewDuringLoginWithMessage:@"Signing Up..."];
     
-    PFUser *newUser = [PFUser user];
+    EVNUser *newUser = (EVNUser *)[EVNUser object];
     newUser.username = self.usernameField.text;
     newUser.password = self.passwordField.text;
     newUser.email = self.emailField.text;
