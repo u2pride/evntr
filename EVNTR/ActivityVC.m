@@ -253,17 +253,50 @@
 
 - (PFQuery *)queryForTable {
     
-    PFQuery *queryForActivities = [PFQuery queryWithClassName:@"Activities"];
+    //TODO - use dot notation to fetch further objects for example... from.profilePicture so we don't have to do this later..
+
+    NSLog(@"Building the query");
     
+    PFQuery *queryForActivities = [PFQuery queryWithClassName:@"Activities"];
+    [queryForActivities orderByDescending:@"updatedAt"];
+
     //Build the query for the table
     switch (self.typeOfActivityView) {
         case ACTIVITIES_ALL: {
             //[queryForActivities whereKey:@"type" notEqualTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-            [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            
+            PFQuery *coreActivities = [PFQuery queryWithClassName:@"Activities"];
+            [coreActivities whereKey:@"to" equalTo:self.userForActivities];
+            //[coreActivities includeKey:@"to"];
+            //[coreActivities includeKey:@"from"];
+            //[coreActivities includeKey:@"activityContent"];
+            
+            PFQuery *requestsToEvents = [PFQuery queryWithClassName:@"Activities"];
+            [requestsToEvents whereKey:@"from" equalTo:self.userForActivities];
+            [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
+            //[requestsToEvents includeKey:@"to"];
+            //[requestsToEvents includeKey:@"from"];
+            //[requestsToEvents includeKey:@"activityContent"];
+
+            
+            //PFQuery *coreActivities = [PFQuery queryWithClassName:@"Activities"];
+            //[queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            //[queryForActivities includeKey:@"to"];
+            //[queryForActivities includeKey:@"from"];
+            //[queryForActivities includeKey:@"activityContent"];
+            
+            
+            queryForActivities = [PFQuery orQueryWithSubqueries:@[coreActivities,requestsToEvents]];
             [queryForActivities includeKey:@"to"];
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
+
+            
+            // 3 - {from} requested that {to} give access to {activityContent}
+
+            // {to} - current user therefore Michael has requested access to Camping {}
+            // {from} - current user therefore You were added to the Standby list for Hiking
             
             break;
         }
@@ -272,7 +305,6 @@
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
-            [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
         }
@@ -293,7 +325,6 @@
             
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
-            [queryForActivities orderByDescending:@"updatedAt"];
 
             
             break;
@@ -303,7 +334,6 @@
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
             [queryForActivities includeKey:@"to"];
             [queryForActivities includeKey:@"activityContent"];
-            [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
         }
@@ -313,17 +343,17 @@
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
-            [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
         }
         default:
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
-            [queryForActivities orderByDescending:@"updatedAt"];
             
             break;
     }
     
+    
+
     return queryForActivities;
     
 }
@@ -418,11 +448,9 @@
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
             [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
             
-            
             //Main Text Message
             NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", userFollow.username];
             activityCell.activityContentTextLabel.text = textForActivityCell;
-            
             
             //Right Action Button
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
@@ -444,13 +472,14 @@
                 [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
                 
             }];
-            
+
+        
             
             break;
         }
         case INVITE_ACTIVITY: {
             
-            EVNUser *userInvite = object[@"from"];
+            EVNUser *userInvite = (EVNUser *) object[@"from"];
             
             __block NSString *username = userInvite[@"username"];
             
@@ -463,105 +492,109 @@
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
             [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
             
-            
             //Main Text Message
-            PFObject *eventInvitedTo = object[@"activityContent"];
-            NSLog(@"eventInvitedTo: %@", eventInvitedTo);
-            [eventInvitedTo fetchInBackgroundWithBlock:^(PFObject *eventRetrieved, NSError *error) {
-                
-                EventObject *event = (EventObject *) eventRetrieved;
-                
-                if (!error) {
-
-                    activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ invited you to %@", username, event.title];
-                    activityCell.actionButton.eventToView = event;
-                    [activityCell.actionButton setIsSelected:NO];
-                    
-                } else {
-                    
-                    //TODO - remove before release
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Send Feedback" message:@"Error in retrieving information from DB.  Contact developer at aryan@evntr.co" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                    
-                    [errorAlert show];
-                }
-                
-            }];
+            EventObject *eventInvitedTo = (EventObject *) object[@"activityContent"];
+            
+            activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ invited you to %@", username, eventInvitedTo.title];
+            activityCell.actionButton.eventToView = eventInvitedTo;
+            [activityCell.actionButton setIsSelected:NO];
             
             
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
-            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            [activityCell.actionButton setIsSelected:NO];
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+            
             
             break;
         }
         case REQUEST_ACCESS_ACTIVITY: {
             
-            EVNUser *userRequestedAccess = object[@"from"];
-            EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
+            EVNUser *fromUser = object[@"from"];
+            
+            //Current User is On the Standby List
+            if ([fromUser.objectId isEqualToString:[EVNUser currentUser].objectId]) {
+                
+                EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
+                
+                //Left Image Configuration
+                activityCell.leftSideImageView.file = [EVNUser currentUser][@"profilePicture"];
+                [activityCell.leftSideImageView loadInBackground];
+                activityCell.leftSideImageView.userInteractionEnabled = YES;
+                activityCell.leftSideImageView.objectForImageView = [EVNUser currentUser];
+                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                
+                //Main Text Message
+                activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"You showed interest in %@", eventToAccess.title];
+                
+                //Right Button Configuration
+                activityCell.actionButton.eventToGrantAccess = eventToAccess;
+                activityCell.actionButton.titleText = @"View";
+                [activityCell.actionButton setIsSelected:NO];
+                [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                
+        
+            //Current User Has a Request for Access to An Event
+            } else {
+                
+                EVNUser *userRequestedAccess = (EVNUser *) object[@"from"];
+                EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
+                
+                //Left Image Configuration
+                activityCell.leftSideImageView.file = userRequestedAccess[@"profilePicture"];
+                [activityCell.leftSideImageView loadInBackground];
+                activityCell.leftSideImageView.userInteractionEnabled = YES;
+                activityCell.leftSideImageView.objectForImageView = userRequestedAccess;
+                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                
+                //Main Text Message
+                activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ requested access to %@", userRequestedAccess.username, eventToAccess.title];
+                
+                //Right Button Configuration
+                activityCell.actionButton.personToGrantAccess = userRequestedAccess;
+                activityCell.actionButton.eventToGrantAccess = eventToAccess;
+                
+                
+                PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
+                [grantedActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
+                [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+                [grantedActivity whereKey:@"to" equalTo:userRequestedAccess];
+                [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
+                [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                    
+                    if (!objects || !objects.count) {
+                        activityCell.actionButton.titleText = kGrantAccess;
+                        [activityCell.actionButton setIsSelected:NO];
+                        //[activityCell.actionButton setTitle:kGrantAccess forState:UIControlStateNormal];
+                    } else {
+                        activityCell.actionButton.titleText = kRevokeAccess;
+                        [activityCell.actionButton setIsSelected:YES];
+                        //[activityCell.actionButton setTitle:kRevokeAccess forState:UIControlStateNormal];
+                    }
+                    
+                    [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
+                    
+                }];
+                
 
-            
-            //Left Image Thumbnail
-            activityCell.leftSideImageView.file = userRequestedAccess[@"profilePicture"];
-            [activityCell.leftSideImageView loadInBackground];
-            
-            activityCell.leftSideImageView.userInteractionEnabled = YES;
-            activityCell.leftSideImageView.objectForImageView = userRequestedAccess;
-            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-            
-            
-            //Main Text Message
-            activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ requested access to %@", userRequestedAccess.username, eventToAccess.title];
-            
-            
-            //Right Action Button
-            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
-            activityCell.actionButton.personToGrantAccess = userRequestedAccess;
-            activityCell.actionButton.eventToGrantAccess = eventToAccess;
-            
-            
-            PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
-            [grantedActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
-            [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-            [grantedActivity whereKey:@"to" equalTo:userRequestedAccess];
-            [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
-            [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                
-                if (!objects || !objects.count) {
-                    activityCell.actionButton.titleText = kGrantAccess;
-                    [activityCell.actionButton setIsSelected:NO];
-                    //[activityCell.actionButton setTitle:kGrantAccess forState:UIControlStateNormal];
-                } else {
-                    activityCell.actionButton.titleText = kRevokeAccess;
-                    [activityCell.actionButton setIsSelected:YES];
-                    //[activityCell.actionButton setTitle:kRevokeAccess forState:UIControlStateNormal];
-                }
-                
-                [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
-                
-            }];
+
+            }
             
             break;
         }
         case ATTENDING_ACTIVITY: {
             
-            EVNUser *userForAttend = object[@"to"];
-            EventObject *eventAttending = object[@"activityContent"];
+            EVNUser *userAttend = object[@"to"];
+            EventObject *eventToAttend = object[@"activityContent"];
 
-            
             //Left Image Thumbnail
-            activityCell.leftSideImageView.file = userForAttend[@"profilePicture"];
+            activityCell.leftSideImageView.file = userAttend[@"profilePicture"];
             [activityCell.leftSideImageView loadInBackground];
             
             activityCell.leftSideImageView.userInteractionEnabled = YES;
-            activityCell.leftSideImageView.objectForImageView = userForAttend;
+            activityCell.leftSideImageView.objectForImageView = userAttend;
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
             [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
             
@@ -569,16 +602,16 @@
             //Main Text Message
             NSString *activityDescriptionString;
             NSDate *currentDate = [NSDate date];
-            NSComparisonResult dateComparison = [currentDate compare:eventAttending.dateOfEvent];
+            NSComparisonResult dateComparison = [currentDate compare:eventToAttend.dateOfEvent];
             
             //Build the description string based off Time of Event and Current User
             if ([self.userForActivities.objectId isEqualToString:[EVNUser currentUser].objectId] ) {
                 
                 if (dateComparison == NSOrderedAscending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", eventAttending.title];
+                    activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", eventToAttend.title];
                     
                 } else if (dateComparison == NSOrderedDescending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"You went to %@", eventAttending.title];
+                    activityDescriptionString = [NSString stringWithFormat:@"You went to %@", eventToAttend.title];
                     
                 } else {
                     activityDescriptionString = @"Failed comparison";
@@ -587,21 +620,19 @@
             } else {
                 
                 if (dateComparison == NSOrderedAscending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"%@ is going to %@", self.userForActivities[@"username"], eventAttending.title];
+                    activityDescriptionString = [NSString stringWithFormat:@"%@ is going to %@", self.userForActivities[@"username"], eventToAttend.title];
                     
                 } else if (dateComparison == NSOrderedDescending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], eventAttending.title];
+                    activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], eventToAttend.title];
                     
                 } else {
                     activityDescriptionString = @"Failed comparison2";
                     
                 }
-                
-                
+            
             }
             
             activityCell.activityContentTextLabel.text = activityDescriptionString;
-            
             
             
             //Right Action Button
@@ -611,18 +642,18 @@
             //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
             //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
             //activityCell.actionButton.backgroundColor = [UIColor clearColor];
-            activityCell.actionButton.eventToView = eventAttending;
+            activityCell.actionButton.eventToView = eventToAttend;
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-
+            
+            
             
             break;
         }
         case ACCESS_GRANTED_ACTIVITY: {
             
-            EVNUser *userGrantedAccess = object[@"from"];
+            EVNUser *userGrantedAccess = (EVNUser *) object[@"from"];
             EventObject *eventGrantedAccess = (EventObject *) object[@"activityContent"];
-
             
             //Left Side Thumbnail
             activityCell.leftSideImageView.file = userGrantedAccess[@"profilePicture"];
@@ -645,10 +676,11 @@
             //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
             //activityCell.actionButton.backgroundColor = [UIColor clearColor];
             activityCell.actionButton.eventToView = eventGrantedAccess;
-
+            
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
             
+        
             break;
         }
         default: {

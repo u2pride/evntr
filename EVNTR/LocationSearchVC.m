@@ -50,7 +50,7 @@
     
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
     //Navigation Bar Font & Color
@@ -291,7 +291,7 @@
 
 - (void) tappedUseLocation {
     
-    [PFAnalytics trackEventInBackground:@"Current Location Used" block:nil];
+    [PFAnalytics trackEventInBackground:@"CurrentLocationUsed" block:nil];
     
     NSIndexPath *locationInfoIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
     

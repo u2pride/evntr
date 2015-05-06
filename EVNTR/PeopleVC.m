@@ -103,7 +103,7 @@
             
             
             self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-            self.navigationController.navigationBar.translucent = YES;
+            self.navigationController.navigationBar.translucent = NO;
             [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
             
             [self.navigationItem setTitle:@"Invite"];

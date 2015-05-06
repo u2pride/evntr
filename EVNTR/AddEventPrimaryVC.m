@@ -214,7 +214,7 @@
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
-        [PFAnalytics trackEventInBackground:@"Camera Used" block:nil];
+        [PFAnalytics trackEventInBackground:@"CameraUsed" block:nil];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -228,7 +228,7 @@
     
     UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
-        [PFAnalytics trackEventInBackground:@"Photo Picker Used" block:nil];
+        [PFAnalytics trackEventInBackground:@"PhotoPickerUsed" block:nil];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -249,7 +249,7 @@
     
     UIAlertAction *lastPhoto = [UIAlertAction actionWithTitle:@"Use Last Photo Taken" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
        
-        [PFAnalytics trackEventInBackground:@"Last Photo Used" block:nil];
+        [PFAnalytics trackEventInBackground:@"LastPhotoUsed" block:nil];
         
         PHFetchOptions *fetchOptions = [PHFetchOptions new];
         fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO],

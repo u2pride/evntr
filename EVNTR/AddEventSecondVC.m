@@ -105,7 +105,7 @@
 - (IBAction)createEvent:(id)sender {
     
     NSDictionary *dimensions = @{ @"UserID": [EVNUser currentUser].objectId};
-    [PFAnalytics trackEventInBackground:@"Event Creation" dimensions:dimensions block:nil];
+    [PFAnalytics trackEventInBackground:@"EventCreation" dimensions:dimensions block:nil];
 
     NSLog(@"self.eventToCreate.eventDescription: %@ and eventLocationName: %@", self.event.descriptionOfEvent, self.event.nameOfLocation);
     

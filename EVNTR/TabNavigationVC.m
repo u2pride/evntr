@@ -88,7 +88,7 @@
     self.tabBar.barTintColor = [UIColor whiteColor];
     self.tabBar.tintColor = [UIColor orangeThemeColor];
     self.tabBar.backgroundColor = [UIColor clearColor];
-    self.tabBar.translucent = YES;
+    self.tabBar.translucent = NO;
     
 }
 
@@ -158,7 +158,7 @@
         
         //Update Font and Color of NavBar in Case of Moving Directly from Event Detail Page
         //navVC.navigationBar.barTintColor = [UIColor orangeThemeColor];
-        //navVC.navigationBar.translucent = YES;
+        //navVC.navigationBar.translucent = NO;
         //[navVC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
         
         ProfileVC *profileView = navVC.childViewControllers.firstObject;
@@ -223,7 +223,7 @@
                                  @"FinalTab": toVCName,
                                  };
     
-    [PFAnalytics trackEventInBackground:@"Navigation Patterns" dimensions:dimensions block:nil];
+    [PFAnalytics trackEventInBackground:@"NavigationPatterns" dimensions:dimensions block:nil];
     
     
     if (toVCIndex == TAB_CREATE) {

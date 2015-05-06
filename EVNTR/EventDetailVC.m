@@ -163,7 +163,7 @@
     
     [super viewWillAppear:animated];
     
-    [PFAnalytics trackEventInBackground:@"View Event" block:nil];
+    [PFAnalytics trackEventInBackground:@"ViewEvent" block:nil];
 
     NSLog(@"Event invitedUsers: %@", self.event.invitedUsers);
     
@@ -404,6 +404,8 @@
                     
                     self.isPublicApproved = YES;
                     
+                    NSLog(@"CHECKPOINT 0");
+                    
                     //Determine the state of the user with the event
                     // Hasn't requested Accesss - Requested Access - Granted Acccess
                     
@@ -411,6 +413,8 @@
                         
                         if ([status isEqualToString:@"Error"]) {
                             //TODO: Error Handling
+                            self.isCurrentUserAttending = NO;
+                            self.rsvpStatusButton.titleText = @"Unknown";
                         } else {
                             
                             if (!self.isCurrentUsersEvent) {
@@ -528,7 +532,7 @@
         
         currentLocation = [[CLLocation alloc] initWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
         
-        [PFAnalytics trackEvent:@"Current Location Nil"];
+        [PFAnalytics trackEvent:@"CurrentLocationNil"];
     }
 
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];

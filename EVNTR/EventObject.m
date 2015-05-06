@@ -261,74 +261,71 @@
     
 }
 
+
+//TODO: check to make sure completion block stops execution of method
 - (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL, NSString *))completionBlock {
     
-    PFQuery *requestedAccessQuery = [PFQuery queryWithClassName:@"Activities"];
-    [requestedAccessQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-    [requestedAccessQuery whereKey:@"from" equalTo:user];
-    [requestedAccessQuery whereKey:@"activityContent" equalTo:self];
-    [requestedAccessQuery findObjectsInBackgroundWithBlock:^(NSArray *requestedActivityObjects, NSError *error) {
+    //NSArray *activityTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY], [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY], nil];
+    
+    PFQuery *requestActivity = [PFQuery queryWithClassName:@"Activities"];
+    [requestActivity whereKey:@"activityContent" equalTo:self];
+    [requestActivity whereKey:@"to" equalTo:user];
+    [requestActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
+    
+    PFQuery *grantedActivty = [PFQuery queryWithClassName:@"Activities"];
+    [grantedActivty whereKey:@"activityContent" equalTo:self];
+    [grantedActivty whereKey:@"from" equalTo:user];
+    [grantedActivty whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+    
+    PFQuery *statusQuery = [PFQuery orQueryWithSubqueries:@[requestActivity, grantedActivty]];
+    
+    [statusQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
-        __block NSString *status = kNOTRSVPedForEvent;
+        NSLog(@"Activities Returned: %@", objects);
         
         if (error) {
             completionBlock(NO, @"Error");
+        }
+        
+        NSString *status = kNOTRSVPedForEvent;
+        
+        for (PFObject *activity in objects) {
             
-        } else {
+            NSLog(@"Checkpoint 1");
             
-            //User has requested Access to Event
-            if (requestedActivityObjects.count > 0) {
-                
-                status = kRSVPedForEvent;
-                
-                //Now Query For Access Granted
-                PFQuery *accessGrantedQuery = [PFQuery queryWithClassName:@"Activities"];
-                [accessGrantedQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-                [accessGrantedQuery whereKey:@"to" equalTo:user];
-                [accessGrantedQuery whereKey:@"activityContent" equalTo:self];
-                [accessGrantedQuery findObjectsInBackgroundWithBlock:^(NSArray *accessActivityObjects, NSError *error) {
-                    
-                    if (error) {
-                        completionBlock(NO, @"Error");
-                        
-                    } else {
-                        //Access Granted to Event
-                        if (accessActivityObjects.count > 0) {
-                            
-                            status = kGrantedAccessToEvent;
-                            
-                            completionBlock(YES, status);
-                            
-                        } else {
-                            completionBlock(NO, status);
-                        }
-                        
-                    }
-                    
-                }];
-                
-            } else {
-                
-                completionBlock(NO, status);
+            if ([activity objectForKey:@"type"] == [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]) {
+                NSLog(@"Granted Access - Now Return Before Next Checkpoint");
+                status = kGrantedAccessToEvent;
+                completionBlock (YES, status);
             }
+            
+            NSLog(@"Checkpoint 2");
+            
+            if ([activity objectForKey:@"type"] == [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]) {
+                NSLog(@"On Standby for Event");
+                status = kRSVPedForEvent;
+            }
+            
+            NSLog(@"Checkpoint 3");
             
         }
         
+        completionBlock(NO, status);
+
     }];
-    
     
 }
 
 - (void) requestAccessForUser:(EVNUser *)user completion:(void (^)(BOOL))completionBlock {
     
-    //RSVP User for Event
-    PFObject *rsvpActivity = [PFObject objectWithClassName:@"Activities"];
-    rsvpActivity[@"from"] = user;
-    rsvpActivity[@"to"] = self.parent;
-    rsvpActivity[@"type"] = [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY];
-    rsvpActivity[@"activityContent"] = self;
+    //Request Access for User to Event
+    PFObject *requestAccessActivity = [PFObject objectWithClassName:@"Activities"];
+    requestAccessActivity[@"from"] = self.parent;
+    requestAccessActivity[@"to"] = user;
+    requestAccessActivity[@"type"] = [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY];
+    requestAccessActivity[@"activityContent"] = self;
     
-    [rsvpActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [requestAccessActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         completionBlock(succeeded);
         

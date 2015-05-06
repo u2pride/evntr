@@ -139,7 +139,7 @@
 //TODO: Create New View Controller and Add TableView Programmatically - change here and in SeachVC
 - (void)displaySearchController {
     
-    [PFAnalytics trackEventInBackground:@"Search Accessed" block:nil];
+    [PFAnalytics trackEventInBackground:@"SearchAccessed" block:nil];
     
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     [self.navigationController pushViewController:searchController animated:YES];
@@ -148,7 +148,7 @@
 
 - (void) displayFilterView {
     
-    [PFAnalytics trackEventInBackground:@"Filter Accessed" block:nil];
+    [PFAnalytics trackEventInBackground:@"FilterAccessed" block:nil];
     
     FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;

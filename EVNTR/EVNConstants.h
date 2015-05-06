@@ -82,10 +82,6 @@ extern NSString *const kRevokeAccess;
 #define SPONSORED_PROFILE 3
 
 
-
-
-
-
 #pragma mark - Activity Types
 
 #define FOLLOW_ACTIVITY 1
@@ -94,20 +90,20 @@ extern NSString *const kRevokeAccess;
 #define ATTENDING_ACTIVITY 4
 #define ACCESS_GRANTED_ACTIVITY 5
 
-//follow - {To} invited - {to}  attending - {to} requested access - {to}
+//Requests to My Events - {from}
+//My Requests to Events -
 
 // 1 - {from} followed {to}
 // 2 - {from} invited {to} to {activityContent}
-
 // 3 - {from} requested that {to} give access to {activityContent}
-// 3 - {to} requested access from {from} to {activityContent}
-
-// 3 - {from} has been asked by {to} for access to {activityContent}
-
 // 4 - {to} is attending {activityContent}
 // 5 - {from} let {to} in to {activityContent}
 
+// 3 - {from} has been asked by {to} for access to {activityContent} - SWITCHED TO THIS BUT THEN SWITCHED BACK TO ORIGINAL
+// {to} requested access from {from} to {activityContent} - Never Implemented
+
 // Notifications Query - for all Activities in which {to} matches [EVNUser CurrentUser]
+
 
 #pragma mark - Event Types
 

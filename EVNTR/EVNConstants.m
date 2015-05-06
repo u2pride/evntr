@@ -17,11 +17,11 @@ NSString *const kNumberOfNotifications = @"NUM_NOTIFICATIONS";
 NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
 
 
-NSString *const kAttendingEvent = @"You're going!";
-NSString *const kNotAttendingEvent = @"Not Attending";
+NSString *const kAttendingEvent = @"Attending";
+NSString *const kNotAttendingEvent = @"Join";
 NSString *const kRSVPedForEvent = @"Interested";
 NSString *const kNOTRSVPedForEvent = @"Show Interest";
-NSString *const kGrantedAccessToEvent = @"Granted Access";
+NSString *const kGrantedAccessToEvent = @"Attending";
 NSString *const kInviteUsers = @"Invite Users";
 
 
