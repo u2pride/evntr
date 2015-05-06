@@ -138,8 +138,6 @@
     self.viewAttending.userInteractionEnabled = YES;
     [self.viewAttending addGestureRecognizer:tapgr];
     
-    NSLog(@"Event TO SEEEEEE: %@", self.event);
-    
     //Determine if Guest User
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
@@ -148,9 +146,6 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
 
-    
-    NSLog(@"PARENT OBJECT ID: %@ and CURRENT USER ID: %@", self.event.parent.objectId, [EVNUser currentUser].objectId);
-    
     //Determine if the Event Creator is the Current User
     if ([self.event.parent.objectId isEqualToString:[EVNUser currentUser].objectId]) {
         self.isCurrentUsersEvent = YES;
@@ -168,6 +163,8 @@
     
     [super viewWillAppear:animated];
     
+    [PFAnalytics trackEventInBackground:@"View Event" block:nil];
+
     NSLog(@"Event invitedUsers: %@", self.event.invitedUsers);
     
     if (self.shouldRestoreNavBar) {
@@ -184,6 +181,7 @@
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
+    //self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
     
     int eventType = [self.event.typeOfEvent intValue];
     if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
@@ -235,11 +233,11 @@
         //[self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
          //                                             forBarMetrics:UIBarMetricsDefault];
         //self.navigationController.navigationBar.shadowImage = self.navbarShadow;
-        self.navigationController.navigationBar.translucent = YES;
         
         NSLog(@"Setting to Orange");
         self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
         self.tabBarController.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+        self.navigationController.navigationBar.translucent = NO;
         
         //Navigation Bar Font & Color
         NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];

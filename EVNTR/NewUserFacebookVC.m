@@ -136,7 +136,6 @@
                                        
                                        
                                    } else {
-                                       //TODO:  Allow User to Select a Photo When One Isn't Pulled From FB.
                                        NSLog(@"DEVLOPER NOTE:  didnt get a fb profile image");
                                    }
                                }];
@@ -153,8 +152,12 @@
     
     [self blurViewDuringLoginWithMessage:@"Registering..."];
     
+    NSString *submittedUsername = self.usernameField.text;
+    NSString *submittedName = self.nameField.text;
+    NSString *submittedEmail = self.emailField.text;
+    
     //Validate that the user has submitted a user name and password
-    if (self.usernameField.text.length > 3 && self.nameField.text.length > 3 && self.emailField.text.length > 0) {
+    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedName.length >= MIN_USERNAME_LENGTH && submittedEmail.length > 0) {
         
         self.profileImageView.backgroundColor = [UIColor clearColor];
         UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
@@ -198,7 +201,8 @@
             
         }];
         
-        
+    
+    /*
     } else {
         
         [self cleanUpBeforeTransition];
@@ -206,6 +210,46 @@
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Information" message:@"Make sure to fill in all fields and that your username and password are greater than three characters." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
         
         [errorAlert show];
+    }
+     */
+    
+
+    } else {
+        
+        if (self.emailField.text.length < 1) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Email" message:@"Add your email before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.usernameField.text.length < MIN_USERNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is greater than %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.usernameField.text.length > MAX_USERNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is less than %d characters", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.nameField.text.length <= MIN_USERNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is greater than %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Issue" message:@"Please make sure to fill in all fields before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+        }
+        
+        
+        [self cleanUpBeforeTransition];
+        
     }
 
 }

@@ -76,7 +76,7 @@
     
     for (UINavigationController *navController in self.viewControllers) {
         navController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-        navController.navigationBar.translucent = YES;
+        navController.navigationBar.translucent = NO;
         
         //Set Font Color to White
         [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
@@ -181,6 +181,32 @@
     
 }
 
+- (NSString *)viewControllerNameForIndex:(int)indexValue {
+    
+    switch (indexValue) {
+        case TAB_HOME: {
+            return @"Home";
+            break;
+        }
+        case TAB_CREATE: {
+            return @"Create";
+            break;
+        }
+        case TAB_ACTIVITY: {
+            return @"Notifcations";
+            break;
+        }
+        case TAB_PROFILE: {
+            return @"Profile";
+            break;
+        }
+        default:
+            return @"Unknown";
+            break;
+    }
+    
+}
+
 
 #pragma mark - Custom Tab Switch Animation - Create Event
 
@@ -188,6 +214,17 @@
     
     NSUInteger fromVCIndex = [tabBarController.viewControllers indexOfObject:fromVC];
     NSUInteger toVCIndex = [tabBarController.viewControllers indexOfObject:toVC];
+    
+    NSString *fromVCName = [self viewControllerNameForIndex:(int)fromVCIndex];
+    NSString *toVCName = [self viewControllerNameForIndex:(int)toVCIndex];
+    
+    NSDictionary *dimensions = @{
+                                 @"InitialTab": fromVCName,
+                                 @"FinalTab": toVCName,
+                                 };
+    
+    [PFAnalytics trackEventInBackground:@"Navigation Patterns" dimensions:dimensions block:nil];
+    
     
     if (toVCIndex == TAB_CREATE) {
         self.transitionController.isPresenting = YES;

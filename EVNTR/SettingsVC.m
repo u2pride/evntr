@@ -31,6 +31,9 @@
     //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+
+    
 }
 
 
@@ -51,11 +54,16 @@
     MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
     
     mailVC.mailComposeDelegate = self;
-    [mailVC setSubject:@"Evntr App Feedback"];
+    [mailVC setSubject:@"Invite Friends"];
     [mailVC setToRecipients:@[@"aryan@evntr.co"]];
-    [mailVC setCcRecipients:@[@"kjaved@evntr.co"]];
+    [mailVC setCcRecipients:@[@"kjaved@evntr.co", @"mfisher@evntr.co"]];
+    [mailVC setMessageBody:@"In order to invite your friends, we need their name and email address. <br><br> Name:  <br> Email:  <br><br> They should get an email invite within 48 hours.  Make sure they check their spam folder in case it doesn't come to their inbox." isHTML:YES];
     
-    [self presentViewController:mailVC animated:YES completion:nil];
+    [self presentViewController:mailVC animated:YES completion:^{
+        
+        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+
+    }];
     
 }
 

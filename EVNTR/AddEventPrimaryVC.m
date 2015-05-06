@@ -53,19 +53,24 @@
     
     isEditing = NO;
     
+
+    
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
     //Navigation Bar Font & Color
     NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
     self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    
 
+
+    
     //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
     self.eventTitleField.delegate = self;
     
@@ -209,6 +214,8 @@
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
+        [PFAnalytics trackEventInBackground:@"Camera Used" block:nil];
+        
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
         imagePicker.allowsEditing = YES;
@@ -220,6 +227,8 @@
     
     
     UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
+        
+        [PFAnalytics trackEventInBackground:@"Photo Picker Used" block:nil];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -240,6 +249,8 @@
     
     UIAlertAction *lastPhoto = [UIAlertAction actionWithTitle:@"Use Last Photo Taken" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
        
+        [PFAnalytics trackEventInBackground:@"Last Photo Used" block:nil];
+        
         PHFetchOptions *fetchOptions = [PHFetchOptions new];
         fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO],
                                          ];

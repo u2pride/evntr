@@ -56,7 +56,7 @@
     
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.navigationBar.translucent = NO;
 
     //change font color of title to white
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
@@ -320,38 +320,91 @@
 
 - (IBAction)finishedEditProfile:(id)sender {
     
-    PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
+    [self.view endEditing:YES];
     
-    [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded){
-            [EVNUser currentUser][@"profilePicture"] = profilePictureFile;
+    NSString *submittedUsername = self.usernameTextField.text;
+    NSString *submittedName = self.realNameTextField.text;
+    NSString *submittedBio = self.bioTextField.text;
 
-            [[EVNUser currentUser] setUsername:self.usernameTextField.text];
-            [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
-            [[EVNUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
-            [[EVNUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
-            [[EVNUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH) {
+        
+        PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
+        
+        [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (succeeded){
+                [EVNUser currentUser][@"profilePicture"] = profilePictureFile;
                 
-                if (succeeded) {
-                    NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
+                [[EVNUser currentUser] setUsername:self.usernameTextField.text];
+                [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
+                [[EVNUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
+                [[EVNUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
+                [[EVNUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
-                    id<ProfileEditDelegate> strongDelegate = self.delegate;
-                    
-                    if ([strongDelegate respondsToSelector:@selector(saveProfileWithNewInformation:withImageData:)]) {
+                    if (succeeded) {
+                        NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
                         
-                        [strongDelegate saveProfileWithNewInformation:newUserValues withImageData:self.pictureData];
+                        id<ProfileEditDelegate> strongDelegate = self.delegate;
+                        
+                        if ([strongDelegate respondsToSelector:@selector(saveProfileWithNewInformation:withImageData:)]) {
+                            
+                            [strongDelegate saveProfileWithNewInformation:newUserValues withImageData:self.pictureData];
+                        }
+                        
+                    } else {
+                        
+                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable To Update" message:[NSString stringWithFormat:@"%@", error] delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        
+                        [errorAlert show];
+                        
                     }
-                    
-                } else {
-                    
-                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable To Update" message:[NSString stringWithFormat:@"%@", error] delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                    
-                    [errorAlert show];
-                    
-                }
-            }];
+                }];
+            }
+        }];
+        
+        
+    } else {
+        
+        if (submittedUsername.length < MIN_USERNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is greater than %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (submittedUsername.length > MAX_USERNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is less than %d characters", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (submittedName.length < MIN_REALNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is greater than %d characters", (MIN_REALNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (submittedName.length > MAX_REALNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is less than %d characters", (MAX_REALNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        }  else if (submittedBio.length > MAX_BIO_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Bio" message:[NSString stringWithFormat:@"Please choose a bio that is less than %d characters", (MAX_BIO_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Edit Issue" message:@"Please make sure to fill in all fields before submitting." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
         }
-    }];
+        
+    }
+    
+    
+
     
     
     

@@ -51,7 +51,7 @@
     [super viewDidLoad];
     
     //TODO: for testing purposes
-    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor orangeThemeColor];
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor darkGrayColor];
 
     //Setting Up Custom Buttons
     self.loginButton.buttonColor = [UIColor orangeThemeColor];
@@ -244,6 +244,13 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
+
+    NSLog(@"Version: %@ and Build: %@", version, build);
+    
     
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     

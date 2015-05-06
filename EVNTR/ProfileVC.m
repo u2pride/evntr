@@ -18,6 +18,10 @@
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
+#import "NSDate+NVTimeAgo.h"
+
+#import <QuartzCore/QuartzCore.h>
+
 
 @interface ProfileVC ()
 
@@ -28,6 +32,7 @@
 //Structure Related Views
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UINavigationItem *navigationItemWithSettingsBarItem;
+@property (strong, nonatomic) IBOutlet UIView *colorBackgroundView;
 
 //User Information
 @property (strong, nonatomic) IBOutlet PFImageView *profileImageView;
@@ -37,27 +42,23 @@
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *instagramIcon;
 @property (weak, nonatomic) IBOutlet UIImageView *twitterIcon;
+@property (strong, nonatomic) IBOutlet UILabel *userHometownLabel;
+@property (strong, nonatomic) IBOutlet UILabel *userSinceLabel;
 
 //Buttons For Actions On Profile
 @property (strong, nonatomic) IBOutlet EVNButton *followButton;
-@property (weak, nonatomic) IBOutlet UIButton *editProfileButton;
-@property (weak, nonatomic) IBOutlet UIButton *viewEventsAttendedButton;
-@property (weak, nonatomic) IBOutlet UIButton *viewInvitesButton;
-@property (weak, nonatomic) IBOutlet UIButton *viewAccessRequestsForMyEventsButton;
-@property (weak, nonatomic) IBOutlet UIButton *viewMyAccessRequestsButton;
+@property (strong, nonatomic) IBOutlet EVNButton *editProfileButton;
+
+
 
 //Timer For Edit Profile Modal
 @property (nonatomic) BOOL isDismissedAlreadyCancel;
 @property (nonatomic) BOOL isDismissedAlreadyUpdate;
 
 - (IBAction)followUser:(id)sender;
-- (IBAction)viewEventsAttending:(id)sender;
-- (IBAction)viewInvites:(id)sender;
-- (IBAction)viewMyRequestStatus:(id)sender;
 - (IBAction)viewMyEvents:(id)sender;
 - (IBAction)viewFollowers:(id)sender;
 - (IBAction)viewFollowing:(id)sender;
-- (IBAction)viewPendingAccessRequests:(id)sender;
 
 
 @end
@@ -91,8 +92,21 @@
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
-    self.navigationController.view.backgroundColor = [UIColor whiteColor];
-
+    //Name Label Fits Text Dynamically
+    self.nameLabel.adjustsFontSizeToFitWidth = YES;
+    
+    //Style Buttons
+    self.followButton.buttonColor = [UIColor orangeThemeColor];
+    self.followButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
+    self.followButton.isRounded = YES;
+    self.followButton.hasBorder = YES;
+    
+    self.editProfileButton.buttonColor = [UIColor orangeThemeColor];
+    self.editProfileButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
+    self.editProfileButton.isRounded = YES;
+    self.editProfileButton.hasBorder = YES;
+    self.editProfileButton.titleText = @"edit profile";
+    
     
     //Setup the View
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
@@ -106,25 +120,67 @@
     
     self.editProfileButton.hidden = YES;
     self.followButton.hidden = YES;
+    
+    self.colorBackgroundView.backgroundColor = [UIColor orangeThemeColor];
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    
+    UINavigationBar *navigationBar = self.navigationController.navigationBar;
+    
+    [navigationBar setBackgroundImage:[UIImage new]
+                       forBarPosition:UIBarPositionAny
+                           barMetrics:UIBarMetricsDefault];
+    
+    [navigationBar setShadowImage:[UIImage new]];
+    
+    //navigationBar.barTintColor = [UIColor orangeThemeColor];
+    //navigationBar.backgroundColor = [UIColor orangeThemeColor];
+    self.navigationController.navigationBar.translucent = NO;
+
+    
+    //self.navigationController.navigationBar.tintColor = [UIColor clearColor];
+    //[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+    //self.navigationController.navigationBar.shadowImage = [UIImage new];
+    //self.navigationController.navigationBar.translucent = NO;
+    //self.navigationController.navigationBar.alpha = 0.5;
+    //self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
+
+    //self.navigationController.view.backgroundColor = [UIColor clearColor];
+
+    
     //Update Font and Color of NavBar in Case of Moving Directly from Event Detail Page
-    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    [self.navigationController.navigationBar setShadowImage:nil];
+    //[self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    //[self.navigationController.navigationBar setShadowImage:nil];
+    
+    /*
+    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
+
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.navigationBar.alpha = 1;
+    */
+
+    
     
     //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    //self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     
     //Query Parse for the User.
     PFQuery *usernameQuery = [EVNUser query];
     [usernameQuery whereKey:@"objectId" equalTo:self.userObjectID];
     [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         self.userForProfileView = (EVNUser *)object;
+        
+        self.userHometownLabel.text = self.userForProfileView.hometown;
+        NSString *dateJoined = [self.userForProfileView.createdAt formattedAsTimeAgo];
+        self.userSinceLabel.text = [NSString stringWithFormat:@"Joined %@", dateJoined];
         
         //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
         //TODO: Separate out what actually needs to be updated from database instead of updating all with updateUIWithUser
@@ -147,9 +203,22 @@
         
     }];
     
-    
 }
 
+
+
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    
+    [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:nil];
+    
+    //self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+    //self.tabBarController.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+    //self.navigationController.navigationBar.translucent = NO;
+    
+}
 
 
 - (void) updateUIAll {
@@ -159,17 +228,21 @@
 
             self.followButton.hidden = YES;
             self.editProfileButton.hidden = NO;
+            [self.editProfileButton addTarget:self action:@selector(editUserProfile) forControlEvents:UIControlEventTouchUpInside];
+            
             self.title = @"Profile";
+            self.navigationItem.title = [@"@" stringByAppendingString:self.userForProfileView.username];
             
             break;
         }
         case OTHER_USER_PROFILE: {
             
+
             //setup follow state and set picture button
             self.followButton.hidden = NO;
             self.editProfileButton.hidden = YES;
             
-            self.title = self.userForProfileView[@"username"];
+            self.navigationItem.title = [@"@" stringByAppendingString:self.userForProfileView.username];
             
             //Determine whether the current user is following this user
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
@@ -189,11 +262,6 @@
                 }
             }];
             
-            //Hide Buttons
-            self.viewAccessRequestsForMyEventsButton.hidden = YES;
-            self.viewMyAccessRequestsButton.hidden = YES;
-            self.viewInvitesButton.hidden = YES;
-            
             break;
         }
         case SPONSORED_PROFILE: {
@@ -212,7 +280,13 @@
     }];
     
     
-    self.nameLabel.text = self.userForProfileView[@"username"];
+    //Use Username for Real Name if no Real Name Chosen Yet
+    if (self.userForProfileView.realName) {
+        self.nameLabel.text = self.userForProfileView.realName;
+    } else {
+        self.nameLabel.text = self.userForProfileView.username;
+    }
+    
 
     //If Social Media Handles Exist, Setup with Handles and Tap Gestures
     if (self.userForProfileView[@"twitterHandle"]) {
@@ -245,7 +319,6 @@
     [countEventsQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         if (!error) {
             self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", number];
-            self.numberEventsLabel.textColor = [UIColor blackColor];
         }
     }];
     
@@ -255,7 +328,6 @@
     [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         if (!error) {
             self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
-            self.numberFollowersLabel.textColor = [UIColor blackColor];
         }
     }];
     
@@ -265,7 +337,6 @@
     [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         if (!error) {
             self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
-            self.numberFollowingLabel.textColor = [UIColor blackColor];
         }
     }];
     
@@ -541,14 +612,14 @@
             
         }];
         
-        NSString *username = [stringDictionary objectForKey:@"username"];
-        //NSString *realName = [stringDictionary objectForKey:@"realName"];
+        //NSString *username = [stringDictionary objectForKey:@"username"];
+        NSString *realName = [stringDictionary objectForKey:@"realName"];
         //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
         //NSString *bio = [stringDictionary objectForKey:@"bio"];
         
         self.profileImageView.image = [UIImage imageWithData:imageData];
         
-        self.nameLabel.text = username;
+        self.nameLabel.text = realName;
         
         self.userObjectID = [EVNUser currentUser].objectId;
         self.userForProfileView = [EVNUser currentUser];
@@ -640,7 +711,15 @@
 }
 
 #pragma mark - Navigation
- 
+
+
+- (void) editUserProfile {
+    
+    [self performSegueWithIdentifier:@"profileToEditProfile" sender:nil];
+    
+}
+
+
 // Remember that at this point the view hasn't loaded.... so you can't set UI element properties.
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
      

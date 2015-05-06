@@ -44,7 +44,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-        
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
+    
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = YES;
@@ -79,7 +82,7 @@
     [self.searchResultsTable registerNib:[UINib nibWithNibName:@"UserLocationTableCell" bundle:nil]forCellReuseIdentifier:@"CustomLocationCell"];
     
     //Initialization
-    self.definesPresentationContext = YES;
+    self.definesPresentationContext = NO;
     self.isEnteringCustomLocation = NO;
     self.geoCoder = [[CLGeocoder alloc] init];
     
@@ -287,7 +290,9 @@
 
 
 - (void) tappedUseLocation {
-        
+    
+    [PFAnalytics trackEventInBackground:@"Current Location Used" block:nil];
+    
     NSIndexPath *locationInfoIndexPath = [NSIndexPath indexPathForRow:1 inSection:0];
     
     UserLocationTableCell *locationCell = (UserLocationTableCell *) [self.searchResultsTable cellForRowAtIndexPath:locationInfoIndexPath];

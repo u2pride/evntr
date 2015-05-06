@@ -174,7 +174,7 @@
     _buttonColor = [UIColor orangeThemeColor];
     _isSelected = NO;
     _hasBorder = YES;
-    _titleText = @"Button";
+    _titleText = @"";
     
     self.layer.cornerRadius = (_isRounded) ? 10 : 0;
     self.clipsToBounds = YES;

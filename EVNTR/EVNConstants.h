@@ -94,11 +94,19 @@ extern NSString *const kRevokeAccess;
 #define ATTENDING_ACTIVITY 4
 #define ACCESS_GRANTED_ACTIVITY 5
 
+//follow - {To} invited - {to}  attending - {to} requested access - {to}
+
 // 1 - {from} followed {to}
 // 2 - {from} invited {to} to {activityContent}
+
 // 3 - {from} requested that {to} give access to {activityContent}
+// 3 - {to} requested access from {from} to {activityContent}
+
+// 3 - {from} has been asked by {to} for access to {activityContent}
+
 // 4 - {to} is attending {activityContent}
 // 5 - {from} let {to} in to {activityContent}
+
 // Notifications Query - for all Activities in which {to} matches [EVNUser CurrentUser]
 
 #pragma mark - Event Types
@@ -114,8 +122,18 @@ extern NSString *const kLastBackgroundFetchTimeStamp;
 
 
 
-#pragma mark - Nav Bar Appearance
+#pragma mark - NavBar Appearance
 #define kFontSize 18
+
+#pragma mark - Max Lengths
+#define MIN_USERNAME_LENGTH 2
+#define MAX_USERNAME_LENGTH 20
+#define MIN_REALNAME_LENGTH 0
+#define MAX_REALNAME_LENGTH 20
+#define MAX_BIO_LENGTH 120
+#define MIN_PASSWORD_LENGTH 2
+
+
 
 #pragma mark - Custom Font
 extern NSString *const EVNFontBold;

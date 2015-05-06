@@ -13,6 +13,7 @@
 #import "UIColor+EVNColors.h"
 #import "EVNLocationButton.h"
 #import "MBProgressHUD.h"
+#import "EVNUser.h"
 
 @interface AddEventSecondVC ()
 
@@ -103,6 +104,9 @@
 
 - (IBAction)createEvent:(id)sender {
     
+    NSDictionary *dimensions = @{ @"UserID": [EVNUser currentUser].objectId};
+    [PFAnalytics trackEventInBackground:@"Event Creation" dimensions:dimensions block:nil];
+
     NSLog(@"self.eventToCreate.eventDescription: %@ and eventLocationName: %@", self.event.descriptionOfEvent, self.event.nameOfLocation);
     
     if (self.event.descriptionOfEvent && self.event.nameOfLocation) {

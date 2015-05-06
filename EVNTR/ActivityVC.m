@@ -16,6 +16,8 @@
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
+#import "EVNNotifcationsTitleView.h"
+
 
 @interface ActivityVC ()
 
@@ -99,7 +101,12 @@
             self.navigationBarTitleText = @"Notifications";
 
             self.titleLabel.userInteractionEnabled = YES;
-            self.navigationItem.titleView = self.titleLabel;
+            //self.navigationItem.titleView = self.titleLabel;
+            
+            
+            EVNNotifcationsTitleView *titleForNotifications = [[EVNNotifcationsTitleView alloc] initWithFrame:CGRectMake(0, 0, 150, 50)];
+            titleForNotifications.backgroundColor = [UIColor clearColor];
+            self.navigationItem.titleView = titleForNotifications;
             
             
             UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterActivityTable)];
@@ -386,6 +393,8 @@
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     
+    activityCell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
+    
     //Remove Old Gestures and Targets from the Cell
     for (UIGestureRecognizer *recognizer in activityCell.leftSideImageView.gestureRecognizers) {
         NSLog(@"Removing Gesture...");
@@ -481,10 +490,10 @@
             
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
-            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
             
             break;
@@ -510,10 +519,10 @@
             
             
             //Right Action Button
-            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
             activityCell.actionButton.personToGrantAccess = userRequestedAccess;
             activityCell.actionButton.eventToGrantAccess = eventToAccess;
             
@@ -598,10 +607,10 @@
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
             [activityCell.actionButton setIsSelected:NO];
-            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
             activityCell.actionButton.eventToView = eventAttending;
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
@@ -631,10 +640,10 @@
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
             [activityCell.actionButton setIsSelected:NO];
-            activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            activityCell.actionButton.backgroundColor = [UIColor clearColor];
+            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
+            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
+            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
             activityCell.actionButton.eventToView = eventGrantedAccess;
 
             

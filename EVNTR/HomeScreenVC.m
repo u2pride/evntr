@@ -139,13 +139,17 @@
 //TODO: Create New View Controller and Add TableView Programmatically - change here and in SeachVC
 - (void)displaySearchController {
     
+    [PFAnalytics trackEventInBackground:@"Search Accessed" block:nil];
+    
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     [self.navigationController pushViewController:searchController animated:YES];
     
 }
 
 - (void) displayFilterView {
-        
+    
+    [PFAnalytics trackEventInBackground:@"Filter Accessed" block:nil];
+    
     FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     filterVC.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
@@ -179,14 +183,23 @@
 
 - (void) updatedLocation:(NSNotification *)notification {
     
+    NSLog(@"NEW LOCATION");
+
     if (!self.currentUserLocation) {
+        
+        NSLog(@"NEW LOCATION - PART 1");
+        
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
         self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
         [self loadObjects];
         
     } else {
+        
+        NSLog(@"NEW LOCATION - PART 2 - NO UPDATE");
+        
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
         self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
+        [self loadObjects];
     }
 }
 
@@ -194,21 +207,9 @@
 - (void)objectsWillLoad {
     [super objectsWillLoad];
     
-    //One Way to Do It
-    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManagerGlobal.location];
+    NSLog(@"ObjectsWillLoad");
     
-    //Ends up Grabbing the Last Location Stored if No Location in Location Manager
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *userLocationDictionary = [userDefaults objectForKey:kLocationCurrent];
-    
-    NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
-    NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
-    
-    if (userLocationDictionary && !self.currentUserLocation) {
-        self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
-        NSLog(@"Got Location from userdefaults - %@", self.currentUserLocation);
-    }
+
     
 }
 
@@ -228,8 +229,29 @@
 
 - (PFQuery *)queryForTable {
     
+    NSLog(@"QueryForTable");
+    
+    //One Way to Do It
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManagerGlobal.location];
+    
+    //Ends up Grabbing the Last Location Stored if No Location in Location Manager
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *userLocationDictionary = [userDefaults objectForKey:kLocationCurrent];
+    
+    NSNumber *latitude = [userLocationDictionary objectForKey:@"latitude"];
+    NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
+    
+    if (userLocationDictionary && !self.currentUserLocation) {
+        self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
+        NSLog(@"Got Location from userdefaults - %@", self.currentUserLocation);
+    }
+    
+    
     //Wait Until A Location Is Found
     if (!self.currentUserLocation) {
+        NSLog(@"NO CURRENT LOCATION FOUND");
+        [self performSelector:@selector(loadObjects) withObject:nil afterDelay:0.1];
         return nil;
     }
     
@@ -274,7 +296,7 @@
     
     eventsQuery.limit = 50;
     
-
+    NSLog(@"Events Query: %@", eventsQuery);
     
     return eventsQuery;
 }

@@ -27,6 +27,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    NSLog(@"NUMBER 1 - applicationDidFinishLaunchingWithOptions");
+    
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     //Enabling Local Notifications.
@@ -37,7 +39,7 @@
     //Connecting App to Parse and Enabling Analytics
     [ParseCrashReporting enable];
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    //[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     //Background Fetching for Server Updates
     [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
@@ -45,13 +47,13 @@
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
     
+    //TODO NO, this Doesn't work for Auto SignIn - ONly do this for cold launches
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
         [self startLocationManager];
 
     });
-    
     
     //Audio Session - Continue Playing Background Music
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -330,11 +332,13 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     
-    NSLog(@"App Entered Foreground - Start Location Updates");
+    //NSLog(@"App Entered Foreground - Start Location Updates");
+    //NSLog(@"NUMBER 2 - applicationWillEnterForeground");
+
 
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
-    [self startLocationManager];
+
 
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
@@ -343,18 +347,11 @@
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
     
+    [self startLocationManager];
 
+    //Track Each Time the App is Opened
     [PFAnalytics trackAppOpenedWithLaunchOptions:nil];
     
-    NSDictionary *dimensions = @{
-                                 // What type of news is this?
-                                 @"category": @"politics",
-                                 // Is it a weekday or the weekend?
-                                 @"dayType": @"weekday",
-                                 };
-    
-    [PFAnalytics trackEvent:@"read" dimensions:dimensions];
-
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

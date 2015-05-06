@@ -51,6 +51,7 @@
 		A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A47430691A8155AD00CF3B8F /* ActivityTableCell.m */; };
 		A47584301ADBF3E50065196D /* ParseCrashReporting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A475842F1ADBF3E50065196D /* ParseCrashReporting.framework */; };
 		A47584321ADBF4310065196D /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A47584311ADBF4310065196D /* libstdc++.6.dylib */; };
+		A47DC07A1AF7D19C00D245A8 /* EVNNotifcationsTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */; };
 		A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A488B35B1A801FE800738B4F /* MapKit.framework */; };
 		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
@@ -182,6 +183,8 @@
 		A47430691A8155AD00CF3B8F /* ActivityTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityTableCell.m; sourceTree = "<group>"; };
 		A475842F1ADBF3E50065196D /* ParseCrashReporting.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseCrashReporting.framework; sourceTree = "<group>"; };
 		A47584311ADBF4310065196D /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "usr/lib/libstdc++.6.dylib"; sourceTree = SDKROOT; };
+		A47DC0781AF7D19C00D245A8 /* EVNNotifcationsTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EVNNotifcationsTitleView.h; path = ../EVNNotifcationsTitleView.h; sourceTree = "<group>"; };
+		A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EVNNotifcationsTitleView.m; path = ../EVNNotifcationsTitleView.m; sourceTree = "<group>"; };
 		A488B35B1A801FE800738B4F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A48EEFEC1A797B82007145E3 /* EventDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailVC.h; sourceTree = "<group>"; };
 		A48EEFED1A797B82007145E3 /* EventDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EventDetailVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -404,6 +407,8 @@
 		A423F7EF1A9BC4D800DF9ABE /* UI Elements */ = {
 			isa = PBXGroup;
 			children = (
+				A47DC0781AF7D19C00D245A8 /* EVNNotifcationsTitleView.h */,
+				A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */,
 				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
 				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
 				A41352531A81B80200034222 /* ImageViewPFExtended.h */,
@@ -860,6 +865,7 @@
 				A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */,
 				A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */,
 				A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */,
+				A47DC07A1AF7D19C00D245A8 /* EVNNotifcationsTitleView.m in Sources */,
 				A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */,
 				A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */,
 				A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */,
