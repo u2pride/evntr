@@ -312,6 +312,8 @@
             //list of people that want access to your events
             //query activities where
             
+            //TODO - Unnecessarily complex query
+            
             //Get all events by User
             PFQuery *innerQueryForAuthor = [PFQuery queryWithClassName:@"Events"];
             [innerQueryForAuthor whereKey:@"parent" equalTo:[EVNUser currentUser]];
@@ -339,10 +341,27 @@
         }
         case ACTIVITIES_MY_REQUESTS_STATUS: {
             
-            [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-            [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            PFQuery *grantedAccessActivities = [PFQuery queryWithClassName:@"Activities"];
+            [grantedAccessActivities whereKey:@"to" equalTo:self.userForActivities];
+            [grantedAccessActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+            
+            
+            PFQuery *requestsToEvents = [PFQuery queryWithClassName:@"Activities"];
+            [requestsToEvents whereKey:@"from" equalTo:self.userForActivities];
+            [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
+
+            
+            
+            queryForActivities = [PFQuery orQueryWithSubqueries:@[grantedAccessActivities,requestsToEvents]];
+            [queryForActivities includeKey:@"to"];
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
+            [queryForActivities orderByDescending:@"updatedAt"];
+            
+            //[queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+            //[queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            //[queryForActivities includeKey:@"from"];
+            //[queryForActivities includeKey:@"activityContent"];
             
             break;
         }
@@ -529,7 +548,7 @@
                 activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"You showed interest in %@", eventToAccess.title];
                 
                 //Right Button Configuration
-                activityCell.actionButton.eventToGrantAccess = eventToAccess;
+                activityCell.actionButton.eventToView = eventToAccess;
                 activityCell.actionButton.titleText = @"View";
                 [activityCell.actionButton setIsSelected:NO];
                 [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
@@ -638,10 +657,6 @@
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
             [activityCell.actionButton setIsSelected:NO];
-            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
             activityCell.actionButton.eventToView = eventToAttend;
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
@@ -671,10 +686,6 @@
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
             [activityCell.actionButton setIsSelected:NO];
-            //activityCell.actionButton.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-            //activityCell.actionButton.layer.borderWidth = BUTTON_BORDER_WIDTH;
-            //activityCell.actionButton.layer.cornerRadius = BUTTON_CORNER_RADIUS;
-            //activityCell.actionButton.backgroundColor = [UIColor clearColor];
             activityCell.actionButton.eventToView = eventGrantedAccess;
             
             
@@ -781,9 +792,12 @@
 
 - (void)viewEvent:(id)sender {
     
+    
     UIButtonPFExtended *viewButton = (UIButtonPFExtended *)sender;
     EventObject *object = viewButton.eventToView;
     
+    NSLog(@"View Event with - %@", object);
+
     EventDetailVC *eventDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
     
     eventDetailsVC.event = object;
@@ -846,6 +860,7 @@
         
         
     } else {
+        
         PFObject *newActivity = [PFObject objectWithClassName:@"Activities"];
         newActivity[@"from"] = self.userForActivities;
         newActivity[@"to"] = grantButton.personToGrantAccess;

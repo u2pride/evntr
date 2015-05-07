@@ -660,10 +660,12 @@
     //currently:  the following things are what contribute to the event details load:
     
 
-    NSLog(@"%@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending]);
+    NSLog(@"Rechecking Pa Access - %@ and %@ and %@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending], [NSNumber numberWithBool:self.isCurrentUsersEvent], [NSNumber numberWithBool:self.isGuestUser]);
     
     if ((self.isPublicApproved && !self.isCurrentUserAttending && !self.isCurrentUsersEvent) || self.isGuestUser) {
         
+        NSLog(@"In the wrong place");
+    
         self.transparentTouchView.hidden = YES;
         self.locationOfEvent = [[CLLocation alloc] initWithLatitude:37.749 longitude:-122.4167];
         
@@ -676,6 +678,8 @@
         [self.entireMapView finishedLoadingWithLocationAvailable:NO];
         
     } else {
+        
+        NSLog(@"In the right place");
         
         [self.rsvpStatusButton endedTask];
         [self.entireMapView finishedLoadingWithLocationAvailable:YES];

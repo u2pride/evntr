@@ -82,7 +82,6 @@
 
 - (void) setIsSelected:(BOOL)isSelected {
     
-    NSLog(@"set isselected");
 
     if (isSelected && !self.isStateless) {
         
@@ -92,8 +91,6 @@
         
         [UIView animateWithDuration:0.5 animations:^{
             
-            NSLog(@"changing background color to orangethemecolor");
-
             self.titleTextLabel.alpha = 1;
             self.backgroundColor = self.buttonColor;
             self.titleTextLabel.textColor = [UIColor whiteColor];
@@ -112,7 +109,6 @@
         
         [UIView animateWithDuration:0.5 animations:^{
             
-            NSLog(@"changing background color to whitecolor");
 
             self.titleTextLabel.alpha = 1;
             self.backgroundColor = self.buttonColorOpposing;
@@ -148,13 +144,11 @@
 - (void) setHasBorder:(BOOL)hasBorder {
     
     [self setNeedsDisplay];
-    NSLog(@"set has border.");
 
     if (hasBorder) {
         self.layer.borderWidth = 1.0f;
         self.layer.borderColor = _buttonColor.CGColor;
     } else {
-        NSLog(@"updating layer borderwidth...");
         self.layer.borderWidth = 0.0f;
         self.layer.borderColor = _buttonColor.CGColor;
     }
@@ -356,7 +350,6 @@
     
     self.enabled = NO;
 
-    NSLog(@"started task");
     
     [UIView animateWithDuration:0.25 animations:^{
         

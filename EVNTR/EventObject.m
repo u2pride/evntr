@@ -267,51 +267,52 @@
     
     //NSArray *activityTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY], [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY], nil];
     
+    // 3 - {from} requested that {to} give access to {activityContent}
+    // 5 - {from} let {to} in to {activityContent}
+    
     PFQuery *requestActivity = [PFQuery queryWithClassName:@"Activities"];
     [requestActivity whereKey:@"activityContent" equalTo:self];
-    [requestActivity whereKey:@"to" equalTo:user];
+    [requestActivity whereKey:@"from" equalTo:user];
     [requestActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
     
     PFQuery *grantedActivty = [PFQuery queryWithClassName:@"Activities"];
     [grantedActivty whereKey:@"activityContent" equalTo:self];
-    [grantedActivty whereKey:@"from" equalTo:user];
+    [grantedActivty whereKey:@"to" equalTo:user];
     [grantedActivty whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
     
     PFQuery *statusQuery = [PFQuery orQueryWithSubqueries:@[requestActivity, grantedActivty]];
     
     [statusQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        
-        NSLog(@"Activities Returned: %@", objects);
-        
+                
         if (error) {
             completionBlock(NO, @"Error");
-        }
-        
-        NSString *status = kNOTRSVPedForEvent;
-        
-        for (PFObject *activity in objects) {
+        } else {
             
-            NSLog(@"Checkpoint 1");
+            NSString *status = kNOTRSVPedForEvent;
+            BOOL isAttending = NO;
             
-            if ([activity objectForKey:@"type"] == [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]) {
-                NSLog(@"Granted Access - Now Return Before Next Checkpoint");
-                status = kGrantedAccessToEvent;
-                completionBlock (YES, status);
+            for (PFObject *activity in objects) {
+                
+                int activityType = (int) [[activity objectForKey:@"type"] integerValue];
+                
+                if (activityType == ACCESS_GRANTED_ACTIVITY) {
+                    NSLog(@"Granted Access - Now Return Before Next Checkpoint");
+                    status = kGrantedAccessToEvent;
+                    isAttending = YES;
+                    break;
+                }
+                
+                if (activityType == REQUEST_ACCESS_ACTIVITY) {
+                    NSLog(@"On Standby for Event");
+                    status = kRSVPedForEvent;
+                }
+                
             }
             
-            NSLog(@"Checkpoint 2");
-            
-            if ([activity objectForKey:@"type"] == [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]) {
-                NSLog(@"On Standby for Event");
-                status = kRSVPedForEvent;
-            }
-            
-            NSLog(@"Checkpoint 3");
+            completionBlock(isAttending, status);
             
         }
-        
-        completionBlock(NO, status);
-
+    
     }];
     
 }
@@ -320,8 +321,8 @@
     
     //Request Access for User to Event
     PFObject *requestAccessActivity = [PFObject objectWithClassName:@"Activities"];
-    requestAccessActivity[@"from"] = self.parent;
-    requestAccessActivity[@"to"] = user;
+    requestAccessActivity[@"from"] = user;
+    requestAccessActivity[@"to"] = self.parent;
     requestAccessActivity[@"type"] = [NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY];
     requestAccessActivity[@"activityContent"] = self;
     
