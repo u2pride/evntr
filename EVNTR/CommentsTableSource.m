@@ -73,7 +73,10 @@ NSString *const cellIdentifier = @"commentsCell";
     [self.addCommentButton addTarget:self action:@selector(createNewComment) forControlEvents:UIControlEventTouchUpInside];
     self.addCommentButton.backgroundColor = [UIColor whiteColor];
     self.addCommentButton.layer.cornerRadius = 20;
-    self.addCommentButton.frame = CGRectMake(self.commentsTable.center.x - 40, 0, 40, 40);
+    //self.addCommentButton.bounds = CGRectMake(self.commentsTable.center.x, 0, 40, 40);
+    //self.addCommentButton.frame = CGRectMake(self.commentsTable.center.x, 0, 40, 40);
+    self.addCommentButton.center = self.commentsTable.superview.center;
+    self.addCommentButton.frame = CGRectMake(self.addCommentButton.frame.origin.x - 10, 0, 40, 40);
     
     [tableHeader addSubview:self.addCommentButton];
     
@@ -135,15 +138,34 @@ NSString *const cellIdentifier = @"commentsCell";
     }
     
     
-    PFObject *comment;
-        
-    comment = [self.commentsData objectAtIndex:indexPath.row];
-    commentCell.commentTextLabel.text = comment[@"commentText"];
+    PFObject *comment = [self.commentsData objectAtIndex:indexPath.row];
+    EVNUser *commentParent = (EVNUser *) [comment objectForKey:@"commentParent"];
+    
+    NSString *usernameComponent = [commentParent.username stringByAppendingString:@": "];
+    NSString *commentString = comment[@"commentText"];
+    
+    
+    UIFont *usernameFont = [UIFont fontWithName:@"Lato-Light" size:10];
+    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor orangeColor], NSForegroundColorAttributeName, usernameFont, NSFontAttributeName, nil];
+    
+    UIFont *commentFont = [UIFont fontWithName:@"Lato-Light" size:14];
+    NSDictionary *attributesDictionaryAdd = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, commentFont, NSFontAttributeName, nil];
+    
+    NSMutableAttributedString *commentAttributedString = [[NSMutableAttributedString alloc] initWithString:usernameComponent attributes:attributesDictionary];
+    NSMutableAttributedString *commentAttributedStringTwo = [[NSMutableAttributedString alloc] initWithString:commentString attributes:attributesDictionaryAdd];
+    
+    [commentAttributedString appendAttributedString:commentAttributedStringTwo];
+    
+
+    NSLog(@"Comment: %@ CommentParent: %@ Username Component: %@ CommentString: %@", comment, commentParent, usernameComponent, commentString);
+
+    commentCell.commentTextLabel.attributedText = commentAttributedString;
     commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
+    commentCell.commentDateLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
     
     commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
     commentCell.backgroundColor = [UIColor clearColor];
-    commentCell.textLabel.textColor = [UIColor whiteColor];
+    //commentCell.textLabel.textColor = [UIColor whiteColor];
     
     return commentCell;
 }

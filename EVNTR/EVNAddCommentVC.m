@@ -29,7 +29,7 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-    self.navigationController.navigationBar.translucent = NO;
+    self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
     
     
@@ -79,6 +79,16 @@
     [super viewWillAppear:animated];
     
     [self.commentTextView becomeFirstResponder];
+}
+
+- (void) viewDidDisappear:(BOOL)animated {
+    
+    [self.navigationController.navigationBar setBackgroundImage:nil
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = nil;
+    self.navigationController.navigationBar.translucent = NO;
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

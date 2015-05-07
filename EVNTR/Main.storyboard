@@ -2597,15 +2597,6 @@ Click continue when you're ready.</string>
                                                     <outlet property="delegate" destination="9xw-Ai-RPd" id="fFC-u9-KJD"/>
                                                 </connections>
                                             </collectionView>
-                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="UAo-w8-gAK">
-                                                <rect key="frame" x="24" y="1164" width="272" height="200"/>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="200" id="4zk-hN-XMI"/>
-                                                </constraints>
-                                                <color key="sectionIndexColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                            </tableView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comments" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jYO-wn-FiG">
                                                 <rect key="frame" x="24" y="1123" width="272" height="33"/>
                                                 <constraints>
@@ -2615,6 +2606,15 @@ Click continue when you're ready.</string>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="UAo-w8-gAK">
+                                                <rect key="frame" x="10" y="1164" width="300" height="350"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="350" id="4zk-hN-XMI"/>
+                                                </constraints>
+                                                <color key="sectionIndexColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            </tableView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -2700,7 +2700,7 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="mmZ-Xw-jmF" firstAttribute="centerX" secondItem="8lu-8u-jfO" secondAttribute="centerX" id="gK8-1T-kT8"/>
                                             <constraint firstAttribute="centerX" secondItem="wof-6L-VbM" secondAttribute="centerX" id="gaP-gF-4Q7"/>
                                             <constraint firstAttribute="centerX" secondItem="DX1-8m-Bua" secondAttribute="centerX" id="goM-u0-XTl"/>
-                                            <constraint firstAttribute="trailing" secondItem="UAo-w8-gAK" secondAttribute="trailing" constant="24" id="hA2-Sp-o8h"/>
+                                            <constraint firstAttribute="trailing" secondItem="UAo-w8-gAK" secondAttribute="trailing" constant="10" id="hA2-Sp-o8h"/>
                                             <constraint firstItem="Bfu-kw-HWs" firstAttribute="top" secondItem="9B5-qw-1QG" secondAttribute="top" constant="100" id="hEt-9z-N7f"/>
                                             <constraint firstItem="Dsc-U7-Dxb" firstAttribute="width" secondItem="OEQ-GB-dJ2" secondAttribute="width" multiplier="0.9" id="hbY-P9-WFw"/>
                                             <constraint firstItem="CeH-mV-5d8" firstAttribute="width" secondItem="fZP-1x-ybf" secondAttribute="width" multiplier="0.9" id="hfD-KM-dhY"/>
@@ -2742,7 +2742,7 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="OEQ-GB-dJ2" firstAttribute="width" secondItem="5hW-kd-qt7" secondAttribute="width" multiplier="0.9" constant="1" id="xuH-Fc-2CD"/>
                                             <constraint firstItem="DX1-8m-Bua" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="60" id="yPm-Oz-4UC"/>
                                             <constraint firstItem="UAo-w8-gAK" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="25" id="ycr-Tr-RnC"/>
-                                            <constraint firstItem="UAo-w8-gAK" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="24" id="ygM-b6-a1P"/>
+                                            <constraint firstItem="UAo-w8-gAK" firstAttribute="leading" secondItem="9B5-qw-1QG" secondAttribute="leading" constant="10" id="ygM-b6-a1P"/>
                                             <constraint firstAttribute="height" constant="800" id="yhZ-0g-Kx3"/>
                                             <constraint firstItem="8lu-8u-jfO" firstAttribute="top" secondItem="pCs-u8-t1A" secondAttribute="bottom" constant="20" id="zOc-wE-wvI"/>
                                             <constraint firstItem="PHv-2y-ZBG" firstAttribute="width" secondItem="9B5-qw-1QG" secondAttribute="width" multiplier="0.6" id="zhl-Dw-qFN"/>

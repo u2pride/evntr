@@ -452,6 +452,7 @@
     
     PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
     [commentsQuery whereKey:@"commentEvent" equalTo:self];
+    [commentsQuery includeKey:@"commentParent"];
     [commentsQuery orderByDescending:@"updatedAt"];
     [commentsQuery setLimit:50];
     
