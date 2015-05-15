@@ -256,7 +256,7 @@
     
     NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
     
-    if ([versionBuildNumber isEqualToString:@"V0.60Build14"]) {
+    if ([versionBuildNumber isEqualToString:@"V0.60Build16"]) {
         
         if ([EVNUser currentUser]) {
             
@@ -267,7 +267,7 @@
         
     } else {
         
-        [standardDefaults setObject:@"V0.60Build14" forKey:kFirstLoginNewBuild];
+        [standardDefaults setObject:@"V0.60Build16" forKey:kFirstLoginNewBuild];
         [standardDefaults synchronize];
         
     }

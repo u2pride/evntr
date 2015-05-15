@@ -378,7 +378,35 @@
     
     __block BOOL success = YES;
     
+    
     for (EVNUser *user in users) {
+        
+        
+        //If the user is invited to a public approved event, they are automatically granted access. This will be changed.
+        if (self.typeOfEvent.intValue == PUBLIC_APPROVED_EVENT_TYPE) {
+            PFObject *newActivity = [PFObject objectWithClassName:@"Activities"];
+            newActivity[@"from"] = [EVNUser currentUser];
+            newActivity[@"to"] = user;
+            newActivity[@"type"] = [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY];
+            newActivity[@"activityContent"] = self;
+            [newActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded) {
+                    
+                    PFRelation *attendingRelation = [self relationForKey:@"attenders"];
+                    [attendingRelation addObject:user];
+                    [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        
+                        
+                    }];
+                }
+                
+            }];
+            
+        }
+        
+        
+        
+        
         
         //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
         
@@ -412,6 +440,7 @@
         }];
     }
     
+    //TODO - this is not right... success variable gets re-written after each save - this will only reflect the last save result
     completionBlock(success);
     
 }

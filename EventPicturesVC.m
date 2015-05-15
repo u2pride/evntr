@@ -62,7 +62,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+        
     [self.eventObject queryForImagesWithCompletion:^(NSArray *images) {
         
         self.eventImages = [NSMutableArray arrayWithArray:images];
@@ -100,6 +100,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
     
     //self.tabBarController.tabBar.hidden = NO;
 }
@@ -200,10 +201,11 @@ static NSString * const reuseIdentifier = @"Cell";
     
     PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.navigationController.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
     
-    displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverFullScreen;
     displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
     displayFullScreenPhoto.eventPictureObject = pictureObject;
     displayFullScreenPhoto.delegate = self;
+    displayFullScreenPhoto.edgesForExtendedLayout = UIRectEdgeAll;
     
     if ([self.eventObject.parent.objectId isEqualToString:[EVNUser currentUser].objectId]) {
         displayFullScreenPhoto.showRemovePhotoAction = YES;
@@ -219,14 +221,17 @@ static NSString * const reuseIdentifier = @"Cell";
     
     [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
     
+
+    
+    
     [UIView animateWithDuration:0.2 animations:^{
         
-        self.navigationController.navigationBar.alpha = 0;
+        //self.navigationController.navigationBar.alpha = 0;
         self.tabBarController.tabBar.alpha = 0;
         
     } completion:^(BOOL finished) {
         
-        self.navigationController.navigationBar.hidden = finished;
+        //self.navigationController.navigationBar.hidden = finished;
         self.tabBarController.tabBar.hidden = finished;
         
     }];
@@ -411,8 +416,10 @@ static NSString * const reuseIdentifier = @"Cell";
         UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
         self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
         self.blurEffectForModals.alpha = 0;
-        self.blurEffectForModals.frame = self.view.bounds;
-        [self.view addSubview:self.blurEffectForModals];
+        self.blurEffectForModals.frame = [UIScreen mainScreen].bounds;
+        //[self.view addSubview:self.blurEffectForModals];
+        [[[[UIApplication sharedApplication] delegate] window] addSubview:self.blurEffectForModals];
+
         
         UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
         UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];

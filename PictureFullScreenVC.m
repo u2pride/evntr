@@ -47,6 +47,7 @@
 - (void) removePhotoFromEvent {
     
     NSLog(@"remove photo");
+    self.removePhoto.enabled = NO;
     
     [self.eventPictureObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
        
@@ -55,6 +56,10 @@
         if ([strongDelegate respondsToSelector:@selector(returnToEventAndDeletePhoto:)]) {
             
             [strongDelegate returnToEventAndDeletePhoto:YES];
+        }
+        
+        if (!succeeded) {
+            self.removePhoto.enabled = YES;
         }
         
     }];
@@ -130,7 +135,21 @@
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToEvent:)];
     [self.eventPhotoView.superview addGestureRecognizer:tapgr];
     
+    
+    
 }
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+
+    
+    //self.edgesForExtendedLayout = UIRectEdgeTop;
+    //self.extendedLayoutIncludesOpaqueBars = YES;
+    
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

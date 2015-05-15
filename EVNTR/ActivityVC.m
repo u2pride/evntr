@@ -60,7 +60,7 @@
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
                            [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
                            regularFont, NSFontAttributeName,
-                           foregroundColor, NSForegroundColorAttributeName, nil];
+                           foregroundColor, NSForegroundColorAttributeName, @0, NSLigatureAttributeName, nil];
     //NSDictionary *subAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
     //                          [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
     //                          boldFont, NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];

@@ -27,7 +27,7 @@
         NSMutableParagraphStyle* textStyle = NSMutableParagraphStyle.defaultParagraphStyle.mutableCopy;
         textStyle.alignment = NSTextAlignmentCenter;
         
-        NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont fontWithName: @"Lato-Regular" size: 18], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: textStyle};
+        NSDictionary* textFontAttributes = @{NSFontAttributeName: [UIFont fontWithName: @"Lato-Regular" size: 18], NSForegroundColorAttributeName: UIColor.whiteColor, NSParagraphStyleAttributeName: textStyle, NSLigatureAttributeName: @0};
         
         CGFloat textTextHeight = [textContent boundingRectWithSize: CGSizeMake(textRect.size.width, INFINITY)  options: NSStringDrawingUsesLineFragmentOrigin attributes: textFontAttributes context: nil].size.height;
         CGContextSaveGState(context);
@@ -43,7 +43,7 @@
     [bezierPath addLineToPoint: CGPointMake(81.44, 36.5)];
     [bezierPath addLineToPoint: CGPointMake(136.5, 36.5)];
     [UIColor.whiteColor setStroke];
-    bezierPath.lineWidth = 1;
+    bezierPath.lineWidth = 1.5;
     [bezierPath stroke];
     
     
@@ -53,7 +53,7 @@
     [bezier2Path addLineToPoint: CGPointMake(127.42, 30.5)];
     [bezier2Path addLineToPoint: CGPointMake(135.5, 20.5)];
     [UIColor.whiteColor setStroke];
-    bezier2Path.lineWidth = 1;
+    bezier2Path.lineWidth = 1.5;
     [bezier2Path stroke];
 
 }

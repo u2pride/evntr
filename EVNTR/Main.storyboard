@@ -101,6 +101,7 @@
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
             <string>Lato-Regular</string>
+            <string>Lato-Regular</string>
         </mutableArray>
         <mutableArray key="Lato-Thin.ttf">
             <string>Lato-Thin</string>
@@ -108,6 +109,25 @@
         </mutableArray>
     </customFonts>
     <scenes>
+        <!--Location SearchVC-->
+        <scene sceneID="i1k-tI-XyD">
+            <objects>
+                <viewController id="rS1-aX-LQC" customClass="EVNLocationSearchVC" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="2Xt-6u-2CK"/>
+                        <viewControllerLayoutGuide type="bottom" id="ufS-mL-K4V"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="h68-UE-jps">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ctg-Js-7ma" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1808" y="502"/>
+        </scene>
         <!--Splash ScreenVC-->
         <scene sceneID="twm-xn-0j1">
             <objects>
@@ -954,23 +974,35 @@ Click continue when you're ready.</string>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uxR-Cm-4af">
                                                 <rect key="frame" x="0.0" y="-80" width="320" height="325"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Atlanta, GA" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1ah-qv-EHV">
-                                                        <rect key="frame" x="37" y="290" width="246" height="30"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My bio is empty.  I think I'm just too flattered that you would ask me about myself." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z6n-2g-g1q">
+                                                        <rect key="frame" x="14" y="273" width="292" height="42"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="Hev-23-PE3"/>
+                                                            <constraint firstAttribute="height" constant="42" id="rJ6-Wq-UJM"/>
                                                         </constraints>
                                                         <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="14"/>
+                                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unknown Location" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1ah-qv-EHV">
+                                                        <rect key="frame" x="37" y="245" width="246" height="20"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="20" id="Hev-23-PE3"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.069948539540806834" green="0.4181750926134184" blue="0.93036872148513794" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="Z6n-2g-g1q" secondAttribute="trailing" constant="14" id="S2E-Dy-chY"/>
+                                                    <constraint firstItem="Z6n-2g-g1q" firstAttribute="leading" secondItem="uxR-Cm-4af" secondAttribute="leading" constant="14" id="Wnb-Q4-8Sf"/>
+                                                    <constraint firstItem="Z6n-2g-g1q" firstAttribute="top" secondItem="1ah-qv-EHV" secondAttribute="bottom" constant="8" id="ZbB-1l-gT8"/>
                                                     <constraint firstAttribute="centerX" secondItem="1ah-qv-EHV" secondAttribute="centerX" id="mzs-p9-tDp"/>
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kmz-sb-2mR">
-                                                <rect key="frame" x="52" y="343" width="25" height="25"/>
+                                                <rect key="frame" x="52" y="341" width="25" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="1bq-wy-pvK"/>
                                                     <constraint firstAttribute="width" constant="25" id="BDu-0g-2zL"/>
@@ -980,7 +1012,7 @@ Click continue when you're ready.</string>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fyz-kJ-guQ">
-                                                <rect key="frame" x="148" y="343" width="25" height="25"/>
+                                                <rect key="frame" x="148" y="341" width="25" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="T2F-q7-dYE"/>
                                                     <constraint firstAttribute="width" constant="25" id="kUI-qI-oLx"/>
@@ -990,7 +1022,7 @@ Click continue when you're ready.</string>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vWi-da-iV5">
-                                                <rect key="frame" x="31" y="368" width="66" height="30"/>
+                                                <rect key="frame" x="31" y="363" width="66" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="KGT-fM-a86"/>
                                                     <constraint firstAttribute="width" constant="66" id="bos-WZ-edZ"/>
@@ -1004,7 +1036,7 @@ Click continue when you're ready.</string>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UQf-Qn-dq8">
-                                                <rect key="frame" x="223" y="368" width="66" height="30"/>
+                                                <rect key="frame" x="223" y="363" width="66" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="66" id="q6m-j9-B8y"/>
                                                     <constraint firstAttribute="height" constant="30" id="xXE-Bv-xLL"/>
@@ -1017,23 +1049,8 @@ Click continue when you're ready.</string>
                                                     <action selector="viewFollowers:" destination="DlN-Vu-yyh" eventType="touchUpInside" id="Ne7-WS-Hem"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Plb-ES-X05">
-                                                <rect key="frame" x="127" y="368" width="66" height="30"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="30" id="8im-DO-IfA"/>
-                                                    <constraint firstAttribute="width" constant="66" id="WCn-T1-sxm"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="15"/>
-                                                <state key="normal" title="Following">
-                                                    <color key="titleColor" red="0.95294117647058818" green="0.44313725490196076" blue="0.19215686274509805" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="viewFollowing:" destination="DlN-Vu-yyh" eventType="touchUpInside" id="Msm-li-vOZ"/>
-                                                </connections>
-                                            </button>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Zyc-PW-6UR" customClass="PFImageView">
-                                                <rect key="frame" x="83" y="10" width="155" height="155"/>
+                                                <rect key="frame" x="103" y="10" width="115" height="115"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="133" id="5Lw-0A-Npy"/>
@@ -1061,7 +1078,7 @@ Click continue when you're ready.</string>
                                                 </constraints>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9r6-zM-w9m">
-                                                <rect key="frame" x="32" y="175" width="256" height="32"/>
+                                                <rect key="frame" x="32" y="130" width="256" height="32"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="32" id="aNU-tX-IIe"/>
                                                     <constraint firstAttribute="width" constant="168" id="cea-kw-Ea7"/>
@@ -1095,7 +1112,7 @@ Click continue when you're ready.</string>
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Evntr User Since" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fdt-Ww-SiV">
-                                                <rect key="frame" x="0.0" y="404" width="320" height="30"/>
+                                                <rect key="frame" x="0.0" y="403" width="320" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="jJ2-Xm-gTZ"/>
                                                 </constraints>
@@ -1104,7 +1121,7 @@ Click continue when you're ready.</string>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLb-di-5zP">
-                                                <rect key="frame" x="244" y="343" width="25" height="25"/>
+                                                <rect key="frame" x="244" y="341" width="25" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="7df-Kd-GuC"/>
                                                     <constraint firstAttribute="width" constant="25" id="SRr-9C-Ww1"/>
@@ -1113,16 +1130,31 @@ Click continue when you're ready.</string>
                                                 <color key="textColor" red="0.95294117647058818" green="0.44313725490196076" blue="0.19215686274509805" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Plb-ES-X05">
+                                                <rect key="frame" x="127" y="363" width="66" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="8im-DO-IfA"/>
+                                                    <constraint firstAttribute="width" constant="66" id="WCn-T1-sxm"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="15"/>
+                                                <state key="normal" title="Following">
+                                                    <color key="titleColor" red="0.95294117647058818" green="0.44313725490196076" blue="0.19215686274509805" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="viewFollowing:" destination="DlN-Vu-yyh" eventType="touchUpInside" id="Msm-li-vOZ"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="8md-l0-X7z" firstAttribute="top" secondItem="c9Y-dM-pqH" secondAttribute="top" constant="69" id="0Ll-yP-iGt"/>
                                             <constraint firstItem="vWi-da-iV5" firstAttribute="centerX" secondItem="Kmz-sb-2mR" secondAttribute="centerX" id="0Zf-TQ-ohf"/>
-                                            <constraint firstItem="9r6-zM-w9m" firstAttribute="top" secondItem="c9Y-dM-pqH" secondAttribute="top" constant="175" id="1x7-Z7-mRz"/>
+                                            <constraint firstItem="9r6-zM-w9m" firstAttribute="top" secondItem="c9Y-dM-pqH" secondAttribute="top" constant="130" id="1x7-Z7-mRz"/>
                                             <constraint firstItem="Plb-ES-X05" firstAttribute="centerY" secondItem="vWi-da-iV5" secondAttribute="centerY" id="2cd-Jj-KBN"/>
                                             <constraint firstAttribute="centerY" secondItem="Xhv-LT-Ngh" secondAttribute="centerY" constant="-52" id="4Tu-8Y-G1l"/>
                                             <constraint firstAttribute="centerY" secondItem="xtJ-yI-KjY" secondAttribute="centerY" constant="-52" id="5HD-A9-3x5"/>
-                                            <constraint firstItem="9r6-zM-w9m" firstAttribute="top" secondItem="Zyc-PW-6UR" secondAttribute="bottom" constant="10" id="5OI-4R-gSO"/>
+                                            <constraint firstItem="9r6-zM-w9m" firstAttribute="top" secondItem="Zyc-PW-6UR" secondAttribute="bottom" constant="5" id="5OI-4R-gSO"/>
                                             <constraint firstItem="uxR-Cm-4af" firstAttribute="top" secondItem="c9Y-dM-pqH" secondAttribute="top" id="6qW-gJ-9VJ"/>
                                             <constraint firstItem="Fyz-kJ-guQ" firstAttribute="centerY" secondItem="cLb-di-5zP" secondAttribute="centerY" id="7MA-M2-HZi"/>
                                             <constraint firstAttribute="height" constant="475" id="9Po-0b-qmw"/>
@@ -1134,7 +1166,7 @@ Click continue when you're ready.</string>
                                             <constraint firstAttribute="centerX" secondItem="xtJ-yI-KjY" secondAttribute="centerX" id="H1e-bW-VsV"/>
                                             <constraint firstItem="vWi-da-iV5" firstAttribute="leading" secondItem="c9Y-dM-pqH" secondAttribute="leading" constant="33" id="HKS-mh-Lgj"/>
                                             <constraint firstItem="1ah-qv-EHV" firstAttribute="top" secondItem="9r6-zM-w9m" secondAttribute="bottom" constant="3" id="HYB-J4-Lrq"/>
-                                            <constraint firstAttribute="centerY" secondItem="Plb-ES-X05" secondAttribute="centerY" constant="-145" id="JxN-dx-vsH"/>
+                                            <constraint firstAttribute="centerY" secondItem="Plb-ES-X05" secondAttribute="centerY" constant="-140" id="JxN-dx-vsH"/>
                                             <constraint firstItem="8md-l0-X7z" firstAttribute="trailing" secondItem="c9Y-dM-pqH" secondAttribute="trailingMargin" constant="-26" id="MXX-ZC-rsR"/>
                                             <constraint firstAttribute="width" constant="300" id="Muk-av-BtG"/>
                                             <constraint firstAttribute="width" secondItem="c9Y-dM-pqH" secondAttribute="height" multiplier="64:95" id="O3p-nH-2Hc"/>
@@ -1149,7 +1181,7 @@ Click continue when you're ready.</string>
                                             <constraint firstAttribute="trailing" secondItem="UQf-Qn-dq8" secondAttribute="trailing" constant="34" id="VOp-QH-ytC"/>
                                             <constraint firstItem="Plb-ES-X05" firstAttribute="leading" secondItem="vWi-da-iV5" secondAttribute="trailing" constant="30" id="ZWg-eC-1mE"/>
                                             <constraint firstItem="Zyc-PW-6UR" firstAttribute="top" secondItem="c9Y-dM-pqH" secondAttribute="top" constant="10" id="bhA-jn-XO1"/>
-                                            <constraint firstItem="Plb-ES-X05" firstAttribute="top" secondItem="Fyz-kJ-guQ" secondAttribute="bottom" id="dSk-0s-mZv"/>
+                                            <constraint firstItem="Plb-ES-X05" firstAttribute="top" secondItem="Fyz-kJ-guQ" secondAttribute="bottom" constant="-3" id="dSk-0s-mZv"/>
                                             <constraint firstItem="cLb-di-5zP" firstAttribute="top" secondItem="UQf-Qn-dq8" secondAttribute="bottom" id="fYZ-fj-LzO"/>
                                             <constraint firstAttribute="centerX" secondItem="Zyc-PW-6UR" secondAttribute="centerX" id="ff8-gB-cGv"/>
                                             <constraint firstAttribute="trailing" secondItem="uxR-Cm-4af" secondAttribute="trailing" id="fsY-PD-mAd"/>
@@ -1159,7 +1191,7 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="Fyz-kJ-guQ" firstAttribute="top" secondItem="Plb-ES-X05" secondAttribute="bottom" id="k4Q-Dr-Rqb"/>
                                             <constraint firstItem="Fyz-kJ-guQ" firstAttribute="centerY" secondItem="Kmz-sb-2mR" secondAttribute="centerY" id="la1-2m-Fi9"/>
                                             <constraint firstItem="8md-l0-X7z" firstAttribute="bottom" secondItem="wcz-Dz-8ki" secondAttribute="bottom" constant="1" id="nNl-ea-Fad"/>
-                                            <constraint firstItem="fdt-Ww-SiV" firstAttribute="top" secondItem="Plb-ES-X05" secondAttribute="bottom" constant="6" id="oHa-ve-471"/>
+                                            <constraint firstItem="fdt-Ww-SiV" firstAttribute="top" secondItem="Plb-ES-X05" secondAttribute="bottom" constant="10" id="oHa-ve-471"/>
                                             <constraint firstAttribute="centerX" secondItem="9r6-zM-w9m" secondAttribute="centerX" id="oSZ-3i-pEA"/>
                                             <constraint firstItem="Kmz-sb-2mR" firstAttribute="top" secondItem="vWi-da-iV5" secondAttribute="bottom" id="sNm-hr-XwY"/>
                                             <constraint firstAttribute="centerX" secondItem="fdt-Ww-SiV" secondAttribute="centerX" id="seM-ge-rjC"/>
@@ -1260,6 +1292,7 @@ Click continue when you're ready.</string>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="bioLabel" destination="Z6n-2g-g1q" id="5DP-8R-J9o"/>
                         <outlet property="colorBackgroundView" destination="uxR-Cm-4af" id="4tj-dd-hdS"/>
                         <outlet property="editProfileButton" destination="Xhv-LT-Ngh" id="NsT-kN-eXI"/>
                         <outlet property="followButton" destination="xtJ-yI-KjY" id="6qy-YD-Uid"/>
@@ -1303,12 +1336,17 @@ Click continue when you're ready.</string>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dMO-sP-8g8">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dMO-sP-8g8">
                                                     <rect key="frame" x="137" y="11" width="230" height="30"/>
                                                     <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                                                 </textField>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="dMO-sP-8g8" firstAttribute="leading" secondItem="hAd-6T-db2" secondAttribute="leadingMargin" constant="125" id="mdZ-fA-aQw"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="dMO-sP-8g8" secondAttribute="bottom" id="pS3-Zo-lwd"/>
+                                                <constraint firstItem="dMO-sP-8g8" firstAttribute="top" secondItem="hAd-6T-db2" secondAttribute="topMargin" id="pkh-jc-CFR"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="lTc-N1-66M">
@@ -1322,12 +1360,18 @@ Click continue when you're ready.</string>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="hometown" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z8W-SX-13R">
-                                                    <rect key="frame" x="137" y="9" width="230" height="30"/>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="hometown" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z8W-SX-13R">
+                                                    <rect key="frame" x="133" y="8" width="234" height="27"/>
                                                     <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                                                 </textField>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Z8W-SX-13R" firstAttribute="top" secondItem="0B4-kv-mku" secondAttribute="topMargin" id="KgM-YJ-fJr"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Z8W-SX-13R" secondAttribute="bottom" id="R33-fx-XC1"/>
+                                                <constraint firstItem="Z8W-SX-13R" firstAttribute="leading" secondItem="0B4-kv-mku" secondAttribute="leadingMargin" constant="125" id="qAJ-Jm-ozS"/>
+                                                <constraint firstItem="Z8W-SX-13R" firstAttribute="trailing" secondItem="0B4-kv-mku" secondAttribute="trailingMargin" id="rKe-aA-ipV"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="BYm-a6-GPC">
@@ -1341,12 +1385,18 @@ Click continue when you're ready.</string>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BUa-BQ-sN6">
-                                                    <rect key="frame" x="136" y="9" width="231" height="30"/>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="username" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BUa-BQ-sN6">
+                                                    <rect key="frame" x="133" y="8" width="234" height="27"/>
                                                     <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no"/>
                                                 </textField>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="BUa-BQ-sN6" firstAttribute="top" secondItem="Jdl-aE-QlC" secondAttribute="topMargin" id="ID9-LC-TGZ"/>
+                                                <constraint firstItem="BUa-BQ-sN6" firstAttribute="trailing" secondItem="Jdl-aE-QlC" secondAttribute="trailingMargin" id="IsZ-bF-xnB"/>
+                                                <constraint firstItem="BUa-BQ-sN6" firstAttribute="leading" secondItem="Jdl-aE-QlC" secondAttribute="leadingMargin" constant="125" id="Yl1-SS-t28"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="BUa-BQ-sN6" secondAttribute="bottom" id="mEd-0p-hzY"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="gsR-nb-DSz">
@@ -1354,8 +1404,8 @@ Click continue when you're ready.</string>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gsR-nb-DSz" id="66y-Ar-IzV">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="bio" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g00-ji-NSo">
-                                                    <rect key="frame" x="137" y="9" width="230" height="30"/>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="bio" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g00-ji-NSo">
+                                                    <rect key="frame" x="133" y="8" width="234" height="27"/>
                                                     <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                 </textField>
@@ -1366,6 +1416,12 @@ Click continue when you're ready.</string>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="g00-ji-NSo" firstAttribute="trailing" secondItem="66y-Ar-IzV" secondAttribute="trailingMargin" id="8rf-rk-Hp2"/>
+                                                <constraint firstItem="g00-ji-NSo" firstAttribute="top" secondItem="66y-Ar-IzV" secondAttribute="topMargin" id="D1T-bA-sTa"/>
+                                                <constraint firstItem="g00-ji-NSo" firstAttribute="leading" secondItem="66y-Ar-IzV" secondAttribute="leadingMargin" constant="125" id="Tkp-1J-zki"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="g00-ji-NSo" secondAttribute="bottom" id="cK7-Il-u7Y"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="132" id="k7R-ak-5kL">
@@ -1914,10 +1970,10 @@ Click continue when you're ready.</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VqZ-7N-JFZ">
-                                <rect key="frame" x="63" y="172" width="75" height="58"/>
+                                <rect key="frame" x="65" y="165" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="niz-Zd-rnX"/>
-                                    <constraint firstAttribute="height" constant="58" id="s9i-uH-s1L"/>
+                                    <constraint firstAttribute="width" constant="70" id="niz-Zd-rnX"/>
+                                    <constraint firstAttribute="height" constant="70" id="s9i-uH-s1L"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="0.5">
@@ -1928,10 +1984,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hep-x1-5nx">
-                                <rect key="frame" x="173" y="172" width="75" height="58"/>
+                                <rect key="frame" x="175" y="165" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="58" id="EGr-ug-Ffs"/>
-                                    <constraint firstAttribute="width" constant="75" id="QY3-Rc-eo5"/>
+                                    <constraint firstAttribute="height" constant="70" id="EGr-ug-Ffs"/>
+                                    <constraint firstAttribute="width" constant="70" id="QY3-Rc-eo5"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="1">
@@ -1942,10 +1998,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LZn-UH-WSE">
-                                <rect key="frame" x="63" y="238" width="75" height="58"/>
+                                <rect key="frame" x="65" y="243" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="58" id="cX8-0X-c16"/>
-                                    <constraint firstAttribute="width" constant="75" id="mpw-CT-M2z"/>
+                                    <constraint firstAttribute="height" constant="70" id="cX8-0X-c16"/>
+                                    <constraint firstAttribute="width" constant="70" id="mpw-CT-M2z"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="3">
@@ -1956,10 +2012,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4g8-xT-8Di">
-                                <rect key="frame" x="173" y="238" width="75" height="58"/>
+                                <rect key="frame" x="175" y="243" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="02z-pa-XOd"/>
-                                    <constraint firstAttribute="height" constant="58" id="Ec2-7T-o58"/>
+                                    <constraint firstAttribute="width" constant="70" id="02z-pa-XOd"/>
+                                    <constraint firstAttribute="height" constant="70" id="Ec2-7T-o58"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="5">
@@ -1970,10 +2026,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EuT-Wb-jJt">
-                                <rect key="frame" x="63" y="304" width="75" height="58"/>
+                                <rect key="frame" x="65" y="321" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="4RX-Td-7Yo"/>
-                                    <constraint firstAttribute="height" constant="58" id="hc1-Ur-8o4"/>
+                                    <constraint firstAttribute="width" constant="70" id="4RX-Td-7Yo"/>
+                                    <constraint firstAttribute="height" constant="70" id="hc1-Ur-8o4"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="10">
@@ -1984,10 +2040,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J84-WQ-SVh">
-                                <rect key="frame" x="173" y="304" width="75" height="58"/>
+                                <rect key="frame" x="175" y="321" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="WJo-xM-cx2"/>
-                                    <constraint firstAttribute="height" constant="58" id="haA-sy-znL"/>
+                                    <constraint firstAttribute="width" constant="70" id="WJo-xM-cx2"/>
+                                    <constraint firstAttribute="height" constant="70" id="haA-sy-znL"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="15">
@@ -1998,10 +2054,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Krf-9H-186">
-                                <rect key="frame" x="63" y="370" width="75" height="58"/>
+                                <rect key="frame" x="65" y="399" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="75" id="tYA-r0-IUj"/>
-                                    <constraint firstAttribute="height" constant="58" id="wTC-Cf-tkD"/>
+                                    <constraint firstAttribute="width" constant="70" id="tYA-r0-IUj"/>
+                                    <constraint firstAttribute="height" constant="70" id="wTC-Cf-tkD"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="20">
@@ -2012,10 +2068,10 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="je7-RV-7pX">
-                                <rect key="frame" x="150" y="370" width="120" height="58"/>
+                                <rect key="frame" x="150" y="399" width="120" height="70"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="120" id="0Va-s4-2F8"/>
-                                    <constraint firstAttribute="height" constant="58" id="kuI-2J-iPa"/>
+                                    <constraint firstAttribute="height" constant="70" id="kuI-2J-iPa"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
                                 <state key="normal" title="1000">
@@ -2026,7 +2082,7 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="miles" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wiO-L0-X2c">
-                                <rect key="frame" x="97" y="456" width="126" height="58"/>
+                                <rect key="frame" x="97" y="484" width="126" height="58"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="58" id="CS6-Zl-TDH"/>
                                     <constraint firstAttribute="width" constant="126" id="ZG2-3L-Hzc"/>
@@ -2042,8 +2098,8 @@ Click continue when you're ready.</string>
                             <constraint firstAttribute="centerX" secondItem="EuT-Wb-jJt" secondAttribute="centerX" constant="60" id="3k1-F7-xRY"/>
                             <constraint firstAttribute="centerX" secondItem="4g8-xT-8Di" secondAttribute="centerX" constant="-50" id="6L1-je-Uho"/>
                             <constraint firstAttribute="centerX" secondItem="aoR-bR-d70" secondAttribute="centerX" id="9F9-dx-3sD"/>
-                            <constraint firstItem="wiO-L0-X2c" firstAttribute="top" secondItem="je7-RV-7pX" secondAttribute="bottom" constant="28" id="AIz-WY-Nio"/>
-                            <constraint firstItem="VqZ-7N-JFZ" firstAttribute="top" secondItem="aoR-bR-d70" secondAttribute="bottom" constant="42" id="AKx-o8-QBe"/>
+                            <constraint firstItem="wiO-L0-X2c" firstAttribute="top" secondItem="je7-RV-7pX" secondAttribute="bottom" constant="15" id="AIz-WY-Nio"/>
+                            <constraint firstItem="VqZ-7N-JFZ" firstAttribute="top" secondItem="aoR-bR-d70" secondAttribute="bottom" constant="35" id="AKx-o8-QBe"/>
                             <constraint firstAttribute="centerX" secondItem="je7-RV-7pX" secondAttribute="centerX" constant="-50" id="Abh-ip-8Oa"/>
                             <constraint firstItem="Krf-9H-186" firstAttribute="top" secondItem="EuT-Wb-jJt" secondAttribute="bottom" constant="8" id="Cyu-9k-lgH"/>
                             <constraint firstAttribute="centerX" secondItem="LZn-UH-WSE" secondAttribute="centerX" constant="60" id="E6P-io-WYX"/>
@@ -2057,7 +2113,7 @@ Click continue when you're ready.</string>
                             <constraint firstItem="4g8-xT-8Di" firstAttribute="top" secondItem="hep-x1-5nx" secondAttribute="bottom" constant="8" id="XCk-hK-SlT"/>
                             <constraint firstAttribute="centerX" secondItem="VqZ-7N-JFZ" secondAttribute="centerX" constant="60" id="a5h-ki-tPy"/>
                             <constraint firstItem="7nK-kf-IGh" firstAttribute="width" secondItem="cPI-tl-Ijc" secondAttribute="width" multiplier="0.9" id="asV-73-gKI"/>
-                            <constraint firstItem="hep-x1-5nx" firstAttribute="top" secondItem="aoR-bR-d70" secondAttribute="bottom" constant="42" id="b6L-tz-scP"/>
+                            <constraint firstItem="hep-x1-5nx" firstAttribute="top" secondItem="aoR-bR-d70" secondAttribute="bottom" constant="35" id="b6L-tz-scP"/>
                             <constraint firstAttribute="centerX" secondItem="hep-x1-5nx" secondAttribute="centerX" constant="-50" id="exn-Ky-wCk"/>
                             <constraint firstItem="aoR-bR-d70" firstAttribute="top" secondItem="7nK-kf-IGh" secondAttribute="bottom" constant="8" id="h7S-pZ-cSS"/>
                             <constraint firstAttribute="centerX" secondItem="Krf-9H-186" secondAttribute="centerX" constant="60" id="pMi-9l-EsO"/>
@@ -2977,7 +3033,7 @@ Click continue when you're ready.</string>
         <!--Picture Full ScreenVC-->
         <scene sceneID="48A-1v-YfH">
             <objects>
-                <viewController storyboardIdentifier="PictureViewController" id="xsf-Mh-i2V" customClass="PictureFullScreenVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PictureViewController" extendedLayoutIncludesOpaqueBars="YES" id="xsf-Mh-i2V" customClass="PictureFullScreenVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ChB-O1-reX"/>
                         <viewControllerLayoutGuide type="bottom" id="7t7-tE-y5t"/>
@@ -3491,7 +3547,7 @@ Click continue when you're ready.</string>
         <!--Location-->
         <scene sceneID="AnI-lY-S1u">
             <objects>
-                <viewController id="Izt-Iv-8tg" customClass="LocationSearchVC" sceneMemberID="viewController">
+                <viewController id="Izt-Iv-8tg" customClass="EVNLocationSearchVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ImH-KT-aDb"/>
                         <viewControllerLayoutGuide type="bottom" id="Gpt-CK-hSK"/>
@@ -3499,36 +3555,16 @@ Click continue when you're ready.</string>
                     <view key="view" contentMode="scaleToFill" id="pe9-Mv-7Dv">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="aBy-sK-GJY">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </tableView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="aBy-sK-GJY" firstAttribute="top" secondItem="pe9-Mv-7Dv" secondAttribute="topMargin" id="3ah-H7-7Z3"/>
-                            <constraint firstItem="Gpt-CK-hSK" firstAttribute="top" secondItem="aBy-sK-GJY" secondAttribute="bottom" id="4em-Ka-T4B"/>
-                            <constraint firstItem="aBy-sK-GJY" firstAttribute="leading" secondItem="pe9-Mv-7Dv" secondAttribute="leadingMargin" constant="-16" id="QpL-KD-O3O"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="aBy-sK-GJY" secondAttribute="trailing" constant="-16" id="g0d-OQ-yCZ"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Location" id="Ylm-hB-zLJ">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="XJr-3M-QOG">
                             <connections>
-                                <action selector="cancelLocationSearch:" destination="Izt-Iv-8tg" id="OL2-oV-Yzv"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" image="Current Location" id="Qm0-Q4-wKS">
-                            <connections>
-                                <action selector="getCurrentLocation:" destination="Izt-Iv-8tg" id="CKU-QK-vUN"/>
+                                <action selector="cancelLocation:" destination="Izt-Iv-8tg" id="Ef0-Vo-8bD"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <outlet property="searchResultsTable" destination="aBy-sK-GJY" id="mfH-5G-zNz"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VSf-Rh-gCq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -3816,7 +3852,6 @@ Click continue when you're ready.</string>
         </scene>
     </scenes>
     <resources>
-        <image name="Current Location" width="25" height="25"/>
         <image name="CustomBackButton" width="24" height="24"/>
         <image name="LoginBackground" width="2509" height="1673"/>
         <image name="PersonDefault" width="100" height="100"/>

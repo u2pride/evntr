@@ -35,6 +35,7 @@
 @property (strong, nonatomic) IBOutlet UIView *colorBackgroundView;
 
 //User Information
+@property (strong, nonatomic) IBOutlet UILabel *bioLabel;
 @property (strong, nonatomic) IBOutlet PFImageView *profileImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *numberEventsLabel;
@@ -106,6 +107,8 @@
     self.editProfileButton.isRounded = YES;
     self.editProfileButton.hasBorder = YES;
     self.editProfileButton.titleText = @"edit profile";
+    self.editProfileButton.isSelected = YES;
+    self.editProfileButton.isStateless = YES;
     
     
     //Setup the View
@@ -178,7 +181,12 @@
     [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         self.userForProfileView = (EVNUser *)object;
         
-        self.userHometownLabel.text = self.userForProfileView.hometown;
+        if (self.userForProfileView.hometown.length != 0) {
+            self.userHometownLabel.text = self.userForProfileView.hometown;
+        } else {
+            self.userHometownLabel.text = @"Unknown Location";
+        }
+        
         NSString *dateJoined = [self.userForProfileView.createdAt formattedAsTimeAgo];
         self.userSinceLabel.text = [NSString stringWithFormat:@"Joined %@", dateJoined];
         
@@ -339,6 +347,10 @@
             self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
         }
     }];
+    
+    if (self.userForProfileView.bio.length != 0) {
+        self.bioLabel.text = self.userForProfileView.bio;
+    }
     
 }
 

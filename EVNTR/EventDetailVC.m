@@ -480,11 +480,10 @@
     collectionViewLayout2.minimumInteritemSpacing = 20;
     collectionViewLayout2.minimumLineSpacing = 20;
     
-    //Map Component - Disable Interaction with Map View and Wire Up Transparent Touch View on Top of Map View
+    //Map Component - (moved) Disable Interaction with Map View and Wire Up Transparent Touch View on Top of Map View
     self.entireMapView.mapView.userInteractionEnabled = NO;
-    UITapGestureRecognizer *tapMapView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchedMap)];
-    [self.transparentTouchView addGestureRecognizer:tapMapView];
     self.transparentTouchView.backgroundColor = [UIColor clearColor];
+
     
     //Picture Component
     self.viewPicturesButton.titleText = @"View";
@@ -550,6 +549,8 @@
         } else {
             self.entireMapView.address = [NSString stringWithFormat:@"%.2f - %.2f", self.event.locationOfEvent.latitude, self.event.locationOfEvent.longitude];
         }
+        
+        self.entireMapView.address = self.event.nameOfLocation;
         
         NSLog(@"Num5");
         [self networkCallComplete]; //5
@@ -686,6 +687,9 @@
         
     }
     
+    UITapGestureRecognizer *tapMapView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchedMap)];
+    [self.transparentTouchView addGestureRecognizer:tapMapView];
+    
     self.dateOfEventLabel.alpha = 1.0;
     self.timeOfEventLabel.alpha = 1.0;
 
@@ -703,6 +707,7 @@
     mapViewController.locationPlacemark = self.locationPlacemark;
     mapViewController.locationOfEvent = self.locationOfEvent;
     mapViewController.hidesBottomBarWhenPushed = YES;
+    //self.shouldRestoreNavBar = YES;
     
     [self.navigationController pushViewController:mapViewController animated:YES];
     

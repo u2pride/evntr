@@ -20,7 +20,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    MKMapView *map = [[MKMapView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
+    MKMapView *map = [[MKMapView alloc] initWithFrame:self.view.frame];
 
     self.title = @"Event Location";
     
@@ -34,6 +34,9 @@
     [map setRegion:region animated:YES];
     
     [self.view addSubview:map];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.view.backgroundColor = [UIColor purpleColor];
     
     
     UIBarButtonItem *directions = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"DirectionsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(getDirectionsToEvent)];

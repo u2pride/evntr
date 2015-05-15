@@ -47,7 +47,6 @@
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
-    
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = NO;

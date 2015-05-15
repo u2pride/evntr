@@ -7,6 +7,8 @@
 //
 
 #import "FilterEventsVC.h"
+#import "QuartzCore/QuartzCore.h"
+#import "UIColor+EVNColors.h"
 
 @interface FilterEventsVC ()
 
@@ -40,56 +42,77 @@
     
     self.notifcationCenter = [NSNotificationCenter defaultCenter];
     
+    self.distance1Button.tintColor = [UIColor orangeThemeColor];
+    self.distance2Button.tintColor = [UIColor orangeThemeColor];
+    self.distance3Button.tintColor = [UIColor orangeThemeColor];
+    self.distance4Button.tintColor = [UIColor orangeThemeColor];
+    self.distance5Button.tintColor = [UIColor orangeThemeColor];
+    self.distance6Button.tintColor = [UIColor orangeThemeColor];
+    self.distance7Button.tintColor = [UIColor orangeThemeColor];
+    self.distance8Button.tintColor = [UIColor orangeThemeColor];
+    
+    self.distance1Button.layer.cornerRadius = self.distance1Button.bounds.size.width / 2.0f;
+    self.distance2Button.layer.cornerRadius = self.distance2Button.bounds.size.width / 2.0f;
+    self.distance3Button.layer.cornerRadius = self.distance3Button.bounds.size.width / 2.0f;
+    self.distance4Button.layer.cornerRadius = self.distance4Button.bounds.size.width / 2.0f;
+    self.distance5Button.layer.cornerRadius = self.distance5Button.bounds.size.width / 2.0f;
+    self.distance6Button.layer.cornerRadius = self.distance6Button.bounds.size.width / 2.0f;
+    self.distance7Button.layer.cornerRadius = self.distance7Button.bounds.size.width / 2.0f;
+    self.distance8Button.layer.cornerRadius = self.distance8Button.bounds.size.width / 2.0f;
+
+
     int doubledValue = (int) (self.selectedFilterDistance * 2);
     
     NSLog(@"Int Value - %d", doubledValue);
     
     switch (doubledValue) {
         case 1: {
-            self.distance1Button.selected = YES;
-            [self.distance1Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
+            
+            self.distance1Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance1Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+
             break;
         }
         case 2: {
-            self.distance2Button.selected = YES;
-
-            [self.distance2Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
+            self.distance2Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance2Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            
             break;
         }
         case 6: {
-            self.distance3Button.selected = YES;
-
-            [self.distance3Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
+            self.distance3Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance3Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            
             break;
         }
         case 10: {
-            self.distance4Button.selected = YES;
+            self.distance4Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance4Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
-            [self.distance4Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
         case 20: {
-            self.distance5Button.selected = YES;
+            self.distance5Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance5Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
-            [self.distance5Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
         case 30: {
-            self.distance6Button.selected = YES;
+            self.distance6Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance6Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
-            [self.distance6Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
         case 40: {
-            self.distance7Button.selected = YES;
+            self.distance7Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance7Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
-            [self.distance7Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
         case 2000: {
-            self.distance8Button.selected = YES;
+            self.distance8Button.backgroundColor = [UIColor orangeThemeColor];
+            [self.distance8Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
-            [self.distance8Button setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal|UIControlStateHighlighted|UIControlStateSelected];
             break;
         }
         default:
@@ -101,6 +124,8 @@
 
 
 - (IBAction)distance1Press:(id)sender {
+    
+    self.distance1Button.backgroundColor = [UIColor orangeThemeColor];
     
     self.distance1Button.enabled = NO;
     
@@ -115,6 +140,8 @@
 
 - (IBAction)distance2Press:(id)sender {
     
+    self.distance2Button.backgroundColor = [UIColor orangeThemeColor];
+    
     self.distance2Button.enabled = NO;
     
     id<EVNFilterProtocol> strongDelegate = self.delegate;
@@ -127,6 +154,8 @@
 }
 
 - (IBAction)distance3Press:(id)sender {
+    
+    self.distance3Button.backgroundColor = [UIColor orangeThemeColor];
     
     self.distance3Button.enabled = NO;
     
@@ -141,6 +170,8 @@
 
 - (IBAction)distance4Press:(id)sender {
     
+    self.distance4Button.backgroundColor = [UIColor orangeThemeColor];
+    
     self.distance4Button.enabled = NO;
     
     id<EVNFilterProtocol> strongDelegate = self.delegate;
@@ -153,6 +184,8 @@
 }
 
 - (IBAction)distance5Press:(id)sender {
+    
+    self.distance5Button.backgroundColor = [UIColor orangeThemeColor];
     
     self.distance5Button.enabled = NO;
     
@@ -167,6 +200,8 @@
 
 - (IBAction)distance6Press:(id)sender {
     
+    self.distance6Button.backgroundColor = [UIColor orangeThemeColor];
+    
     self.distance6Button.enabled = NO;
     
     id<EVNFilterProtocol> strongDelegate = self.delegate;
@@ -180,6 +215,8 @@
 
 - (IBAction)distance7Press:(id)sender {
     
+    self.distance7Button.backgroundColor = [UIColor orangeThemeColor];
+    
     self.distance7Button.enabled = NO;
     
     id<EVNFilterProtocol> strongDelegate = self.delegate;
@@ -192,6 +229,8 @@
 }
 
 - (IBAction)distance8Press:(id)sender {
+    
+    self.distance8Button.backgroundColor = [UIColor orangeThemeColor];
     
     self.distance8Button.enabled = NO;
     

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		A4035FD51A78534400DB67E4 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4035FD41A78534400DB67E4 /* ParseUI.framework */; };
 		A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4035FD71A786ACF00DB67E4 /* EventTableCell.m */; };
+		A40443631B04D06200F36C6A /* EVNMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = A40443621B04D06200F36C6A /* EVNMapAnnotation.m */; };
 		A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A41352541A81B80200034222 /* ImageViewPFExtended.m */; };
 		A41562C71A767D3A00565BB6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C61A767D3A00565BB6 /* main.m */; };
 		A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A41562C91A767D3A00565BB6 /* AppDelegate.m */; };
@@ -79,6 +80,7 @@
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
 		A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
+		A4CC92761AFBAA84005EA199 /* EVNLocationSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CC92751AFBAA83005EA199 /* EVNLocationSearchVC.m */; };
 		A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */; };
 		A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7581AB1DB11002F02C8 /* FBShimmeringView.m */; };
 		A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */ = {isa = PBXBuildFile; fileRef = A4D72FB41AAA175E00488D8D /* IDTransitionControllerTab.m */; };
@@ -114,6 +116,8 @@
 		A4035FD41A78534400DB67E4 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
 		A4035FD61A786ACF00DB67E4 /* EventTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventTableCell.h; sourceTree = "<group>"; };
 		A4035FD71A786ACF00DB67E4 /* EventTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventTableCell.m; sourceTree = "<group>"; };
+		A40443611B04D06200F36C6A /* EVNMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNMapAnnotation.h; sourceTree = "<group>"; };
+		A40443621B04D06200F36C6A /* EVNMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNMapAnnotation.m; sourceTree = "<group>"; };
 		A41352531A81B80200034222 /* ImageViewPFExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewPFExtended.h; sourceTree = "<group>"; };
 		A41352541A81B80200034222 /* ImageViewPFExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewPFExtended.m; sourceTree = "<group>"; };
 		A41562C11A767D3A00565BB6 /* EVNTR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVNTR.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -232,6 +236,8 @@
 		A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBadgeBarButtonItem.m; sourceTree = "<group>"; };
 		A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileVC.h; sourceTree = "<group>"; };
 		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditProfileVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A4CC92741AFBAA83005EA199 /* EVNLocationSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNLocationSearchVC.h; sourceTree = "<group>"; };
+		A4CC92751AFBAA83005EA199 /* EVNLocationSearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNLocationSearchVC.m; sourceTree = "<group>"; };
 		A4CEF7531AB1DB11002F02C8 /* FBShimmering-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FBShimmering-Prefix.pch"; sourceTree = "<group>"; };
 		A4CEF7541AB1DB11002F02C8 /* FBShimmering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmering.h; sourceTree = "<group>"; };
 		A4CEF7551AB1DB11002F02C8 /* FBShimmeringLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBShimmeringLayer.h; sourceTree = "<group>"; };
@@ -597,6 +603,10 @@
 			children = (
 				A4B2BC601AB8C7D40004B084 /* NewEventModel.h */,
 				A4B2BC611AB8C7D40004B084 /* NewEventModel.m */,
+				A4CC92741AFBAA83005EA199 /* EVNLocationSearchVC.h */,
+				A4CC92751AFBAA83005EA199 /* EVNLocationSearchVC.m */,
+				A40443611B04D06200F36C6A /* EVNMapAnnotation.h */,
+				A40443621B04D06200F36C6A /* EVNMapAnnotation.m */,
 				A425A1D41AE5868B00AF26E6 /* View Controllers */,
 				A49A9E2E1AAE487D00358D65 /* Location */,
 			);
@@ -890,6 +900,8 @@
 				A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
 				A46DB25C1AAE7B0500208973 /* MBProgressHUD.m in Sources */,
+				A4CC92761AFBAA84005EA199 /* EVNLocationSearchVC.m in Sources */,
+				A40443631B04D06200F36C6A /* EVNMapAnnotation.m in Sources */,
 				A41B2A131ABCBE3F00F7CE44 /* SignUpTabVC.m in Sources */,
 				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
 				A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */,

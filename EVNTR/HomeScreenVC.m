@@ -413,7 +413,7 @@
 - (void) refreshUIForCell:(EventTableCell *)cell withEvent:(EventObject *)eventForCell {
     
     NSLog(@"Refreshing UI for cell with Event %@", eventForCell.title);
-    
+        
     cell.eventTitle.text = eventForCell.title;
     cell.eventTypeLabel.text = [eventForCell eventTypeForHomeView];
     cell.dateOfEventLabel.text = [eventForCell eventDateShortStyle];
