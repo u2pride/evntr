@@ -12,6 +12,18 @@
 
 - (void)awakeFromNib {
     // Initialization code
+
+    self.commentTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.commentTextLabel.numberOfLines = 0;
+
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    [self.contentView layoutIfNeeded];
+    self.commentTextLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.commentTextLabel.frame);
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

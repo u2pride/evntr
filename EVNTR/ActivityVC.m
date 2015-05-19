@@ -200,6 +200,11 @@
             break;
     }
 
+    
+    self.tableView.estimatedRowHeight = 100.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+
+
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -906,103 +911,9 @@
 - (void)tappedFollowButton:(id)sender {
     
     UIButtonPFExtended *followButton = (UIButtonPFExtended *)sender;
-    [followButton startedTask];
-    EVNUser *userToChangeFollowState = followButton.personToFollow;
     
-    followButton.enabled = NO;
-    [followButton startedTask];
+    [[EVNUser currentUser] followUser:followButton.personToFollow fromVC:self withButton:followButton withCompletion:^(BOOL success) {}];
 
-    //Follow User or Unfollow User Depending on Current Button State
-    if ([followButton.titleText isEqualToString:@"Following"]) {
-
-        UIAlertController *unfollowSheet = [UIAlertController alertControllerWithTitle:userToChangeFollowState.username message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        
-        UIAlertAction *unfollow = [UIAlertAction actionWithTitle:@"Unfollow" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            
-            //Find and Delete Old Follow Activity
-            PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
-            
-            [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [findFollowActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
-            [findFollowActivity whereKey:@"to" equalTo:userToChangeFollowState];
-            
-            [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                
-                PFObject *previousFollowActivity = [objects firstObject];
-                [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    
-                    if (succeeded) {
-                        
-                        followButton.titleText = @"Follow";
-                        
-                        //Notify Profile View of Update
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-                    } else {
-                        
-                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                        
-                        [errorAlert show];
-                    }
-                    
-                    //Re-Enable Button
-                    followButton.enabled = YES;
-                    [followButton endedTask];
-                    
-                }];
-            }];
-            
-        }];
-        
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-            
-            followButton.enabled = YES;
-            [followButton endedTask];
-            
-        }];
-        
-        
-        [unfollowSheet addAction:unfollow];
-        [unfollowSheet addAction:cancelAction];
-        
-        [self presentViewController:unfollowSheet animated:YES completion:nil];
-        
-        
-    } else if ([followButton.titleText isEqualToString:@"Follow"]) {
-        
-        
-        
-        PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
-        
-        newFollowActivity[@"from"] = [EVNUser currentUser];
-        newFollowActivity[@"to"] = userToChangeFollowState;
-        newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
-        
-        [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            if (succeeded) {
-                
-                followButton.titleText = @"Following";
-
-                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-                
-            } else {
-                NSLog(@"Error in Saved");
-                
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                
-                [errorAlert show];
-
-            }
-            
-            //Re-Enable Button
-            followButton.enabled = YES;
-            [followButton endedTask];
-        }];
-    } else {
-        NSLog(@"Weird error - need to notify user");
-        followButton.enabled = YES;
-        [followButton endedTask];
-    }
 }
 
 

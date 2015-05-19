@@ -49,3 +49,7 @@ NSString *const EVNFontBold = @"Lato-Bold";
 NSString *const EVNFontRegular = @"Lato-Regular";
 NSString *const EVNFontLight = @"Lato-Light";
 NSString *const EVNFontThin = @"Lato-Thin";
+
+
+NSString *const kFollowingString = @"Following";
+NSString *const kFollowString = @"Follow";

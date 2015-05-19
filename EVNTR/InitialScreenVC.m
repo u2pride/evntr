@@ -51,7 +51,7 @@
     [super viewDidLoad];
     
     //TODO: for testing purposes
-    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor darkGrayColor];
+    [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor whiteColor];
 
     //Setting Up Custom Buttons
     self.loginButton.buttonColor = [UIColor orangeThemeColor];
@@ -100,12 +100,8 @@
     [self.loginButton addGestureRecognizer:tapgr2];
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopMoviePlayer) name:@"StopMoviePlayer" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:@"RestartMoviePlayer" object:nil];
-
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
+    NSLog(@"-- REGISTER for Movie Player Finished, Command to Stop Player, Command to Restart Movie Play, and UIApplicationWill Come Back into Foreground Notifications");
+    [self registerForNotifications];
 
 }
 
@@ -126,13 +122,18 @@
 
 - (MPMoviePlayerController *)moviePlayer
 {
+    NSLog(@"Accessed movie player controller variable");
+    
     if (!_moviePlayer) {
-        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrappbr" withExtension:@"mov"];
+        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrFade" withExtension:@"mov"];
         _moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
         _moviePlayer.controlStyle = MPMovieControlStyleNone;
         _moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
         _moviePlayer.view.frame = self.view.frame;
         [self.view insertSubview:_moviePlayer.view atIndex:0];
+        
+        NSLog(@"Created Movie Player");
+        
     }
     return _moviePlayer;
 }
@@ -168,20 +169,25 @@
     
     [super viewWillAppear:animated];
 
+    NSLog(@"View Will Appear - Start Movie");
     [self.moviePlayer play];
 
 }
+
+
+
 
 
 #pragma mark - Navigation
 
 - (IBAction) logOutUnwindSegue:(UIStoryboardSegue *)unwindSegue {
     
-    NSLog(@"Back from logout unwind segue");
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
-
+    NSLog(@"Back from logout unwind segue");
+    NSLog(@"-- REGISTER for App Enters Foreground and Movie Finished Notifications - Should not be registered for them right now");
+    [self registerForNotifications];
+    
     [self.moviePlayer play];
     
     [self returningTransitionAnimations];
@@ -191,6 +197,7 @@
 //Unwind Segue from Register or Login Pages - Via Back Button (or Cancel from FB Page - TODO)
 - (IBAction) backToLoginSignUpScreen:(UIStoryboardSegue *)unwindSegue {
     
+    NSLog(@"Unwind from Login Screens");
     [self returningTransitionAnimations];
     
 }
@@ -355,25 +362,61 @@
 }
 
 - (void)backFromForeground {
-    NSLog(@"Back from foreground notification or restart notificaiton");
+    NSLog(@"Play MoviePlayer - Back from foreground notification or restart notificaiton");
     [self.moviePlayer play];
+
+    //Reregister for Everthing except the foreground notification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopMoviePlayer) name:@"StopMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:@"RestartMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appEnteredBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+
+}
+
+- (void) appEnteredBackground {
+    NSLog(@"app entered background");
+    [self stopMoviePlayer];
+
+    //Reregister for foreground notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+
 }
 
 - (void)stopMoviePlayer {
-    
-    NSLog(@"Stop movie player and remove observers");
+    NSLog(@"Stop movie player and ----- DEREGISTER ------ observers");
     [self.moviePlayer stop];
     
+    [self deregisterForNotifications];
+
+}
+
+- (void) registerForNotifications {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopMoviePlayer) name:@"StopMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:@"RestartMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appEnteredBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backFromForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+}
+
+
+- (void) deregisterForNotifications {
+   
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"StopMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RestartMoviePlayer" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+
 }
 
 -(void)dealloc {
     
     NSLog(@"initialscreenvc is being deallocated");
+    //NSLog(@"Removing Notifications for Stop, Restart, Loop, and Foreground Notification");
     //super dealloc is called automatically with ARC
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"StopMoviePlayer" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"RestartMoviePlayer" object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:[UIApplication sharedApplication]];
 
 
 }

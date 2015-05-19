@@ -13,5 +13,6 @@
 
 @property (nonatomic, strong) CLLocation *locationOfEvent;
 @property (nonatomic, strong) CLPlacemark *locationPlacemark;
+@property (nonatomic, strong) NSString *eventLocationName;
 
 @end

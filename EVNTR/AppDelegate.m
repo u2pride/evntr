@@ -265,7 +265,7 @@
                     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
                     localNotification.fireDate = [NSDate date];
                     localNotification.alertBody = @"You've been invited to more than one event. You're popular.";
-                    localNotification.alertAction = @"See the Events!";
+                    //localNotification.alertAction = @"See the Events!";
                     localNotification.timeZone = [NSTimeZone defaultTimeZone];
                     localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + numberOfNewInvites;
                     

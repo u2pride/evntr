@@ -24,7 +24,6 @@
 #import <Parse/Parse.h>
 #import <QuartzCore/QuartzCore.h>
 
-
 @interface LogInVC ()
 
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegateForModal;
@@ -102,16 +101,10 @@
     //PlaceHolder Text Color Change
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
-    } else {
-        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-        // TODO: Add fall-back code to set placeholder color.
     }
     
     if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
-    } else {
-        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-        // TODO: Add fall-back code to set placeholder color.
     }
     
     
@@ -155,9 +148,9 @@
             //Failed to Login
             [self cleanUpBeforeTransition];
 
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Login Error" message:@"Username or Password Does Not Exist" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            UIAlertView *loginIssue = [[UIAlertView alloc] initWithTitle:@"Login Issue" message:@"Please make sure your username and password are correct." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
-            [errorAlert show];
+            [loginIssue show];
             
 
         }

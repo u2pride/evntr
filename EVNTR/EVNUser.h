@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
+#import "EVNButton.h"
+
 @interface EVNUser : PFUser <PFSubclassing>
 
 //@property (nonatomic, strong) NSString *username;
@@ -23,5 +25,19 @@
 
 
 + (EVNUser *) currentUser;
+
+- (NSString *) hometownText;
+- (NSString *) nameText;
+- (NSString *) bioText;
+
+- (void) followUser:(EVNUser *)userToFollow fromVC:(UIViewController *)activeVC withButton:(EVNButton *)followButton withCompletion:(void (^)(BOOL))completionBlock;
+
+
+//Return 0 if Error
+- (void) numberOfEventsWithCompletion:(void (^)(int))completionBlock;
+- (void) numberOfFollowersWithCompletion:(void (^)(int))completionBlock;
+- (void) numberOfFollowingWithCompletion:(void (^)(int))completionBlock;
+
+- (void) isCurrentUserFollowingProfile:(EVNUser *)user completion:(void (^)(BOOL isFollowing, BOOL success))completionBlock;
 
 @end

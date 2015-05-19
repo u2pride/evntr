@@ -442,9 +442,27 @@
         NSLog(@"WE HERE");
     }
     
-    self.event.descriptionOfEvent = textView.text;
+    if (textView.text.length > MAX_EVENTDESCR_LENGTH) {
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Description"
+                                                                       message:@"Please use a shorter event description. Ever heard of KISS?"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"C'mon" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {
+                                                              
+                                                                  [textView becomeFirstResponder];
+                                                              }];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    } else {
+        self.event.descriptionOfEvent = textView.text;
+        [textView resignFirstResponder];
+    }
     
-    [textView resignFirstResponder];
+
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range

@@ -25,7 +25,7 @@
 
 @interface ProfileVC ()
 
-@property (nonatomic, strong) EVNUser *userForProfileView;
+@property (nonatomic, strong) EVNUser *profileUser;
 @property (nonatomic) int profileType;
 @property (nonatomic, strong) NSData *userPictureData;
 
@@ -75,7 +75,7 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         //initial values
-        self.userForProfileView = [EVNUser currentUser];
+        self.profileUser = [EVNUser currentUser];
         self.userObjectID = [EVNUser currentUser].objectId;
         _isDismissedAlreadyCancel = NO;
         _isDismissedAlreadyUpdate = NO;
@@ -86,128 +86,69 @@
 }
 
 
+#pragma mark - View Controller Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
-    //Name Label Fits Text Dynamically
+    self.colorBackgroundView.backgroundColor = [UIColor orangeThemeColor];
+
+    [self setupButtons];
+    
     self.nameLabel.adjustsFontSizeToFitWidth = YES;
-    
-    //Style Buttons
-    self.followButton.buttonColor = [UIColor orangeThemeColor];
-    self.followButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
-    self.followButton.isRounded = YES;
-    self.followButton.hasBorder = YES;
-    
-    self.editProfileButton.buttonColor = [UIColor orangeThemeColor];
-    self.editProfileButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
-    self.editProfileButton.isRounded = YES;
-    self.editProfileButton.hasBorder = YES;
-    self.editProfileButton.titleText = @"edit profile";
-    self.editProfileButton.isSelected = YES;
-    self.editProfileButton.isStateless = YES;
-    
-    
-    //Setup the View
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
-    self.editProfileButton.hidden = YES;
-    self.followButton.hidden  = YES;
     self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     
-    // image respects tint color
-    self.instagramIcon.image = [[UIImage imageNamed:@"instagram"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    self.twitterIcon.image = [[UIImage imageNamed:@"twitter"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-    
-    self.editProfileButton.hidden = YES;
-    self.followButton.hidden = YES;
-    
-    self.colorBackgroundView.backgroundColor = [UIColor orangeThemeColor];
 }
 
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    
     UINavigationBar *navigationBar = self.navigationController.navigationBar;
-    
     [navigationBar setBackgroundImage:[UIImage new]
                        forBarPosition:UIBarPositionAny
                            barMetrics:UIBarMetricsDefault];
     
     [navigationBar setShadowImage:[UIImage new]];
-    
-    //navigationBar.barTintColor = [UIColor orangeThemeColor];
-    //navigationBar.backgroundColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = NO;
-
-    
-    //self.navigationController.navigationBar.tintColor = [UIColor clearColor];
-    //[self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-    //self.navigationController.navigationBar.shadowImage = [UIImage new];
-    //self.navigationController.navigationBar.translucent = NO;
-    //self.navigationController.navigationBar.alpha = 0.5;
-    //self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
-
-    //self.navigationController.view.backgroundColor = [UIColor clearColor];
-
-    
-    //Update Font and Color of NavBar in Case of Moving Directly from Event Detail Page
-    //[self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
-    //[self.navigationController.navigationBar setShadowImage:nil];
-    
-    /*
-    self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
-
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    self.navigationController.navigationBar.translucent = NO;
-    self.navigationController.navigationBar.alpha = 1;
-    */
-
     
     
-    //Navigation Bar Font & Color
-    //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    //self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
-    
-    //Query Parse for the User.
     PFQuery *usernameQuery = [EVNUser query];
     [usernameQuery whereKey:@"objectId" equalTo:self.userObjectID];
     [usernameQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        self.userForProfileView = (EVNUser *)object;
         
-        if (self.userForProfileView.hometown.length != 0) {
-            self.userHometownLabel.text = self.userForProfileView.hometown;
+        if (!error) {
+            
+            self.profileUser = (EVNUser *)object;
+            
+            self.userHometownLabel.text = [self.profileUser hometownText];
+            self.userSinceLabel.text = [NSString stringWithFormat:@"Joined %@", [self.profileUser.createdAt formattedAsTimeAgo]];
+            
+            if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
+                self.profileType = CURRENT_USER_PROFILE;
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kEventCreated object:nil];
+            } else {
+                self.profileType = OTHER_USER_PROFILE;
+                self.navigationItemWithSettingsBarItem.rightBarButtonItems = nil;
+            }
+            
+            //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
+            //TODO: Separate out what actually needs to be updated from database instead of updating all with updateUIWithUser
+            // make sure to include follow status and following and followers counts.
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUIDueToNewFollow:) name:kFollowActivity object:nil];
+            
+            [self updateUIAll];
+            
+            
         } else {
-            self.userHometownLabel.text = @"Unknown Location";
-        }
-        
-        NSString *dateJoined = [self.userForProfileView.createdAt formattedAsTimeAgo];
-        self.userSinceLabel.text = [NSString stringWithFormat:@"Joined %@", dateJoined];
-        
-        //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
-        //TODO: Separate out what actually needs to be updated from database instead of updating all with updateUIWithUser
-        // make sure to include follow status and following and followers counts.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUIDueToNewFollow:) name:kFollowActivity object:nil];
-        
-        if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
-            self.profileType = CURRENT_USER_PROFILE;
             
-            //Register for Notifications when Current User Creates a New Event
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kEventCreated object:nil];
-            
-        } else {
-            self.profileType = OTHER_USER_PROFILE;
-            self.navigationItemWithSettingsBarItem.rightBarButtonItems = nil;
+            //TODO: Handle error.
             
         }
-        
-        [self updateUIAll];
         
     }];
     
@@ -222,12 +163,30 @@
     [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
     [self.navigationController.navigationBar setShadowImage:nil];
     
-    //self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    //self.tabBarController.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    //self.navigationController.navigationBar.translucent = NO;
-    
 }
 
+
+#pragma mark - Helper Methods for VC Lifecycle
+
+- (void) setupButtons {
+    
+    self.followButton.buttonColor = [UIColor orangeThemeColor];
+    self.followButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
+    self.followButton.isRounded = YES;
+    self.followButton.hasBorder = YES;
+    
+    self.editProfileButton.buttonColor = [UIColor orangeThemeColor];
+    self.editProfileButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
+    self.editProfileButton.isRounded = YES;
+    self.editProfileButton.hasBorder = YES;
+    self.editProfileButton.titleText = @"edit profile";
+    self.editProfileButton.isSelected = YES;
+    self.editProfileButton.isStateless = YES;
+    
+    self.editProfileButton.hidden = YES;
+    self.followButton.hidden = YES;
+    
+}
 
 - (void) updateUIAll {
 
@@ -239,34 +198,29 @@
             [self.editProfileButton addTarget:self action:@selector(editUserProfile) forControlEvents:UIControlEventTouchUpInside];
             
             self.title = @"Profile";
-            self.navigationItem.title = [@"@" stringByAppendingString:self.userForProfileView.username];
+            self.navigationItem.title = [@"@" stringByAppendingString:self.profileUser.username];
             
             break;
         }
         case OTHER_USER_PROFILE: {
             
-
-            //setup follow state and set picture button
             self.followButton.hidden = NO;
             self.editProfileButton.hidden = YES;
             
-            self.navigationItem.title = [@"@" stringByAppendingString:self.userForProfileView.username];
+            self.navigationItem.title = [@"@" stringByAppendingString:self.profileUser.username];
             
-            //Determine whether the current user is following this user
-            PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-            [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
-            [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [followActivity whereKey:@"to" equalTo:self.userForProfileView];
-            [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                //TODO - Does this make sense?
+            [[EVNUser currentUser] isCurrentUserFollowingProfile:self.profileUser completion:^(BOOL isFollowing, BOOL success) {
                 
-                if (!objects || !objects.count) {
-                    self.followButton.titleText = @"Follow";
-                    
+                if (success) {
+                    if (isFollowing) {
+                        self.followButton.titleText = @"Following";
+                        self.followButton.isSelected = YES;
+                    } else {
+                        self.followButton.titleText = @"Follow";
+                    }
                 } else {
-                    self.followButton.titleText = @"Following";
-                    self.followButton.isSelected = YES;
-    
+                    self.followButton.titleText = @"";
+                    self.followButton.enabled = NO;
                 }
             }];
             
@@ -280,77 +234,30 @@
     }
     
     
-    //Profile Picture
-    PFFile *profilePictureFromParse = self.userForProfileView[@"profilePicture"];
+    self.nameLabel.text = [self.profileUser nameText];
+    self.bioLabel.text = [self.profileUser bioText];
+    
+    
+    PFFile *profilePictureFromParse = self.profileUser[@"profilePicture"];
     self.profileImageView.file = profilePictureFromParse;
     [self.profileImageView loadInBackground:^(UIImage *image, NSError *error) {
         self.userPictureData = UIImagePNGRepresentation(image);
     }];
+
+    [self.profileUser numberOfEventsWithCompletion:^(int events) {
+        self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", events];
+    }];
     
+    //Update Following / Followers Counts
+    [self.profileUser numberOfFollowersWithCompletion:^(int followers) {
+        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", followers];
+    }];
     
-    //Use Username for Real Name if no Real Name Chosen Yet
-    if (self.userForProfileView.realName) {
-        self.nameLabel.text = self.userForProfileView.realName;
-    } else {
-        self.nameLabel.text = self.userForProfileView.username;
-    }
+    [self.profileUser numberOfFollowingWithCompletion:^(int following) {
+        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", following];
+    }];
     
 
-    //If Social Media Handles Exist, Setup with Handles and Tap Gestures
-    if (self.userForProfileView[@"twitterHandle"]) {
-        
-        self.twitterIcon.userInteractionEnabled = YES;
-        self.twitterIcon.tag = 1;
-        
-        UITapGestureRecognizer *twitterTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
-        
-        [self.twitterIcon addGestureRecognizer:twitterTapGesture];
-        
-    }
-    
-    if (self.userForProfileView[@"instagramHandle"]) {
-        
-        self.instagramIcon.userInteractionEnabled = YES;
-        self.instagramIcon.tag = 2;
-        
-        UITapGestureRecognizer *instagramTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(socialMediaTap:)];
-        
-        [self.instagramIcon addGestureRecognizer:instagramTapGesture];
-        
-    }
-
-    
-    //TODO - self.numberEventsLabel.text = userForProfileView[@"Events_Created"];
-    
-    PFQuery *countEventsQuery = [PFQuery queryWithClassName:@"Events"];
-    [countEventsQuery whereKey:@"parent" equalTo:self.userForProfileView];
-    [countEventsQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        if (!error) {
-            self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", number];
-        }
-    }];
-    
-    PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowersQuery whereKey:@"to" equalTo:self.userForProfileView];
-    [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        if (!error) {
-            self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
-        }
-    }];
-    
-    PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowingQuery whereKey:@"from" equalTo:self.userForProfileView];
-    [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        if (!error) {
-            self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
-        }
-    }];
-    
-    if (self.userForProfileView.bio.length != 0) {
-        self.bioLabel.text = self.userForProfileView.bio;
-    }
     
 }
 
@@ -359,19 +266,16 @@
 
 #pragma mark - ProfileActions
 
-//TOOD: do i need to distinguish between my profile and another user's profile?
 - (IBAction)viewMyEvents:(id)sender {
     
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
-        NSLog(@"Current user events from profile page");
         eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
         eventVC.userForEventsQuery = [EVNUser currentUser];
     } else {
-        NSLog(@"Other user events from profile page");
         eventVC.typeOfEventTableView = OTHER_USER_EVENTS;
-        eventVC.userForEventsQuery = self.userForProfileView;
+        eventVC.userForEventsQuery = self.profileUser;
     }
     
     [self.navigationController pushViewController:eventVC animated:YES];
@@ -383,7 +287,7 @@
     PeopleVC *viewFollowersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
     viewFollowersVC.typeOfUsers = VIEW_FOLLOWERS;
-    viewFollowersVC.userProfile = self.userForProfileView;
+    viewFollowersVC.userProfile = self.profileUser;
     
     [self.navigationController pushViewController:viewFollowersVC animated:YES];
     
@@ -394,54 +298,9 @@
     PeopleVC *viewFollowingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
     viewFollowingVC.typeOfUsers = VIEW_FOLLOWING;
-    viewFollowingVC.userProfile = self.userForProfileView;
+    viewFollowingVC.userProfile = self.profileUser;
     
     [self.navigationController pushViewController:viewFollowingVC animated:YES];
-    
-}
-
-- (IBAction)viewPendingAccessRequests:(id)sender {
-    
-    ActivityVC *viewPendingRequests = [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
-    
-    viewPendingRequests.typeOfActivityView = ACTIVITIES_REQUESTS_TO_ME;
-    viewPendingRequests.userForActivities = [EVNUser currentUser];
-    
-    [self.navigationController pushViewController:viewPendingRequests animated:YES];
-
-}
-
-
-- (IBAction)viewEventsAttending:(id)sender {
-    
-    ActivityVC *eventsAttended = (ActivityVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
-    eventsAttended.typeOfActivityView = ACTIVITIES_ATTENDED;
-    eventsAttended.userForActivities = self.userForProfileView;
-    eventsAttended.title = @"Events Attended";
-    
-    [self.navigationController pushViewController:eventsAttended animated:YES];
-    
-}
-
-- (IBAction)viewInvites:(id)sender {
-    
-    ActivityVC *inviteActivity = (ActivityVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
-    inviteActivity.typeOfActivityView = ACTIVITIES_INVITES;
-    inviteActivity.title = @"Invites";
-    
-    [self.navigationController pushViewController:inviteActivity animated:YES];
-    
-    
-}
-
-- (IBAction)viewMyRequestStatus:(id)sender {
-    
-    ActivityVC *viewMyRequests = [self.storyboard instantiateViewControllerWithIdentifier:@"activityViewController"];
-    
-    viewMyRequests.typeOfActivityView = ACTIVITIES_MY_REQUESTS_STATUS;
-    viewMyRequests.userForActivities = [EVNUser currentUser];
-    
-    [self.navigationController pushViewController:viewMyRequests animated:YES];
     
 }
 
@@ -450,140 +309,11 @@
 
 #pragma mark - Follow User
 
-
 - (IBAction)followUser:(id)sender {
-    
-    self.followButton.enabled = NO;
-    [self.followButton startedTask];
-    
-    if ([self.followButton.titleText isEqualToString:@"Follow"]) {
-        
-        PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
-        
-        newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
-        newFollowActivity[@"from"] = [EVNUser currentUser];
-        newFollowActivity[@"to"] = self.userForProfileView;
-        
-        [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            if (succeeded) {
-                
-                self.followButton.titleText = @"Following";
 
-                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-                
-            } else {
-                NSLog(@"Error in Saved");
-                
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                [errorAlert show];
-
-            }
-            
-            self.followButton.enabled = YES;
-            [self.followButton endedTask];
-        }];
-        
-        
-    } else if ([self.followButton.titleText isEqualToString:@"Following"]) {
-                
-        UIAlertController *unfollowSheet = [UIAlertController alertControllerWithTitle:self.userForProfileView.username message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        
-        UIAlertAction *unfollow = [UIAlertAction actionWithTitle:@"Unfollow" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
-            
-            PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
-            
-            [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [findFollowActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
-            [findFollowActivity whereKey:@"to" equalTo:self.userForProfileView];
-            
-            [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                
-                PFObject *previousFollowActivity = [objects firstObject];
-                [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    
-                    if (succeeded) {
-                        
-                        self.followButton.titleText = @"Follow";
-                        
-                        //Notify View Controllers of a New Follow
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:self userInfo:nil];
-                    } else {
-                        
-                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Report This Error to aryan@evntr.co" message:error.description delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                        
-                        [errorAlert show];
-                        
-                    }
-                    
-                    self.followButton.enabled = YES;
-                    [self.followButton endedTask];
-                    
-                }];
-            }];
-
-            
-        }];
-        
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-            
-            self.followButton.enabled = YES;
-            [self.followButton endedTask];
-            
-        }];
-        
-        
-        [unfollowSheet addAction:unfollow];
-        [unfollowSheet addAction:cancelAction];
-                
-        [self presentViewController:unfollowSheet animated:YES completion:nil];
-        
-                
-    } else {
-        NSLog(@"Weird error - need to notify user");
-        self.followButton.enabled = YES;
-        [self.followButton endedTask];
-    }
+    [[EVNUser currentUser] followUser:self.profileUser fromVC:self withButton:self.followButton withCompletion:^(BOOL success) { }];
     
 }
-
-
-#pragma mark - Social Media Actions
-
-- (void)socialMediaTap:(UITapGestureRecognizer *)tapgr {
-    UIImageView *tappedImageView = (UIImageView *)tapgr.view;
-    NSInteger tag = tappedImageView.tag;
-    
-    switch (tag) {
-        case 1: {
-            NSString *twitterNativeURLString = [NSString stringWithFormat:@"twitter://user?screen_name=%@", self.userForProfileView[@"twitterHandle"]];
-            NSString *twitterWebURLString = [NSString stringWithFormat:@"https://twitter.com/%@", self.userForProfileView[@"twitterHandle"]];
-            
-            if(![[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterNativeURLString]])
-            {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:twitterWebURLString]];
-            }
-            break;
-        }
-        case 2: {
-            NSString *instagramNativeURLString = [NSString stringWithFormat:@"instagram://user?username=%@", self.userForProfileView[@"instagramHandle"]];
-            NSString *instagramWebURLString = [NSString stringWithFormat:@"https://instagram.com/%@", self.userForProfileView[@"instagramHandle"]];
-            
-            if (![[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramNativeURLString]])
-            {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:instagramWebURLString]];
-            }
-            
-            break;
-        }
-        default: {
-            
-            break;
-        }
-    }
-    
-}
-
 
 
 
@@ -617,24 +347,19 @@
         
         self.isDismissedAlreadyCancel = YES;
         
-        
         PFFile *newProfilePicture = [PFFile fileWithData:imageData];
         [newProfilePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
-            
         }];
         
-        //NSString *username = [stringDictionary objectForKey:@"username"];
         NSString *realName = [stringDictionary objectForKey:@"realName"];
-        //NSString *hometown = [stringDictionary objectForKey:@"hometown"];
-        //NSString *bio = [stringDictionary objectForKey:@"bio"];
         
         self.profileImageView.image = [UIImage imageWithData:imageData];
         
         self.nameLabel.text = realName;
         
         self.userObjectID = [EVNUser currentUser].objectId;
-        self.userForProfileView = [EVNUser currentUser];
+        self.profileUser = [EVNUser currentUser];
         
         [self dismissViewControllerAnimated:YES completion:^{
             
@@ -644,9 +369,6 @@
         }];
         
     }
-    
-    
-
     
 }
 
@@ -687,13 +409,13 @@
 //TODO - Perform this updates in the local cache - or just increment/decrement the right count.
 - (void)updateUIDueToNewFollow:(NSNotification *)notification {
     
-    if (self.profileType != CURRENT_USER_PROFILE) {
+    if (notification.object != self && self.profileType != CURRENT_USER_PROFILE) {
         
         //Update the Button For Following/Follow
         PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
         [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
         [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-        [followActivity whereKey:@"to" equalTo:self.userForProfileView];
+        [followActivity whereKey:@"to" equalTo:self.profileUser];
         [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             //TODO - Does this make sense?
             
@@ -706,19 +428,14 @@
     }
     
     //Update Following / Followers Counts
-    PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowersQuery whereKey:@"to" equalTo:self.userForProfileView];
-    [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", number];
+    [self.profileUser numberOfFollowersWithCompletion:^(int followers) {
+        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", followers];
     }];
     
-    PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowingQuery whereKey:@"from" equalTo:self.userForProfileView];
-    [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", number];
+    [self.profileUser numberOfFollowingWithCompletion:^(int following) {
+        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", following];
     }];
+
     
 }
 
@@ -732,7 +449,6 @@
 }
 
 
-// Remember that at this point the view hasn't loaded.... so you can't set UI element properties.
  - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
      
      if ([[segue identifier] isEqualToString:@"profileToEditProfile"]) {

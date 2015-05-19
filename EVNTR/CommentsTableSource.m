@@ -33,13 +33,13 @@ NSString *const cellIdentifier = @"commentsCell";
     if (self) {
         if (event) {
             
+            _allowAddingComments = NO;
             _commentsTable = table;
             _commentsTable.delegate = self;
             _commentsTable.dataSource = self;
             _commentsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
             [_commentsTable registerNib:[UINib nibWithNibName:@"EVNCommentsTableCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
             
-            [self setupTableHeader];
             [self getCommentsForTableWithEvent:event];
         }
     }
@@ -49,9 +49,14 @@ NSString *const cellIdentifier = @"commentsCell";
 
 
 - (void) setAllowAddingComments:(BOOL)allowAddingComments {
-        
+    
+    NSLog(@"allowAddingComments");
     if (allowAddingComments) {
+        NSLog(@"allowAddingComments2");
+
         if (!self.commentsTable.tableHeaderView) {
+            NSLog(@"allowAddingComments3");
+
             [self setupTableHeader];
         }
     } else {
@@ -62,6 +67,9 @@ NSString *const cellIdentifier = @"commentsCell";
 }
 
 - (void) setupTableHeader {
+    
+    NSLog(@"allowAddingComments4");
+
     
     UIView *tableHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _commentsTable.frame.size.width, 50)];
     tableHeader.backgroundColor = [UIColor clearColor];
@@ -137,6 +145,7 @@ NSString *const cellIdentifier = @"commentsCell";
         commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     }
     
+    //[commentCell.commentTextLabel sizeToFit];
     
     PFObject *comment = [self.commentsData objectAtIndex:indexPath.row];
     EVNUser *commentParent = (EVNUser *) [comment objectForKey:@"commentParent"];
@@ -167,6 +176,9 @@ NSString *const cellIdentifier = @"commentsCell";
     commentCell.backgroundColor = [UIColor clearColor];
     //commentCell.textLabel.textColor = [UIColor whiteColor];
     
+    commentCell.backgroundColor = [[UIColor alloc] initWithRed:arc4random()%256/256.0 green:arc4random()%256/256.0 blue:arc4random()%256/256.0 alpha:1.0];
+
+    
     return commentCell;
 }
 
@@ -184,6 +196,8 @@ NSString *const cellIdentifier = @"commentsCell";
     NSLog(@"Did select table cell for comment - %ld", (long)indexPath.row);
     
 }
+
+
 
 
 

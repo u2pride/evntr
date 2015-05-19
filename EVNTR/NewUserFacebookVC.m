@@ -157,7 +157,7 @@
     NSString *submittedEmail = self.emailField.text;
     
     //Validate that the user has submitted a user name and password
-    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedName.length >= MIN_USERNAME_LENGTH && submittedEmail.length > 0) {
+    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH && submittedEmail.length > 0) {
         
         self.profileImageView.backgroundColor = [UIColor clearColor];
         UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
@@ -224,7 +224,7 @@
             
         } else if (self.usernameField.text.length < MIN_USERNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is greater than %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is at least %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
@@ -234,9 +234,15 @@
             
             [errorAlert show];
             
-        } else if (self.nameField.text.length <= MIN_USERNAME_LENGTH) {
+        } else if (self.nameField.text.length < MIN_REALNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is greater than %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is at least %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+        
+        } else if (self.nameField.text.length >= MAX_REALNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is %d characters or shorter", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             

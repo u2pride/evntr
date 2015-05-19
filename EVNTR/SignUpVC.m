@@ -403,7 +403,7 @@ typedef enum {
                     }
                     case TBParseError_UserEmailTaken: {
                         
-                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another email." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please use another email." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
                         
                         [failureAlert show];
                         
@@ -456,19 +456,19 @@ typedef enum {
             
         } else if (self.usernameField.text.length < MIN_USERNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is greater than %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is at least %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
         } else if (self.usernameField.text.length > MAX_USERNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is less than %d characters", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is %d characters or shorter", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
-        } else if (self.passwordField.text.length <= MIN_PASSWORD_LENGTH) {
+        } else if (self.passwordField.text.length < MIN_PASSWORD_LENGTH) {
         
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Password" message:[NSString stringWithFormat:@"Please choose a password that is greater than %d characters", (MIN_PASSWORD_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Password" message:[NSString stringWithFormat:@"Please choose a password that is at least %d characters", (MIN_PASSWORD_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             

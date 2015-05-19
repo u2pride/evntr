@@ -16,6 +16,12 @@
 #import <Accounts/Accounts.h>
 #import <Parse/Parse.h>
 
+typedef enum {
+    TBParseError_UsernameMissing = 200, // Username is missing or empty
+    TBParseError_UsernameTaken = 202, // Username has already been taken
+    
+} TBParseError;
+
 @interface EditProfileVC ()
 
 //For TextField Persistnce
@@ -325,8 +331,9 @@
     NSString *submittedUsername = self.usernameTextField.text;
     NSString *submittedName = self.realNameTextField.text;
     NSString *submittedBio = self.bioTextField.text;
+    NSString *submittedHometown = self.hometownTextField.text;
 
-    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH) {
+    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH && submittedHometown.length <= MAX_HOMETOWN_LENGTH) {
         
         PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
         
@@ -352,9 +359,27 @@
                         
                     } else {
                         
-                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable To Update" message:[NSString stringWithFormat:@"%@", error] delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [errorAlert show];
+                        switch ((TBParseError)error.code) {
+                                
+                            case TBParseError_UsernameMissing: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose a username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            case TBParseError_UsernameTaken: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose another username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            default:
+                                break;
+                        }
                         
                     }
                 }];
@@ -366,31 +391,37 @@
         
         if (submittedUsername.length < MIN_USERNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is greater than %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is at least %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
         } else if (submittedUsername.length > MAX_USERNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is less than %d characters", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is %d characters or shorter", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
         } else if (submittedName.length < MIN_REALNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is greater than %d characters", (MIN_REALNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is at least %d characters", (MIN_REALNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
         } else if (submittedName.length > MAX_REALNAME_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is less than %d characters", (MAX_REALNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Name" message:[NSString stringWithFormat:@"Please choose a name that is %d characters or shorter", (MAX_REALNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
         }  else if (submittedBio.length > MAX_BIO_LENGTH) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Bio" message:[NSString stringWithFormat:@"Please choose a bio that is less than %d characters", (MAX_BIO_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Bio" message:[NSString stringWithFormat:@"Please use a bio that is %d characters or shorter. You've clearly got a lot to say.  Maybe trying starting a blog?", (MAX_BIO_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (submittedHometown.length > MAX_HOMETOWN_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hometown" message:[NSString stringWithFormat:@"Please use a location that is %d characters or shorter.", (MAX_HOMETOWN_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             

@@ -100,6 +100,7 @@
 		A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */; };
 		A4F6C4BE1AA620C1001C68BA /* EventPictureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */; };
 		A4F6C4C11AA6317C001C68BA /* PictureFullScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */; };
+		A4FE5DE71B0BAD500001D643 /* evntrFade.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4FE5DE61B0BAD500001D643 /* evntrFade.mov */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -275,6 +276,7 @@
 		A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventPictureCell.m; sourceTree = "<group>"; };
 		A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureFullScreenVC.h; path = ../PictureFullScreenVC.h; sourceTree = "<group>"; };
 		A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PictureFullScreenVC.m; path = ../PictureFullScreenVC.m; sourceTree = "<group>"; };
+		A4FE5DE61B0BAD500001D643 /* evntrFade.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrFade.mov; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,12 +345,11 @@
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */,
 				A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */,
-				A430EE081AF264B30090ECB6 /* EVNUser.h */,
-				A430EE091AF264B30090ECB6 /* EVNUser.m */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Tabs */,
 				A4F2E9A61A7A806A00614412 /* Navigation - Utilities */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
+				A4FE5DE61B0BAD500001D643 /* evntrFade.mov */,
 				A4B2E2411AC990E200279C99 /* evntrappbr.mov */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
@@ -531,6 +532,8 @@
 		A474306C1A8155CC00CF3B8F /* People */ = {
 			isa = PBXGroup;
 			children = (
+				A430EE081AF264B30090ECB6 /* EVNUser.h */,
+				A430EE091AF264B30090ECB6 /* EVNUser.m */,
 				A415634A1A76EF3A00565BB6 /* ProfileVC.h */,
 				A415634B1A76EF3A00565BB6 /* ProfileVC.m */,
 				A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */,
@@ -827,6 +830,7 @@
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
+				A4FE5DE71B0BAD500001D643 /* evntrFade.mov in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

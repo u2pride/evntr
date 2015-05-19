@@ -301,27 +301,88 @@
     [self.locationMapView addAnnotation:self.locationAnnotation];
     [self.locationMapView selectAnnotation:self.locationAnnotation animated:YES];
     
-    
-    
 }
-
 
 
 - (void) chooseLocation {
     
     NSLog(@"Choose location");
     
-    id<EventLocationSearch> strongDelegate = self.delegate;
-
-    CLLocation *locationChosen = [[CLLocation alloc] initWithLatitude:self.locationAnnotation.coordinate.latitude longitude:self.locationAnnotation.coordinate.longitude];
-    
-    [strongDelegate locationSelectedWithCoordinates:locationChosen andName:self.locationAnnotation.title];
-    
+    if (self.presentedViewController) {
+        
+        [self dismissViewControllerAnimated:NO completion:^{
+            [self formatChosenLocation];
+        }];
+    } else {
+        [self formatChosenLocation];
+    }
     
 }
 
+
+- (void) formatChosenLocation {
+ 
+    if ([self.locationAnnotation.title isEqualToString:@"Custom Location"] || [self.locationAnnotation.title isEqualToString:@"Current Location"]) {
+        
+        UIAlertController *customLocationName = [UIAlertController alertControllerWithTitle:@"Name This Location" message:@"Pick a name for this location.  It'll appear on your event page, so make sure it's something others will understand" preferredStyle:UIAlertControllerStyleAlert];
+        
+        [customLocationName addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+            textField.delegate = self;
+            textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+        }];
+        
+        UIAlertAction *saveAction = [UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            
+            UITextField *nameTextField = (UITextField *) customLocationName.textFields.firstObject;
+            
+            if (nameTextField.text.length > 0 && nameTextField.text.length <= MAX_LOCATION_NAME_LENGTH) {
+                
+                id<EventLocationSearch> strongDelegate = self.delegate;
+                
+                CLLocation *locationChosen = [[CLLocation alloc] initWithLatitude:self.locationAnnotation.coordinate.latitude longitude:self.locationAnnotation.coordinate.longitude];
+                
+                [strongDelegate locationSelectedWithCoordinates:locationChosen andName:nameTextField.text];
+                
+            }
+            
+        }];
+        
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+            
+        }];
+        
+        
+        [customLocationName addAction:saveAction];
+        [customLocationName addAction:cancelAction];
+        
+        [self presentViewController:customLocationName animated:YES completion:nil];
+        
+    } else {
+        
+        id<EventLocationSearch> strongDelegate = self.delegate;
+        
+        CLLocation *locationChosen = [[CLLocation alloc] initWithLatitude:self.locationAnnotation.coordinate.latitude longitude:self.locationAnnotation.coordinate.longitude];
+        
+        [strongDelegate locationSelectedWithCoordinates:locationChosen andName:self.locationAnnotation.title];
+        
+    }
+}
+
+
+- (BOOL)textField:(UITextField *) textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    NSUInteger oldLength = [textField.text length];
+    NSUInteger replacementLength = [string length];
+    NSUInteger rangeLength = range.length;
+    
+    NSUInteger newLength = oldLength - rangeLength + replacementLength;
+    
+    BOOL returnKey = [string rangeOfString: @"\n"].location != NSNotFound;
+    
+    return newLength <= MAX_LOCATION_NAME_LENGTH || returnKey;
+}
+
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
-    static NSString *const kAnnotationReuseIdentifier = @"customAnnotation";
     
     EVNMapAnnotation *annotationCurrent = (EVNMapAnnotation *)annotation;
     
@@ -341,7 +402,7 @@
 
 - (void) updateSearchResultsForSearchController:(UISearchController *)searchController {
     
-    NSLog(@"updateSearchResults");
+    NSLog(@"updateSearchResults with text:  %@", self.searchController.searchBar.text);
     
     if (self.searchController.searchBar.text.length > 0) {
         
@@ -416,7 +477,6 @@
 
 - (void) fetchedData: (NSData *)responseData {
     
-    NSLog(@"fetchedData - %@", responseData);
 
     NSError *error;
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
@@ -431,7 +491,6 @@
     
     for (int i = 0; i < numberOfResults; i++) {
         
-        NSLog(@"places results - %d", i);
         
         NSDictionary *place = [places objectAtIndex:i];
         NSDictionary *geo = [place objectForKey:@"geometry"];
@@ -443,7 +502,6 @@
         
         GoogleResult *locationFromGoogle = [[GoogleResult alloc] initWithTitle:name address:vicinity location:locationPoint];
         
-        NSLog(@"adding location to search Results");
         [fetchedCleanResults addObject:locationFromGoogle];
         
     }
@@ -494,8 +552,6 @@
         
         NSString *locationTitle = resultOfSearch.title;
         NSString *address = resultOfSearch.address;
-        
-        NSLog(@"cellForRowAtIndexPath with title: %@", resultOfSearch.title);
         
         cell.textLabel.text = locationTitle;
         cell.detailTextLabel.text = address;
@@ -577,7 +633,7 @@
         
         self.isShowingMapView = YES;
         
-        self.locationAnnotation = [[EVNMapAnnotation alloc] initWithTitle:@"Custom Location" location:self.currentLocation.coordinate];
+        self.locationAnnotation = [[EVNMapAnnotation alloc] initWithTitle:@"Current Location" location:self.currentLocation.coordinate];
         
         [self.locationMapView addAnnotation:self.locationAnnotation];
         [self.locationMapView selectAnnotation:self.locationAnnotation animated:YES];

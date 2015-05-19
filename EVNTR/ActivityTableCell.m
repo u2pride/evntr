@@ -24,4 +24,12 @@
     _timestampActivity = timestampActivity;
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    [self.contentView layoutIfNeeded];
+    self.activityContentTextLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.activityContentTextLabel.frame);
+}
+
 @end

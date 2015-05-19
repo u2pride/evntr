@@ -153,6 +153,10 @@
         
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
         self.navigationItem.leftBarButtonItem = cancelButton;
+        
+        //Navigation Bar Font & Color
+        NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+        self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     }
     
 }
@@ -163,8 +167,9 @@
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self.eventTitleField becomeFirstResponder];
-    
+    if (self.eventTitleField.text.length == 0) {
+        [self.eventTitleField becomeFirstResponder];
+    }
 }
 
 
@@ -326,14 +331,31 @@
 
 - (IBAction)nextButtonPressed:(id)sender {
     
-    if (self.eventTitleField.text.length > 3 && self.coverPhotoFile) {
-        
+    if (self.eventTitleField.text.length <= MAX_EVENTTITLE_LENGTH && self.eventTitleField.text.length >= MIN_EVENTTITLE_LENGTH && self.coverPhotoFile) {
         [self performSegueWithIdentifier:@"AddEventNextStep" sender:self];
-        
+
     } else {
-        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Please upload a photo or select a title that is greater than 3 characters." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
-        [errorAlert show];
+        
+        if (self.eventTitleField.text.length < MIN_EVENTTITLE_LENGTH) {
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Event Title" message:@"Please use a longer title for your event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            [errorAlert show];
+            
+        } else if (self.eventTitleField.text.length > MAX_EVENTTITLE_LENGTH) {
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Event Title" message:@"Please use a shorter title for your event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            [errorAlert show];
+            
+        } else if (!self.coverPhotoFile) {
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Cover Photo" message:@"Please select a photo." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            [errorAlert show];
+            
+        } else {
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Other" message:@"Fill out all fields. If you have, tweet or email us in settings and we'll help figure out your problem." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            [errorAlert show];
+            
+        }
+        
     }
+
 }
 
 

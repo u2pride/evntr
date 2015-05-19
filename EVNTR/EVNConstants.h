@@ -124,10 +124,15 @@ extern NSString *const kLastBackgroundFetchTimeStamp;
 #pragma mark - Max Lengths
 #define MIN_USERNAME_LENGTH 2
 #define MAX_USERNAME_LENGTH 20
-#define MIN_REALNAME_LENGTH 0
+#define MIN_REALNAME_LENGTH 2
 #define MAX_REALNAME_LENGTH 20
-#define MAX_BIO_LENGTH 120
+#define MAX_BIO_LENGTH 40
 #define MIN_PASSWORD_LENGTH 2
+#define MAX_HOMETOWN_LENGTH 30
+#define MIN_EVENTTITLE_LENGTH 2
+#define MAX_EVENTTITLE_LENGTH 40
+#define MAX_EVENTDESCR_LENGTH 120
+#define MAX_LOCATION_NAME_LENGTH 30
 
 
 
@@ -139,6 +144,9 @@ extern NSString *const EVNFontLight;
 extern NSString *const EVNFontThin;
 
 
+#pragma mark - Simple Strings
+extern NSString *const kFollowingString;
+extern NSString *const kFollowString;
 
 
 // Time Type From To Content

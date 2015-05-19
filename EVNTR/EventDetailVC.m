@@ -39,7 +39,7 @@
 @property BOOL isGuestUser;
 @property (nonatomic)  BOOL isCurrentUserAttending;
 @property BOOL isPublicApproved;
-@property BOOL isCurrentUsersEvent;
+@property (nonatomic) BOOL isCurrentUsersEvent;
 
 //Buttons
 @property (strong, nonatomic) IBOutlet UIButtonPFExtended *rsvpStatusButton;
@@ -156,6 +156,9 @@
     
     [self setupStaticEventDetailComponents];
     
+    self.commentsTable.estimatedRowHeight = 100.0;
+    self.commentsTable.rowHeight = UITableViewAutomaticDimension;
+    
 }
 
 
@@ -262,13 +265,17 @@
         CGRect originalFrame = self.eventDescription.frame;
         
         self.eventTitle.text = self.event.title;
-        self.eventTitle.adjustsFontSizeToFitWidth = YES;
         self.dateOfEventLabel.text = [self.event eventDateShortStyle];
         self.timeOfEventLabel.text = [self.event eventTimeShortStye];
         self.eventDescription.text = self.event.descriptionOfEvent;
         self.eventDescription.textAlignment = NSTextAlignmentCenter;
         self.eventDescription.numberOfLines = 0;
-        [self.eventDescription sizeToFit];
+        
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        paragraphStyle.hyphenationFactor = 0.5f;
+        paragraphStyle.alignment = NSTextAlignmentCenter;
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.event.descriptionOfEvent attributes:@{ NSParagraphStyleAttributeName : paragraphStyle }];
+        self.eventDescription.attributedText = attributedString;
         
         CGRect resizedFrame = self.eventDescription.frame;
         self.eventDescription.frame = CGRectMake(resizedFrame.origin.x, resizedFrame.origin.y, originalFrame.size.width, resizedFrame.size.height);
@@ -603,15 +610,10 @@
 
 
 - (void) setBackgroundOfPictureSectionWithImage:(UIImage *)image {
-    //Set Background to Blurred Cover Photo Image
-    //UIImage *darkBlurredImageForPicturesBackground = [UIImageEffects imageByApplyingBlurToImage:image withRadius:10.0 tintColor:[UIColor colorWithWhite:0.11 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
-    
-    //self.backgroundForPictureSection.image = darkBlurredImageForPicturesBackground;
-    
     
     UIImage *blurredBackgroundImage = [UIImageEffects imageByApplyingBlurToImage:image withRadius:30.0 tintColor:[UIColor colorWithWhite:0.08 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
     
-    self.view.backgroundColor = [UIColor colorWithPatternImage:blurredBackgroundImage];
+    self.view.layer.contents = (id)blurredBackgroundImage.CGImage;
 }
 
 
@@ -621,6 +623,17 @@
     self.commentsController.allowAddingComments = isCurrentUserAttending;
     
     _isCurrentUserAttending = isCurrentUserAttending;
+}
+
+- (void) setIsCurrentUsersEvent:(BOOL)isCurrentUsersEvent {
+    
+    NSLog(@"Setting is CurrentUsersEvent");
+    if (isCurrentUsersEvent) {
+        NSLog(@"now actually setting it");
+        self.commentsController.allowAddingComments = YES;
+    }
+    
+    _isCurrentUsersEvent = isCurrentUsersEvent;
 }
 
 
@@ -706,6 +719,7 @@
 
     mapViewController.locationPlacemark = self.locationPlacemark;
     mapViewController.locationOfEvent = self.locationOfEvent;
+    mapViewController.eventLocationName = self.event.nameOfLocation;
     mapViewController.hidesBottomBarWhenPushed = YES;
     //self.shouldRestoreNavBar = YES;
     

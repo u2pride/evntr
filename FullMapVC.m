@@ -26,6 +26,7 @@
     
     MKPointAnnotation *currentLocationAnnotation = [[MKPointAnnotation alloc] init];
     currentLocationAnnotation.coordinate = self.locationOfEvent.coordinate;
+    currentLocationAnnotation.title = self.eventLocationName;
     
     //Setting up Map to Current Location
     MKCoordinateRegion region = MKCoordinateRegionMake(self.locationOfEvent.coordinate, MKCoordinateSpanMake(0.05, 0.05));

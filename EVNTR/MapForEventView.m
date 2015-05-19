@@ -242,7 +242,7 @@
                          toItem:self.circleView
                          attribute:NSLayoutAttributeCenterY
                          multiplier:1.0
-                         constant:-20.0]];
+                         constant:-25.0]];
     
     //Width is 0.8 of Superview
     [self addConstraint:[NSLayoutConstraint
@@ -312,7 +312,7 @@
                          toItem:self.distanceAwayLabel
                          attribute:NSLayoutAttributeBottom
                          multiplier:1.0
-                         constant:-5.0]];
+                         constant:-10.0]];
     
     //Width is 0.8 of Superview
     [self addConstraint:[NSLayoutConstraint
