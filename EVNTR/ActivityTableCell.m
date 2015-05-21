@@ -11,6 +11,7 @@
 
 @implementation ActivityTableCell
 
+
 - (void)setActivityContentTextLabel:(UILabel *)activityContentTextLabel {
     
     //custom tasks here..
@@ -30,6 +31,22 @@
     
     [self.contentView layoutIfNeeded];
     self.activityContentTextLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.activityContentTextLabel.frame);
+}
+
+
+- (void) highlightCellForNewNotification {
+        
+    self.backgroundColor = [UIColor colorWithRed:0.922 green:0.333 blue:0.141 alpha:0.2];
+    
+    [UIView animateWithDuration:3.0 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+        
+        self.backgroundColor = [UIColor whiteColor];
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+    
+    
 }
 
 @end

@@ -35,13 +35,13 @@
     [super viewDidAppear:animated];
     
     
-    [UIView animateWithDuration:1.5 animations:^{
+    [UIView animateWithDuration:1.0 animations:^{
         
         self.splashScreenEmptyMiddle.alpha = 0;
         
     } completion:^(BOOL finished) {
         
-        [UIView animateWithDuration:2.2 animations:^{
+        [UIView animateWithDuration:1.0 animations:^{
             
             self.evntrSingleImage.transform = CGAffineTransformMakeRotation(M_PI * -12 / 180);
             

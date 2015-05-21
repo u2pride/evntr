@@ -27,6 +27,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    //App is Launch By User - Reset Badge Number
+    if (!launchOptions[UIApplicationLaunchOptionsLocalNotificationKey]) {
+        [application setApplicationIconBadgeNumber:0];
+    }
+    
+    
     NSLog(@"NUMBER 1 - applicationDidFinishLaunchingWithOptions");
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
@@ -41,9 +47,7 @@
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
     //[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-    //Background Fetching for Server Updates
-    [application setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
-    
+
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
     
@@ -206,9 +210,9 @@
 //Background Fetch - Currently just looks for new invites from the activity table and alerts the user to how many are new.
 //Add a last fetch date to the user property?  How does the nsuserdefaults work for multiple users?  Will objects/keys be overwritten if a new user signs in???  Maybe I should add all these properties to the user and saveInBackgroundEventually?
 //Append username to kLastBackgroundFetchDate? - http://stackoverflow.com/questions/19023544/best-approach-to-persist-preferences-of-several-user-nsuserdefaults-xml-file
-//wonder what this does when no user is logged in? what does [EVNUser currentuser] return?
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
     
     //Storing Fetch Timestamp in NSUserDefaults
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -226,8 +230,10 @@
         [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
         [queryForInvites whereKey:@"to" equalTo:[EVNUser currentUser]];
         [queryForInvites whereKey:@"createdAt" greaterThanOrEqualTo:lastFetchTime];
+        [queryForInvites includeKey:@"from"];
         [queryForInvites findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             if (error) {
+                [PFAnalytics trackEvent:@"BackgroundFetchFailed"];
                 completionHandler(UIBackgroundFetchResultFailed);
             } else {
                 NSUInteger numberOfNewInvites = objects.count;
@@ -236,27 +242,24 @@
                     PFObject *newInviteActivity = [objects firstObject];
                     EVNUser *userWhoInvited = newInviteActivity[@"from"];
                     
-                    [userWhoInvited fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                        
-                        //Scheduling Local Notification
-                        UILocalNotification* localNotification = [[UILocalNotification alloc] init];
-                        localNotification.fireDate = [NSDate date];
-                        localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!", userWhoInvited[@"username"]];
-                        localNotification.alertAction = nil;
-                        localNotification.timeZone = [NSTimeZone defaultTimeZone];
-                        localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
-                        
-                        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-                        
-                        //Updating User Defaults - Sending Out Notification to Update Badge
-                        [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
-                        lastFetchTime = [NSDate date];
-                        [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
-                        
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
-                        
-                        completionHandler(UIBackgroundFetchResultNewData);
-                    }];
+                    //Scheduling Local Notification
+                    UILocalNotification* localNotification = [[UILocalNotification alloc] init];
+                    localNotification.fireDate = [NSDate date];
+                    localNotification.alertBody = [NSString stringWithFormat:@"%@ invited you to an event!", userWhoInvited[@"username"]];
+                    localNotification.alertAction = nil;
+                    localNotification.timeZone = [NSTimeZone defaultTimeZone];
+                    localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+                    
+                    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+                    
+                    //Updating User Defaults - Sending Out Notification to Update Badge
+                    [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
+                    lastFetchTime = [NSDate date];
+                    [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
+                    
+                    //[[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
+                    
+                    completionHandler(UIBackgroundFetchResultNewData);
                     
                     
                 } else if (numberOfNewInvites > 1) {
@@ -276,7 +279,7 @@
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
+                    //[[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
                     
                     completionHandler(UIBackgroundFetchResultNewData);
                     
@@ -288,9 +291,9 @@
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
                     
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
+                    //[[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
                     
-                    completionHandler(UIBackgroundFetchResultNewData);
+                    completionHandler(UIBackgroundFetchResultNoData);
                 }
             }
         }];
@@ -334,12 +337,8 @@
     
     //NSLog(@"App Entered Foreground - Start Location Updates");
     //NSLog(@"NUMBER 2 - applicationWillEnterForeground");
-
-
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    //[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
-
-
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 

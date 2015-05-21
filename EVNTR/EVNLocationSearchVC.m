@@ -14,6 +14,8 @@
 #import "EVNMapAnnotation.h"
 
 #define kGOOGLE_API_KEY @"AIzaSyDbbFOj98Z6G6lUskNuUlDr0uYPvrR-cZo"
+const int NUMBER_OF_PLACES_RESULTS = 10;
+
 
 @interface EVNLocationSearchVC ()
 
@@ -25,7 +27,6 @@
 @property (strong, nonatomic) UIButton *setLocationButton;
 
 @property (nonatomic) BOOL isShowingMapView;
-@property (nonatomic) BOOL didClickToSetLocation;
 @property (strong, nonatomic) CLLocation *currentLocation;
 @property (strong, nonatomic) EVNMapAnnotation *locationAnnotation;
 
@@ -37,11 +38,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    //self.edgesForExtendedLayout = UIRectEdgeTop;
-
-    //Initialization
-    self.didClickToSetLocation = NO;
     
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
@@ -113,6 +109,11 @@
 
     
     self.view.backgroundColor = [UIColor purpleColor];
+    
+    
+    UILongPressGestureRecognizer *longPressGR = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(movePinToCustomLocation:)];
+    
+    [self.locationMapView addGestureRecognizer:longPressGR];
     
 }
 
@@ -287,19 +288,14 @@
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     self.currentLocation = appDelegate.locationManagerGlobal.location;
     
-    //self.currentLocation = [[CLLocation alloc] initWithLatitude:33.8459 longitude:-84.3619];
-    
     [self.locationMapView setRegion:MKCoordinateRegionMake(self.currentLocation.coordinate, MKCoordinateSpanMake(0.02, 0.02)) animated:YES];
-    
-    //self.locationMapView.showsUserLocation = YES;
-    
-    
-    self.didClickToSetLocation = YES;
     
     self.locationAnnotation = [[EVNMapAnnotation alloc] initWithTitle:@"Current Location" location:self.currentLocation.coordinate];
     
     [self.locationMapView addAnnotation:self.locationAnnotation];
     [self.locationMapView selectAnnotation:self.locationAnnotation animated:YES];
+    
+    
     
 }
 
@@ -386,14 +382,6 @@
     
     EVNMapAnnotation *annotationCurrent = (EVNMapAnnotation *)annotation;
     
-    //MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:kAnnotationReuseIdentifier];
-    //if (annotationView == nil) {
-        //annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:kAnnotationReuseIdentifier];
-        //annotationView.enabled = YES;
-        //annotationView.canShowCallout = YES;
-        //annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    //}
-    
     return annotationCurrent.annotationView;
 }
 
@@ -410,10 +398,8 @@
         
         NSString *keyword = self.searchController.searchBar.text;
         
-        CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:33.7550 longitude:-84.3879];
-        
         //New Google Search String - Sorted by Prominence
-        NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@,%@&rankby=prominence&keyword=%@&sensor=true&key=%@&radius=50000", [NSNumber numberWithFloat:locationOfEvent.coordinate.latitude], [NSNumber numberWithFloat:locationOfEvent.coordinate.longitude], keyword, kGOOGLE_API_KEY];
+        NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=%@,%@&rankby=prominence&keyword=%@&sensor=true&key=%@&radius=50000", [NSNumber numberWithFloat:self.currentLocation.coordinate.latitude], [NSNumber numberWithFloat:self.currentLocation.coordinate.longitude], keyword, kGOOGLE_API_KEY];
         
         url = [url stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         NSURL *googleRequestURL=[NSURL URLWithString:url];
@@ -459,32 +445,37 @@
 
 }
 
-- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+- (void) movePinToCustomLocation:(UILongPressGestureRecognizer *)gestureRecognizer {
     
-    NSLog(@"Region Changed");
+    CGPoint touchLocation = [gestureRecognizer locationInView:self.locationMapView];
     
+    CLLocationCoordinate2D mapCoordinate = [self.locationMapView convertPoint:touchLocation toCoordinateFromView:self.locationMapView];
     
-    if (!self.didClickToSetLocation) {
-        self.locationAnnotation.title = @"Custom Location";
-        self.locationAnnotation.coordinate = self.locationMapView.centerCoordinate;
-        
-    } else {
-        self.didClickToSetLocation = NO;
-    }
+    self.locationAnnotation.title = @"Custom Location";
+    self.locationAnnotation.coordinate = mapCoordinate;
 
+    
 }
 
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
+    
+    if (newState == MKAnnotationViewDragStateDragging) {
+        
+        EVNMapAnnotation *currentAnnotation = (EVNMapAnnotation *) view.annotation;
+        currentAnnotation.title = @"Custom Location";
+        
+    }
+    
+}
 
 - (void) fetchedData: (NSData *)responseData {
     
-
     NSError *error;
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
     
     NSArray *places = [json objectForKey:@"results"];
     
-    //Limit Results to 10
-    int numberOfResults = (int) MIN([places count], 9);
+    int numberOfResults = (int) MIN([places count], NUMBER_OF_PLACES_RESULTS - 1);
     
     NSMutableArray *fetchedCleanResults = [[NSMutableArray alloc] init];
     [fetchedCleanResults removeAllObjects];
@@ -615,8 +606,6 @@
     [self.searchController.searchBar resignFirstResponder];
     
     [self.locationMapView removeAnnotation:self.locationAnnotation];
-
-    self.didClickToSetLocation = YES;
     
     if (indexPath.row == 0) {
         //current location

@@ -515,6 +515,7 @@
     //Setup Comments Component
     self.commentsController = [[CommentsTableSource alloc] initWithEvent:self.event withTable:self.commentsTable];
     self.commentsController.delegate = self;
+    self.commentsController.allowAddingComments = (self.isCurrentUsersEvent || self.isCurrentUserAttending);
     
 }
 
@@ -620,6 +621,8 @@
 
 - (void)setIsCurrentUserAttending:(BOOL)isCurrentUserAttending {
     
+    NSLog(@"Setting is CurrentUserAttending");
+
     self.commentsController.allowAddingComments = isCurrentUserAttending;
     
     _isCurrentUserAttending = isCurrentUserAttending;

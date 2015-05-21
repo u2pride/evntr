@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) UITextView *commentTextView;
 @property (nonatomic, strong) UILabel *placeholderLabel;
+@property (nonatomic, strong) UILabel *commentLengthCount;
 
 @end
 
@@ -69,8 +70,16 @@
     self.commentTextView.delegate = self;
     self.commentTextView.backgroundColor = [UIColor clearColor];
 
+    self.commentLengthCount = [[UILabel alloc] initWithFrame:CGRectMake(20, self.commentTextView.frame.size.height + self.commentTextView.frame.origin.y, self.view.frame.size.width - 40, 40)];
+    self.commentLengthCount.textColor = [UIColor whiteColor];
+    self.commentLengthCount.textAlignment = NSTextAlignmentCenter;
+    self.commentLengthCount.font = [UIFont fontWithName:EVNFontLight size:18.0];
+    self.commentLengthCount.text = [NSString stringWithFormat:@"%d", MAX_COMMENT_LENGTH];
+    self.commentLengthCount.backgroundColor = [UIColor clearColor];
+    
     [self.view addSubview:self.placeholderLabel];
     [self.view addSubview:self.commentTextView];
+    [self.view addSubview:self.commentLengthCount];
     
 }
 
@@ -113,14 +122,26 @@
     
     if (self.commentTextView.text.length > 0) {
         
-        self.navigationItem.rightBarButtonItem.enabled = NO;
-        
-        [self.commentTextView resignFirstResponder];
-        
-        id<EVNAddCommentProtocol> strongDelegate = self.delegate;
-        if ([strongDelegate respondsToSelector:@selector(submitCommentWithText:)]) {
-            [strongDelegate submitCommentWithText:self.commentTextView.text];
+        if (self.commentTextView.text.length <= MAX_COMMENT_LENGTH) {
+            
+            self.navigationItem.rightBarButtonItem.enabled = NO;
+            
+            [self.commentTextView resignFirstResponder];
+            
+            id<EVNAddCommentProtocol> strongDelegate = self.delegate;
+            if ([strongDelegate respondsToSelector:@selector(submitCommentWithText:)]) {
+                [strongDelegate submitCommentWithText:self.commentTextView.text];
+            }
+            
+        } else {
+            
+            UIAlertView *maxCommentLength = [[UIAlertView alloc] initWithTitle:@"Comment Length" message:@"Your comment is too long.  Yeah, we know, it's a weird thing to limit." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            [maxCommentLength show];
+            
         }
+        
+
         
     }
     
@@ -131,6 +152,10 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
     
+    int charactersLeft = MAX_COMMENT_LENGTH - (int) self.commentTextView.text.length;
+    
+    self.commentLengthCount.text = [NSString stringWithFormat:@"%d", charactersLeft];
+    
     if (textView.text.length == 0 && self.placeholderLabel.hidden == YES) {
         self.placeholderLabel.hidden = NO;
 
@@ -140,6 +165,11 @@
     }
     
 }
+
+
+
+
+
 
 
 /*

@@ -25,9 +25,54 @@
 @property (nonatomic, strong) NSString *navigationBarTitleText;
 @property (nonatomic, strong) UILabel *titleLabel;
 
+@property (nonatomic) CGPoint scrollViewOffset;
+@property (nonatomic) BOOL userScrolledUp;
+@property (nonatomic, strong) NSTimer *timerForAutomaticUpdates;
+
+@property (nonatomic, strong) NSDate *primaryUpdateTimestamp;
+@property (nonatomic, strong) NSDate *secondaryUpdateTimestamp;
+
 @end
 
 @implementation ActivityVC
+
+- (void) updateRefreshTimestampWithDate:(NSDate *)updatedDate {
+    
+    self.secondaryUpdateTimestamp = self.primaryUpdateTimestamp;
+    
+    self.primaryUpdateTimestamp = updatedDate;
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults setObject:self.primaryUpdateTimestamp forKey:kPrimaryUpdateTimestamp];
+    [userDefaults setObject:self.secondaryUpdateTimestamp forKey:kSecondaryUpdateTimestamp];
+    
+    [userDefaults synchronize];
+    
+    NSLog(@"UpdateDates Primary - %@ and Secondary - %@", self.primaryUpdateTimestamp, self.secondaryUpdateTimestamp);
+    
+}
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    CGPoint newScrollOffset = scrollView.contentOffset;
+    
+    NSLog(@"Previous: %f and New: %f", self.scrollViewOffset.y, newScrollOffset.y);
+
+    if (newScrollOffset.y > self.scrollViewOffset.y) {
+        NSLog(@"Down");
+    } else {
+        NSLog(@"Up");
+        self.userScrolledUp = YES;
+        
+        [self updateRefreshTimestampWithDate:[NSDate date]];
+        
+    }
+    
+    self.scrollViewOffset = newScrollOffset;
+    
+}
+
 
 //TODO: move to viewDidLoad? - Doesn't depend on view though.
 //Only properties that will be available are ones in the super class (PFQueryTableViewController).  Only can access my instance variables.
@@ -42,6 +87,7 @@
         self.userForActivities = [EVNUser currentUser];
         self.objectsPerPage = 15;
         _typeOfActivityView = ACTIVITIES_ALL;
+        _userScrolledUp = NO;
         
     }
     
@@ -49,10 +95,22 @@
     
 }
 
+//HEY
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    //TODO:  ONLY FOR ALL ACTIVITIES
+    NSNumber *noNewActivities = 0;
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setObject:noNewActivities forKey:kNumberOfNotifications];
+    [standardDefaults synchronize];
+    //[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    
+}
 
 - (void) setNavigationBarTitleText:(NSString *)navigationBarTitleText {
     
-    UIFont *boldFont = [UIFont fontWithName:@"Lato-Bold" size:kFontSize];
+    //UIFont *boldFont = [UIFont fontWithName:@"Lato-Bold" size:kFontSize];
     UIFont *regularFont = [UIFont fontWithName:@"Lato-Regular" size:kFontSize];
     UIColor *foregroundColor = [UIColor whiteColor];
     
@@ -77,9 +135,72 @@
 }
 
 
+- (NSTimer *) timerForAutomaticUpdates {
+    
+    if (!_timerForAutomaticUpdates) {
+        
+        _timerForAutomaticUpdates = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:60] interval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
+        
+    }
+    
+    return _timerForAutomaticUpdates;
+}
+
+- (void) backgroundActivityUpdate {
+    
+    NSLog(@"Timer Fired -Performing Background Update of Table");
+    self.typeOfActivityView = ACTIVITIES_ALL;
+    self.navigationBarTitleText = @"Notifications";
+    [self loadObjects];
+    
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    NSLog(@"Timer Invalidated");
+    [self.timerForAutomaticUpdates invalidate];
+    [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
+    self.userScrolledUp = NO;
+    
+    [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    NSLog(@"Timer Added to Run Loop");
+    self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
+    
+}
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.scrollViewOffset = self.tableView.contentOffset;
+    
+    NSLog(@"ViewDidLoad - Timer Added to Run Loop");
+    self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
+    
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSLog(@"Got userdefaults");
+    if ([userDefaults objectForKey:kPrimaryUpdateTimestamp]) {
+        NSLog(@"Found objectforkey primary");
+        self.primaryUpdateTimestamp = (NSDate *) [userDefaults objectForKey:kPrimaryUpdateTimestamp];
+    } else {
+        self.primaryUpdateTimestamp = [NSDate date];
+    }
+    
+    if([userDefaults objectForKey:kSecondaryUpdateTimestamp]) {
+        self.secondaryUpdateTimestamp = (NSDate *) [userDefaults objectForKey:kSecondaryUpdateTimestamp];
+    } else {
+        self.secondaryUpdateTimestamp = [NSDate date];
+    }
+    
+    
     
     //Navigation Bar Font & Color
     NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
@@ -207,17 +328,7 @@
 
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    //TODO:  ONLY FOR ALL ACTIVITIES
-    NSNumber *noNewActivities = 0;
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    [standardDefaults setObject:noNewActivities forKey:kNumberOfNotifications];
-    [standardDefaults synchronize];
-    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    
-}
+
 
 
 #pragma mark - New Follow Notiification
@@ -386,6 +497,8 @@
     
     [super objectsDidLoad:error];
     
+    NSLog(@"objectsdidload");
+    
     if (self.objects.count == 0) {
         [self showNoResultsView];
     } else {
@@ -395,6 +508,31 @@
     //TODO - Badge Values - Reset App Badge and Tab Bar Badge
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
+    
+    
+    int newObjectsCount = 0;
+    for (PFObject *notificationObject in self.objects) {
+
+        NSComparisonResult dateCompare = [notificationObject.createdAt compare:self.secondaryUpdateTimestamp];
+        
+        if (dateCompare == NSOrderedDescending) {
+            newObjectsCount++;
+        }
+    }
+    
+    
+    //Table Load Performed in Background
+    if (self.timerForAutomaticUpdates.valid) {
+        if (newObjectsCount == 0) {
+            [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
+
+        } else {
+            //NSString *currentBadgeValue = [[self.tabBarController.tabBar.items objectAtIndex:2] badgeValue];
+            //int baseBadgeValue = [currentBadgeValue intValue];
+            //int newBadgeValue = baseBadgeValue + newObjectsCount;
+            [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:[NSString stringWithFormat:@"%d", newObjectsCount]];
+        }
+    }
     
 }
 
@@ -422,7 +560,10 @@
 
 
 - (PFTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
-        
+    
+    
+    NSLog(@"cellforrowatindexpath ----------");
+
     static NSString *cellIdentifier = @"activityCell";
 
     ActivityTableCell *activityCell = (ActivityTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
@@ -446,6 +587,12 @@
     activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
+    
+    NSComparisonResult dateCompare = [createdAtDate compare:self.secondaryUpdateTimestamp];
+    
+    if (dateCompare == NSOrderedDescending && !self.userScrolledUp) {
+        [activityCell highlightCellForNewNotification];
+    }
     
     activityCell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
     
@@ -627,6 +774,7 @@
             NSString *activityDescriptionString;
             NSDate *currentDate = [NSDate date];
             NSComparisonResult dateComparison = [currentDate compare:eventToAttend.dateOfEvent];
+            
             
             //Build the description string based off Time of Event and Current User
             if ([self.userForActivities.objectId isEqualToString:[EVNUser currentUser].objectId] ) {
@@ -916,6 +1064,10 @@
 
 }
 
+- (void) dealloc {
+    
+    [self.timerForAutomaticUpdates invalidate];
+}
 
 @end
 

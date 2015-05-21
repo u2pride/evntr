@@ -35,7 +35,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     self.transitionController = [[IDTransitionControllerTab alloc] init];
     self.delegate = self;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
@@ -61,6 +61,9 @@
         [[self.tabBar.items objectAtIndex:2] setEnabled:NO];
         
     } else {
+        
+        //Enable Background Fetching - User Is Logged In
+        [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
         
         NSLog(@"Setting the VCs for the Navigation Tab Bar");
         

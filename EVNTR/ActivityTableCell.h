@@ -17,4 +17,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *timestampActivity;
 @property (weak, nonatomic) IBOutlet UIButtonPFExtended *actionButton;
 
+- (void) highlightCellForNewNotification;
+
 @end

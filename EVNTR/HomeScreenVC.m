@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "BBBadgeBarButtonItem.h"
 #import "EVNConstants.h"
 #import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
@@ -36,7 +35,6 @@
 @property (nonatomic) float searchRadius;
 
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
-@property (nonatomic, strong) BBBadgeBarButtonItem *filterBarButton;
 
 @property (nonatomic, strong) NSIndexPath *indexPathOfEventInDetailView;
 
@@ -269,14 +267,14 @@
             
             NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
             [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
-            [eventsQuery orderByDescending:@"createdAt"];
+            [eventsQuery orderByDescending:@"updatedAt"];
             
             break;
         }
         case CURRENT_USER_EVENTS: {
             
             [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
-            [eventsQuery orderByAscending:@"Title"];
+            [eventsQuery orderByDescending:@"updatedAt"];
             
             break;
         }
@@ -285,7 +283,7 @@
             [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
             NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
             [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
-            [eventsQuery orderByAscending:@"Title"];
+            [eventsQuery orderByDescending:@"updatedAt"];
             
             break;
         }
@@ -296,7 +294,6 @@
     
     eventsQuery.limit = 50;
     
-    NSLog(@"Events Query: %@", eventsQuery);
     
     return eventsQuery;
 }

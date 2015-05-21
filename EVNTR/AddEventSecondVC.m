@@ -7,7 +7,7 @@
 //
 
 #import "AddEventSecondVC.h"
-#import "LocationSearchVC.h"
+#import "EVNLocationSearchVC.h"
 #import "EVNButton.h"
 #import "EVNUser.h"
 #import "UIColor+EVNColors.h"
@@ -509,9 +509,9 @@
     
     UINavigationController *navController = (UINavigationController *) [segue destinationViewController];
     
-    LocationSearchVC *locationSearchVC = [navController.viewControllers objectAtIndex:0];
+    EVNLocationSearchVC *locationSearch = [navController.viewControllers objectAtIndex:0];
     
-    locationSearchVC.delegate = self;
+    locationSearch.delegate = self;
     
     //id: PresentLocationSearch
     

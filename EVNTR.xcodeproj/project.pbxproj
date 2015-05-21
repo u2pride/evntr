@@ -40,6 +40,8 @@
 		A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632F1A7688E900565BB6 /* Security.framework */; };
 		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
+		A4547E601B0E0788008A6C5B /* EVNSearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A4547E5F1B0E0788008A6C5B /* EVNSearchBar.m */; };
+		A4547E621B0E3D81008A6C5B /* evntrVideo.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4547E611B0E3D81008A6C5B /* evntrVideo.mov */; };
 		A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C61AB9B8AB009D3BCC /* MapForEventView.m */; };
 		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
 		A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */; };
@@ -61,8 +63,6 @@
 		A4AE41AD1AB796CB006270E2 /* EVNLocationButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
 		A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B2BC5E1AB870370004B084 /* EVNButton.m */; };
-		A4B2BC621AB8C7D40004B084 /* NewEventModel.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B2BC611AB8C7D40004B084 /* NewEventModel.m */; };
-		A4B2E2421AC990E200279C99 /* evntrappbr.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4B2E2411AC990E200279C99 /* evntrappbr.mov */; };
 		A4B68BC41AEE7F4D003EB822 /* WalkthroughScreensPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */; };
 		A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B6FB1A1AB349950033A3A1 /* FilterEventsVC.m */; };
 		A4B6FB1E1AB365C80033A3A1 /* SearchHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */; };
@@ -78,7 +78,6 @@
 		A4C4EDD21A95118C000BC3AD /* Lato-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A4C4EDCE1A95118C000BC3AD /* Lato-Thin.ttf */; };
 		A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */; };
 		A4C4EDD91A9538FB000BC3AD /* TabNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */; };
-		A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */; };
 		A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */; };
 		A4CC92761AFBAA84005EA199 /* EVNLocationSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CC92751AFBAA83005EA199 /* EVNLocationSearchVC.m */; };
 		A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = A4CEF7561AB1DB11002F02C8 /* FBShimmeringLayer.m */; };
@@ -89,7 +88,6 @@
 		A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E436BC1A9EAC3B002EAAB0 /* NewUserFacebookVC.m */; };
 		A4E4B6B11ADEB60F00D38358 /* CommentsTableSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */; };
 		A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */; };
-		A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */; };
 		A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */; };
 		A4E5D4C51AA909BD00E86410 /* UserLocationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */; };
 		A4E5D4C61AA909BD00E86410 /* UserLocationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */; };
@@ -100,7 +98,6 @@
 		A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */; };
 		A4F6C4BE1AA620C1001C68BA /* EventPictureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */; };
 		A4F6C4C11AA6317C001C68BA /* PictureFullScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */; };
-		A4FE5DE71B0BAD500001D643 /* evntrFade.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4FE5DE61B0BAD500001D643 /* evntrFade.mov */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +165,9 @@
 		A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
 		A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddEventPrimaryVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A4547E5E1B0E0788008A6C5B /* EVNSearchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNSearchBar.h; sourceTree = "<group>"; };
+		A4547E5F1B0E0788008A6C5B /* EVNSearchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNSearchBar.m; sourceTree = "<group>"; };
+		A4547E611B0E3D81008A6C5B /* evntrVideo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrVideo.mov; sourceTree = "<group>"; };
 		A45638C51AB9B8AB009D3BCC /* MapForEventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapForEventView.h; sourceTree = "<group>"; };
 		A45638C61AB9B8AB009D3BCC /* MapForEventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapForEventView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A45638C81ABA2122009D3BCC /* EventPicturesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventPicturesVC.h; path = ../EventPicturesVC.h; sourceTree = "<group>"; };
@@ -204,9 +204,6 @@
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4B2BC5D1AB870370004B084 /* EVNButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNButton.h; sourceTree = "<group>"; };
 		A4B2BC5E1AB870370004B084 /* EVNButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNButton.m; sourceTree = "<group>"; };
-		A4B2BC601AB8C7D40004B084 /* NewEventModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewEventModel.h; sourceTree = "<group>"; };
-		A4B2BC611AB8C7D40004B084 /* NewEventModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewEventModel.m; sourceTree = "<group>"; };
-		A4B2E2411AC990E200279C99 /* evntrappbr.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrappbr.mov; sourceTree = "<group>"; };
 		A4B68BC21AEE7F4D003EB822 /* WalkthroughScreensPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WalkthroughScreensPVC.h; sourceTree = "<group>"; };
 		A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WalkthroughScreensPVC.m; sourceTree = "<group>"; };
 		A4B6FB191AB349940033A3A1 /* FilterEventsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterEventsVC.h; sourceTree = "<group>"; };
@@ -233,8 +230,6 @@
 		A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = InitialScreenVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabNavigationVC.h; sourceTree = "<group>"; };
 		A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = TabNavigationVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A4C9352A1AC096E900BF174C /* BBBadgeBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBadgeBarButtonItem.h; sourceTree = "<group>"; };
-		A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBadgeBarButtonItem.m; sourceTree = "<group>"; };
 		A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileVC.h; sourceTree = "<group>"; };
 		A4CB0A411A92BB9F00E88E4C /* EditProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EditProfileVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4CC92741AFBAA83005EA199 /* EVNLocationSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNLocationSearchVC.h; sourceTree = "<group>"; };
@@ -256,8 +251,6 @@
 		A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentsTableSource.m; sourceTree = "<group>"; };
 		A4E4B6B21ADEE01B00D38358 /* EVNAddCommentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNAddCommentVC.h; sourceTree = "<group>"; };
 		A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNAddCommentVC.m; sourceTree = "<group>"; };
-		A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationSearchVC.h; sourceTree = "<group>"; };
-		A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = LocationSearchVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleResult.h; sourceTree = "<group>"; };
 		A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleResult.m; sourceTree = "<group>"; };
 		A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLocationTableCell.h; sourceTree = "<group>"; };
@@ -276,7 +269,6 @@
 		A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventPictureCell.m; sourceTree = "<group>"; };
 		A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureFullScreenVC.h; path = ../PictureFullScreenVC.h; sourceTree = "<group>"; };
 		A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PictureFullScreenVC.m; path = ../PictureFullScreenVC.m; sourceTree = "<group>"; };
-		A4FE5DE61B0BAD500001D643 /* evntrFade.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrFade.mov; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,14 +335,10 @@
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
-				A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */,
-				A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
-				A49A9E2A1AAE456C00358D65 /* Main Tabs */,
-				A4F2E9A61A7A806A00614412 /* Navigation - Utilities */,
+				A49A9E2A1AAE456C00358D65 /* Main Content */,
+				A4F2E9A61A7A806A00614412 /* Navigation - Utility */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
-				A4FE5DE61B0BAD500001D643 /* evntrFade.mov */,
-				A4B2E2411AC990E200279C99 /* evntrappbr.mov */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
 			);
@@ -414,10 +402,10 @@
 		A423F7EF1A9BC4D800DF9ABE /* UI Elements */ = {
 			isa = PBXGroup;
 			children = (
-				A47DC0781AF7D19C00D245A8 /* EVNNotifcationsTitleView.h */,
-				A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */,
 				A47430681A8155AD00CF3B8F /* ActivityTableCell.h */,
 				A47430691A8155AD00CF3B8F /* ActivityTableCell.m */,
+				A47DC0781AF7D19C00D245A8 /* EVNNotifcationsTitleView.h */,
+				A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */,
 				A41352531A81B80200034222 /* ImageViewPFExtended.h */,
 				A41352541A81B80200034222 /* ImageViewPFExtended.m */,
 				A423F7EC1A9BC46600DF9ABE /* UIButtonPFExtended.h */,
@@ -426,15 +414,17 @@
 			name = "UI Elements";
 			sourceTree = "<group>";
 		};
-		A425A1D11AE585DE00AF26E6 /* Buttons */ = {
+		A425A1D11AE585DE00AF26E6 /* Global UI Elements */ = {
 			isa = PBXGroup;
 			children = (
+				A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */,
+				A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */,
 				A4B2BC5D1AB870370004B084 /* EVNButton.h */,
 				A4B2BC5E1AB870370004B084 /* EVNButton.m */,
 				A4AE41AB1AB796CB006270E2 /* EVNLocationButton.h */,
 				A4AE41AC1AB796CB006270E2 /* EVNLocationButton.m */,
 			);
-			name = Buttons;
+			name = "Global UI Elements";
 			sourceTree = "<group>";
 		};
 		A425A1D21AE585FE00AF26E6 /* Register */ = {
@@ -457,7 +447,7 @@
 			name = "UI Elements";
 			sourceTree = "<group>";
 		};
-		A425A1D41AE5868B00AF26E6 /* View Controllers */ = {
+		A425A1D41AE5868B00AF26E6 /* Add Event Flow */ = {
 			isa = PBXGroup;
 			children = (
 				A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */,
@@ -465,7 +455,7 @@
 				A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */,
 				A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */,
 			);
-			name = "View Controllers";
+			name = "Add Event Flow";
 			sourceTree = "<group>";
 		};
 		A425A1D61AE586D000AF26E6 /* Comments */ = {
@@ -506,22 +496,42 @@
 			name = Maps;
 			sourceTree = "<group>";
 		};
-		A425A1D91AE5870400AF26E6 /* UI Elements */ = {
+		A4547E631B0E409F008A6C5B /* Category Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
-				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
+				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
+				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
+				A4A1850A1AE91DC00009AC43 /* UIImage+EVNEffects.h */,
+				A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */,
+			);
+			name = "Category Extensions";
+			sourceTree = "<group>";
+		};
+		A4547E641B0E43CD008A6C5B /* Search Feature */ = {
+			isa = PBXGroup;
+			children = (
+				A423F7F01A9BFF0900DF9ABE /* SearchVC.h */,
+				A423F7F11A9BFF0900DF9ABE /* SearchVC.m */,
+				A4547E5E1B0E0788008A6C5B /* EVNSearchBar.h */,
+				A4547E5F1B0E0788008A6C5B /* EVNSearchBar.m */,
 				A4B6FB1C1AB365C80033A3A1 /* SearchHeaderView.h */,
 				A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */,
 			);
-			name = "UI Elements";
+			name = "Search Feature";
+			sourceTree = "<group>";
+		};
+		A4547E651B0E43D7008A6C5B /* Filter Feature */ = {
+			isa = PBXGroup;
+			children = (
+				A4B6FB191AB349940033A3A1 /* FilterEventsVC.h */,
+				A4B6FB1A1AB349950033A3A1 /* FilterEventsVC.m */,
+			);
+			name = "Filter Feature";
 			sourceTree = "<group>";
 		};
 		A474306B1A8155C700CF3B8F /* Events */ = {
 			isa = PBXGroup;
 			children = (
-				A4C2C1351ACEB4FB004C7F35 /* EventObject.h */,
-				A4C2C1361ACEB4FB004C7F35 /* EventObject.m */,
 				A49A9E301AAE48CF00358D65 /* All Events */,
 				A49A9E2F1AAE48A300358D65 /* Event Details */,
 				A49A9E2D1AAE484400358D65 /* Add Event */,
@@ -532,8 +542,6 @@
 		A474306C1A8155CC00CF3B8F /* People */ = {
 			isa = PBXGroup;
 			children = (
-				A430EE081AF264B30090ECB6 /* EVNUser.h */,
-				A430EE091AF264B30090ECB6 /* EVNUser.m */,
 				A415634A1A76EF3A00565BB6 /* ProfileVC.h */,
 				A415634B1A76EF3A00565BB6 /* ProfileVC.m */,
 				A4CB0A401A92BB9F00E88E4C /* EditProfileVC.h */,
@@ -555,39 +563,43 @@
 			name = Activities;
 			sourceTree = "<group>";
 		};
-		A497BD9E1AD54A2600619BF4 /* Walkthrough */ = {
+		A497BD9E1AD54A2600619BF4 /* Walkthrough - Guest */ = {
 			isa = PBXGroup;
 			children = (
+				A41812991AA0BFA200317B0C /* GuestWelcomeVC.h */,
+				A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */,
 				A4B68BC21AEE7F4D003EB822 /* WalkthroughScreensPVC.h */,
 				A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */,
 			);
-			name = Walkthrough;
+			name = "Walkthrough - Guest";
 			sourceTree = "<group>";
 		};
-		A49A9E2A1AAE456C00358D65 /* Main Tabs */ = {
+		A49A9E2A1AAE456C00358D65 /* Main Content */ = {
 			isa = PBXGroup;
 			children = (
+				A4C2C1351ACEB4FB004C7F35 /* EventObject.h */,
+				A4C2C1361ACEB4FB004C7F35 /* EventObject.m */,
+				A430EE081AF264B30090ECB6 /* EVNUser.h */,
+				A430EE091AF264B30090ECB6 /* EVNUser.m */,
 				A474306B1A8155C700CF3B8F /* Events */,
 				A474306E1A81563400CF3B8F /* Activities */,
 				A474306C1A8155CC00CF3B8F /* People */,
 			);
-			name = "Main Tabs";
+			name = "Main Content";
 			sourceTree = "<group>";
 		};
-		A49A9E2B1AAE479300358D65 /* Third Party Utilties */ = {
+		A49A9E2B1AAE479300358D65 /* Third Party Code */ = {
 			isa = PBXGroup;
 			children = (
-				A46DB25A1AAE7B0500208973 /* MBProgressHUD.h */,
-				A46DB25B1AAE7B0500208973 /* MBProgressHUD.m */,
-				A4C9352A1AC096E900BF174C /* BBBadgeBarButtonItem.h */,
-				A4C9352B1AC096E900BF174C /* BBBadgeBarButtonItem.m */,
 				A4CEF7521AB1DB11002F02C8 /* FBShimmering */,
-				A463633A1A9D00F100AD461D /* UIImageEffects.h */,
-				A463633B1A9D00F100AD461D /* UIImageEffects.m */,
 				A423F7E91A9B8DC100DF9ABE /* NSDate+NVTimeAgo.h */,
 				A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */,
+				A46DB25A1AAE7B0500208973 /* MBProgressHUD.h */,
+				A46DB25B1AAE7B0500208973 /* MBProgressHUD.m */,
+				A463633A1A9D00F100AD461D /* UIImageEffects.h */,
+				A463633B1A9D00F100AD461D /* UIImageEffects.m */,
 			);
-			name = "Third Party Utilties";
+			name = "Third Party Code";
 			sourceTree = "<group>";
 		};
 		A49A9E2C1AAE47D400358D65 /* Login */ = {
@@ -604,30 +616,26 @@
 		A49A9E2D1AAE484400358D65 /* Add Event */ = {
 			isa = PBXGroup;
 			children = (
-				A4B2BC601AB8C7D40004B084 /* NewEventModel.h */,
-				A4B2BC611AB8C7D40004B084 /* NewEventModel.m */,
-				A4CC92741AFBAA83005EA199 /* EVNLocationSearchVC.h */,
-				A4CC92751AFBAA83005EA199 /* EVNLocationSearchVC.m */,
-				A40443611B04D06200F36C6A /* EVNMapAnnotation.h */,
-				A40443621B04D06200F36C6A /* EVNMapAnnotation.m */,
-				A425A1D41AE5868B00AF26E6 /* View Controllers */,
-				A49A9E2E1AAE487D00358D65 /* Location */,
+				A425A1D41AE5868B00AF26E6 /* Add Event Flow */,
+				A49A9E2E1AAE487D00358D65 /* Set Location */,
 			);
 			name = "Add Event";
 			sourceTree = "<group>";
 		};
-		A49A9E2E1AAE487D00358D65 /* Location */ = {
+		A49A9E2E1AAE487D00358D65 /* Set Location */ = {
 			isa = PBXGroup;
 			children = (
-				A4E5D4B71AA7E27500E86410 /* LocationSearchVC.h */,
-				A4E5D4B81AA7E27600E86410 /* LocationSearchVC.m */,
+				A4CC92741AFBAA83005EA199 /* EVNLocationSearchVC.h */,
+				A4CC92751AFBAA83005EA199 /* EVNLocationSearchVC.m */,
+				A40443611B04D06200F36C6A /* EVNMapAnnotation.h */,
+				A40443621B04D06200F36C6A /* EVNMapAnnotation.m */,
 				A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */,
 				A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */,
 				A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */,
 				A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */,
 				A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */,
 			);
-			name = Location;
+			name = "Set Location";
 			sourceTree = "<group>";
 		};
 		A49A9E2F1AAE48A300358D65 /* Event Details */ = {
@@ -649,11 +657,10 @@
 			children = (
 				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
 				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
-				A423F7F01A9BFF0900DF9ABE /* SearchVC.h */,
-				A423F7F11A9BFF0900DF9ABE /* SearchVC.m */,
-				A425A1D91AE5870400AF26E6 /* UI Elements */,
-				A4B6FB191AB349940033A3A1 /* FilterEventsVC.h */,
-				A4B6FB1A1AB349950033A3A1 /* FilterEventsVC.m */,
+				A4547E641B0E43CD008A6C5B /* Search Feature */,
+				A4547E651B0E43D7008A6C5B /* Filter Feature */,
+				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
+				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
 			);
 			name = "All Events";
 			sourceTree = "<group>";
@@ -674,6 +681,7 @@
 		A4C4EDD31A95119C000BC3AD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A4547E611B0E3D81008A6C5B /* evntrVideo.mov */,
 				A4C4EDCB1A95118C000BC3AD /* Lato-Bold.ttf */,
 				A4C4EDCC1A95118C000BC3AD /* Lato-Light.ttf */,
 				A4C4EDCD1A95118C000BC3AD /* Lato-Regular.ttf */,
@@ -695,42 +703,37 @@
 			path = FBShimmering;
 			sourceTree = "<group>";
 		};
-		A4F2E9A61A7A806A00614412 /* Navigation - Utilities */ = {
+		A4F2E9A61A7A806A00614412 /* Navigation - Utility */ = {
 			isa = PBXGroup;
 			children = (
-				A4F2E9B31A7AF5CF00614412 /* EVNUtility.h */,
-				A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */,
-				A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */,
-				A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */,
 				A4F2E9B61A7AF65800614412 /* EVNConstants.h */,
 				A4F2E9B71A7AF65800614412 /* EVNConstants.m */,
-				A425A1D11AE585DE00AF26E6 /* Buttons */,
+				A4F2E9B31A7AF5CF00614412 /* EVNUtility.h */,
+				A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */,
+				A425A1D11AE585DE00AF26E6 /* Global UI Elements */,
 				A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */,
-				A4BB74F01A965095005E9CCA /* UIColor+EVNColors.h */,
-				A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */,
-				A4A1850A1AE91DC00009AC43 /* UIImage+EVNEffects.h */,
-				A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */,
+				A4547E631B0E409F008A6C5B /* Category Extensions */,
 				A4C4EDD71A9538FB000BC3AD /* TabNavigationVC.h */,
 				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
 				A41B2A111ABCBE3F00F7CE44 /* SignUpTabVC.h */,
 				A41B2A121ABCBE3F00F7CE44 /* SignUpTabVC.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
 				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
-				A49A9E2B1AAE479300358D65 /* Third Party Utilties */,
+				A49A9E2B1AAE479300358D65 /* Third Party Code */,
 			);
-			name = "Navigation - Utilities";
+			name = "Navigation - Utility";
 			sourceTree = "<group>";
 		};
 		A4F2E9A71A7A811C00614412 /* Login Flow */ = {
 			isa = PBXGroup;
 			children = (
+				A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */,
+				A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */,
 				A4C4EDD41A95186A000BC3AD /* InitialScreenVC.h */,
 				A4C4EDD51A95186A000BC3AD /* InitialScreenVC.m */,
 				A49A9E2C1AAE47D400358D65 /* Login */,
 				A425A1D21AE585FE00AF26E6 /* Register */,
-				A497BD9E1AD54A2600619BF4 /* Walkthrough */,
-				A41812991AA0BFA200317B0C /* GuestWelcomeVC.h */,
-				A418129A1AA0BFA200317B0C /* GuestWelcomeVC.m */,
+				A497BD9E1AD54A2600619BF4 /* Walkthrough - Guest */,
 			);
 			name = "Login Flow";
 			sourceTree = "<group>";
@@ -825,12 +828,11 @@
 				A4C4EDD21A95118C000BC3AD /* Lato-Thin.ttf in Resources */,
 				A4C4EDCF1A95118C000BC3AD /* Lato-Bold.ttf in Resources */,
 				A4E5D4C61AA909BD00E86410 /* UserLocationTableCell.xib in Resources */,
-				A4B2E2421AC990E200279C99 /* evntrappbr.mov in Resources */,
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
-				A4FE5DE71B0BAD500001D643 /* evntrFade.mov in Resources */,
+				A4547E621B0E3D81008A6C5B /* evntrVideo.mov in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -869,7 +871,6 @@
 				A43C57941AF15B48008E8EA2 /* SplashScreenVC.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
-				A4B2BC621AB8C7D40004B084 /* NewEventModel.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
 				A418129B1AA0BFA200317B0C /* GuestWelcomeVC.m in Sources */,
 				A4C4EDC51A94E85D000BC3AD /* IDTransitionController.m in Sources */,
@@ -907,7 +908,6 @@
 				A4CC92761AFBAA84005EA199 /* EVNLocationSearchVC.m in Sources */,
 				A40443631B04D06200F36C6A /* EVNMapAnnotation.m in Sources */,
 				A41B2A131ABCBE3F00F7CE44 /* SignUpTabVC.m in Sources */,
-				A4E5D4B91AA7E27600E86410 /* LocationSearchVC.m in Sources */,
 				A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A4D72FB51AAA175E00488D8D /* IDTransitionControllerTab.m in Sources */,
@@ -926,7 +926,7 @@
 				A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */,
 				A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
-				A4C9352C1AC096E900BF174C /* BBBadgeBarButtonItem.m in Sources */,
+				A4547E601B0E0788008A6C5B /* EVNSearchBar.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -27,7 +27,7 @@
 
 @end
 
-//TODO: Support iOS7 for searching.
+
 @implementation SearchVC
 
 - (void)viewDidLoad {
@@ -36,6 +36,9 @@
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
+    
+    self.navigationController.definesPresentationContext = YES;
+    self.definesPresentationContext = YES;
     
     self.title = @"Search";
     self.searchResultsArray = [[NSMutableArray alloc] init];
@@ -49,8 +52,12 @@
     self.searchController.searchResultsUpdater = self;
     self.searchController.hidesNavigationBarDuringPresentation = NO;
     self.searchController.dimsBackgroundDuringPresentation = NO;
-    [self.searchController.searchBar sizeToFit];
     
+    [self.searchController.searchBar sizeToFit];
+    self.searchController.searchBar.placeholder = @"";
+    self.searchController.searchBar.text = @"";
+    self.searchController.searchBar.delegate = self;
+
     //Tint Color for Cancel on Search Bar
     [self.searchController.searchBar setTintColor:[UIColor whiteColor]];
     [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTintColor:[UIColor orangeThemeColor]];
@@ -73,6 +80,8 @@
 
     
 }
+
+
 
 
 - (void) toggleSearchType:(id)sender {
@@ -108,14 +117,18 @@
 #pragma mark - UISearchResultsUpdating Delegate Method
 
 - (void) updateSearchResultsForSearchController:(UISearchController *)searchController {
-
+    
     if (self.searchController.searchBar.text.length > 0) {
         
         if (self.isSearchingEvents) {
             
+            NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
+            
             PFQuery *searchQuery = [PFQuery queryWithClassName:@"Events"];
             [searchQuery whereKey:@"title" containsString:self.searchController.searchBar.text];
             [searchQuery whereKey:@"typeOfEvent" notEqualTo:[NSNumber numberWithInt:PRIVATE_EVENT_TYPE]];
+            [searchQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
+            [searchQuery orderByDescending:@"updatedAt"];
             [searchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
                 [self.searchResultsTable reloadData];
@@ -212,17 +225,30 @@
         [self.navigationController pushViewController:profileVC animated:YES];
         
     }
-    
 
+}
+
+- (void) searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     
+    [self.navigationItem setHidesBackButton:YES animated:YES];
+    [self.searchController.searchBar sizeToFit];
+    
+}
+
+- (void) searchBarTextDidEndEditing:(UISearchBar *)searchBar {
+    
+    //self.searchController.active = NO;
+    [self.navigationItem setHidesBackButton:NO animated:YES];
+    [self.searchController.searchBar sizeToFit];
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
     
     [super viewWillDisappear:animated];
     
-    [self.searchController.searchBar resignFirstResponder];
-    
+    //self.searchController.active = NO;
+
+    //[self.searchController.searchBar resignFirstResponder];
     
 }
 

@@ -115,6 +115,8 @@ extern NSString *const kRevokeAccess;
 extern NSString *const kNumberOfNotifications;
 extern NSString *const kLastBackgroundFetchTimeStamp;
 
+extern NSString *const kPrimaryUpdateTimestamp;
+extern NSString *const kSecondaryUpdateTimestamp;
 
 
 
@@ -133,7 +135,7 @@ extern NSString *const kLastBackgroundFetchTimeStamp;
 #define MAX_EVENTTITLE_LENGTH 40
 #define MAX_EVENTDESCR_LENGTH 120
 #define MAX_LOCATION_NAME_LENGTH 30
-
+#define MAX_COMMENT_LENGTH 120
 
 
 

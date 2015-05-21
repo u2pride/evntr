@@ -42,6 +42,9 @@
     
     [EVNUser logOut];
     
+    //Disable Background Fetch - User Logged Out
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalNever];
+    
     [self performSegueWithIdentifier:@"SettingsToInitialScreen" sender:self];
     
     

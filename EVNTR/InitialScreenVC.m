@@ -108,14 +108,14 @@
 
 - (IBAction)showBetaInformation:(id)sender {
     
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Welcome to the Beta" message:@"Just a couple of quick things... First, each new major update includes a database wipe - which explains why you sometimes log in and all your data is gone.  If you are having issues logging in, delete the app and reinstall from TestFlight.  Finally, if you have feedback - send us an email.  We would love to hear from you!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Welcome to the Beta" message:@"Just a couple of quick things... First, each new major update includes a database wipe - which explains why you sometimes log in and all your data is gone.  If you are having issues logging in, delete the app and reinstall from TestFlight.  Finally, if you have feedback - send us an email or tweet at us from Settings.  We would love to hear from you!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
     
     [errorAlert show];
 }
 
 - (IBAction)showBuildInformation:(id)sender {
     
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 0.60 - Build 13" message:@"Thanks for downloading the latest build. The majority of the changes in this build are behind the scenes.  However, you'll notice some visual updates to the create event process and a brand new walkthrough for first time users. As usual, if you run into issues, shoot us an email from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 0.60 - Build 18" message:@"Thanks for downloading the latest build. We've updated this first screen (like the new video?) and now you can submit comments that are multiple lines.  The notifications table is also updated to dynamically size based on its content. As usual, if you run into issues, shoot us an email or send a tweet from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
     
     [errorAlert show];
 }
@@ -125,7 +125,7 @@
     NSLog(@"Accessed movie player controller variable");
     
     if (!_moviePlayer) {
-        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrFade" withExtension:@"mov"];
+        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrVideo" withExtension:@"mov"];
         _moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
         _moviePlayer.controlStyle = MPMovieControlStyleNone;
         _moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
@@ -263,7 +263,7 @@
     
     NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
     
-    if ([versionBuildNumber isEqualToString:@"V0.60Build16"]) {
+    if ([versionBuildNumber isEqualToString:@"V0.60Build18"]) {
         
         if ([EVNUser currentUser]) {
             
@@ -273,8 +273,8 @@
         }
         
     } else {
-        
-        [standardDefaults setObject:@"V0.60Build16" forKey:kFirstLoginNewBuild];
+    
+        [standardDefaults setObject:@"V0.60Build18" forKey:kFirstLoginNewBuild];
         [standardDefaults synchronize];
         
     }

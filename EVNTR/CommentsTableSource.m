@@ -134,9 +134,7 @@ NSString *const cellIdentifier = @"commentsCell";
 
 #pragma mark - Comments Table View DataSource Methods
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"cellForRowAtIndexPath: %ld", (long)indexPath.row);
-    
+        
     EVNCommentsTableCell *commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if (!commentCell) {
@@ -144,8 +142,6 @@ NSString *const cellIdentifier = @"commentsCell";
         
         commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     }
-    
-    //[commentCell.commentTextLabel sizeToFit];
     
     PFObject *comment = [self.commentsData objectAtIndex:indexPath.row];
     EVNUser *commentParent = (EVNUser *) [comment objectForKey:@"commentParent"];
@@ -166,17 +162,12 @@ NSString *const cellIdentifier = @"commentsCell";
     [commentAttributedString appendAttributedString:commentAttributedStringTwo];
     
 
-    NSLog(@"Comment: %@ CommentParent: %@ Username Component: %@ CommentString: %@", comment, commentParent, usernameComponent, commentString);
-
     commentCell.commentTextLabel.attributedText = commentAttributedString;
     commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
     commentCell.commentDateLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
     
     commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
     commentCell.backgroundColor = [UIColor clearColor];
-    //commentCell.textLabel.textColor = [UIColor whiteColor];
-    
-    commentCell.backgroundColor = [[UIColor alloc] initWithRed:arc4random()%256/256.0 green:arc4random()%256/256.0 blue:arc4random()%256/256.0 alpha:1.0];
 
     
     return commentCell;

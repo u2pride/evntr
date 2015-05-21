@@ -16,6 +16,10 @@ NSString *const kFirstLoginNewBuild = @"FIRST_LOGIN_NEW_BUILD";
 NSString *const kNumberOfNotifications = @"NUM_NOTIFICATIONS";
 NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
 
+NSString *const kPrimaryUpdateTimestamp = @"PRIMARY_NOTIFICATIONS_UPDATE_TIMESTAMP";
+NSString *const kSecondaryUpdateTimestamp = @"SECONDARY_NOTIFICATIONS_UPDATE_TIMESTAMP";
+
+
 
 NSString *const kAttendingEvent = @"Attending";
 NSString *const kNotAttendingEvent = @"Join";

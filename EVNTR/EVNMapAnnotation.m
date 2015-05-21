@@ -33,6 +33,7 @@
     annotationView.pinColor = MKPinAnnotationColorPurple;
     annotationView.enabled = YES;
     annotationView.canShowCallout = YES;
+    annotationView.draggable = YES;
     //annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeContactAdd];
 
     
