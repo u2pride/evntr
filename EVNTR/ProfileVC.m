@@ -14,11 +14,10 @@
 #import "EditProfileVC.h"
 #import "HomeScreenVC.h"
 #import "LogInVC.h"
+#import "NSDate+NVTimeAgo.h"
 #import "PeopleVC.h"
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
-
-#import "NSDate+NVTimeAgo.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -27,19 +26,20 @@
 
 @property (nonatomic, strong) EVNUser *profileUser;
 @property (nonatomic) int profileType;
-@property (nonatomic, strong) NSData *userPictureData;
 
 //Structure Related Views
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UINavigationItem *navigationItemWithSettingsBarItem;
 @property (strong, nonatomic) IBOutlet UIView *colorBackgroundView;
 
 //User Information
 @property (strong, nonatomic) IBOutlet UILabel *bioLabel;
 @property (strong, nonatomic) IBOutlet PFImageView *profileImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
+@property (strong, nonatomic) IBOutlet UIButton *eventsHeaderButton;
 @property (strong, nonatomic) IBOutlet UILabel *numberEventsLabel;
+@property (strong, nonatomic) IBOutlet UIButton *followersHeaderButton;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowersLabel;
+@property (strong, nonatomic) IBOutlet UIButton *followingHeaderButton;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *instagramIcon;
 @property (weak, nonatomic) IBOutlet UIImageView *twitterIcon;
@@ -51,16 +51,7 @@
 @property (strong, nonatomic) IBOutlet EVNButton *editProfileButton;
 
 
-
-//Timer For Edit Profile Modal
-@property (nonatomic) BOOL isDismissedAlreadyCancel;
-@property (nonatomic) BOOL isDismissedAlreadyUpdate;
-
 - (IBAction)followUser:(id)sender;
-- (IBAction)viewMyEvents:(id)sender;
-- (IBAction)viewFollowers:(id)sender;
-- (IBAction)viewFollowing:(id)sender;
-
 
 @end
 
@@ -71,22 +62,20 @@
 //ideally we pass in the user for this view, however some views will not have access to the full user... just the name.  For example, an attributed text label.
 //instagram doesn't update the view if already in stack,
 
+#pragma mark - View Controller Lifecycle
+
 - (id)initWithCoder:(NSCoder*)aDecoder {
+    
     self = [super initWithCoder:aDecoder];
+    
     if (self) {
-        //initial values
-        self.profileUser = [EVNUser currentUser];
-        self.userObjectID = [EVNUser currentUser].objectId;
-        _isDismissedAlreadyCancel = NO;
-        _isDismissedAlreadyUpdate = NO;
-        
+        _profileUser = [EVNUser currentUser];
+        _userObjectID = [EVNUser currentUser].objectId;
     }
     
     return self;
 }
 
-
-#pragma mark - View Controller Lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -97,6 +86,7 @@
     self.colorBackgroundView.backgroundColor = [UIColor orangeThemeColor];
 
     [self setupButtons];
+    [self wireUpTapRecognizers];
     
     self.nameLabel.adjustsFontSizeToFitWidth = YES;
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
@@ -133,7 +123,7 @@
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kEventCreated object:nil];
             } else {
                 self.profileType = OTHER_USER_PROFILE;
-                self.navigationItemWithSettingsBarItem.rightBarButtonItems = nil;
+                self.navigationItem.rightBarButtonItems = nil;
             }
             
             //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
@@ -146,8 +136,17 @@
             
         } else {
             
-            //TODO: Handle error.
+            self.navigationItem.rightBarButtonItems = nil;
+            self.eventsHeaderButton.hidden = YES;
+            self.followingHeaderButton.hidden = YES;
+            self.followersHeaderButton.hidden = YES;
+            self.numberEventsLabel.hidden = YES;
+            self.numberFollowingLabel.hidden = YES;
+            self.numberFollowersLabel.hidden = YES;
             
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"User Missing" message:@"Looks like we can't find this user.  But don't worry!  We'll start a search party for them." delegate:self cancelButtonTitle:@"Phew" otherButtonTitles: nil];
+            
+            [errorAlert show];
         }
         
     }];
@@ -185,6 +184,29 @@
     
     self.editProfileButton.hidden = YES;
     self.followButton.hidden = YES;
+    
+}
+
+
+- (void) wireUpTapRecognizers {
+    
+    UITapGestureRecognizer *viewEvents = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvents)];
+    UITapGestureRecognizer *viewFollowing = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewFollowing)];
+    UITapGestureRecognizer *viewFollowers = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewFollowers)];
+    
+    [self.eventsHeaderButton addTarget:self action:@selector(viewEvents) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.followingHeaderButton addTarget:self action:@selector(viewFollowing) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.followersHeaderButton addTarget:self action:@selector(viewFollowers) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.numberEventsLabel.userInteractionEnabled = YES;
+    self.numberFollowingLabel.userInteractionEnabled = YES;
+    self.numberFollowersLabel.userInteractionEnabled = YES;
+    
+    [self.numberEventsLabel addGestureRecognizer:viewEvents];
+    [self.numberFollowingLabel addGestureRecognizer:viewFollowing];
+    [self.numberFollowersLabel addGestureRecognizer:viewFollowers];
     
 }
 
@@ -240,9 +262,7 @@
     
     PFFile *profilePictureFromParse = self.profileUser[@"profilePicture"];
     self.profileImageView.file = profilePictureFromParse;
-    [self.profileImageView loadInBackground:^(UIImage *image, NSError *error) {
-        self.userPictureData = UIImagePNGRepresentation(image);
-    }];
+    [self.profileImageView loadInBackground];
 
     [self.profileUser numberOfEventsWithCompletion:^(int events) {
         self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", events];
@@ -266,7 +286,7 @@
 
 #pragma mark - ProfileActions
 
-- (IBAction)viewMyEvents:(id)sender {
+- (void) viewEvents {
     
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
@@ -282,7 +302,7 @@
 
 }
 
-- (IBAction)viewFollowers:(id)sender {
+- (void) viewFollowers {
     
     PeopleVC *viewFollowersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
@@ -293,7 +313,7 @@
     
 }
 
-- (IBAction)viewFollowing:(id)sender {
+- (void) viewFollowing {
     
     PeopleVC *viewFollowingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
@@ -321,59 +341,22 @@
 
 - (void)canceledEditingProfile {
     
-    NSLog(@"cancel - self.isDismissedAlready: %@", [NSNumber numberWithBool: self.isDismissedAlreadyCancel]);
-    
-    if (!self.isDismissedAlreadyCancel) {
-        
-        self.isDismissedAlreadyCancel = YES;
-        
-        [self dismissViewControllerAnimated:YES completion:^{
-            
-            NSLog(@"completion - self.isDismissedAlready: %@", [NSNumber numberWithBool:self.isDismissedAlreadyCancel]);
-            self.isDismissedAlreadyCancel = NO;
-            
-        }];
+    [self dismissViewControllerAnimated:YES completion:nil];
 
-    }
-    
 }
 
 
 -(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData {
-
-    NSLog(@"cancel2 - self.isDismissedAlready: %@", [NSNumber numberWithBool: self.isDismissedAlreadyCancel]);
     
-    if (!self.isDismissedAlreadyCancel) {
-        
-        self.isDismissedAlreadyCancel = YES;
-        
-        PFFile *newProfilePicture = [PFFile fileWithData:imageData];
-        [newProfilePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-        }];
-        
-        NSString *realName = [stringDictionary objectForKey:@"realName"];
-        
-        self.profileImageView.image = [UIImage imageWithData:imageData];
-        
-        self.nameLabel.text = realName;
-        
-        self.userObjectID = [EVNUser currentUser].objectId;
-        self.profileUser = [EVNUser currentUser];
-        
-        [self dismissViewControllerAnimated:YES completion:^{
-            
-            NSLog(@"completion2 - self.isDismissedAlready: %@", [NSNumber numberWithBool:self.isDismissedAlreadyCancel]);
-            self.isDismissedAlreadyCancel = NO;
-            
-        }];
-        
-    }
+    NSString *realName = [stringDictionary objectForKey:@"realName"];
     
+    self.profileImageView.image = [UIImage imageWithData:imageData];
+    self.nameLabel.text = realName;
+    self.userObjectID = [EVNUser currentUser].objectId;
+    self.profileUser = [EVNUser currentUser];
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-
-
 
 
 
@@ -381,7 +364,7 @@
 
 - (void) updateEventCount {
     
-    self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", [self.numberEventsLabel.text intValue] + 1 ];
+    self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", [self.numberEventsLabel.text intValue] + 1];
     
 }
 
@@ -395,7 +378,6 @@
     
 }
 
-
 - (void) decrementFollowing {
     
     NSNumberFormatter *numFormat = [[NSNumberFormatter alloc] init];
@@ -406,25 +388,26 @@
     
 }
 
-//TODO - Perform this updates in the local cache - or just increment/decrement the right count.
+//TODO - Perform this updates in the local cache - or just increment/decrement the right count.  Careful.
 - (void)updateUIDueToNewFollow:(NSNotification *)notification {
     
     if (notification.object != self && self.profileType != CURRENT_USER_PROFILE) {
         
-        //Update the Button For Following/Follow
-        PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-        [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
-        [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-        [followActivity whereKey:@"to" equalTo:self.profileUser];
-        [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            //TODO - Does this make sense?
+        [[EVNUser currentUser] isCurrentUserFollowingProfile:self.profileUser completion:^(BOOL isFollowing, BOOL success) {
             
-            if (!objects || !objects.count) {
-                self.followButton.titleText = @"Follow";
+            if (success) {
+                if (isFollowing) {
+                    self.followButton.titleText = @"Following";
+                    self.followButton.isSelected = YES;
+                } else {
+                    self.followButton.titleText = @"Follow";
+                }
             } else {
-                self.followButton.titleText = @"Following";
+                self.followButton.titleText = @"";
+                self.followButton.enabled = NO;
             }
         }];
+        
     }
     
     //Update Following / Followers Counts
@@ -462,7 +445,7 @@
          editProfileView.realName = currentUser[@"realName"];
          editProfileView.hometown = currentUser[@"hometown"];
          editProfileView.bio = currentUser[@"bio"];
-         editProfileView.pictureData = self.userPictureData;
+         editProfileView.pictureData = UIImagePNGRepresentation(self.profileImageView.image);
          editProfileView.delegate = self;
          
      }

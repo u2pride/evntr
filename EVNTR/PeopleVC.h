@@ -6,9 +6,10 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <ParseUI/ParseUI.h>
 #import "EventObject.h"
 #import "EVNUser.h"
+
+#import <ParseUI/ParseUI.h>
 
 @protocol PeopleVCDelegate;
 @class EventAddVC;
@@ -20,7 +21,7 @@
 @property (nonatomic, strong) EVNUser *userProfile;
 @property (nonatomic, strong) EventObject *eventToViewAttenders;
 
-//Property for Invitation PeopleVC
+//Property for PeopleVC during Invite Process
 @property (nonatomic, strong) PFRelation *usersAlreadyInvited;
 
 @end
@@ -28,8 +29,6 @@
 
 @protocol PeopleVCDelegate <NSObject>
 
-//Invite Activites Only Created for New Invites - No Activity for Un-Invite
-//Old Invite Activity Stays in Table TODO: Delete Old Activity on Un-Invite
 - (void)finishedSelectingInvitations:(NSArray *)selectedPeople;
 
 @end

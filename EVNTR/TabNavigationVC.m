@@ -6,13 +6,12 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "AppDelegate.h"
 #import "ActivityVC.h"
+#import "AppDelegate.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
 #import "HomeScreenVC.h"
 #import "IDTransitionControllerTab.h"
-#import "IDTransitioningDelegate.h"
 #import "ProfileVC.h"
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
@@ -22,7 +21,7 @@
 
 @interface TabNavigationVC ()
 
-@property BOOL isGuestUser;
+@property (nonatomic) BOOL isGuestUser;
 
 @property (nonatomic, strong) UIVisualEffectView *darkBlur;
 @property (nonatomic, strong) IDTransitionControllerTab *transitionController;
@@ -33,25 +32,37 @@
 
 @implementation TabNavigationVC
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.transitionController = [[IDTransitionControllerTab alloc] init];
     self.delegate = self;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    self.transitionController = [[IDTransitionControllerTab alloc] init];
+    
+    //UI Updates to Tab & Navigation Bar
+    self.tabBar.barTintColor = [UIColor whiteColor];
+    self.tabBar.tintColor = [UIColor orangeThemeColor];
+    self.tabBar.backgroundColor = [UIColor clearColor];
+    self.tabBar.translucent = NO;
+    
+    //UI Updates to Nav Bars
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    for (UINavigationController *navController in self.viewControllers) {
+        navController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+        navController.navigationBar.translucent = NO;
+        
+        //Set Font Color to White
+        [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
+    }
 
-    //Determine If Guest User
+
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newActivity:) name:@"newActivityNotifications" object:nil];
-    //Should we register for the notification on the user returning to the app? maybe if we used userprefs to store new activity count. but not with other notificaiton.
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refresh:) name: UIApplicationWillEnterForegroundNotification object:nil];
-
-    //Enable/Disable Tabs Based on isGuestUser
     if (self.isGuestUser) {
         
-        //remember you have to initialize the nsmutablearay. ie viewControllersTab = self.tabBarController.viewControllers won't work.
         NSMutableArray *viewControllersTab = [NSMutableArray arrayWithArray:[self viewControllers]];
         [viewControllersTab removeObjectAtIndex:3];
         
@@ -65,8 +76,6 @@
         //Enable Background Fetching - User Is Logged In
         [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalMinimum];
         
-        NSLog(@"Setting the VCs for the Navigation Tab Bar");
-        
         NSMutableArray *viewControllersTab = [NSMutableArray arrayWithArray:[self viewControllers]];
         [viewControllersTab removeObjectAtIndex:4];
 
@@ -74,46 +83,8 @@
         
     }
     
-    //UI Updates to Navigation and Tab Bars
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-    
-    for (UINavigationController *navController in self.viewControllers) {
-        navController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-        navController.navigationBar.translucent = NO;
-        
-        //Set Font Color to White
-        [navController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-        
-        NSLog(@"Setting the VCs for the Navigation Tab Bar 2");
-
-    }
-    
-    self.tabBar.barTintColor = [UIColor whiteColor];
-    self.tabBar.tintColor = [UIColor orangeThemeColor];
-    self.tabBar.backgroundColor = [UIColor clearColor];
-    self.tabBar.translucent = NO;
-    
 }
 
-
-#pragma mark - Notification Response - Update Badge of Activity Tab
-- (void) newActivity:(NSNotification *)notification {
-    
-    //For now, tabling the notification badge.
-    
-    /*
-    NSDictionary *notificationDictionary = notification.userInfo;
-    NSNumber *num = [notificationDictionary objectForKey:@"numberOfNotifications"];
-    
-    UINavigationController *navController = (UINavigationController *)[self.childViewControllers objectAtIndex:2];
-    self.activityItem = navController.tabBarItem;
-    
-    if (num.intValue != 0) {
-        self.activityItem.badgeValue = [NSString stringWithFormat:@"%@", num];
-    }
-    */
-    
-}
 
 
 #pragma mark - Delegate Methods for Tab Bar Controller
@@ -159,11 +130,6 @@
         UINavigationController *navVC = (UINavigationController *) viewController;
         [navVC popToRootViewControllerAnimated:NO];
         
-        //Update Font and Color of NavBar in Case of Moving Directly from Event Detail Page
-        //navVC.navigationBar.barTintColor = [UIColor orangeThemeColor];
-        //navVC.navigationBar.translucent = NO;
-        //[navVC.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-        
         ProfileVC *profileView = navVC.childViewControllers.firstObject;
         profileView.userObjectID = [EVNUser currentUser].objectId;
         profileView.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
@@ -173,7 +139,7 @@
 }
 
 
-#pragma mark - Events Sent From Other VCs
+#pragma mark - Programmatically Selecting Add New Event
 - (void) selectCreateTab {
     
     [self setSelectedIndex:1];
@@ -269,12 +235,9 @@
 
 - (void) canceledEventCreation {
     
-    //Scroll TableView to Top and Refresh Results to Show Most Recently Created Event
     UINavigationController *navController = (UINavigationController *) [self.viewControllers objectAtIndex:TAB_HOME];
 
     [navController popToRootViewControllerAnimated:YES];
-    
-    //allEventsVC.tableView.contentOffset = CGPointMake(0, 0 - allEventsVC.tableView.contentInset.top);
     
     [self setSelectedIndex:0];
     

@@ -12,7 +12,9 @@
 @interface EVNUtility : NSObject
 
 + (void)maskImage:(UIImage *)image withMask:(UIImage *)maskImage withCompletion:(void (^)(UIImage *))completionBlock;
-+ (NSString *)getUTCFormateDate:(NSDate *)localDate;
 
++ (void) setupNavigationBarWithController:(UINavigationController *)navController andItem:(UINavigationItem *)navItem;
+
++ (NSDictionary *) navigationFontAttributes;
 
 @end

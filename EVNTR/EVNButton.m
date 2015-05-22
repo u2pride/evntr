@@ -21,6 +21,8 @@
 
 @implementation EVNButton
 
+#pragma mark - Initialization Methods
+
 - (instancetype) initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
@@ -42,121 +44,6 @@
     }
     
     return self;
-}
-
-
-- (void) setTitleText:(NSString *)titleText {
-    
-    self.titleTextLabel.text = titleText;
-    
-    if ([titleText isEqualToString:@"Follow"]) {
-        [self setIsSelected:NO];
-    } else if ([titleText isEqualToString:@"Following"]) {
-        [self setIsSelected:YES];
-    } else if ([titleText isEqualToString:@"Let In"]) {
-        [self setIsSelected:NO];
-    } else if ([titleText isEqualToString:@"Revoke"]) {
-        [self setIsSelected:YES];
-    }
-    
-    _titleText = titleText;
-    
-}
-
-- (void) setIsRounded:(BOOL)isRounded {
-    
-    self.layer.cornerRadius =  (isRounded) ? 10 : 0;
-    
-    _isRounded = isRounded;
-    
-}
-
-- (void) setButtonColorOpposing:(UIColor *)buttonColorOpposing {
-    
-    if (!self.isSelected) {
-        self.backgroundColor = buttonColorOpposing;
-    }
-    
-    _buttonColorOpposing = buttonColorOpposing;
-}
-
-- (void) setIsSelected:(BOOL)isSelected {
-    
-
-    if (isSelected && !self.isStateless) {
-        
-        self.titleTextLabel.alpha = 1;
-        self.backgroundColor = self.buttonColor;
-        self.titleTextLabel.textColor = [UIColor whiteColor];
-        
-        [UIView animateWithDuration:0.5 animations:^{
-            
-            self.titleTextLabel.alpha = 1;
-            self.backgroundColor = self.buttonColor;
-            self.titleTextLabel.textColor = [UIColor whiteColor];
-            
-        } completion:^(BOOL finished) {
-            
-        }];
-        
-        
-    } else if (!isSelected && !self.isStateless) {
-        
-        
-        self.titleTextLabel.alpha = 1;
-        self.backgroundColor = self.buttonColorOpposing;
-        self.titleTextLabel.textColor = self.buttonColor;
-        
-        [UIView animateWithDuration:0.5 animations:^{
-            
-
-            self.titleTextLabel.alpha = 1;
-            self.backgroundColor = self.buttonColorOpposing;
-            self.titleTextLabel.textColor = self.buttonColor;
-            
-        } completion:^(BOOL finished) {
-            
-            
-        }];
-        
-    }
-    
-    _isSelected = isSelected;
-    
-}
-
-- (void) setButtonColor:(UIColor *)buttonColor {
-    
-    self.layer.borderColor = buttonColor.CGColor;
-    
-    _buttonColor = buttonColor;
-}
-
-
-- (void) setFont:(UIFont *)font {
-    
-    self.titleTextLabel.font = font;
-    
-    _font = font;
-    
-}
-
-- (void) setHasBorder:(BOOL)hasBorder {
-    
-    [self setNeedsDisplay];
-
-    if (hasBorder) {
-        self.layer.borderWidth = 1.0f;
-        self.layer.borderColor = _buttonColor.CGColor;
-    } else {
-        self.layer.borderWidth = 0.0f;
-        self.layer.borderColor = _buttonColor.CGColor;
-    }
-
-    _hasBorder = hasBorder;
-
-    [self setNeedsDisplay];
-    
 }
 
 - (void) setupButton {
@@ -260,115 +147,135 @@
 }
 
 
-/*
-- (BOOL) beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    
-    //touch started in control
-    
-    
-    //self.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.6];
-    
-    CGPoint locationOfTouch = [touch locationInView:self];
-    
-    CAShapeLayer *circleShape = nil;
-    CGFloat scale = 10.5f;
-    CGFloat radius = 15.0f;
-    
-    circleShape = [self createCircleShapeWithPosition:CGPointMake(locationOfTouch.x - radius, locationOfTouch.y - radius)
-                                             pathRect:CGRectMake(0, 0, radius * 2, radius * 2)
-                                               radius:radius];
-    
-    [self.layer addSublayer:circleShape];
-    [circleShape addAnimation:[self createFlashAnimationWithScale:scale duration:0.15f] forKey:nil];
 
+#pragma mark - Custom Setters
+
+- (void) setTitleText:(NSString *)titleText {
     
-    if (self.isSelected) {
-        
+    self.titleTextLabel.text = titleText;
+    
+    if ([titleText isEqualToString:@"Follow"]) {
         [self setIsSelected:NO];
-    
-    } else {
-        
+    } else if ([titleText isEqualToString:@"Following"]) {
         [self setIsSelected:YES];
-
+    } else if ([titleText isEqualToString:@"Let In"]) {
+        [self setIsSelected:NO];
+    } else if ([titleText isEqualToString:@"Revoke"]) {
+        [self setIsSelected:YES];
     }
     
-    [self sendActionsForControlEvents:UIControlEventTouchUpInside];
-
+    _titleText = titleText;
     
-    return NO;
+}
+
+- (void) setIsRounded:(BOOL)isRounded {
+    
+    self.layer.cornerRadius =  (isRounded) ? 10 : 0;
+    
+    _isRounded = isRounded;
+    
+}
+
+- (void) setButtonColorOpposing:(UIColor *)buttonColorOpposing {
+    
+    if (!self.isSelected) {
+        self.backgroundColor = buttonColorOpposing;
+    }
+    
+    _buttonColorOpposing = buttonColorOpposing;
+}
+
+- (void) setIsSelected:(BOOL)isSelected {
+    
+    
+    if (isSelected && !self.isStateless) {
+        
+        self.titleTextLabel.alpha = 1;
+        self.backgroundColor = self.buttonColor;
+        self.titleTextLabel.textColor = [UIColor whiteColor];
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            self.titleTextLabel.alpha = 1;
+            self.backgroundColor = self.buttonColor;
+            self.titleTextLabel.textColor = [UIColor whiteColor];
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+        
+    } else if (!isSelected && !self.isStateless) {
+        
+        self.titleTextLabel.alpha = 1;
+        self.backgroundColor = self.buttonColorOpposing;
+        self.titleTextLabel.textColor = self.buttonColor;
+        
+        [UIView animateWithDuration:0.5 animations:^{
+            
+            self.titleTextLabel.alpha = 1;
+            self.backgroundColor = self.buttonColorOpposing;
+            self.titleTextLabel.textColor = self.buttonColor;
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }
+    
+    _isSelected = isSelected;
+    
+}
+
+- (void) setButtonColor:(UIColor *)buttonColor {
+    
+    self.layer.borderColor = buttonColor.CGColor;
+    
+    _buttonColor = buttonColor;
+}
+
+
+- (void) setFont:(UIFont *)font {
+    
+    self.titleTextLabel.font = font;
+    
+    _font = font;
+    
+}
+
+- (void) setHasBorder:(BOOL)hasBorder {
+    
+    [self setNeedsDisplay];
+    
+    if (hasBorder) {
+        self.layer.borderWidth = 1.0f;
+        self.layer.borderColor = _buttonColor.CGColor;
+    } else {
+        self.layer.borderWidth = 0.0f;
+        self.layer.borderColor = _buttonColor.CGColor;
+    }
+    
+    _hasBorder = hasBorder;
+    
+    [self setNeedsDisplay];
     
 }
 
 
-- (CAAnimationGroup *)createFlashAnimationWithScale:(CGFloat)scale duration:(CGFloat)duration
-{
-    CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    scaleAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
-    scaleAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DMakeScale(scale, scale, 1)];
-    
-    CABasicAnimation *alphaAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    alphaAnimation.fromValue = @0.75;
-    alphaAnimation.toValue = @0;
-    
-    CAAnimationGroup *animation = [CAAnimationGroup animation];
-    animation.animations = @[scaleAnimation, alphaAnimation];
-    animation.delegate = self;
-    animation.duration = duration;
-    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-    
-    return animation;
-}
-
-
-- (CAShapeLayer *)createCircleShapeWithPosition:(CGPoint)position pathRect:(CGRect)rect radius:(CGFloat)radius
-{
-    CAShapeLayer *circleShape = [CAShapeLayer layer];
-    circleShape.path = [self createCirclePathWithRadius:rect radius:radius];
-    circleShape.position = position;
-    
-    circleShape.bounds = CGRectMake(0, 0, radius * 2, radius * 2);
-    
-    UIColor *darkerColor = [self.buttonColor darkerColor];
-    circleShape.fillColor = darkerColor.CGColor;
-    
-    circleShape.opacity = 0;
-    circleShape.lineWidth = 1;
-    
-    return circleShape;
-}
-
-- (CGPathRef)createCirclePathWithRadius:(CGRect)frame radius:(CGFloat)radius
-{
-    return [UIBezierPath bezierPathWithRoundedRect:frame cornerRadius:radius].CGPath;
-}
-
-
-*/
-
+#pragma mark - Long Running Tasks Methods
 
 - (void) startedTask {
     
     self.enabled = NO;
 
-    
     [UIView animateWithDuration:0.25 animations:^{
         
         self.titleTextLabel.alpha = 0;
         self.backgroundColor = [self.backgroundColor colorWithAlphaComponent:0.6];
         
-        //if (self.isRounded) {
-        //    self.layer.cornerRadius = 0;
-        //}
-        
         [self.activityIndicator startAnimating];
 
-        
     } completion:^(BOOL finished) {
-        
-        if (finished) {
-            
-            
-        }
         
     }];
     
@@ -382,47 +289,34 @@
         self.titleTextLabel.alpha = 1;
         self.backgroundColor = [self.backgroundColor colorWithAlphaComponent:1.0];
         
-        //if (self.isRounded) {
-        //    self.layer.cornerRadius = 10;
-        //}
-        
         [self.activityIndicator stopAnimating];
         
-        self.enabled = YES;
 
     } completion:^(BOOL finished) {
         
-        if (finished) {
-            
-            
-        }
-        
+        self.enabled = YES;
+
     }];
     
 }
 
 
 
-
-
-//Adding New
+#pragma mark - Button Feedback
 
 - (BOOL) beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     
     [super beginTrackingWithTouch:touch withEvent:event];
     
-    
     [UIView animateWithDuration:0.2 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         
         self.transform = CGAffineTransformMakeScale(0.9, 0.9);
-        
         
     } completion:^(BOOL finished) {
         
         [UIView animateWithDuration:0.2 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             
             self.transform = CGAffineTransformIdentity;
-            
             
         } completion:^(BOOL finished) {
             

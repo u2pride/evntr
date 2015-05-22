@@ -11,7 +11,6 @@
 #import "EVNButton.h"
 #import "EVNUser.h"
 #import "UIColor+EVNColors.h"
-#import "EVNLocationButton.h"
 #import "MBProgressHUD.h"
 #import "EVNUser.h"
 

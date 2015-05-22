@@ -242,9 +242,9 @@
         self.tabBarController.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
         self.navigationController.navigationBar.translucent = NO;
         
-        //Navigation Bar Font & Color
-        NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-        self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+        //TODO: CHECK AGAINST UTLITY Navigation Bar Font & Color
+        //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+        self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
     }
     
 }
@@ -1082,7 +1082,7 @@
 }
 
 #pragma mark - Delegate Method for Inviting Users to Event
-
+//Currently only sends out new invites.  No ability to UnInvite
 - (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
     
     [self dismissViewControllerAnimated:YES completion:nil];

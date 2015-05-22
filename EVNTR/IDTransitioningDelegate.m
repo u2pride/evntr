@@ -11,8 +11,6 @@
 
 @implementation IDTransitioningDelegate
 
-
-
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
                                                                   presentingController:(UIViewController *)presenting
                                                                       sourceController:(UIViewController *)source
@@ -32,34 +30,6 @@
     
     return transitioning;
 }
-
-
-/*
-
-- (id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source
-{
-    IDTransitionController *transitioning = [[IDTransitionController alloc]init];
-    return transitioning;
-}
-
-- (id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed
-{
-    IDTransitionController *transitioning = [[IDTransitionController alloc]init];
-    transitioning.reverse = YES;
-    return transitioning;
-}
-*/
-// FOR A LATER EXAMPLE:
-
-//- (id <UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id <UIViewControllerAnimatedTransitioning>)animator {
-//    IDPercentDrivenInteractiveTransitionController *interactiveTransition = [[IDPercentDrivenInteractiveTransitionController alloc] init];
-//    return interactiveTransition;
-//}
-//
-//- (id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator {
-//    IDPercentDrivenInteractiveTransitionController *interactiveTransition = [[IDPercentDrivenInteractiveTransitionController alloc] init];
-//    return interactiveTransition;
-//}
 
 
 @end

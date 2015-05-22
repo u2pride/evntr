@@ -8,18 +8,22 @@
 
 #import "EVNConstants.h"
 
+#pragma mark - General Use
+
 NSString *const kAppName = @"EVNTR";
 NSString *const kLocationCurrent = @"CURRENT_LOCATION";
 NSString *const kFirstLoginNewBuild = @"FIRST_LOGIN_NEW_BUILD";
 
 
-NSString *const kNumberOfNotifications = @"NUM_NOTIFICATIONS";
-NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
+#pragma mark - Notification
 
-NSString *const kPrimaryUpdateTimestamp = @"PRIMARY_NOTIFICATIONS_UPDATE_TIMESTAMP";
-NSString *const kSecondaryUpdateTimestamp = @"SECONDARY_NOTIFICATIONS_UPDATE_TIMESTAMP";
+NSString *const kNotificationNewFollow = @"NotificationNewFollow";
+NSString *const kNotificationRemovedFollow = @"NotificationRemovedFollow";
+NSString *const kFollowActivity = @"FollowActivity";
+NSString *const kEventCreated = @"EventCreated";
 
 
+#pragma mark - String Constants for Event Detail View
 
 NSString *const kAttendingEvent = @"Attending";
 NSString *const kNotAttendingEvent = @"Join";
@@ -28,22 +32,26 @@ NSString *const kNOTRSVPedForEvent = @"Show Interest";
 NSString *const kGrantedAccessToEvent = @"Attending";
 NSString *const kInviteUsers = @"Invite Users";
 
-
-//TODO:  Color button if granted acesss - similar to insta follow button
 NSString *const kGrantAccess = @"Let In";
 NSString *const kRevokeAccess = @"Revoke";
+NSString *const kFollowingString = @"Following";
+NSString *const kFollowString = @"Follow";
+
+#pragma mark - Notification String Constants
+
+NSString *const kNumberOfNotifications = @"NUM_NOTIFICATIONS";
+NSString *const kLastBackgroundFetchTimeStamp = @"LAST_FETCH_TIME";
+
+NSString *const kPrimaryUpdateTimestamp = @"PRIMARY_NOTIFICATIONS_UPDATE_TIMESTAMP";
+NSString *const kSecondaryUpdateTimestamp = @"SECONDARY_NOTIFICATIONS_UPDATE_TIMESTAMP";
 
 
-
-NSString *const kNotificationNewFollow = @"NotificationNewFollow";
-NSString *const kNotificationRemovedFollow = @"NotificationRemovedFollow";
-NSString *const kFollowActivity = @"FollowActivity";
-NSString *const kEventCreated = @"EventCreated";
-
-
+#pragma mark - User Management
 
 NSString *const kIsGuest = @"isGuestKey";
 
+
+#pragma mark - Custom Font
 
 NSString *const kFontName = @"Lato-Regular";
 NSString *const kFontColor = @"whiteColor";
@@ -55,5 +63,3 @@ NSString *const EVNFontLight = @"Lato-Light";
 NSString *const EVNFontThin = @"Lato-Thin";
 
 
-NSString *const kFollowingString = @"Following";
-NSString *const kFollowString = @"Follow";

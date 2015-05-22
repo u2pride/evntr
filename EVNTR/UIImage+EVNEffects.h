@@ -10,6 +10,7 @@
 
 @interface UIImage (EVNEffects)
 
+//Necessary to Successfully Mask Profile Images
 + (UIImage *) imageWithView:(UIView *)view;
 
 @end

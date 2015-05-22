@@ -6,26 +6,36 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNButton.h"
 #import "GuestWelcomeVC.h"
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
 
 @interface GuestWelcomeVC ()
 
-@property (weak, nonatomic) IBOutlet UIButton *continueButton;
-
+@property (strong, nonatomic) IBOutlet EVNButton *continueButton;
+ 
 @end
 
 @implementation GuestWelcomeVC
 
-
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     [super viewDidLoad];
 
-    self.continueButton.backgroundColor = [UIColor orangeThemeColor];
+    self.continueButton.titleText = @"Got It!";
+    self.continueButton.isSelected = YES;
+
+    [self.continueButton addTarget:self action:@selector(startUsingApp) forControlEvents:UIControlEventTouchUpInside];
 }
 
--(void)dealloc {
+- (void) startUsingApp {
+    
+    [self performSegueWithIdentifier:@"useAppAsGuest" sender:nil];
+
+}
+
+
+- (void) dealloc {
     NSLog(@"guestwelcomevc is being deallocated");
 }
 

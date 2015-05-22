@@ -14,7 +14,6 @@
 @property (nonatomic, assign) BOOL isPresenting;
 
 -(NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext;
-
 -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext;
 
 @end

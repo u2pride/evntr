@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EVNUtility.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
+#import "EVNUtility.h"
 #import "EditProfileVC.h"
 #import "UIColor+EVNColors.h"
 #import "UIImage+EVNEffects.h"
@@ -24,73 +24,43 @@ typedef enum {
 
 @interface EditProfileVC ()
 
-//For TextField Persistnce
-@property (nonatomic, strong) NSDictionary *userInputtedValues;
+@property (nonatomic, strong) NSDictionary *persistedUserValues;
 
-//Custom Cells
 @property (weak, nonatomic) IBOutlet UITableViewCell *nameCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *hometownCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *usernameCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *bioCell;
 @property (weak, nonatomic) IBOutlet UITableViewCell *profileImageCell;
-@property (weak, nonatomic) IBOutlet UITableViewCell *socialTwitterCell;
-@property (weak, nonatomic) IBOutlet UITableViewCell *socialFacebookCell;
 
-//Editable Text Fields
 @property (weak, nonatomic) IBOutlet UITextField *realNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *hometownTextField;
 @property (weak, nonatomic) IBOutlet UITextField *usernameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *bioTextField;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 
-@property (strong, nonatomic) IBOutlet UIButton *connectWithTwitterButton;
-@property (strong, nonatomic) IBOutlet UIButton *connectWithFacebookButton;
-
 - (IBAction)cancelEditProfile:(id)sender;
 - (IBAction)finishedEditProfile:(id)sender;
-- (IBAction)connectWithTwitter:(id)sender;
 
 @end
 
 
-
 @implementation EditProfileVC
+
+#pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self setupNavigationBar];
     
-    //Change Navigation Bar Color to Theme
-    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
-    self.navigationController.navigationBar.translucent = NO;
-
-    //change font color of title to white
-    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-    
-    //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
-    
-    //Bar Button Item Text Attributes
-    [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                        [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
-                                        [UIColor whiteColor], NSForegroundColorAttributeName,
-                                        nil] 
-                              forState:UIControlStateNormal];
-    
-    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                   [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
-                                                                   [UIColor whiteColor], NSForegroundColorAttributeName,
-                                                                   nil]
-                                                         forState:UIControlStateNormal];
-
-    //default profile image
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.profileImageView.userInteractionEnabled = YES;
-    //clear for transparency/masking
-    self.profileImageView.backgroundColor = [UIColor clearColor];
+    self.profileImageView.backgroundColor = [UIColor clearColor]; /* Cleared for masking */
     
-    //Add Tap Gesture Recognizer to UIImageView to Update Profile Picture
+    if (self.pictureData) {
+        self.profileImageView.image = [UIImage imageWithData:self.pictureData];
+    }
+    
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(updateProfilePicture)];
     [self.profileImageView addGestureRecognizer:tapgr];
     
@@ -100,14 +70,32 @@ typedef enum {
     self.usernameTextField.text = self.username;
     self.bioTextField.text = self.bio;
     
-    if (self.pictureData) {
-        self.profileImageView.image = [UIImage imageWithData:self.pictureData];
-    }
-    
     self.realNameTextField.delegate = self;
     self.hometownTextField.delegate = self;
     self.usernameTextField.delegate = self;
     self.bioTextField.delegate = self;
+
+}
+
+
+- (void) setupNavigationBar {
+    
+    self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
+    self.navigationController.navigationBar.translucent = NO;
+    
+    self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
+    
+    [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                   [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
+                                                                   [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                                   nil]
+                                                         forState:UIControlStateNormal];
+    
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                    [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
+                                                                    [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                                    nil]
+                                                          forState:UIControlStateNormal];
 
 }
 
@@ -126,7 +114,7 @@ typedef enum {
 #pragma mark - Table View Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -136,12 +124,8 @@ typedef enum {
             return 5;
             break;
         }
-        case 1: {
-            return 2;
-            break;
-        }
         default:
-            return 2;
+            return 0;
             break;
     }
 }
@@ -172,31 +156,13 @@ typedef enum {
                 break;
             }
             default:
-                NSLog(@"Returned default");
-                return self.nameCell;
-                break;
-        }
-    } else if (indexPath.section == 1) {
-        switch (indexPath.row) {
-            case 0: {
-                return self.socialTwitterCell;
-                break;
-            }
-            case 1: {
-                return self.socialFacebookCell;
-                break;
-            }
-            default:
-                NSLog(@"Returned thru default");
                 return self.nameCell;
                 break;
         }
         
     } else {
-        NSLog(@"Returned thru else statement");
         return self.nameCell;
     }
-    
     
 }
 
@@ -204,8 +170,8 @@ typedef enum {
 #pragma mark - Image Picker & Delegates
 
 - (void)updateProfilePicture {
-    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
@@ -236,7 +202,6 @@ typedef enum {
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     
-    //Check to see if device has a camera
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [pictureOptionsMenu addAction:takePhoto];
     }
@@ -246,9 +211,7 @@ typedef enum {
     
     pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
     
-    //Store Current User Inputs From Each Text Field for persistence
-    self.userInputtedValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
-    
+    self.persistedUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
     
     [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
     
@@ -265,7 +228,7 @@ typedef enum {
         
     }];
     
-    self.profileImageView.backgroundColor = [UIColor clearColor];
+    self.profileImageView.backgroundColor = [UIColor clearColor]; /* Clear Background for Masking */
 
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
@@ -279,12 +242,12 @@ typedef enum {
         
     }];
     
-    
     [self restoreSavedValues];
     
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
     [picker dismissViewControllerAnimated:YES completion:^{
         
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -297,16 +260,16 @@ typedef enum {
 
 - (void) restoreSavedValues {
     
-    //Restore Values That the User Has Inputted
-    NSString *usernameStored = [self.userInputtedValues objectForKey:@"username"];
-    NSString *realNameStored = [self.userInputtedValues objectForKey:@"realName"];
-    NSString *hometownStored = [self.userInputtedValues objectForKey:@"hometown"];
-    NSString *bioStored = [self.userInputtedValues objectForKey:@"bio"];
+    NSString *usernameStored = [self.persistedUserValues objectForKey:@"username"];
+    NSString *realNameStored = [self.persistedUserValues objectForKey:@"realName"];
+    NSString *hometownStored = [self.persistedUserValues objectForKey:@"hometown"];
+    NSString *bioStored = [self.persistedUserValues objectForKey:@"bio"];
     
     self.usernameTextField.text = usernameStored;
     self.realNameTextField.text = realNameStored;
     self.hometownTextField.text = hometownStored;
     self.bioTextField.text = bioStored;
+    
 }
 
 
@@ -314,6 +277,8 @@ typedef enum {
 #pragma mark - IBActions for Cancel and Finish Editing
 
 - (IBAction)cancelEditProfile:(id)sender {
+    
+    self.navigationItem.leftBarButtonItem.enabled = NO;
 
     id<ProfileEditDelegate> strongDelegate = self.delegate;
     
@@ -328,6 +293,8 @@ typedef enum {
     
     [self.view endEditing:YES];
     
+    self.navigationItem.rightBarButtonItem.enabled = NO;
+    
     NSString *submittedUsername = self.usernameTextField.text;
     NSString *submittedName = self.realNameTextField.text;
     NSString *submittedBio = self.bioTextField.text;
@@ -338,6 +305,7 @@ typedef enum {
         PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
         
         [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
             if (succeeded){
                 [EVNUser currentUser][@"profilePicture"] = profilePictureFile;
                 
@@ -381,8 +349,19 @@ typedef enum {
                                 break;
                         }
                         
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                        
                     }
                 }];
+            
+            } else {
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Profile Picture" message:@"We had trouble saving your profile picture.  Try to save it again.  If that doesn't work, contact us through the settings page." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                
+                [errorAlert show];
+                
+                self.navigationItem.rightBarButtonItem.enabled = YES;
+
             }
         }];
         
@@ -432,47 +411,12 @@ typedef enum {
             [errorAlert show];
         }
         
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+        
     }
-    
-    
 
-    
-    
-    
 }
 
 
-//TODO: Add connection with instagram - just use textfield. On viewDidLoad, check for existing Connections.
-//TODO: Update profile images based on if connection was established.
-//Assumes only one twitter account for the user.
-- (IBAction)connectWithTwitter:(id)sender {
-    
-    ACAccountStore *accountStore = [[ACAccountStore alloc] init];
-    ACAccountType *accountType = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
-    
-    //TODO: Remove - this is only because I have already given access to my Twitter Account.
-    NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
-    
-    if ([accountsArray count] > 0) {
-        ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
-        [EVNUser currentUser][@"twitterHandle"] = twitterAccount.username;
-        [[EVNUser currentUser] saveInBackground];
-    }
-    
-    [accountStore requestAccessToAccountsWithType:accountType options:nil completion:^(BOOL granted, NSError *error) {
-        if(granted) {
-            NSArray *accountsArray = [accountStore accountsWithAccountType:accountType];
-            
-            if ([accountsArray count] > 0) {
-                ACAccount *twitterAccount = [accountsArray objectAtIndex:0];
-                
-                [EVNUser currentUser][@"twitterHandle"] = twitterAccount.username;
-                [[EVNUser currentUser] saveInBackground];
-                
-                self.connectWithTwitterButton.titleLabel.text = @"Connected With Twitter";
-                
-            }
-        }
-    }];
-}
+
 @end

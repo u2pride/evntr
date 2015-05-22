@@ -13,7 +13,7 @@
 
 @interface EVNLocationSearchVC : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, MKMapViewDelegate, UITextFieldDelegate>
 
-@property (nonatomic, strong) id<EventLocationSearch> delegate;
+@property (nonatomic, weak) id<EventLocationSearch> delegate;
 
 @end
 

@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "EVNLocationSearchVC.h"
 #import "EVNConstants.h"
+#import "EVNUtility.h"
 #import "GoogleResult.h"
 #import "UIColor+EVNColors.h"
 #import "EVNMapAnnotation.h"
@@ -44,9 +45,9 @@ const int NUMBER_OF_PLACES_RESULTS = 10;
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
-    //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    //TODO:  CHECK AGAINST UTILITYNavigation Bar Font & Color
+    //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
     
     //Bar Button Setup
     [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -677,6 +678,10 @@ const int NUMBER_OF_PLACES_RESULTS = 10;
         [strongDelegate locationSearchDidCancel];
     }
     
+}
+
+- (void) dealloc {
+    NSLog(@"EVNLOCation dealloced");
 }
 
 

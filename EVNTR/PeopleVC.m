@@ -20,8 +20,6 @@
 
 @interface PeopleVC ()
 
-//@property (nonatomic, strong) NSMutableArray *selectedPeople;
-
 @property (nonatomic, strong) NSMutableArray *usersMutableArray;
 @property (nonatomic, strong) NSArray *usersArray;
 
@@ -33,29 +31,16 @@
 
 @implementation PeopleVC
 
+#pragma mark - Lifecycle Methods
+
 - (void) viewDidLoad {
     [super viewDidLoad];
     
-    //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
-    
-    //Remove text for back button used in navigation
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self.navigationItem setBackBarButtonItem:backButtonItem];
-    self.navigationController.view.backgroundColor = [UIColor whiteColor];
-    
+    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
     
     self.previouslyInvitedUsers = [[NSMutableArray alloc] init];
     self.allInvitedUsers = [[NSMutableArray alloc] init];
-    
-    //Maybe this is the part of the problem.
-    //self.typeOfUsers = VIEW_ALL_PEOPLE;
-    //self.profileUsername = nil;
-    //[self findUsersOnParse];
-    
-    //self.selectedPeople = [[NSMutableArray alloc] init];
-    
+
     switch (self.typeOfUsers) {
         case VIEW_ALL_PEOPLE: {
             
@@ -80,13 +65,13 @@
         }
         case VIEW_FOLLOWING_TO_INVITE: {
             
+            self.collectionView.allowsMultipleSelection = YES;
+            
             //Taking the PFRelation and Querying for All the Invited Users
             //TODO:  Change this to a column of objectIDs for all of the users that have been invited?
             PFQuery *invitedRelationQuery = [self.usersAlreadyInvited query];
             [invitedRelationQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                
-                NSLog(@"List of Users Already Invited: %@", objects);
-
                 for (EVNUser *user in objects) {
                     //Save User IDs to Compare to Full List of Following
                     [self.previouslyInvitedUsers addObject:user];
@@ -97,8 +82,6 @@
                 
                 [self.collectionView reloadData];
                 
-                NSLog(@"Collection of Users Selected: %@", self.previouslyInvitedUsers);
-                
             }];
             
             
@@ -108,44 +91,7 @@
             
             [self.navigationItem setTitle:@"Invite"];
             
-            UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneSelectingPeopleToInvite)];
-            
-            self.navigationItem.rightBarButtonItem = doneButton;
-            
-            self.collectionView.allowsMultipleSelection = YES;
-            
-            
-            //UINavigationBar *navBar = [[UINavigationBar alloc] init];
-            
-            //UINavigationItem *navItem = [[UINavigationItem alloc] init];
-            //[navBar pushNavigationItem:navItem animated:NO];
-            
-            //navItem.rightBarButtonItem = doneButton;
-            
-            //[self.view addSubview:navBar];
-            
-
-            
-            /*
-            UIButton *doneSelectingInvitationsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-            [doneSelectingInvitationsButton addTarget:self action:@selector(doneSelectingPeopleToInvite) forControlEvents:UIControlEventTouchUpInside];
-            [doneSelectingInvitationsButton setTitle:@"DONE" forState:UIControlStateNormal];
-            [self.view addSubview:doneSelectingInvitationsButton];
-            doneSelectingInvitationsButton.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            NSLayoutConstraint *bottomConstraint = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0f constant:-80.f];
-            
-            [self.view addConstraint:bottomConstraint];
-            
-            NSLayoutConstraint *constraint2 = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:0.0f];
-            
-            [self.view addConstraint:constraint2];
-            
-            NSLayoutConstraint *constraint3 = [NSLayoutConstraint constraintWithItem:doneSelectingInvitationsButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem: nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0f constant:200.0f];
-            
-            [self.view addConstraint:constraint3];
-            */
-            
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneSelectingPeopleToInvite)];
             
             break;
         }
@@ -161,16 +107,10 @@
         }
     }
     
-    //Start Looking for Users
     [self findUsersOnParse];
 
 }
 
-
-- (void) viewDidAppear:(BOOL)animated {
-    
-    [super viewDidAppear:animated];
-}
 
 
 - (void)findUsersOnParse {
@@ -191,7 +131,10 @@
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"Hello?";
                     noResultsView.subHeaderText = @"Whoa, it's really empty in here.  Know where everyone went?";
-                    noResultsView.actionButton.alpha = 0;
+                    noResultsView.actionButton.titleText = @"Refresh";
+                    
+                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
+                    [noResultsView.actionButton addGestureRecognizer:tapReload];
                     
                     [self.view addSubview:noResultsView];
                     
@@ -218,13 +161,15 @@
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Followers";
-                    noResultsView.subHeaderText = @"";
-                    noResultsView.actionButton.hidden = YES;
+                    noResultsView.subHeaderText = @"This can't be right... who wouldn't want to follow you?";
+                    noResultsView.actionButton.titleText = @"Refresh";
+                    
+                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
+                    [noResultsView.actionButton addGestureRecognizer:tapReload];
                     
                     [self.view addSubview:noResultsView];
                     
                 } else {
-                    NSLog(@"Objects Found: %@", usersFound);
                     
                     for (PFObject *object in usersFound) {
                         [self.usersMutableArray addObject:object[@"from"]];
@@ -245,10 +190,13 @@
                 
                 if (following.count == 0) {
                     
-                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
                     noResultsView.headerText = @"Following No Users";
-                    noResultsView.subHeaderText = @"";
-                    noResultsView.actionButton.alpha = 0;
+                    noResultsView.subHeaderText = @"Looks like you aren't following anyone.";
+                    noResultsView.actionButton.titleText = @"Refresh";
+                    
+                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
+                    [noResultsView.actionButton addGestureRecognizer:tapReload];
                     
                     [self.view addSubview:noResultsView];
                     
@@ -267,9 +215,9 @@
         case VIEW_FOLLOWING_TO_INVITE: {
             
             //VC to Invite is Presented Modally - Thus Minor UI Tweaks are Needed to Nav Bar
-            //Navigation Bar Font & Color
-            NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-            self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+            //TODO: UTLITY Navigation Bar Font & Color
+            //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+            self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
             
             //Bar Button Item Text Attributes
             [self.navigationItem.rightBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
@@ -285,7 +233,7 @@
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No One to Invite";
                     noResultsView.subHeaderText = @"Once you start to follow users, you will be able to invite them to events.";
-                    noResultsView.actionButton.alpha = 0;
+                    noResultsView.actionButton.hidden = YES;
                     
                     [self.view addSubview:noResultsView];
                     
@@ -312,7 +260,10 @@
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Attendees";
                     noResultsView.subHeaderText = @"Looks like no one is attending this event yet. You could be the first.";
-                    noResultsView.actionButton.alpha = 0;
+                    noResultsView.actionButton.titleText = @"Refresh";
+                    
+                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
+                    [noResultsView.actionButton addGestureRecognizer:tapReload];
                     
                     [self.view addSubview:noResultsView];
                     
@@ -333,8 +284,8 @@
     
 }
 
-#pragma mark -
-#pragma mark CollectionView Delegate and DataSource Methods
+
+#pragma mark - CollectionView Delegate and DataSource Methods
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -344,33 +295,21 @@
     return [self.usersArray count];
 }
 
-//TODO: Move code to PersonCell View and Out of View Controller - Masking Code - Have isSelected-ish Property.
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Start CellForItemAtIndexPath");
 
     static NSString *cellIdentifier = @"personCell";
     
     PersonCell *cell = (PersonCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    NSLog(@"Cell Now Dequeded");
 
     EVNUser *currentUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
-    NSLog(@"Current User Determined");
-
-    //Default Profile Pic Until User Information is Fetched in Background
-    cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
-    NSLog(@"Default Profile Picture Attached");
     
-    //Determine if the user has already been invited
+    cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
+    
     if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
         
-        //Add to Selected Indexes
-        //[self.selectedPeople addObject:currentUser];
-
-        //Update Mask with Checkmark
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
-            NSLog(@"User Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
-
             PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
             
             cell.personTitle.text = object[@"username"];
@@ -390,9 +329,6 @@
     } else {
         
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            
-            NSLog(@"User Not Already Invited - %@ and %@", currentUser.objectId, currentUser.username);
-            
 
             cell.profileImage.file = (PFFile *)object[@"profilePicture"];
             cell.personTitle.text = object[@"username"];
@@ -451,11 +387,8 @@
         
     } completion:^(BOOL finished) {
         
-        
     }];
 }
-
-
 
 
 
@@ -470,18 +403,13 @@
         PersonCell *cell = (PersonCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
         EVNUser *currentUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
         
-        //already selected - deselect
         if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
             
             [self removeUser:currentUser fromArray:self.allInvitedUsers];
-            //[self.allInvitedUsers removeObject:currentUser];
             
             [self.usersAlreadyInvited removeObject:currentUser];
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                
-                NSLog(@"Remove User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
-                
                 
                 cell.profileImage.file = (PFFile *) object[@"profilePicture"];
                 [cell.profileImage loadInBackground];
@@ -489,16 +417,13 @@
             }];
             
         } else {
-            //Not Selected - Now Select
             
             [self.allInvitedUsers addObject:currentUser];
             
             [self.usersAlreadyInvited addObject:currentUser];
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                
-                NSLog(@"Add User from PFRelation - %@ and %@", currentUser.objectId, currentUser.username);
-                
+    
                 cell.profileImage.file = (PFFile *)object[@"profilePicture"];
                 [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                     
@@ -572,8 +497,6 @@
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
         
-        NSLog(@"RESULTS OF QUERYFORUSERSFOLLOWING: %@", usersFound);
-        
         NSMutableArray *finalResults = [[NSMutableArray alloc] init];
         
         if (!error) {
@@ -601,10 +524,8 @@
 
 
 
-
 #pragma mark - EventAddVCDelegate Methods
 
-//TODO - Test this for large lists with scrolling.
 - (void)doneSelectingPeopleToInvite {
     
     NSMutableArray *newInvites = [[NSMutableArray alloc] init];
@@ -613,10 +534,8 @@
         
         if (![self isUser:user alreadyInArray:self.previouslyInvitedUsers]) {
             [newInvites addObject:user];
-            NSLog(@"New Invite");
         }
     }
-    
     
     id<PeopleVCDelegate> strongDelegate = self.delegate;
     

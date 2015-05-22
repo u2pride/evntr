@@ -7,15 +7,15 @@
 //
 
 #import "AppDelegate.h"
-#import "EVNUser.h"
-#import <Parse/Parse.h>
-#import <Bolts/Bolts.h>
-
 #import "EVNConstants.h"
-#import <FacebookSDK/FacebookSDK.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
-#import <ParseCrashReporting/ParseCrashReporting.h>
+#import "EVNUser.h"
+
 #import <AVFoundation/AVFoundation.h>
+#import <Bolts/Bolts.h>
+#import <FacebookSDK/FacebookSDK.h>
+#import <Parse/Parse.h>
+#import <ParseCrashReporting/ParseCrashReporting.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 
 @interface AppDelegate ()
 

@@ -7,7 +7,7 @@
 //
 
 #import "EVNConstants.h"
-#import "LocationSearchVC.h"
+#import "EVNLocationSearchVC.h"
 #import "EventObject.h"
 
 #import <Parse/Parse.h>

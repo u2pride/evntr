@@ -11,7 +11,6 @@
 
 @interface PersonCell : UICollectionViewCell
 
-
 @property (strong, nonatomic) IBOutlet PFImageView *profileImage;
 @property (weak, nonatomic) IBOutlet UILabel *personTitle;
 

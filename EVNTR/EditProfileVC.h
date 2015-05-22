@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import <UIKit/UIKit.h>
 
 @protocol ProfileEditDelegate;
 
@@ -29,6 +29,6 @@
 @protocol ProfileEditDelegate <NSObject>
 
 - (void) canceledEditingProfile;
--(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData;
+- (void) saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData;
 
 @end

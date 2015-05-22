@@ -11,16 +11,18 @@
 @implementation UIColor (EVNColors)
 
 + (UIColor *) orangeThemeColor {
-    
-    return [UIColor colorWithRed:0.922 green:0.333 blue:0.141 alpha:1]; /*#eb5524*/}
-
-+ (UIColor *) darkOrangeThemeColor {
-    return [UIColor colorWithRed:0.651 green:0.322 blue:0 alpha:1]; /*#a65200*/
+    return [UIColor colorWithRed:0.922 green:0.333 blue:0.141 alpha:1]; /*#eb5524*/
 }
 
++ (UIColor *) darkOrangeThemeColor {
+    return [UIColor colorWithRed:0.808 green:0.192 blue:0.153 alpha:1]; /*#ce3127*/
+}
 
-- (UIColor *)lighterColor
-{
++ (UIColor *) lightOrangeThemeColor {
+    return [UIColor colorWithRed:0.953 green:0.443 blue:0.192 alpha:1]; /*#f37131*/
+}
+
+- (UIColor *)lighterColor {
     CGFloat h, s, b, a;
     if ([self getHue:&h saturation:&s brightness:&b alpha:&a])
         return [UIColor colorWithHue:h
@@ -30,8 +32,7 @@
     return nil;
 }
 
-- (UIColor *)darkerColor
-{
+- (UIColor *)darkerColor {
     CGFloat h, s, b, a;
     if ([self getHue:&h saturation:&s brightness:&b alpha:&a])
         return [UIColor colorWithHue:h

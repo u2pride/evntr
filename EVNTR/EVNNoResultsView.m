@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNConstants.h"
+#import "EVNNoResultsView.h"
+
 #define HEADER_FONT_SIZE 26
 #define SUBHEADER_FONT_SIZE 16
-
-#import "EVNNoResultsView.h"
-#import "EVNConstants.h"
 
 @interface EVNNoResultsView ()
 
@@ -22,11 +22,12 @@
 
 @implementation EVNNoResultsView
 
+#pragma mark - Initialization Methods
+
 - (instancetype) initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
     if (self) {
-        
         [self setup];
     }
     
@@ -38,7 +39,6 @@
     
     self = [super initWithCoder:aDecoder];
     if (self) {
-        
         [self setup];
     }
     
@@ -48,16 +48,11 @@
 
 - (void) setup {
     
-    //self.backgroundColor = [UIColor orangeColor];
-    
-    
     _backgroundView = [[UIView alloc] init];
     _headerTextLabel = [[UILabel alloc] init];
     _subHeaderTextLabel = [[UILabel alloc] init];
     
     _backgroundView.backgroundColor = [UIColor whiteColor];
-    //_headerTextLabel.backgroundColor = [UIColor blueColor];
-    //_subHeaderTextLabel.backgroundColor = [UIColor purpleColor];
     
     _actionButton = [[EVNButton alloc] init];
     _actionButton.titleText = @"";
@@ -76,76 +71,21 @@
     _headerTextLabel.font = [UIFont fontWithName:EVNFontRegular size:HEADER_FONT_SIZE];
     _subHeaderTextLabel.font = [UIFont fontWithName:EVNFontLight size:SUBHEADER_FONT_SIZE];
     
-    
     _backgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     _headerTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _subHeaderTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _actionButton.translatesAutoresizingMaskIntoConstraints = NO;
-    
     
     [self addSubview:_backgroundView];
     [self addSubview:_headerTextLabel];
     [self addSubview:_subHeaderTextLabel];
     [self addSubview:_actionButton];
     
-    
-    /*
-    _address = @"Location Address";
-    _eventLocation = [[CLLocation alloc] init];
-    _distanceAway = 2.0f;
-    
-    _mapView = [[MKMapView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
-    
-    _addressLabel = [[UILabel alloc] init];
-    _addressLabel.textAlignment = NSTextAlignmentCenter;
-    _addressLabel.font = [UIFont fontWithName:@"Lato-Light" size:16];
-    _addressLabel.textColor = [UIColor blackColor];
-    _addressLabel.numberOfLines = 2;
-    _addressLabel.text = _address;
-    
-    _distanceAwayLabel = [[UILabel alloc] init];
-    _distanceAwayLabel.textAlignment = NSTextAlignmentCenter;
-    _distanceAwayLabel.font = [UIFont fontWithName:@"Lato-Light" size:78];
-    _distanceAwayLabel.text = @"23.4";
-    
-    
-    _circleView = [[UIView alloc] init];
-    
-    _milesAwayLabel = [[UILabel alloc] init];
-    _milesAwayLabel.text = @"miles away";
-    _milesAwayLabel.textAlignment = NSTextAlignmentCenter;
-    _milesAwayLabel.font = [UIFont fontWithName:EVNFontRegular size:12];
-    _milesAwayLabel.textColor = [UIColor darkGrayColor];
-    
-    _mapView.translatesAutoresizingMaskIntoConstraints = NO;
-    _addressLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _distanceAwayLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    _circleView.translatesAutoresizingMaskIntoConstraints = NO;
-    _milesAwayLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [self addSubview:_mapView];
-    [self addSubview:_circleView];
-    [self addSubview:_addressLabel];
-    
-    [_circleView addSubview:_distanceAwayLabel];
-    [_circleView addSubview:_milesAwayLabel];
-    
-    
-    _mapView.backgroundColor = [UIColor orangeColor];
-    _addressLabel.backgroundColor = [UIColor whiteColor];
-    _circleView.backgroundColor = [UIColor whiteColor];
-    _distanceAwayLabel.backgroundColor = [UIColor clearColor];
-    _milesAwayLabel.backgroundColor = [UIColor clearColor];
-    
-    */
-    
 }
 
 
 
 - (void) layoutSubviews {
-    
-    NSLog(@"LayoutSubviewsCalled");
     
     ////////////////////////////////////////////////////////////////////
     //backgroundView
@@ -199,8 +139,6 @@
 
     CGSize size = [sampleString sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:EVNFontRegular size:HEADER_FONT_SIZE]}];
     CGSize adjustedSize = CGSizeMake(ceilf(size.width), ceilf(size.height));
-    
-    NSLog(@"size: %@", NSStringFromCGSize(adjustedSize));
     
     //Center X
     [self addConstraint:[NSLayoutConstraint
@@ -342,6 +280,7 @@
     
 }
 
+#pragma mark - Setter Methods
 
 - (void) setHeaderText:(NSString *)headerText {
     
@@ -357,15 +296,6 @@
     
     _subHeaderText = subHeaderText;
 }
-
-
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect {
- // Drawing code
- }
- */
 
 
 @end

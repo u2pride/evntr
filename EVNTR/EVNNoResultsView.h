@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "EVNButton.h"
+
+#import <UIKit/UIKit.h>
 
 @interface EVNNoResultsView : UIView
 

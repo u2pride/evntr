@@ -201,19 +201,23 @@
     }
     
     
+    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
     
+    /* CHECK AGAINST BELOW
     //Navigation Bar Font & Color
     NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
     self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     
-    //TODO:  ONLY FOR ALL ACTIVITIES
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
-
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
+    */
     
     
+    //TODO:  ONLY FOR ALL ACTIVITIES
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
+
+
     switch (self.typeOfActivityView) {
         case ACTIVITIES_ALL: {
             

@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "SettingsVC.h"
-#import <Parse/Parse.h>
-#import "ProfileVC.h"
 #import "EVNUser.h"
+#import "ProfileVC.h"
+#import "SettingsVC.h"
+
+#import <Parse/Parse.h>
 
 @import Social;
-
 
 @interface SettingsVC ()
 
@@ -20,23 +20,21 @@
 
 @implementation SettingsVC
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
-    //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
-    //Minor UI Adjustments
     self.navigationController.view.backgroundColor = [UIColor whiteColor];
     
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-
-    
 }
 
 
+#pragma mark - User Actions
 
 - (IBAction)logOut:(id)sender {
     
@@ -44,9 +42,7 @@
     
     //Disable Background Fetch - User Logged Out
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval: UIApplicationBackgroundFetchIntervalNever];
-    
     [self performSegueWithIdentifier:@"SettingsToInitialScreen" sender:self];
-    
     
 }
 
@@ -81,18 +77,12 @@
         
     } else {
         
-        
-        
         UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Twitter Account" message:@"To tweet, make sure to setup Twitter in your iPhone settings.  Click on Settings, back out one page, then look for Twitter." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
         
         [errorAlert addButtonWithTitle:@"Settings"];
-        
-        
-        
         [errorAlert show];
         
     }
-    
     
 }
 
@@ -108,6 +98,7 @@
 
 
 #pragma mark - MFMailViewController Delegate Methods
+
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
     
     [self dismissViewControllerAnimated:YES completion:^{
@@ -115,7 +106,6 @@
         [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
 
     }];
-    
     
 }
 

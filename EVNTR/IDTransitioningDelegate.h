@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-// To support custom or interactive transitions for a view controller
 @interface IDTransitioningDelegate : NSObject <UIViewControllerTransitioningDelegate>
 
 @end

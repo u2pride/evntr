@@ -12,6 +12,7 @@
 #import "EventDetailVC.h"
 #import "EventObject.h"
 #import "EventTableCell.h"
+#import "EVNUtility.h"
 #import "FilterEventsVC.h"
 #import "HomeScreenVC.h"
 #import "NSDate+NVTimeAgo.h"
@@ -72,9 +73,9 @@
     
     NSLog(@"VIEWDIDLOAD");
     
-    //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    //TODO: CHECK AGAINST UTILTIY Navigation Bar Font & Color
+    //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
         
     //stop Movie Player on Initial Screen
     [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];

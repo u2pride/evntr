@@ -10,15 +10,13 @@
 
 @implementation PersonCell
 
-@synthesize personTitle, profileImage;
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        // Initialization code
+- (PFImageView *) profileImage {
+    
+    if (!_profileImage) {
+        _profileImage = [[PFImageView alloc] initWithImage:[UIImage imageNamed:@"PersonDefault"]];
     }
-    return self;
+    return _profileImage;
 }
+
 
 @end

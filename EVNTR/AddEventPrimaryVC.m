@@ -9,6 +9,7 @@
 #import "AddEventPrimaryVC.h"
 #import "AddEventSecondVC.h"
 #import "EVNButton.h"
+#import "EVNUtility.h"
 #import "UIColor+EVNColors.h"
 
 @import Photos;
@@ -54,19 +55,25 @@
     isEditing = NO;
     
 
+    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
+
     
+    /* CHECK AGAINST BELOW
+    //Navigation Bar Font & Color
+    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+    
+
     //Remove text for back button used in navigation
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
+     */
+     
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
-    
-    //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
     
 
 
@@ -154,9 +161,9 @@
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
         self.navigationItem.leftBarButtonItem = cancelButton;
         
-        //Navigation Bar Font & Color
-        NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-        self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
+        //Navigation Bar Font & Color - THIS IS REPETITIVE TO WHAT IS ABOVE
+        //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+        self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
     }
     
 }
