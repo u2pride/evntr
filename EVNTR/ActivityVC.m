@@ -99,6 +99,9 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    [self updateRefreshTimestampWithDate:[NSDate date]];
+
+    
     //TODO:  ONLY FOR ALL ACTIVITIES
     NSNumber *noNewActivities = 0;
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];

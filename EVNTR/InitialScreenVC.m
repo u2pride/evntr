@@ -115,7 +115,7 @@
 
 - (IBAction)showBuildInformation:(id)sender {
     
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 0.60 - Build 18" message:@"Thanks for downloading the latest build. We've updated this first screen (like the new video?) and now you can submit comments that are multiple lines.  The notifications table is also updated to dynamically size based on its content. As usual, if you run into issues, shoot us an email or send a tweet from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 0.7 - Build 1" message:@"Thanks for downloading the latest version. We've updated this first screen (like the new video?) and now you can submit comments that are multiple lines.  The notifications table is also updated to dynamically size based on its content. As usual, if you run into issues, shoot us an email or send a tweet from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates. It's your chance to shape this app before it's released!" delegate:self cancelButtonTitle:@"Cool Deal" otherButtonTitles: nil];
     
     [errorAlert show];
 }
@@ -263,7 +263,7 @@
     
     NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
     
-    if ([versionBuildNumber isEqualToString:@"V0.60Build18"]) {
+    if ([versionBuildNumber isEqualToString:@"V0.70Build1"]) {
         
         if ([EVNUser currentUser]) {
             
@@ -274,7 +274,7 @@
         
     } else {
     
-        [standardDefaults setObject:@"V0.60Build18" forKey:kFirstLoginNewBuild];
+        [standardDefaults setObject:@"V0.70Build1" forKey:kFirstLoginNewBuild];
         [standardDefaults synchronize];
         
     }

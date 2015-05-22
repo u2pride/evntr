@@ -612,7 +612,7 @@
 
 - (void) setBackgroundOfPictureSectionWithImage:(UIImage *)image {
     
-    UIImage *blurredBackgroundImage = [UIImageEffects imageByApplyingBlurToImage:image withRadius:30.0 tintColor:[UIColor colorWithWhite:0.08 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
+    UIImage *blurredBackgroundImage = [UIImageEffects imageByApplyingBlurToImage:image withRadius:35.0 tintColor:[UIColor colorWithWhite:0.08 alpha:0.8] saturationDeltaFactor:1.8 maskImage:nil];
     
     self.view.layer.contents = (id)blurredBackgroundImage.CGImage;
 }
