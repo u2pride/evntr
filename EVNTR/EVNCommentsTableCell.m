@@ -15,11 +15,10 @@
 
     self.commentTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.commentTextLabel.numberOfLines = 0;
-
 }
 
-- (void)layoutSubviews
-{
+//Neccessary for Dynamic Cell Heights
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     [self.contentView layoutIfNeeded];

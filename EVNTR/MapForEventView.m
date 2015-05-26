@@ -8,13 +8,12 @@
 
 #import "EVNConstants.h"
 #import "MapForEventView.h"
+
 #import <QuartzCore/QuartzCore.h>
 
 @interface MapForEventView () {
-    
     float latitudeSF;
     float longitudeSF;
-
 }
 
 @property (nonatomic, strong) UILabel *addressLabel;
@@ -23,31 +22,28 @@
 @property (nonatomic, strong) UIView *circleView;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
-
 @end
 
+
 @implementation MapForEventView
+
+#pragma mark - Initialization Methods
 
 - (instancetype) initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
     if (self) {
-        
         [self setup];
     }
-    
     return self;
 }
-
 
 - (instancetype) initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
     if (self) {
-        
         [self setup];
     }
-    
     return self;
 }
 
@@ -77,7 +73,6 @@
     _distanceAwayLabel.text = @"";
     _distanceAwayLabel.alpha = 0.0;
 
-    
     _circleView = [[UIView alloc] init];
     
     _milesAwayLabel = [[UILabel alloc] init];
@@ -86,7 +81,6 @@
     _milesAwayLabel.font = [UIFont fontWithName:EVNFontRegular size:12];
     _milesAwayLabel.textColor = [UIColor darkGrayColor];
     _milesAwayLabel.alpha = 0.0;
-    
     
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     _activityIndicator.hidesWhenStopped = YES;
@@ -97,7 +91,6 @@
     _distanceAwayLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _circleView.translatesAutoresizingMaskIntoConstraints = NO;
     _milesAwayLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
     
     [self addSubview:_mapView];
     [self addSubview:_circleView];
@@ -113,13 +106,9 @@
     _distanceAwayLabel.backgroundColor = [UIColor clearColor];
     _milesAwayLabel.backgroundColor = [UIColor clearColor];
     
-    
-    [_activityIndicator startAnimating];
-
-    
 }
 
-
+#pragma mark - Layout
 
 - (void) layoutSubviews {
     
@@ -220,7 +209,6 @@
     self.circleView.clipsToBounds = YES;
     
     
-    
     ////////////////////////////////////////////////////////////////////
     //Distance Away Label
     
@@ -278,18 +266,6 @@
                          attribute:NSLayoutAttributeCenterY
                          multiplier:1.0
                          constant:0.0]];
-    
-    //Width is 0.8 of Superview
-    /*
-    [self addConstraint:[NSLayoutConstraint
-                         constraintWithItem:self.activityIndicator
-                         attribute:NSLayoutAttributeWidth
-                         relatedBy:NSLayoutRelationEqual
-                         toItem:self.circleView
-                         attribute:NSLayoutAttributeWidth
-                         multiplier:0.7
-                         constant:0.0]];
-    */
 
     ////////////////////////////////////////////////////////////////////
     //Miles Away Label
@@ -380,9 +356,9 @@
 }
 
 
+#pragma mark - Custom Setters
 
 - (void) setEventLocation:(CLLocation *)eventLocation {
-    
     
     _eventLocation = eventLocation;
     
@@ -409,13 +385,15 @@
 }
 
 
+#pragma mark - Loading Lifecycle
+
 - (void) startedLoading {
     
     self.distanceAwayLabel.alpha = 0.0;
     self.addressLabel.alpha = 0.0;
     self.milesAwayLabel.alpha = 0.0;
     
-    
+    [self.activityIndicator startAnimating];
 }
 
 - (void) finishedLoadingWithLocationAvailable:(BOOL)isLocationVisible {
@@ -426,7 +404,6 @@
         self.addressLabel.alpha = 1.0;
         self.milesAwayLabel.alpha = 1.0;
 
-        
     }];
     
     if (isLocationVisible) {
@@ -441,6 +418,8 @@
     [self.activityIndicator stopAnimating];
 }
 
+#pragma mark - Map Methods
+
 - (void) randomizeLocation {
     
     latitudeSF = latitudeSF + 0;
@@ -450,16 +429,14 @@
         longitudeSF = -122;
     }
     
-    NSLog(@"Lat: %f and Long: %f", latitudeSF, longitudeSF);
-    
     CLLocation *randomLocation = [[CLLocation alloc] initWithLatitude:latitudeSF longitude:longitudeSF];
-    
     MKCoordinateRegion region = MKCoordinateRegionMake(randomLocation.coordinate, MKCoordinateSpanMake(10, 10));
     
     [self.mapView setRegion:region animated:YES];
-    
 }
 
+
+#pragma mark - Clean Up
 
 - (void) dealloc {
     NSLog(@"Dealloc mapview");

@@ -62,9 +62,14 @@ typedef enum {
 
 @implementation SignUpVC
 
+#pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    //Initialization
+    self.viewIsPulledUpForTextInput = NO;
+    self.userPickedProfileImage = NO;
     
     self.usernameField.text = nil;
     self.usernameField.placeholder = @"username";
@@ -76,18 +81,6 @@ typedef enum {
     self.emailField.placeholder = @"email";
     self.emailField.keyboardType = UIKeyboardTypeEmailAddress;
     
-    self.backgroundView.layer.cornerRadius = 20;
-    self.backgroundView.layer.borderWidth = 1.0f;
-    self.backgroundView.layer.borderColor = [UIColor orangeThemeColor].CGColor;
-    
-    self.profileImageView.image = [UIImage imageNamed:@"PersonDefaultAdd"];
-    self.profileImageView.backgroundColor = [UIColor clearColor];
-    
-    UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
-    tapToAddPhoto.delegate = self;
-    self.profileImageView.userInteractionEnabled = YES;
-    [self.profileImageView addGestureRecognizer:tapToAddPhoto];
-    
     self.registerButton.titleText = @"Register";
     self.registerButton.isSelected = YES;
     self.registerButton.isStateless = YES;
@@ -95,10 +88,20 @@ typedef enum {
     self.registerButton.isRounded = NO;
     self.registerButton.backgroundColor = [UIColor orangeThemeColor];
     
-    self.viewIsPulledUpForTextInput = NO;
-    self.userPickedProfileImage = NO;
+    self.backgroundView.layer.cornerRadius = 20;
+    self.backgroundView.layer.borderWidth = 1.0f;
+    self.backgroundView.layer.borderColor = [UIColor orangeThemeColor].CGColor;
+    
+    self.profileImageView.image = [UIImage imageNamed:@"PersonDefaultAdd"];
+    self.profileImageView.backgroundColor = [UIColor clearColor];
     
     self.connectWithFacebookButton.layer.cornerRadius = 5.0f;
+    
+    //Actions
+    UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentProfileImageActions)];
+    tapToAddPhoto.delegate = self;
+    self.profileImageView.userInteractionEnabled = YES;
+    [self.profileImageView addGestureRecognizer:tapToAddPhoto];
 
 }
 
@@ -138,6 +141,7 @@ typedef enum {
 }
 
 
+#pragma mark - Registration And Navigation
 
 - (IBAction)signUpWithFacebook:(id)sender {
     
@@ -145,7 +149,6 @@ typedef enum {
     
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
-    // Login EVNUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
         if (!user) {
@@ -164,27 +167,27 @@ typedef enum {
                 alertMessage = @"Your current session is no longer valid. Please log in again.";
                 
             } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-                NSLog(@"user cancelled login");
+                //NSLog(@"user cancelled login");
                 
             } else {
                 alertTitle  = @"Something went wrong";
                 alertMessage = @"Please try again later.";
-                NSLog(@"Unexpected error:%@", error);
             }
             
             if (alertMessage) {
+                
                 [[[UIAlertView alloc] initWithTitle:alertTitle
                                             message:alertMessage
                                            delegate:nil
-                                  cancelButtonTitle:@"OK"
+                                  cancelButtonTitle:@"C'mon"
                                   otherButtonTitles:nil] show];
             }
             
         } else {
+            
             if (user.isNew) {
-                NSLog(@"User with facebook signed up and logged in!");
                 
-                double delayInSeconds = 3.0;
+                double delayInSeconds = 1.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                     [self grabUserDetailsFromFacebookWithUser:(EVNUser *)user];
@@ -193,15 +196,12 @@ typedef enum {
                 });
                 
             } else {
-                NSLog(@"User with facebook logged in!");
-                NSLog(@"User is already signed up, send them to home page.");
                 
-                //Set isGuest Object
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];
                 [standardDefaults synchronize];
                 
-                double delayInSeconds = 3.0;
+                double delayInSeconds = 1.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                     [self performSegueWithIdentifier:@"SignUpToHomeView" sender:self];
@@ -209,14 +209,171 @@ typedef enum {
                     
                 });
                 
-                
             }
             
         }
         
     }];
-
     
+}
+
+
+- (void) signUp:(id)sender {
+    
+    [self blurViewDuringLoginWithMessage:@"Signing Up..."];
+    
+    EVNUser *newUser = (EVNUser *)[EVNUser object];
+    newUser.username = self.usernameField.text;
+    newUser.password = self.passwordField.text;
+    newUser.email = self.emailField.text;
+    
+    NSString *submittedUsername = self.usernameField.text;
+    NSString *submittedPassword = self.passwordField.text;
+    NSString *submittedEmail = self.emailField.text;
+
+    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedPassword.length >= MIN_PASSWORD_LENGTH && submittedEmail.length > 0) {
+        
+        if (!self.userPickedProfileImage) {
+            self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
+        }
+        
+        UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
+        NSData *pictureDataForParse = UIImagePNGRepresentation(fullyMaskedForData);
+        
+        PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureDataForParse];
+
+        [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            if (succeeded) {
+                
+                newUser[@"profilePicture"] = profilePictureFile;
+                
+                [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    
+                    if (succeeded) {
+                        
+                        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                        [standardDefaults setBool:NO forKey:kIsGuest];
+                        [standardDefaults synchronize];
+                        
+                        [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
+                        
+                    } else {
+                        
+                        switch ((TBParseError)error.code) {
+                                
+                            case TBParseError_InvalidEmailAddress: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a valid email address." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            case TBParseError_UserEmailMissing: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose an email." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            case TBParseError_UserEmailTaken: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please use another email." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            case TBParseError_UsernameMissing: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a username." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            case TBParseError_UsernameTaken: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another username." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            case TBParseError_UserPasswordMissing: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a password." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            default: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Looks like there's a problem with the sign up process.  Try again and if it still doesn't work, send us a tweet @EvntrApp" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                                
+                        }
+                    
+                        [self cleanUpBeforeTransition];
+
+                    }
+                    
+                }];
+                
+            } else {
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Profile Picture" message:@"Looks like we had trouble saving your profile picture.  Try again and if it still doesn't work, send us a tweet @EvntrApp." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                
+                [errorAlert show];
+                
+                [self cleanUpBeforeTransition];
+            }
+        
+        }];
+        
+    } else {
+        
+        if (self.emailField.text.length < 1) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Email" message:@"Add your email before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.usernameField.text.length < MIN_USERNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is at least %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.usernameField.text.length > MAX_USERNAME_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is %d characters or shorter", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (self.passwordField.text.length < MIN_PASSWORD_LENGTH) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Password" message:[NSString stringWithFormat:@"Please choose a password that is at least %d characters", (MIN_PASSWORD_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Issue" message:@"Please make sure to fill in all fields before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+        }
+        
+        [self cleanUpBeforeTransition];
+        
+    }
 }
 
 
@@ -229,23 +386,13 @@ typedef enum {
     
     FBRequest *request = [FBRequest requestForMe];
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
         if (!error) {
             
             [activityIndicator stopAnimating];
             
-            // result is a dictionary with the user's Facebook data
             NSDictionary *userData = (NSDictionary *)result;
-            
             NSMutableDictionary *userDetailsForFBRegistration = [[NSMutableDictionary alloc] init];
-            
-            NSLog(@"FB User Data: %@", result);
-            
-            NSString *facebookID = userData[@"id"];
-            //NSString *name = userData[@"name"];
-            //NSString *location = userData[@"location"][@"name"];
-            //NSString *firstName = userData[@"first_name"];
-            //NSString *email = userData[@"email"];
-            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
             
             if (userData[@"id"]) {
                 [userDetailsForFBRegistration setObject:userData[@"id"] forKey:@"ID"];
@@ -268,10 +415,12 @@ typedef enum {
             }
             
             if (userData[@"id"]) {
+                
+                NSString *facebookID = userData[@"id"];
+                NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+                
                 [userDetailsForFBRegistration setObject:pictureURL forKey:@"profilePictureURL"];
             }
-            
-            NSLog(@"User Before New Data: %@", newUser);
             
             //Submit Initial User Info In Case they Quit the Process Before Finishing Evntr Register Process
             if (userData[@"email"]) {
@@ -288,11 +437,7 @@ typedef enum {
                 newUser[@"facebookID"] = userData[@"id"];
             }
             
-            NSLog(@"User After New Data Before Save: %@", newUser);
-            
             [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                NSLog(@"Finished Saving in Background - %@", [NSNumber numberWithBool:succeeded]);
                 
                 id<NewUserFacebookSignUpDelegate> strongDelegate = self.delegate;
                 
@@ -305,7 +450,7 @@ typedef enum {
             
         } else {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to retrieve Facebook details." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hmmmm" message:@"Looks like we had trouble retrieving your Facebook details.  Send us a tweet at 'EvntrApp' if you continue to have issues." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
             
             [errorAlert show];
             
@@ -315,212 +460,8 @@ typedef enum {
     
 }
 
-#pragma mark - Sign Up New User
 
-- (void)signUp:(id)sender {
-    
-    [self blurViewDuringLoginWithMessage:@"Signing Up..."];
-    
-    EVNUser *newUser = (EVNUser *)[EVNUser object];
-    newUser.username = self.usernameField.text;
-    newUser.password = self.passwordField.text;
-    newUser.email = self.emailField.text;
-    
-    NSString *submittedUsername = self.usernameField.text;
-    NSString *submittedPassword = self.passwordField.text;
-    NSString *submittedEmail = self.emailField.text;
-
-    //Validate that the user has submitted a user name and password
-    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedPassword.length >= MIN_PASSWORD_LENGTH && submittedEmail.length > 0) {
-        
-        [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            if (!error) {
-                
-                if (!self.userPickedProfileImage) {
-                    self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
-                }
-                
-                UIImage *fullyMaskedForData = [UIImage imageWithView:self.profileImageView];
-                NSData *pictureDataForParse = UIImagePNGRepresentation(fullyMaskedForData);
-                
-                //Create user then save profile picture and other information.
-                PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureDataForParse];
-                
-                [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    if (succeeded){
-                        newUser[@"profilePicture"] = profilePictureFile;
-                        [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                            
-                            if (succeeded) {
-                                
-                                //Set isGuest Object
-                                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-                                [standardDefaults setBool:NO forKey:kIsGuest];
-                                [standardDefaults synchronize];
-                                
-                                [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
-                                
-                                /*
-                                double delayInSeconds = 1.0;
-                                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                    [self performSegueWithIdentifier:@"SignUpToOnBoard" sender:self];
-                                    [self cleanUpBeforeTransition];
-                                });
-                                */
-                                
-                            } else {
-                                
-                                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"We're having problems on our side.  Don't worry, it should work if you try again.  If not, contact us from settings and we'll figure out your problem together." delegate:self cancelButtonTitle:@"Thanks" otherButtonTitles: nil];
-                                
-                                [errorAlert show];
-                            }
-                            
-                        }];
-                    }
-                }];
-                
-            } else {
-                
-                switch ((TBParseError)error.code) {
-                        
-                    case TBParseError_InvalidEmailAddress: {
-                        
-                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a valid email address." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [failureAlert show];
-                        
-                        break;
-                    }
-                    case TBParseError_UserEmailMissing: {
-                        
-                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose an email." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [failureAlert show];
-                        
-                        break;
-                    }
-                    case TBParseError_UserEmailTaken: {
-                        
-                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please use another email." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [failureAlert show];
-                        
-                        break;
-                    }
-                    case TBParseError_UsernameMissing: {
-                        
-                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a username." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [failureAlert show];
-                        
-                        break;
-                    }
-                    case TBParseError_UsernameTaken: {
-                        
-                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another username." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [failureAlert show];
-                        
-                        break;
-                    }
-                    case TBParseError_UserPasswordMissing: {
-                        
-                        UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose a password." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                        
-                        [failureAlert show];
-                        
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                
-                
-
-            }
-            
-            [self cleanUpBeforeTransition];
-
-            
-        }];
-        
-    } else {
-            
-        if (self.emailField.text.length < 1) {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Missing Email" message:@"Add your email before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-        } else if (self.usernameField.text.length < MIN_USERNAME_LENGTH) {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is at least %d characters", (MIN_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-        } else if (self.usernameField.text.length > MAX_USERNAME_LENGTH) {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Please choose a username that is %d characters or shorter", (MAX_USERNAME_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-        } else if (self.passwordField.text.length < MIN_PASSWORD_LENGTH) {
-        
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Password" message:[NSString stringWithFormat:@"Please choose a password that is at least %d characters", (MIN_PASSWORD_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-        } else {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Issue" message:@"Please make sure to fill in all fields before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-            
-            [errorAlert show];
-        }
-        
-        
-        [self cleanUpBeforeTransition];
-
-    }
-
-}
-
-
-- (void) blurViewDuringLoginWithMessage:(NSString *)message {
-    
-    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-    self.blurOutLogInScreen.alpha = 0;
-    self.blurOutLogInScreen.frame = self.view.bounds;
-    [self.view addSubview:self.blurOutLogInScreen];
-    
-    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
-    self.blurMessage.alpha = 0;
-    self.blurMessage.text = message;
-    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
-    self.blurMessage.textAlignment = NSTextAlignmentCenter;
-    self.blurMessage.textColor = [UIColor whiteColor];
-    self.blurMessage.center = self.view.center;
-    
-    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
-    [self.view addSubview:self.shimmerView];
-    
-    self.shimmerView.contentView = self.blurMessage;
-    self.shimmerView.shimmering = YES;
-    
-    [UIView animateWithDuration:0.8 animations:^{
-        self.blurOutLogInScreen.alpha = 1;
-        self.blurMessage.alpha = 1;
-    } completion:^(BOOL finished) {
-        
-        
-    }];
-    
-}
-
-
-#pragma mark - Upload Image Sheet
+#pragma mark - User Actions
 
 - (void) presentProfileImageActions {
     
@@ -547,14 +488,12 @@ typedef enum {
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
             [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
             
-            
         }];
         
     }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
     
-    //Check to see if device has a camera
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [pictureOptionsMenu addAction:takePhoto];
     }
@@ -564,9 +503,7 @@ typedef enum {
     
     pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
     
-    [self presentViewController:pictureOptionsMenu animated:YES completion:^{
-        
-    }];
+    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
     
 }
 
@@ -663,6 +600,19 @@ typedef enum {
 }
 
 
+//Tap to Dismiss Keyboard
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if (self.viewIsPulledUpForTextInput) {
+        [self.usernameField resignFirstResponder];
+        [self.passwordField resignFirstResponder];
+        [self.emailField resignFirstResponder];
+    }
+}
+
+
+#pragma mark - Helper Methods
+
 - (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
     
     int movement = (up ? -distance : distance);
@@ -676,27 +626,41 @@ typedef enum {
         
     } completion:^(BOOL finished) {
         self.viewIsPulledUpForTextInput = (up ? YES : NO);
-        
     }];
     
 }
 
-
-//Allow user to dismiss keyboard by tapping the View
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void) blurViewDuringLoginWithMessage:(NSString *)message {
     
-    if (self.viewIsPulledUpForTextInput) {
-        [self.usernameField resignFirstResponder];
-        [self.passwordField resignFirstResponder];
-        [self.emailField resignFirstResponder];
-    }
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    self.blurOutLogInScreen.alpha = 0;
+    self.blurOutLogInScreen.frame = self.view.bounds;
+    [self.view addSubview:self.blurOutLogInScreen];
     
+    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    self.blurMessage.alpha = 0;
+    self.blurMessage.text = message;
+    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
+    self.blurMessage.textAlignment = NSTextAlignmentCenter;
+    self.blurMessage.textColor = [UIColor whiteColor];
+    self.blurMessage.center = self.view.center;
+    
+    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:self.shimmerView];
+    
+    self.shimmerView.contentView = self.blurMessage;
+    self.shimmerView.shimmering = YES;
+    
+    [UIView animateWithDuration:0.8 animations:^{
+        
+        self.blurOutLogInScreen.alpha = 1;
+        self.blurMessage.alpha = 1;
+        
+    } completion:nil];
     
 }
 
-
-
-#pragma mark - private methods
 
 - (void) cleanUpBeforeTransition {
     
@@ -718,7 +682,10 @@ typedef enum {
 }
 
 
+#pragma mark - Clean Up
+
 -(void)dealloc {
+    
     NSLog(@"signupvc is being deallocated");
 }
 

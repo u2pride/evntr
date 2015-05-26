@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "LogInVC.h"
-#import "SignUpVC.h"
 #import "NewUserFacebookVC.h"
+#import "SignUpVC.h"
+
+#import <UIKit/UIKit.h>
 
 @interface InitialScreenVC : UIViewController <NewUserFacebookDelegate, NewUserFacebookSignUpDelegate>
 

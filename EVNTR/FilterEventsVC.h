@@ -15,7 +15,6 @@
 @property (nonatomic) float selectedFilterDistance;
 @property (nonatomic, strong) id <EVNFilterProtocol> delegate;
 
-
 @end
 
 @protocol EVNFilterProtocol <NSObject>

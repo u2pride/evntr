@@ -6,10 +6,12 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-@protocol NewUserFacebookDelegate;
+
+#import "ResetPasswordModalVC.h"
 
 #import <UIKit/UIKit.h>
-#import "ResetPasswordModalVC.h"
+
+@protocol NewUserFacebookDelegate;
 
 @interface LogInVC : UIViewController <ResetPasswordDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 

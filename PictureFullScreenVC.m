@@ -12,11 +12,11 @@
 
 @property (nonatomic, strong) UIButton *removePhoto;
 
-- (IBAction)backToEvent:(id)sender;
-
 @end
 
 @implementation PictureFullScreenVC
+
+#pragma mark - Initialization Methods
 
 - (instancetype) initWithCoder:(NSCoder *)aDecoder {
     
@@ -29,102 +29,17 @@
         _removePhoto.titleLabel.font = [UIFont fontWithName:@"Lato-Light" size:21];
         [_removePhoto addTarget:self action:@selector(removePhotoFromEvent) forControlEvents:UIControlEventTouchUpInside];
         _removePhoto.translatesAutoresizingMaskIntoConstraints = NO;
+        _showRemovePhotoAction = NO;
     }
     
     return self;
 }
 
-
-- (void) setShowRemovePhotoAction:(BOOL)showRemovePhotoAction {
-    
-    _showRemovePhotoAction = showRemovePhotoAction;
-    
-    self.removePhoto.hidden = (showRemovePhotoAction) ? NO : YES;
-    
-}
-
-
-- (void) removePhotoFromEvent {
-    
-    NSLog(@"remove photo");
-    self.removePhoto.enabled = NO;
-    
-    [self.eventPictureObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-       
-        id<PictureViewerDelegate> strongDelegate = self.delegate;
-        
-        if ([strongDelegate respondsToSelector:@selector(returnToEventAndDeletePhoto:)]) {
-            
-            [strongDelegate returnToEventAndDeletePhoto:YES];
-        }
-        
-        if (!succeeded) {
-            self.removePhoto.enabled = YES;
-        }
-        
-    }];
-    
-}
-
-- (void) updateViewConstraints {
-    
-    [super updateViewConstraints];
-    
-    
-    NSString *removePhotosString = @"Remove Photos";
-    
-    CGSize size = [removePhotosString sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Lato-Light" size:21]}];
-    CGSize adjustedSize = CGSizeMake(ceilf(size.width), ceilf(size.height));
-    
-    NSLog(@"size: %@", NSStringFromCGSize(adjustedSize));
-    
-    //Center X
-    [self.view addConstraint:[NSLayoutConstraint
-                         constraintWithItem:self.removePhoto
-                         attribute:NSLayoutAttributeCenterX
-                         relatedBy:NSLayoutRelationEqual
-                         toItem:self.view
-                         attribute:NSLayoutAttributeCenterX
-                         multiplier:1.0
-                         constant:0.0]];
-    
-    //Below Image View
-    [self.view addConstraint:[NSLayoutConstraint
-                         constraintWithItem:self.removePhoto
-                         attribute:NSLayoutAttributeTop
-                         relatedBy:NSLayoutRelationEqual
-                         toItem:self.eventPhotoView
-                         attribute:NSLayoutAttributeBottom
-                         multiplier:1.0
-                         constant:32]];
-    
-    //80% Width
-    [self.view addConstraint:[NSLayoutConstraint
-                         constraintWithItem:self.removePhoto
-                         attribute:NSLayoutAttributeWidth
-                         relatedBy:NSLayoutRelationEqual
-                         toItem:self.view
-                         attribute:NSLayoutAttributeWidth
-                         multiplier:0.8
-                         constant:0.0]];
-    
-    //Height Related to Text String
-    [self.view addConstraint:[NSLayoutConstraint
-                         constraintWithItem:self.removePhoto
-                         attribute:NSLayoutAttributeHeight
-                         relatedBy:NSLayoutRelationEqual
-                         toItem:self.view
-                         attribute:NSLayoutAttributeHeight
-                         multiplier:0.0
-                         constant:adjustedSize.height + 10]];
-    
-    
-}
-
+#pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     [self.view addSubview:self.removePhoto];
     
     self.eventPhotoView.image = [UIImage imageNamed:@"PersonDefault"];
@@ -135,42 +50,114 @@
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToEvent:)];
     [self.eventPhotoView.superview addGestureRecognizer:tapgr];
     
-    
-    
-}
-
-- (void) viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
-
-    
-    //self.edgesForExtendedLayout = UIRectEdgeTop;
-    //self.extendedLayoutIncludesOpaqueBars = YES;
-    
 }
 
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+#pragma mark - Layout Views
+
+- (void) updateViewConstraints {
+    
+    [super updateViewConstraints];
+    
+    NSString *removePhotosString = @"Remove Photos";
+    
+    CGSize size = [removePhotosString sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Lato-Light" size:21]}];
+    CGSize adjustedSize = CGSizeMake(ceilf(size.width), ceilf(size.height));
+    
+    //Center X
+    [self.view addConstraint:[NSLayoutConstraint
+                              constraintWithItem:self.removePhoto
+                              attribute:NSLayoutAttributeCenterX
+                              relatedBy:NSLayoutRelationEqual
+                              toItem:self.view
+                              attribute:NSLayoutAttributeCenterX
+                              multiplier:1.0
+                              constant:0.0]];
+    
+    //Below Image View
+    [self.view addConstraint:[NSLayoutConstraint
+                              constraintWithItem:self.removePhoto
+                              attribute:NSLayoutAttributeTop
+                              relatedBy:NSLayoutRelationEqual
+                              toItem:self.eventPhotoView
+                              attribute:NSLayoutAttributeBottom
+                              multiplier:1.0
+                              constant:32]];
+    
+    //80% Width
+    [self.view addConstraint:[NSLayoutConstraint
+                              constraintWithItem:self.removePhoto
+                              attribute:NSLayoutAttributeWidth
+                              relatedBy:NSLayoutRelationEqual
+                              toItem:self.view
+                              attribute:NSLayoutAttributeWidth
+                              multiplier:0.8
+                              constant:0.0]];
+    
+    //Height Related to Text String
+    [self.view addConstraint:[NSLayoutConstraint
+                              constraintWithItem:self.removePhoto
+                              attribute:NSLayoutAttributeHeight
+                              relatedBy:NSLayoutRelationEqual
+                              toItem:self.view
+                              attribute:NSLayoutAttributeHeight
+                              multiplier:0.0
+                              constant:adjustedSize.height + 10]];
 }
 
 
+#pragma mark - Custom Setters
 
-- (IBAction)backToEvent:(id)sender {
+- (void) setShowRemovePhotoAction:(BOOL)showRemovePhotoAction {
+    
+    _showRemovePhotoAction = showRemovePhotoAction;
+    
+    self.removePhoto.hidden = (showRemovePhotoAction) ? NO : YES;
+    
+}
+
+
+#pragma mark - User Actions
+
+- (void) removePhotoFromEvent {
+    
+    self.removePhoto.enabled = NO;
+    
+    [self.eventPictureObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+       
+        if (succeeded) {
+            
+            id<PictureViewerDelegate> strongDelegate = self.delegate;
+            
+            if ([strongDelegate respondsToSelector:@selector(returnToPicturesViewAndDeletePhoto:)]) {
+                
+                [strongDelegate returnToPicturesViewAndDeletePhoto:YES];
+            }
+            
+        } else {
+            self.removePhoto.enabled = YES;
+        }
+    
+    }];
+    
+}
+
+
+- (void) backToEvent:(id)sender {
     
     id<PictureViewerDelegate> strongDelegate = self.delegate;
     
-    if ([strongDelegate respondsToSelector:@selector(returnToEventAndDeletePhoto:)]) {
+    if ([strongDelegate respondsToSelector:@selector(returnToPicturesViewAndDeletePhoto:)]) {
         
-        [strongDelegate returnToEventAndDeletePhoto:NO];
+        [strongDelegate returnToPicturesViewAndDeletePhoto:NO];
     }
 }
 
+#pragma mark - Clean Up
 
--(void)dealloc {
-    
+- (void)dealloc {
     NSLog(@"picturefullscreenvc is being deallocated");
 }
+
+
 @end

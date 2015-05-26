@@ -52,12 +52,6 @@
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-
 #pragma mark - UIPageViewController Data Source Methods
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
@@ -72,7 +66,6 @@
     
 }
 
-
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     
     int indexForVC = (int) viewController.view.tag;
@@ -84,6 +77,48 @@
     }
     
 }
+
+
+
+#pragma mark - UIPageViewController Delegate Methods
+
+- (void) pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    
+    if (completed) {
+        self.pageControl.currentPage = self.currentIndex;
+    }
+    
+}
+
+- (void) pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
+    
+    UIViewController *vc = [pendingViewControllers firstObject];
+    self.currentIndex = (int) vc.view.tag;
+
+}
+
+
+#pragma mark - UIPageControl Support Methods
+
+- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
+    
+    return [self.walkthroughImages count];
+}
+
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
+    
+    return 0;
+}
+
+#pragma mark - User Actions
+
+- (void) endWalkthrough {
+    
+    [self performSegueWithIdentifier:@"WalkthroughToApp" sender:self];
+    
+}
+
+#pragma mark - Helper Methods
 
 - (UIViewController *) viewControllerForWalkthroughIndex:(int) index {
     
@@ -112,45 +147,5 @@
     return walkthroughVC;
 }
 
-- (void) endWalkthrough {
-    
-    NSLog(@"End the Walkthrough");
-    
-    [self performSegueWithIdentifier:@"WalkthroughToApp" sender:self];
-    
-}
-
-
-- (void) pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    
-    NSLog(@"HERE TOO");
-    
-    if (completed) {
-        self.pageControl.currentPage = self.currentIndex;
-    }
-    
-}
-
-- (void) pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers {
-    
-    NSLog(@"CALLED");
-
-    UIViewController *vc = [pendingViewControllers firstObject];
-    self.currentIndex = (int) vc.view.tag;
-
-}
-
-
-- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController
-{
-    NSLog(@"THIS");
-    return [self.walkthroughImages count];
-}
-
-- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController
-{
-    NSLog(@"ONCE");
-    return 0;
-}
 
 @end

@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EVNConstants.h"
 #import "EVNButton.h"
+#import "EVNConstants.h"
 #import "EVNUser.h"
+#import "FBShimmeringView.h"
 #import "FacebookSDK/FacebookSDK.h"
 #import "HomeScreenVC.h"
 #import "IDTransitioningDelegate.h"
-#import "FBShimmeringView.h"
 #import "LogInVC.h"
 #import "MBProgressHUD.h"
 #import "ParseFacebookUtils/PFFacebookUtils.h"
@@ -29,21 +29,20 @@
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> transitioningDelegateForModal;
 
 @property (weak, nonatomic) IBOutlet UIButton *fbLoginButton;
-@property (strong, nonatomic) IBOutlet EVNButton *loginButton;
+@property (weak, nonatomic) IBOutlet EVNButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIButton *forgotPasswordButton;
-@property (weak, nonatomic) IBOutlet UILabel *textSeparator;
 
-@property (nonatomic, strong) UIVisualEffectView *blurViewForModal;
+@property (weak, nonatomic) IBOutlet UILabel *textSeparator;
+@property (weak, nonatomic) IBOutlet UIView *separatorLineLeft;
+@property (weak, nonatomic) IBOutlet UIView *separatorLineRight;
+
 @property (nonatomic, strong) UIVisualEffectView *blurOutLogInScreen;
 @property (nonatomic, strong) UILabel *blurMessage;
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
-@property (nonatomic) BOOL isNewUserFromFacebook;
-@property (nonatomic) BOOL viewIsPulledUpForTextInput;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
-@property (strong, nonatomic) IBOutlet UIView *separatorLineLeft;
-@property (strong, nonatomic) IBOutlet UIView *separatorLineRight;
-
+@property (nonatomic) BOOL isNewUserFromFacebook;
+@property (nonatomic) BOOL viewIsPulledUpForTextInput;
 
 - (IBAction)resetUserPassword:(id)sender;
 - (IBAction)login:(id)sender;
@@ -51,19 +50,17 @@
 @end
 
 
-
 @implementation LogInVC
 
+#pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    //Initialization
     self.isNewUserFromFacebook = NO;
     self.viewIsPulledUpForTextInput = NO;
     self.transitioningDelegateForModal = [[IDTransitioningDelegate alloc] init];
-    
-    self.usernameField.delegate = self;
-    self.passwordField.delegate = self;
     
     self.usernameField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     self.usernameField.layer.borderWidth = 1.0f;
@@ -74,17 +71,20 @@
     self.passwordField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     self.passwordField.layer.borderWidth = 1.0f;
     
+    self.fbLoginButton.layer.cornerRadius = 4.0;
+
     self.loginButton.titleText = @"Log In";
     self.loginButton.font = [UIFont fontWithName:EVNFontRegular size:21];
     self.loginButton.isRounded = NO;
     self.loginButton.isSelected = YES;
     self.loginButton.isStateless = YES;
-    
-    self.fbLoginButton.layer.cornerRadius = 4.0;
-    
-    
 
+    //Delegates
+    self.usernameField.delegate = self;
+    self.passwordField.delegate = self;
+    
 }
+
 
 - (void) viewWillAppear:(BOOL)animated {
     
@@ -97,8 +97,6 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     
-    
-    //PlaceHolder Text Color Change
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
     }
@@ -106,8 +104,6 @@
     if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
     }
-    
-    
     
 }
 
@@ -124,15 +120,14 @@
 
 #pragma mark - Login Requests
 
-//Normal User Login with Username and Password
 - (void)login:(id)sender {
     
     [self blurViewDuringLoginWithMessage:@"Logging you in..."];
     
     [EVNUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
+        
         if (user) {
             
-            //Set isGuest Object
             NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
             [standardDefaults setBool:NO forKey:kIsGuest];
             [standardDefaults synchronize];
@@ -145,32 +140,20 @@
             });
             
         } else {
-            //Failed to Login
-            [self cleanUpBeforeTransition];
 
-            UIAlertView *loginIssue = [[UIAlertView alloc] initWithTitle:@"Login Issue" message:@"Please make sure your username and password are correct." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *loginIssue = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like you mistyped your username or password." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [loginIssue show];
             
-
+            [self cleanUpBeforeTransition];
+            
         }
 
-        
     }];
     
-    
-}
-
-#pragma mark - Alert View Delegate
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RestartMoviePlayer" object:nil];
-
 }
 
 
-//Logging In with Parse and Facebook Integration
 - (IBAction)loginWithFacebook:(id)sender {
     
     [self blurViewDuringLoginWithMessage:@"Logging you in..."];
@@ -178,7 +161,6 @@
     // TODO:  Set permissions required from the facebook user account
     NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
     
-    // Login EVNUser using Facebook
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
         if (!user) {
@@ -215,8 +197,8 @@
             
             
         } else {
+            
             if (user.isNew) {
-                NSLog(@"User with facebook signed up and logged in!");
                 
                 double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -227,9 +209,7 @@
                 });
                 
             } else {
-                NSLog(@"User with facebook logged in!");
                 
-                //Set isGuest Object
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];
                 [standardDefaults synchronize];
@@ -255,7 +235,6 @@
 }
 
 
-
 - (void) grabUserDetailsFromFacebookWithUser:(EVNUser *)newUser {
     
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -269,16 +248,8 @@
             
             [activityIndicator stopAnimating];
             
-            // result is a dictionary with the user's Facebook data
             NSDictionary *userData = (NSDictionary *)result;
-            
             NSMutableDictionary *userDetailsForFBRegistration = [[NSMutableDictionary alloc] init];
-            
-            NSLog(@"FB User Data: %@", result);
-            
-            NSString *facebookID = userData[@"id"];
-
-            NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
             
             if (userData[@"id"]) {
                 [userDetailsForFBRegistration setObject:userData[@"id"] forKey:@"ID"];
@@ -301,10 +272,12 @@
             }
             
             if (userData[@"id"]) {
+                
+                NSString *facebookID = userData[@"id"];
+                NSURL *pictureURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
+                
                 [userDetailsForFBRegistration setObject:pictureURL forKey:@"profilePictureURL"];
             }
-            
-            NSLog(@"User Before New Data: %@", newUser);
             
             //Submit Initial User Info In Case they Quit the Process Before Finishing Evntr Register Process
             if (userData[@"email"]) {
@@ -321,12 +294,8 @@
                 newUser[@"facebookID"] = userData[@"id"];
             }
             
-            NSLog(@"User After New Data Before Save: %@", newUser);
-            
             [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
-                NSLog(@"Finished Saving in Background - %@", [NSNumber numberWithBool:succeeded]);
-
                 id<NewUserFacebookDelegate> strongDelegate = self.delegate;
                 
                 if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetails:)]) {
@@ -336,11 +305,9 @@
                 
             }];
             
- 
-            
         } else {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Failed to retrieve Facebook details." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hmmmm" message:@"Looks like we had trouble retrieving your Facebook details.  Send us a tweet at 'EvntrApp' if you continue to have issues." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
             
             [errorAlert show];
             
@@ -351,36 +318,12 @@
 }
 
 
-- (void) blurViewDuringLoginWithMessage:(NSString *)message {
-    
-    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-    self.blurOutLogInScreen.alpha = 0;
-    self.blurOutLogInScreen.frame = self.view.bounds;
-    [self.view addSubview:self.blurOutLogInScreen];
-    
-    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
-    self.blurMessage.alpha = 0;
-    self.blurMessage.text = message;
-    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
-    self.blurMessage.textAlignment = NSTextAlignmentCenter;
-    self.blurMessage.textColor = [UIColor whiteColor];
-    self.blurMessage.center = self.view.center;
-    
-    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
-    [self.view addSubview:self.shimmerView];
+#pragma mark - Alert View Delegate
 
-    self.shimmerView.contentView = self.blurMessage;
-    self.shimmerView.shimmering = YES;
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    [UIView animateWithDuration:0.8 animations:^{
-        self.blurOutLogInScreen.alpha = 1;
-        self.blurMessage.alpha = 1;
-    } completion:^(BOOL finished) {
-        
-
-    }];
-   
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"RestartMoviePlayer" object:nil];
+    
 }
 
 
@@ -416,16 +359,12 @@
 }
 
 
-- (void)keyboardWillShow:(NSNotification *)notification {
+- (void) keyboardWillShow:(NSNotification *)notification {
     
-    NSLog(@"KEYBOARDWILL SHOW");
-    
-    //NSValue * keyboardEndFrame;
     CGRect    screenRect;
     CGRect    windowRect;
     CGRect    viewRect;
     
-    // determine's keyboard height
     screenRect    = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     windowRect    = [self.view.window convertRect:screenRect fromWindow:nil];
     viewRect      = [self.view        convertRect:windowRect fromView:nil];
@@ -434,13 +373,11 @@
     
     if (!self.viewIsPulledUpForTextInput) {
         [self moveLoginFieldsUp:YES withKeyboardSize:movement];
-        
     }
-    
 }
 
 
-- (void)keyboardWillHide:(NSNotification *)notification {
+- (void) keyboardWillHide:(NSNotification *)notification {
     
     CGRect screenRect;
     CGRect windowRect;
@@ -454,35 +391,11 @@
     
     if (self.viewIsPulledUpForTextInput) {
         [self moveLoginFieldsUp:NO withKeyboardSize:movement];
-        
     }
-    
-}
- 
- 
-- (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
-
-    int movement = (up ? -distance : distance);
-    
-    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
-        
-        self.view.frame = CGRectOffset(self.view.frame, 0, movement);
-        self.fbLoginButton.alpha = (up ? 0 : 1);
-        self.forgotPasswordButton.alpha = (up ? 0 : 1);
-        self.textSeparator.alpha = (up ? 0 : 1);
-        self.loginButton.alpha = (up ? 0 : 1);
-        self.separatorLineLeft.alpha = (up ? 0 : 1);
-        self.separatorLineRight.alpha = (up ? 0 : 1);
-            
-    } completion:^(BOOL finished) {
-        self.viewIsPulledUpForTextInput = (up ? YES : NO);
-    }];
-
-
 }
  
 
-//Allow user to dismiss keyboard by tapping the View
+//Tap To Dismiss Keyboard
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
     if (self.viewIsPulledUpForTextInput) {
@@ -498,8 +411,6 @@
 
 - (void) resetPasswordSuccess {
     
-    NSLog(@"Success");
-    
     [self cleanUpBeforeTransition];
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -507,8 +418,6 @@
 }
 - (void) resetPasswordFailed {
     
-    NSLog(@"Failed Reset");
-
     [self cleanUpBeforeTransition];
     
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -517,15 +426,66 @@
 
 - (void) resetPasswordCanceled {
     
-    NSLog(@"Canceled Reset");
-
     [self cleanUpBeforeTransition];
 
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
 
-#pragma mark - private methods
+
+#pragma mark - Helper Methods
+
+- (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
+    
+    int movement = (up ? -distance : distance);
+    
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+        
+        self.view.frame = CGRectOffset(self.view.frame, 0, movement);
+        self.fbLoginButton.alpha = (up ? 0 : 1);
+        self.forgotPasswordButton.alpha = (up ? 0 : 1);
+        self.textSeparator.alpha = (up ? 0 : 1);
+        self.loginButton.alpha = (up ? 0 : 1);
+        self.separatorLineLeft.alpha = (up ? 0 : 1);
+        self.separatorLineRight.alpha = (up ? 0 : 1);
+        
+    } completion:^(BOOL finished) {
+        self.viewIsPulledUpForTextInput = (up ? YES : NO);
+    }];
+    
+}
+
+- (void) blurViewDuringLoginWithMessage:(NSString *)message {
+    
+    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
+    self.blurOutLogInScreen.alpha = 0;
+    self.blurOutLogInScreen.frame = self.view.bounds;
+    [self.view addSubview:self.blurOutLogInScreen];
+    
+    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
+    self.blurMessage.alpha = 0;
+    self.blurMessage.text = message;
+    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
+    self.blurMessage.textAlignment = NSTextAlignmentCenter;
+    self.blurMessage.textColor = [UIColor whiteColor];
+    self.blurMessage.center = self.view.center;
+    
+    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:self.shimmerView];
+    
+    self.shimmerView.contentView = self.blurMessage;
+    self.shimmerView.shimmering = YES;
+    
+    [UIView animateWithDuration:0.8 animations:^{
+        self.blurOutLogInScreen.alpha = 1;
+        self.blurMessage.alpha = 1;
+    } completion:^(BOOL finished) {
+        
+        
+    }];
+    
+}
 
 - (void) cleanUpBeforeTransition {
     
@@ -546,9 +506,10 @@
 }
 
 
--(void)dealloc {
-    NSLog(@"loginvc is being deallocated");
+#pragma mark - Clean Up
 
+- (void) dealloc {
+    NSLog(@"loginvc is being deallocated");
 }
 
 

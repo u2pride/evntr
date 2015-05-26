@@ -15,20 +15,21 @@
 
 @implementation FullMapVC
 
+#pragma mark - Lifecyle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
-    MKMapView *map = [[MKMapView alloc] initWithFrame:self.view.frame];
-
     self.title = @"Event Location";
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+
+    //Map Initialization
+    MKMapView *map = [[MKMapView alloc] initWithFrame:self.view.frame];
     
     MKPointAnnotation *currentLocationAnnotation = [[MKPointAnnotation alloc] init];
     currentLocationAnnotation.coordinate = self.locationOfEvent.coordinate;
     currentLocationAnnotation.title = self.eventLocationName;
     
-    //Setting up Map to Current Location
     MKCoordinateRegion region = MKCoordinateRegionMake(self.locationOfEvent.coordinate, MKCoordinateSpanMake(0.05, 0.05));
     
     [map addAnnotation:currentLocationAnnotation];
@@ -36,27 +37,15 @@
     
     [self.view addSubview:map];
     
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.view.backgroundColor = [UIColor purpleColor];
-    
-    
+    //Directions Icon
     UIBarButtonItem *directions = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"DirectionsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(getDirectionsToEvent)];
     
     self.navigationItem.rightBarButtonItems = [NSArray arrayWithObject:directions];
     
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
-- (void) viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
-    
-}
+#pragma mark - User Actions
 
 - (void) getDirectionsToEvent {
     
@@ -70,35 +59,22 @@
     // Create a region centered on the starting point with a 10km span
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(fromLocation.coordinate, 10000, 10000);
     
-    
     NSArray *locationsForMap = [NSArray arrayWithObjects:mapItem, mapItemEventLocation, nil];
     
-    
-    // Open the item in Maps, specifying the map region to display.
+    // Open the item in Maps with the map region to display.
     [MKMapItem openMapsWithItems:locationsForMap
                    launchOptions:[NSDictionary dictionaryWithObjectsAndKeys:
                                   [NSValue valueWithMKCoordinate:region.center], MKLaunchOptionsMapCenterKey,
                                   [NSValue valueWithMKCoordinateSpan:region.span], MKLaunchOptionsMapSpanKey, MKLaunchOptionsDirectionsModeDriving, MKLaunchOptionsDirectionsModeKey, [NSNumber numberWithInteger:MKMapTypeStandard], MKLaunchOptionsMapTypeKey, nil]];
     
-    
-    
+
 }
 
 
 
-/*
-#pragma mark - Navigation
+#pragma mark - CleanUp
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-
--(void)dealloc
-{
+- (void) dealloc {
     NSLog(@"fullmapvc is being deallocated");
 }
 

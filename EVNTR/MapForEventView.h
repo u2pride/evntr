@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
+#import <UIKit/UIKit.h>
 
 @interface MapForEventView : UIView
 

@@ -6,20 +6,19 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "EVNUser.h"
+#import "EventDetailVC.h"
+#import "FilterEventsVC.h"
+
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
-#import "FilterEventsVC.h"
-#import "EventDetailVC.h"
-#import "EVNUser.h"
+#import <UIKit/UIKit.h>
 
 
 @interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate, EVNFilterProtocol, EventDetailProtocol, PeopleVCDelegate>
 
-//Customize an Event Table - All Events, Curent User Events, Other User Events (specified in userForEventsQuery)
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) EVNUser *userForEventsQuery;
-
 
 - (void) inviteUsersToEvent:(EventObject *)event;
 

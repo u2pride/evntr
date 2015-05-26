@@ -7,10 +7,10 @@
 //
 
 #import "CommentsTableSource.h"
-#import "NSDate+NVTimeAgo.h"
 #import "EVNCommentsTableCell.h"
+#import "NSDate+NVTimeAgo.h"
 
-NSString *const cellIdentifier = @"commentsCell";
+static NSString *const cellIdentifier = @"commentsCell";
 
 @interface CommentsTableSource ()
 
@@ -20,44 +20,42 @@ NSString *const cellIdentifier = @"commentsCell";
 
 @implementation CommentsTableSource
 
+#pragma mark - Initialization Methods
+
 - (instancetype)init {
-    
     return [self initWithEvent:nil withTable:nil];
 }
 
-
-
-- (instancetype)initWithEvent:(EventObject *)event withTable:(UITableView *)table {
+- (instancetype) initWithEvent:(EventObject *)event withTable:(UITableView *)table {
     
     self = [super init];
     if (self) {
         if (event) {
-            
             _allowAddingComments = NO;
+            _commentsData = [[NSMutableArray alloc] init];
             _commentsTable = table;
             _commentsTable.delegate = self;
             _commentsTable.dataSource = self;
             _commentsTable.separatorStyle = UITableViewCellSeparatorStyleNone;
             [_commentsTable registerNib:[UINib nibWithNibName:@"EVNCommentsTableCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
+            _commentsTable.estimatedRowHeight = 100.0;
+            _commentsTable.rowHeight = UITableViewAutomaticDimension;
             
             [self getCommentsForTableWithEvent:event];
         }
     }
-
+    
     return self;
 }
 
 
+#pragma mark - Custom Setters
+
 - (void) setAllowAddingComments:(BOOL)allowAddingComments {
     
-    NSLog(@"allowAddingComments");
     if (allowAddingComments) {
-        NSLog(@"allowAddingComments2");
-
         if (!self.commentsTable.tableHeaderView) {
-            NSLog(@"allowAddingComments3");
-
-            [self setupTableHeader];
+            [self showAddCommentButtonHeader];
         }
     } else {
         self.commentsTable.tableHeaderView = nil;
@@ -66,10 +64,10 @@ NSString *const cellIdentifier = @"commentsCell";
     _allowAddingComments = allowAddingComments;
 }
 
-- (void) setupTableHeader {
-    
-    NSLog(@"allowAddingComments4");
 
+#pragma mark - Helper Methods
+
+- (void) showAddCommentButtonHeader {
     
     UIView *tableHeader = [[UIView alloc] initWithFrame:CGRectMake(0, 0, _commentsTable.frame.size.width, 50)];
     tableHeader.backgroundColor = [UIColor clearColor];
@@ -81,8 +79,6 @@ NSString *const cellIdentifier = @"commentsCell";
     [self.addCommentButton addTarget:self action:@selector(createNewComment) forControlEvents:UIControlEventTouchUpInside];
     self.addCommentButton.backgroundColor = [UIColor whiteColor];
     self.addCommentButton.layer.cornerRadius = 20;
-    //self.addCommentButton.bounds = CGRectMake(self.commentsTable.center.x, 0, 40, 40);
-    //self.addCommentButton.frame = CGRectMake(self.commentsTable.center.x, 0, 40, 40);
     self.addCommentButton.center = self.commentsTable.superview.center;
     self.addCommentButton.frame = CGRectMake(self.addCommentButton.frame.origin.x - 10, 0, 40, 40);
     
@@ -97,14 +93,34 @@ NSString *const cellIdentifier = @"commentsCell";
     
     [event queryForCommentsWithCompletion:^(NSArray *comments) {
         
-        _commentsData = [NSMutableArray arrayWithArray:comments];
-                
-        [self.commentsTable reloadData];
+        if(comments) {
+            _commentsData = [NSMutableArray arrayWithArray:comments];
+        }
         
+        [self.commentsTable reloadData];
     }];
     
 }
 
+
+- (NSMutableAttributedString *) buildAttributedCommentWithText:(NSString *)commentText andUsername:(NSString *)usernameText {
+    
+    UIFont *usernameFont = [UIFont fontWithName:@"Lato-Light" size:10];
+    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor orangeColor], NSForegroundColorAttributeName, usernameFont, NSFontAttributeName, nil];
+    
+    UIFont *commentFont = [UIFont fontWithName:@"Lato-Light" size:14];
+    NSDictionary *attributesDictionaryAdd = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, commentFont, NSFontAttributeName, nil];
+    
+    NSMutableAttributedString *commentAttributedString = [[NSMutableAttributedString alloc] initWithString:usernameText attributes:attributesDictionary];
+    NSMutableAttributedString *commentAttributedStringTwo = [[NSMutableAttributedString alloc] initWithString:commentText attributes:attributesDictionaryAdd];
+    
+    [commentAttributedString appendAttributedString:commentAttributedStringTwo];
+
+    return commentAttributedString;
+    
+}
+
+#pragma mark - User Actions
 
 - (void) createNewComment {
     
@@ -113,6 +129,7 @@ NSString *const cellIdentifier = @"commentsCell";
         [strongDelegate addNewComment];
     }
     
+    //Button Press Feedback
     [UIView animateWithDuration:0.2 delay:0.0 usingSpringWithDamping:1.0 initialSpringVelocity:0.5 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         
         self.addCommentButton.transform = CGAffineTransformMakeScale(0.9, 0.9);
@@ -123,53 +140,37 @@ NSString *const cellIdentifier = @"commentsCell";
             
             self.addCommentButton.transform = CGAffineTransformIdentity;
             
-        } completion:^(BOOL finished) {
-            
-        }];
+        } completion:nil];
         
     }];
     
 }
 
 
-#pragma mark - Comments Table View DataSource Methods
+#pragma mark - Table View DataSource Methods
+
 - (UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
         
     EVNCommentsTableCell *commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if (!commentCell) {
-        [tableView registerNib:[UINib nibWithNibName:@"EVNCommentsTableCell" bundle:nil] forCellReuseIdentifier:cellIdentifier];
-        
         commentCell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     }
     
     PFObject *comment = [self.commentsData objectAtIndex:indexPath.row];
     EVNUser *commentParent = (EVNUser *) [comment objectForKey:@"commentParent"];
     
-    NSString *usernameComponent = [commentParent.username stringByAppendingString:@": "];
     NSString *commentString = comment[@"commentText"];
+    NSString *usernameComponent = [commentParent.username stringByAppendingString:@": "];
     
-    
-    UIFont *usernameFont = [UIFont fontWithName:@"Lato-Light" size:10];
-    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor orangeColor], NSForegroundColorAttributeName, usernameFont, NSFontAttributeName, nil];
-    
-    UIFont *commentFont = [UIFont fontWithName:@"Lato-Light" size:14];
-    NSDictionary *attributesDictionaryAdd = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor], NSForegroundColorAttributeName, commentFont, NSFontAttributeName, nil];
-    
-    NSMutableAttributedString *commentAttributedString = [[NSMutableAttributedString alloc] initWithString:usernameComponent attributes:attributesDictionary];
-    NSMutableAttributedString *commentAttributedStringTwo = [[NSMutableAttributedString alloc] initWithString:commentString attributes:attributesDictionaryAdd];
-    
-    [commentAttributedString appendAttributedString:commentAttributedStringTwo];
-    
+    commentCell.commentTextLabel.attributedText = [self buildAttributedCommentWithText:commentString andUsername:usernameComponent];
 
-    commentCell.commentTextLabel.attributedText = commentAttributedString;
     commentCell.commentDateLabel.text = [comment.updatedAt formattedAsTimeAgo];
     commentCell.commentDateLabel.textColor = [UIColor colorWithWhite:1.0 alpha:0.5];
     
-    commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
     commentCell.backgroundColor = [UIColor clearColor];
+    commentCell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-    
     return commentCell;
 }
 
@@ -178,18 +179,6 @@ NSString *const cellIdentifier = @"commentsCell";
     return self.commentsData.count;
 
 }
-
-
-#pragma mark - Comments Table View Delegate Methods
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    NSLog(@"Did select table cell for comment - %ld", (long)indexPath.row);
-    
-}
-
-
-
 
 
 

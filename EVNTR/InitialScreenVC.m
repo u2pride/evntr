@@ -18,9 +18,9 @@
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
 
+#import <Parse/Parse.h>
 @import MediaPlayer;
 @import QuartzCore;
-#import <Parse/Parse.h>
 
 
 @interface InitialScreenVC ()
@@ -32,11 +32,9 @@
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (strong, nonatomic) IBOutlet UIButton *skipLoginButton;
 
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (strong, nonatomic) UIVisualEffectView *darkBlurEffectView;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
-
-@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
-
 
 - (IBAction)showBetaInformation:(id)sender;
 - (IBAction)showBuildInformation:(id)sender;
@@ -44,16 +42,17 @@
 @end
 
 
-
 @implementation InitialScreenVC
+
+#pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //TODO: for testing purposes
     [UIApplication sharedApplication].delegate.window.backgroundColor = [UIColor whiteColor];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
-    //Setting Up Custom Buttons
+    //Initialization
     self.loginButton.buttonColor = [UIColor orangeThemeColor];
     self.loginButton.titleText = @"Log In";
     self.loginButton.isRounded = NO;
@@ -72,9 +71,7 @@
     
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
-    //Visual Effect View - Blur
+    //Setup Blur
     UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
     self.darkBlurEffectView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
     self.darkBlurEffectView.alpha = 0;
@@ -87,12 +84,11 @@
     
     [[self.darkBlurEffectView contentView] addSubview:vibrancyEffectView];
     
-    
-    //Adding Tap Gestures To Custom Buttons
+    //Actions
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(continueIntoTheApp:)];
     UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(continueIntoTheApp:)];
     
-    //Note:  Appear to be unneccessary.
+    //TODO:  Appear to be unneccessary.
     tapgr.cancelsTouchesInView = NO;
     tapgr2.cancelsTouchesInView = NO;
     
@@ -106,6 +102,61 @@
 }
 
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    NSLog(@"View Will Appear - Start Movie");
+    [self.moviePlayer play];
+    
+}
+
+
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
+    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
+    
+    NSLog(@"Version: %@ and Build: %@", version, build);
+    
+    
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
+    
+    if ([versionBuildNumber isEqualToString:@"V0.70Build1"]) {
+        
+        if ([EVNUser currentUser]) {
+            
+            [self stopMoviePlayer];
+            [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+            
+        }
+        
+    } else {
+        
+        [standardDefaults setObject:@"V0.70Build1" forKey:kFirstLoginNewBuild];
+        [standardDefaults synchronize];
+        
+    }
+    
+}
+
+
+- (void) viewDidDisappear:(BOOL)animated {
+    
+    [super viewDidDisappear:animated];
+    
+    NSLog(@"ViewDidDisappear - not called because we use a custom transistion");
+    
+}
+
+
+#pragma mark - User Actions
+
+//TODO: Remove for Launch
 - (IBAction)showBetaInformation:(id)sender {
     
     UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Welcome to the Beta" message:@"Just a couple of quick things... First, each new major update includes a database wipe - which explains why you sometimes log in and all your data is gone.  If you are having issues logging in, delete the app and reinstall from TestFlight.  Finally, if you have feedback - send us an email or tweet at us from Settings.  We would love to hear from you!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
@@ -113,33 +164,13 @@
     [errorAlert show];
 }
 
+//TODO: Remove for Launch Also
 - (IBAction)showBuildInformation:(id)sender {
     
     UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 0.7 - Build 1" message:@"Thanks for downloading the latest version. We've updated this first screen (like the new video?) and now you can submit comments that are multiple lines.  The notifications table is also updated to dynamically size based on its content. As usual, if you run into issues, shoot us an email or send a tweet from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates. It's your chance to shape this app before it's released!" delegate:self cancelButtonTitle:@"Cool Deal" otherButtonTitles: nil];
     
     [errorAlert show];
 }
-
-- (MPMoviePlayerController *)moviePlayer
-{
-    NSLog(@"Accessed movie player controller variable");
-    
-    if (!_moviePlayer) {
-        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrVideo" withExtension:@"mov"];
-        _moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
-        _moviePlayer.controlStyle = MPMovieControlStyleNone;
-        _moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
-        _moviePlayer.view.frame = self.view.frame;
-        [self.view insertSubview:_moviePlayer.view atIndex:0];
-        
-        NSLog(@"Created Movie Player");
-        
-    }
-    return _moviePlayer;
-}
-
-
-
 
 - (void)continueIntoTheApp:(UIGestureRecognizer *)gr {
     
@@ -154,7 +185,7 @@
         [self performSegueWithIdentifier:@"InitialToLogin" sender:self];
         [self.loginButton endedTask];
         
-    //Register Button
+        //Register Button
     } else {
         
         [self performSegueWithIdentifier:@"InitialToSignUp" sender:self];
@@ -164,17 +195,24 @@
     
 }
 
+#pragma mark - Custom Getters
 
-- (void) viewWillAppear:(BOOL)animated {
+- (MPMoviePlayerController *)moviePlayer {
+    NSLog(@"Accessed movie player controller variable");
     
-    [super viewWillAppear:animated];
-
-    NSLog(@"View Will Appear - Start Movie");
-    [self.moviePlayer play];
-
+    if (!_moviePlayer) {
+        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrVideo" withExtension:@"mov"];
+        _moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
+        _moviePlayer.controlStyle = MPMovieControlStyleNone;
+        _moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+        _moviePlayer.view.frame = self.view.frame;
+        [self.view insertSubview:_moviePlayer.view atIndex:0];
+        
+        NSLog(@"Created Movie Player");
+    }
+    
+    return _moviePlayer;
 }
-
-
 
 
 
@@ -249,48 +287,6 @@
 }
 
 
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    
-    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
-    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
-
-    NSLog(@"Version: %@ and Build: %@", version, build);
-    
-    
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    
-    NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
-    
-    if ([versionBuildNumber isEqualToString:@"V0.70Build1"]) {
-        
-        if ([EVNUser currentUser]) {
-            
-            [self stopMoviePlayer];
-            [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
-            
-        }
-        
-    } else {
-    
-        [standardDefaults setObject:@"V0.70Build1" forKey:kFirstLoginNewBuild];
-        [standardDefaults synchronize];
-        
-    }
-
-}
-
-
-- (void) viewDidDisappear:(BOOL)animated {
-    
-    [super viewDidDisappear:animated];
-    
-    NSLog(@"ViewDidDisappear - not called because we use a custom transistion");
-    
-}
-
-
 - (void) leavingTransitionAnimations {
     
     [UIView animateWithDuration:0.65 animations:^{
@@ -306,7 +302,6 @@
     }];
     
 }
-
 
 - (void) returningTransitionAnimations {
     
@@ -391,6 +386,8 @@
 
 }
 
+#pragma mark - Helper Methods
+
 - (void) registerForNotifications {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loopVideo) name:MPMoviePlayerPlaybackDidFinishNotification object:self.moviePlayer];
@@ -412,13 +409,11 @@
 
 }
 
--(void)dealloc {
-    
+
+#pragma mark - Clean Up
+
+- (void) dealloc {
     NSLog(@"initialscreenvc is being deallocated");
-    //NSLog(@"Removing Notifications for Stop, Restart, Loop, and Foreground Notification");
-    //super dealloc is called automatically with ARC
-
-
 }
 
 

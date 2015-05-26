@@ -19,7 +19,7 @@
 
 @protocol EVNAddCommentProtocol <NSObject>
 
-- (void) cancelComment;
 - (void) submitCommentWithText:(NSString *)commentString;
+- (void) cancelComment;
 
 @end

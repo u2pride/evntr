@@ -32,7 +32,6 @@
         [application setApplicationIconBadgeNumber:0];
     }
     
-    
     NSLog(@"NUMBER 1 - applicationDidFinishLaunchingWithOptions");
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
@@ -257,8 +256,6 @@
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
                     
-                    //[[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
-                    
                     completionHandler(UIBackgroundFetchResultNewData);
                     
                     
@@ -279,8 +276,6 @@
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
                     
-                    //[[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
-                    
                     completionHandler(UIBackgroundFetchResultNewData);
                     
                 } else {
@@ -290,8 +285,6 @@
                     [standardDefaults setObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:kNumberOfNotifications];
                     lastFetchTime = [NSDate date];
                     [standardDefaults setObject:lastFetchTime forKey:kLastBackgroundFetchTimeStamp];
-                    
-                    //[[NSNotificationCenter defaultCenter] postNotificationName:@"newActivityNotifications" object:self userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithLong:numberOfNewInvites] forKey:@"numberOfNotifications"]];
                     
                     completionHandler(UIBackgroundFetchResultNoData);
                 }
@@ -327,34 +320,32 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    
-    [self.locationManagerGlobal stopUpdatingLocation];
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [self.locationManagerGlobal stopUpdatingLocation];
+
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    
-    //NSLog(@"App Entered Foreground - Start Location Updates");
-    //NSLog(@"NUMBER 2 - applicationWillEnterForeground");
-    //[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
     
     [self startLocationManager];
 
-    //Track Each Time the App is Opened
     [PFAnalytics trackAppOpenedWithLaunchOptions:nil];
     
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
     [[PFFacebookUtils session] close];
 
 }

@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "EVNConstants.h"
 #import "AddEventSecondVC.h"
+#import "EVNConstants.h"
 #import "EventObject.h"
+
+#import <UIKit/UIKit.h>
 
 @protocol EventModalProtocol;
 

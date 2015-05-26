@@ -13,57 +13,57 @@
 #import "IDTransitioningDelegate.h"
 #import "UIColor+EVNColors.h"
 
+static NSString * const reuseIdentifier = @"pictureCell";
+
 @interface EventPicturesVC ()
 
 @property (strong, nonatomic) NSMutableArray *eventImages;
-@property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
-@property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
-
-@property (nonatomic, strong) UILabel *noResultsLabel;
-
-//Selected Photo Index
 @property (nonatomic, strong) NSIndexPath *selectedPhoto;
 
+@property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
+@property (nonatomic, strong) UIVisualEffectView *blurEffectForModals;
+@property (nonatomic, strong) UILabel *noResultsLabel;
 
 @end
 
 @implementation EventPicturesVC
 
-static NSString * const reuseIdentifier = @"Cell";
+#pragma mark - Lifecycle Methods
 
+- (instancetype) initWithCoder:(NSCoder *)aDecoder {
+    
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        _allowsAddingPictures = NO;
+        _eventImages = [[NSMutableArray alloc] init];
+        _customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
+    }
+    
+    return self;
+}
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     [super viewDidLoad];
     
-    //TODO: CHECK AGAINST UTLITY Navigation Bar Font & Color
-    //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    self.title = @"Event Photos";
     self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
-    
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
     
     // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
-    // Do any additional setup after loading the view.
-    self.title = @"Event Photos";
-    
-    if (self.allowsAddingPictures) {
-        
-        UIBarButtonItem *addPicturesIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPhoto)];
-        self.navigationItem.rightBarButtonItem = addPicturesIcon;
-        
-    }
-    
     self.view.backgroundColor = [UIColor whiteColor];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
     
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-        
+    
+    if (self.allowsAddingPictures) {
+        UIBarButtonItem *addPicturesIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPhoto)];
+        self.navigationItem.rightBarButtonItem = addPicturesIcon;
+    }
+    
     [self.eventObject queryForImagesWithCompletion:^(NSArray *images) {
         
         self.eventImages = [NSMutableArray arrayWithArray:images];
@@ -80,75 +80,9 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 
 
-- (void) showNoResultsView {
-    
-    if (!self.noResultsLabel) {
-        self.noResultsLabel = [[UILabel alloc] init];
-        self.noResultsLabel.text = @"No Pictures";
-        self.noResultsLabel.font = [UIFont fontWithName:EVNFontLight size:21.0];
-        self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
-        
-        self.noResultsLabel.frame = CGRectMake(0, 120, self.view.frame.size.width, 100);
-        
-        [self.view addSubview:self.noResultsLabel];
-        
-    }
-    
-    self.noResultsLabel.hidden = NO;
-    
-}
-
-
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    
-    //self.tabBarController.tabBar.hidden = NO;
-}
-
-
-- (void) addPhoto {
-    
-    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        
-        [self presentViewController:imagePicker animated:YES completion:nil];
-    }];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    
-    //Check to see if device has a camera
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [pictureOptionsMenu addAction:takePhoto];
-    }
-    
-    [pictureOptionsMenu addAction:cancelAction];
-    
-    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
-    
-    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-#pragma mark <UICollectionViewDataSource>
+#pragma mark UICollectionView Data Source
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-
-    NSLog(@"Make sure this is only getting called once");
     
     return 1;
 }
@@ -156,33 +90,24 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    //If there are more than 50 images, return the first 50.
-    if (self.eventImages.count > 50) {
-        
-        return 50;
-        
+    if (self.eventImages.count > MAX_PHOTOS_COLLECTION_VIEW) {
+        return MAX_PHOTOS_COLLECTION_VIEW;
     } else {
-        
         return self.eventImages.count;
-
     }
     
 }
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+//TODO: Sublcass UICollectionViewCell to Use PFImageView
+- (UICollectionViewCell *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    
-    // Configure the cell
-    
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PersonDefault"]];
+    cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PictureLoading"]];
     
     PFFile *fileForPhoto = [[self.eventImages objectAtIndex:indexPath.row] objectForKey:@"pictureFile"];
     
-    //Load Image in Background
     [fileForPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         
-        NSLog(@"Making a network call");
         cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:data]];
         
     }];
@@ -200,7 +125,7 @@ static NSString * const reuseIdentifier = @"Cell";
     PFObject *pictureObject = (PFObject *) [self.eventImages objectAtIndex:indexPath.row];
     EVNUser *pictureTakenBy = (EVNUser *)[pictureObject objectForKey:@"takenBy"];
     
-    PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *)[self.navigationController.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
+    PictureFullScreenVC *displayFullScreenPhoto = (PictureFullScreenVC *) [self.navigationController.storyboard instantiateViewControllerWithIdentifier:@"PictureViewController"];
     
     displayFullScreenPhoto.modalPresentationStyle = UIModalPresentationOverFullScreen;
     displayFullScreenPhoto.transitioningDelegate = self.customTransitionDelegate;
@@ -208,6 +133,7 @@ static NSString * const reuseIdentifier = @"Cell";
     displayFullScreenPhoto.delegate = self;
     displayFullScreenPhoto.edgesForExtendedLayout = UIRectEdgeAll;
     
+    //Allow Photos to Be Removed Event Creators and Photo Takers
     if ([self.eventObject.parent.objectId isEqualToString:[EVNUser currentUser].objectId]) {
         displayFullScreenPhoto.showRemovePhotoAction = YES;
     } else {
@@ -216,62 +142,22 @@ static NSString * const reuseIdentifier = @"Cell";
         } else {
             displayFullScreenPhoto.showRemovePhotoAction = NO;
         }
-        
     }
-    
     
     [self presentViewController:displayFullScreenPhoto animated:YES completion:nil];
     
-
-    
     
     [UIView animateWithDuration:0.2 animations:^{
-        
-        //self.navigationController.navigationBar.alpha = 0;
+
         self.tabBarController.tabBar.alpha = 0;
         
     } completion:^(BOOL finished) {
         
-        //self.navigationController.navigationBar.hidden = finished;
         self.tabBarController.tabBar.hidden = finished;
         
     }];
     
-    
-    
-    
 }
-
-#pragma mark <UICollectionViewDelegate>
-
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
-}
-*/
 
 
 #pragma mark - Delegate Methods for UIImagePickerController
@@ -283,15 +169,14 @@ static NSString * const reuseIdentifier = @"Cell";
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
     
     NSData *pictureData = UIImageJPEGRepresentation(chosenPicture, 0.5);
-    PFFile *profilePictureFile = [PFFile fileWithName:@"eventPhoto.jpg" data:pictureData];
+    PFFile *eventPhotoFile = [PFFile fileWithName:@"eventPhoto.jpg" data:pictureData];
     
-    //save picture as pffile to parse
-    [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    [eventPhotoFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
         if (succeeded){
             
-            //create new picture pfobject and save
             PFObject *picture = [PFObject objectWithClassName:@"Pictures"];
-            picture[@"pictureFile"] = profilePictureFile;
+            picture[@"pictureFile"] = eventPhotoFile;
             picture[@"takenBy"] = [EVNUser currentUser];
             picture[@"eventParent"] = self.eventObject;
             
@@ -304,19 +189,13 @@ static NSString * const reuseIdentifier = @"Cell";
                     }
                     
                     [self.eventImages addObject:picture];
-                    
                     self.noResultsLabel.hidden = YES;
                     
-                    //Instead of refreshing all items, just insert a row.
                     NSUInteger numberOfItems = [self.eventImages count] - 1;
                     NSIndexPath *indexPathOfLastRow = [NSIndexPath indexPathForRow:numberOfItems inSection:0];
                     
-                    NSLog(@"indexpath: %ld and %ld", (long)indexPathOfLastRow.row, (long)indexPathOfLastRow.section);
-
-                    //[self.collectionView reloadData];
                     [self.collectionView insertItemsAtIndexPaths:@[indexPathOfLastRow]];
                     
-                    
                     //Notify Event Details VC of New Picture
                     id<EventPicturesProtocol> strongDelegate = self.delegate;
                     
@@ -324,55 +203,36 @@ static NSString * const reuseIdentifier = @"Cell";
                         
                         [strongDelegate newPictureAdded];
                     }
+                
+                } else {
+                    
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Uh-Oh" message:@"Looks like we had trouble saving your picture.  Try again and if you still have issues, send us an email or tweet from the settings page." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
                 }
             }];
+        
+        } else {
             
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Uh-Oh" message:@"Looks like we had trouble saving your picture.  Try again and if you still have issues, send us an email or tweet at us from the settings page." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
-            /*
-            //append pffile to eventImages array on event (PFObject)
-            [self.eventObject addObject:profilePictureFile forKey:@"eventImages"];
-            [self.eventObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                if (succeeded) {
-                    
-                    if (!self.eventImages) {
-                        self.eventImages = [[NSMutableArray alloc] init];
-                    }
-                    
-                    [self.eventImages addObject:profilePictureFile];
-                    
-                    [self.collectionView reloadData];
-                    
-                    //Notify Event Details VC of New Picture
-                    id<EventPicturesProtocol> strongDelegate = self.delegate;
-                    
-                    if ([strongDelegate respondsToSelector:@selector(newPictureAdded)]) {
-                        
-                        [strongDelegate newPictureAdded];
-                    }
-                    
-                    //[NSTimer scheduledTimerWithTimeInterval:2.0 target:self.pictureCollectionView selector:@selector(reloadData) userInfo:nil repeats:NO];
-                }
-                
-            }];
-            */
-            
+            [errorAlert show];
         }
     }];
-    
     
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker dismissViewControllerAnimated:YES completion:nil];
     
+    [picker dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 
 
 #pragma mark - Delegate for Full Screen Image Viewer
 
-- (void) returnToEventAndDeletePhoto:(BOOL) shouldDeletePhoto {
+- (void) returnToPicturesViewAndDeletePhoto:(BOOL) shouldDeletePhoto {
 
     if (shouldDeletePhoto) {
         [self.eventImages removeObjectAtIndex:self.selectedPhoto.row];
@@ -410,6 +270,53 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 
 
+#pragma mark - User Actions
+
+- (void) addPhoto {
+    
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [pictureOptionsMenu addAction:takePhoto];
+    }
+    
+    [pictureOptionsMenu addAction:cancelAction];
+    
+    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
+}
+
+
+
+#pragma mark - Helper Methods
+
+- (void) showNoResultsView {
+    
+    if (!self.noResultsLabel) {
+        self.noResultsLabel = [[UILabel alloc] init];
+        self.noResultsLabel.frame = CGRectMake(0, 120, self.view.frame.size.width, 100);
+        self.noResultsLabel.text = @"No Pictures";
+        self.noResultsLabel.font = [UIFont fontWithName:EVNFontLight size:21.0];
+        self.noResultsLabel.textAlignment = NSTextAlignmentCenter;
+        
+        [self.view addSubview:self.noResultsLabel];
+    }
+    
+    self.noResultsLabel.hidden = NO;
+}
+
 - (void) animateBackgroundDarkBlur {
     
     if (!self.blurEffectForModals) {
@@ -418,10 +325,8 @@ static NSString * const reuseIdentifier = @"Cell";
         self.blurEffectForModals = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
         self.blurEffectForModals.alpha = 0;
         self.blurEffectForModals.frame = [UIScreen mainScreen].bounds;
-        //[self.view addSubview:self.blurEffectForModals];
         [[[[UIApplication sharedApplication] delegate] window] addSubview:self.blurEffectForModals];
 
-        
         UIVibrancyEffect *vibrancyEffect = [UIVibrancyEffect effectForBlurEffect:darkBlur];
         UIVisualEffectView *vibrancyEffectView = [[UIVisualEffectView alloc] initWithEffect:vibrancyEffect];
         [vibrancyEffectView setFrame:self.view.bounds];
@@ -432,22 +337,22 @@ static NSString * const reuseIdentifier = @"Cell";
     
     self.blurEffectForModals.alpha = 0;
     self.blurEffectForModals.hidden = NO;
+    
     [UIView animateWithDuration:0.2 animations:^{
-        self.blurEffectForModals.alpha = 0.9;
-    } completion:^(BOOL finished) {
         
-    }];
+        self.blurEffectForModals.alpha = 0.9;
+    
+    } completion:nil];
     
     
 }
 
 
--(void)dealloc
-{
+#pragma mark - Clean Up
+
+- (void) dealloc {
     NSLog(@"eventpictures is being deallocated");
 }
-
-
 
 
 @end

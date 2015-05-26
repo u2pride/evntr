@@ -14,6 +14,8 @@
 
 @dynamic dateOfEvent, nameOfLocation, title, descriptionOfEvent, typeOfEvent, invitedUsers, attenders, locationOfEvent, coverPhoto, eventImages, parent;
 
+#pragma mark - Required For Subclassing PFUser
+
 + (void) load {
     [self registerSubclass];
 }
@@ -21,6 +23,8 @@
 + (NSString *) parseClassName {
     return @"Events";
 }
+
+#pragma mark - Helper Methods
 
 - (NSString *) eventDateShortStyle {
     
@@ -139,23 +143,6 @@
 }
 
 
-/*
-+ (void) queryForActivitiesWithContent:(PFObject *)object ofType:(NSNumber *)type from:(EVNUser *)fromUser to:(EVNUser *)toUser withIncludeKey:(NSString *)key completion:(void (^)(NSError *, NSArray *))completionBlock {
-    
-    PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
-    [queryForStandbyUsers whereKey:@"activityContent" equalTo:object];
-    [queryForStandbyUsers whereKey:@"type" equalTo:type];
-    [queryForStandbyUsers includeKey:@"from"];
-    [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *activities, NSError *error) {
-        
-        completionBlock(error, activities);
-        
-    }];
-    
-}
- */
-
-
 - (void) queryForStandbyUsersWithIncludeKey:(NSString *)key completion:(void (^)(NSError *, NSArray *))completionBlock {
     
     PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
@@ -163,8 +150,6 @@
     [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
     [queryForStandbyUsers includeKey:@"from"];
     [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
-        
-        NSLog(@"FIRST QUERY RESULTS:  %@", standbyActivities);
         
         __block NSMutableArray *usersOnStandby = [[NSMutableArray alloc] init];
         
@@ -175,9 +160,7 @@
         } else {
             for (PFObject *activity in standbyActivities) {
                 
-                NSLog(@"activity: %@", activity);
                 EVNUser *userOnStandby = activity[@"from"];
-                NSLog(@"User Found in Query One: %@", userOnStandby);
                 
                 if (userOnStandby) {
                     [usersOnStandby addObject:userOnStandby];
@@ -191,8 +174,6 @@
             [queryForStandbyUsers includeKey:@"to"];
             [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *accessActivities, NSError *error) {
                 
-                NSLog(@"SECOND QUERY RESULTS:  %@", accessActivities);
-                
                 NSMutableArray *usersGrantedAccess = [[NSMutableArray alloc] init];
                 
                 if (error) {
@@ -203,8 +184,6 @@
                     for (PFObject *activity2 in accessActivities) {
                         
                         EVNUser *userGrantedAcesss = activity2[@"to"];
-                        
-                        NSLog(@"User Found in Query Two: %@", userGrantedAcesss);
                         
                         [usersGrantedAccess addObject:userGrantedAcesss];
                     }
@@ -230,7 +209,6 @@
                         }
                     }
                     
-                    NSLog(@"FINAL USERS LIST:  %@", finalResults);
                     completionBlock(error, finalResults);
                     
                 }
@@ -241,8 +219,8 @@
         
     }];
     
-    
 }
+
 
 - (void) queryRSVPForUserId:(NSString *)userObjectId completion:(void (^)(BOOL, NSString *))completionBlock {
     
@@ -317,6 +295,7 @@
     
 }
 
+
 - (void) requestAccessForUser:(EVNUser *)user completion:(void (^)(BOOL))completionBlock {
     
     //Request Access for User to Event
@@ -373,14 +352,12 @@
     }];
 }
 
-
+//TODO: Is this how I want to go about inviting users for the backend design?
 - (void) inviteUsers:(NSArray *)users completion:(void (^)(BOOL))completionBlock {
     
     __block BOOL success = YES;
     
-    
     for (EVNUser *user in users) {
-        
         
         //If the user is invited to a public approved event, they are automatically granted access. This will be changed.
         if (self.typeOfEvent.intValue == PUBLIC_APPROVED_EVENT_TYPE) {
@@ -403,9 +380,6 @@
             }];
             
         }
-        
-        
-        
         
         
         //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not

@@ -10,12 +10,7 @@
 
 @implementation EVNNotifcationsTitleView
 
-
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
-
-    NSLog(@"Draw Rect");
     
     //// General Declarations
     CGContextRef context = UIGraphicsGetCurrentContext();

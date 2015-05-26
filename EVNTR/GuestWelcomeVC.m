@@ -19,7 +19,10 @@
 
 @implementation GuestWelcomeVC
 
+#pragma mark - Lifecycle Methods
+
 - (void) viewDidLoad {
+    
     [super viewDidLoad];
 
     self.continueButton.titleText = @"Got It!";
@@ -27,6 +30,9 @@
 
     [self.continueButton addTarget:self action:@selector(startUsingApp) forControlEvents:UIControlEventTouchUpInside];
 }
+
+
+#pragma mark - User Actions
 
 - (void) startUsingApp {
     

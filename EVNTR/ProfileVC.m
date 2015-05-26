@@ -60,7 +60,7 @@
 
 //TODO: note: this is called before you would programmatically set variables in prepareforsegue when creating this viewcontroller.
 //ideally we pass in the user for this view, however some views will not have access to the full user... just the name.  For example, an attributed text label.
-//instagram doesn't update the view if already in stack,
+//instagram doesn't update the view if already in stack.
 
 #pragma mark - View Controller Lifecycle
 

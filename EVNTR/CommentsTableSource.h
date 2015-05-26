@@ -6,9 +6,10 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EventObject.h"
+
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "EventObject.h"
 
 @protocol EVNCommentsTableProtocol;
 
@@ -20,10 +21,10 @@
 
 @property (nonatomic, weak) id <EVNCommentsTableProtocol> delegate;
 
-//Designated Initializer
-- (instancetype)initWithEvent:(EventObject *)event withTable:(UITableView *)table;
+- (instancetype)initWithEvent:(EventObject *)event withTable:(UITableView *)table NS_DESIGNATED_INITIALIZER;
 
 @end
+
 
 @protocol EVNCommentsTableProtocol <NSObject>
 

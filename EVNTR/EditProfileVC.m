@@ -274,7 +274,7 @@ typedef enum {
 
 
 
-#pragma mark - IBActions for Cancel and Finish Editing
+#pragma mark - User Actions
 
 - (IBAction)cancelEditProfile:(id)sender {
     

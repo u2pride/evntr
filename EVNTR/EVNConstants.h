@@ -121,6 +121,11 @@ extern NSString *const kSecondaryUpdateTimestamp;
 #define SEARCH_RADIUS_DEFAULT 10
 
 
+
+#pragma mark - Max Items for Display in Table/Collection View
+#define MAX_PHOTOS_COLLECTION_VIEW 50
+
+
 #pragma mark - Custom Font
 
 extern NSString *const EVNFontBold;

@@ -9,6 +9,7 @@
 #import "EVNUser.h"
 #import "IDTransitioningDelegate.h"
 #import "ResetPasswordModalVC.h"
+
 #import <Parse/Parse.h>
 
 @interface ResetPasswordModalVC ()
@@ -24,6 +25,8 @@
 
 @implementation ResetPasswordModalVC
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -37,13 +40,11 @@
 
 - (IBAction)resetPasswordButton:(id)sender {
     
-    //Check to see that the user has entered a password
     if (self.emailTextField.text.length > 0) {
         
-        //TODO : Add Support for Errors - Codes
         [EVNUser requestPasswordResetForEmailInBackground:self.emailTextField.text block:^(BOOL succeeded, NSError *error) {
             
-            if (succeeded && !error) {
+            if (succeeded) {
                 
                 id<ResetPasswordDelegate> strongDelegate = self.delegate;
                 
@@ -54,7 +55,7 @@
                 
             } else {
                 
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Wrong Email" message:@"Check to make sure you entered the right email" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hmmmm" message:@"Are you sure that's the right email?  We don't recognize it." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
                 
                 [errorAlert show];
                 
@@ -65,7 +66,9 @@
                     [strongDelegate resetPasswordFailed];
                     
                 }
+                
             }
+            
         }];
 
     } else {
@@ -77,7 +80,8 @@
     
 }
 
-#pragma mark - Cancel PW Reset
+
+#pragma mark - Cancel Password Reset
 
 - (IBAction)cancelReset:(id)sender {
     
@@ -99,8 +103,10 @@
     return YES;
 }
 
--(void)dealloc
-{
+
+#pragma mark - Clean Up
+
+- (void) dealloc {
     NSLog(@"resetpasswordvc is being deallocated");
 }
 

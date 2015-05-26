@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <Parse/Parse.h>
 #import "EVNUser.h"
 
+#import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
 
 @interface EventObject : PFObject <PFSubclassing>
 
@@ -27,15 +27,12 @@
 
 + (NSString *)parseClassName;
 
-
 - (NSString *) eventTypeForHomeView;
 - (NSString *) eventDateShortStyle;
 - (NSString *) eventTimeShortStye;
+
 - (void) coverImage:(void (^)(UIImage *image))completionBlock;
-
 - (BOOL) allowUserToAddPhotosAtThisTime;
-
-- (void) queryForStandbyUsersWithIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *users))completionBlock;
 
 - (void) queryRSVPForUserId:(NSString *)userObjectId completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
 - (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
@@ -48,6 +45,7 @@
 - (void) estimateNumberOfPhotosWithCompletion:(void (^)(int count))completionBlock;
 - (void) totalNumberOfAttendersInBackground:(void (^)(int count))completionBlock;
 
+- (void) queryForStandbyUsersWithIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *users))completionBlock;
 - (void) queryForImagesWithCompletion:(void (^)(NSArray *images))completionBlock;
 - (void) queryForCommentsWithCompletion:(void (^)(NSArray *comments))completionBlock;
 

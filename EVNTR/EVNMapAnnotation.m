@@ -23,10 +23,7 @@
 }
 
 
-
 - (MKAnnotationView *)annotationView {
-    
-    //MKAnnotationView *annotationView = [[MKAnnotationView alloc] initWithAnnotation:self reuseIdentifier:@"customAnnotation"];
     
     MKPinAnnotationView *annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:self reuseIdentifier:@"customAnnotation"];
     
@@ -34,8 +31,6 @@
     annotationView.enabled = YES;
     annotationView.canShowCallout = YES;
     annotationView.draggable = YES;
-    //annotationView.rightCalloutAccessoryView = [UIButton buttonWithType:UIButtonTypeContactAdd];
-
     
     return annotationView;
 

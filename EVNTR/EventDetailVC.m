@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+
 #import "AddEventPrimaryVC.h"
 #import "AppDelegate.h"
 #import "CommentsTableSource.h"
@@ -14,18 +15,17 @@
 #import "EVNUser.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
-#import "EventPictureCell.h"
-#import "IDTransitioningDelegate.h"
 #import "FullMapVC.h"
-#import "MapForEventView.h"
+#import "IDTransitioningDelegate.h"
 #import "MBProgressHUD.h"
+#import "MapForEventView.h"
 #import "PeopleVC.h"
 #import "PictureFullScreenVC.h"
 #import "ProfileVC.h"
 #import "StandbyCollectionViewCell.h"
+#import "UIButtonPFExtended.h"
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
-#import "UIButtonPFExtended.h"
 
 #import <AddressBookUI/AddressBookUI.h>
 #import <Parse/Parse.h>
@@ -36,9 +36,9 @@
     int numNetworkCallsComplete;
 }
 
-@property BOOL isGuestUser;
-@property (nonatomic)  BOOL isCurrentUserAttending;
-@property BOOL isPublicApproved;
+@property (nonatomic) BOOL isGuestUser;
+@property (nonatomic) BOOL isCurrentUserAttending;
+@property (nonatomic) BOOL isPublicApproved;
 @property (nonatomic) BOOL isCurrentUsersEvent;
 
 //Buttons
@@ -62,8 +62,6 @@
 @property (nonatomic, strong) NSArray *usersOnStandby;
 
 //UI & Transitions
-//@property (nonatomic, strong) UIImage *navBarBackground;
-//@property (nonatomic, strong) UIImage *navbarShadow;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
 //Loading Helpers
@@ -80,19 +78,13 @@
 @property (strong, nonatomic) IBOutlet UILabel *numberOfPicturesLabel;
 @property (strong, nonatomic) IBOutlet EVNButton *viewPicturesButton;
 
-
 //Comments Component
 @property (strong, nonatomic) IBOutlet UITableView *commentsTable;
 @property (strong, nonatomic) CommentsTableSource *commentsController;
 
-
-@property (strong, nonatomic) IBOutlet NSLayoutConstraint *scrollViewTopConstraint;
+@property (nonatomic) BOOL shouldRestoreNavBar;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *commentsTopVerticalConstraint;
 
-
-@property (nonatomic) BOOL shouldRestoreNavBar;
-
-//Only YES if data model changes or viewing for first time.
 @property (nonatomic) BOOL needsInfoUpdate;
 
 - (IBAction)inviteFriends:(id)sender;
@@ -104,12 +96,12 @@
 
 @implementation EventDetailVC
 
+#pragma mark - Initialization Methods
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
     if (self) {
-        
         _isPublicApproved = NO;
         _isCurrentUsersEvent = NO;
         _isCurrentUserAttending = NO;
@@ -117,27 +109,26 @@
         numNetworkCallsComplete = 0;
         _needsInfoUpdate = YES;
         _shouldRestoreNavBar = YES;
-
     }
     
     return self;
 }
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"";
+    self.view.backgroundColor = [UIColor blackColor];
     
     [self.rsvpStatusButton startedTask];
     self.rsvpStatusButton.isRounded = NO;
     
-    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEventAttenders)];
-    tapgr.numberOfTapsRequired = 1;
-    self.viewAttending.text = @"View Attending";
-    self.viewAttending.textColor = [UIColor orangeThemeColor];
-    self.viewAttending.userInteractionEnabled = YES;
-    [self.viewAttending addGestureRecognizer:tapgr];
-    
+    //Determine if the Event Creator is the Current User
+    if ([self.event.parent.objectId isEqualToString:[EVNUser currentUser].objectId]) {
+        self.isCurrentUsersEvent = YES;
+    }
     //Determine if Guest User
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
@@ -145,19 +136,8 @@
     //Transition Delegate, Default Images, and ScrollView
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
-
-    //Determine if the Event Creator is the Current User
-    if ([self.event.parent.objectId isEqualToString:[EVNUser currentUser].objectId]) {
-        self.isCurrentUsersEvent = YES;
-        NSLog(@"Current User's Event ");
-    }
-    
-    self.view.backgroundColor = [UIColor blackColor];
     
     [self setupStaticEventDetailComponents];
-    
-    self.commentsTable.estimatedRowHeight = 100.0;
-    self.commentsTable.rowHeight = UITableViewAutomaticDimension;
     
 }
 
@@ -179,42 +159,32 @@
         self.shouldRestoreNavBar = YES;
     }
 
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
-    //self.navigationController.navigationBar.backgroundColor = [UIColor clearColor];
     
     int eventType = [self.event.typeOfEvent intValue];
     if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
         self.commentsTopVerticalConstraint.constant = 15;
-        [self.view layoutIfNeeded];
     } else {
         self.commentsTopVerticalConstraint.constant = 155;
     }
     
+    [self.view layoutIfNeeded];
     
-    
+
     if (self.needsInfoUpdate) {
 
-        //Reset Number of Network Call
         numNetworkCallsComplete = 0;
         
-        //Create Black Loading Screen
         self.fadeOutBlackScreen = [[UIView alloc] initWithFrame:self.view.frame];
         self.fadeOutBlackScreen.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.85];
-        //[self.view addSubview:self.fadeOutBlackScreen];
         
         //Progress Indicator - Start
         self.HUD = [[MBProgressHUD alloc] init];
         self.HUD.removeFromSuperViewOnHide = YES; //otherwise it blocks other views
         self.HUD.center = self.view.center;
-        //[self.view addSubview:self.HUD];
-        //[self.view bringSubviewToFront:self.HUD];
-        //self.HUD.labelText = @"Event Loading";
-        //[self.HUD show:YES];
-        
         
         self.timeOfEventLabel.alpha = 0.0;
         self.dateOfEventLabel.alpha = 0.0;
@@ -226,24 +196,15 @@
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    NSLog(@"Should restore: %@", [NSNumber numberWithBool:self.shouldRestoreNavBar]);
-    
     if (self.shouldRestoreNavBar) {
     
         [self.navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
         [self.navigationController.navigationBar setShadowImage:nil];
-
-        //[self.navigationController.navigationBar setBackgroundImage:self.navBarBackground
-         //                                             forBarMetrics:UIBarMetricsDefault];
-        //self.navigationController.navigationBar.shadowImage = self.navbarShadow;
         
-        NSLog(@"Setting to Orange");
         self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
         self.tabBarController.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
         self.navigationController.navigationBar.translucent = NO;
         
-        //TODO: CHECK AGAINST UTLITY Navigation Bar Font & Color
-        //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
         self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
     }
     
@@ -287,19 +248,6 @@
             [self setBackgroundOfPictureSectionWithImage:coverImage];
             [self networkCallComplete];
         }];
-        
-        //self.backgroundForPictureSection.file = self.event.coverPhoto;
-        //self.backgroundForPictureSection.image = [UIImage imageNamed:@"EventDefault"];
-        //[self.backgroundForPictureSection loadInBackground:^(UIImage *image, NSError *error) {
-            
-            //NSLog(@"Image: %@ and then the property: %@", image, self.backgroundForPictureSection.image);
-            
-            //[self setBackgroundOfPictureSectionWithImage:image];
-            //NSLog(@"Num 1");
-            //[self networkCallComplete]; //1
-            
-        //}];
-        
         
         [self setupCreatorComponent];
         [self setupMapComponent];
@@ -460,7 +408,7 @@
 }
 
 
-#pragma mark - Setup Methods for Event Detail View
+#pragma mark - Helper Setup Methods
 
 - (void) setupStaticEventDetailComponents {
     
@@ -468,12 +416,18 @@
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
+    //View Users Attending
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEventAttenders)];
+    tapgr.numberOfTapsRequired = 1;
+    self.viewAttending.text = @"View Attending";
+    self.viewAttending.textColor = [UIColor orangeThemeColor];
+    self.viewAttending.userInteractionEnabled = YES;
+    [self.viewAttending addGestureRecognizer:tapgr];
+    
     //Creator Component and Invite Button - Default Image
     self.creatorPhoto.image = [UIImage imageNamed:@"PersonDefault"];
     [self.inviteButton setTitle:kInviteUsers forState:UIControlStateNormal];
     self.rsvpStatusButton.titleText = kNOTRSVPedForEvent;
-    
-    NSLog(@"self.isCurrentUsersEvent:%@", [NSNumber numberWithBool:self.isCurrentUsersEvent]);
     
     self.rsvpStatusButton.hidden = (self.isCurrentUsersEvent) ? YES : NO;
     self.inviteButton.hidden = (self.isCurrentUsersEvent) ? NO : YES;
@@ -491,7 +445,6 @@
     self.entireMapView.mapView.userInteractionEnabled = NO;
     self.transparentTouchView.backgroundColor = [UIColor clearColor];
 
-    
     //Picture Component
     self.viewPicturesButton.titleText = @"View";
     self.viewPicturesButton.isStateless = YES;
@@ -584,8 +537,7 @@
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
     self.creatorPhoto.userInteractionEnabled = YES;
     [self.creatorPhoto addGestureRecognizer:tapgr];
-    
-    
+
     [self.event.parent fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         
         UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
@@ -619,20 +571,17 @@
 
 
 
+#pragma mark - Custom Setters
+
 - (void)setIsCurrentUserAttending:(BOOL)isCurrentUserAttending {
     
-    NSLog(@"Setting is CurrentUserAttending");
-
     self.commentsController.allowAddingComments = isCurrentUserAttending;
-    
     _isCurrentUserAttending = isCurrentUserAttending;
 }
 
 - (void) setIsCurrentUsersEvent:(BOOL)isCurrentUsersEvent {
     
-    NSLog(@"Setting is CurrentUsersEvent");
     if (isCurrentUsersEvent) {
-        NSLog(@"now actually setting it");
         self.commentsController.allowAddingComments = YES;
     }
     
@@ -714,24 +663,10 @@
 
 
 
-#pragma mark - Touched Map Event
-
-- (void) touchedMap {
-    
-    FullMapVC *mapViewController = [[FullMapVC alloc] init];
-
-    mapViewController.locationPlacemark = self.locationPlacemark;
-    mapViewController.locationOfEvent = self.locationOfEvent;
-    mapViewController.eventLocationName = self.event.nameOfLocation;
-    mapViewController.hidesBottomBarWhenPushed = YES;
-    //self.shouldRestoreNavBar = YES;
-    
-    [self.navigationController pushViewController:mapViewController animated:YES];
-    
-}
 
 
-#pragma mark CollectionView Delegate and DataSource Methods
+
+#pragma mark - Standby Collection View Delegate and DataSource Methods
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
@@ -744,24 +679,23 @@
 }
 
 
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+- (UICollectionViewCell *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-        static NSString *standbyCellID = @"StandbyUserCell";
-        
-        StandbyCollectionViewCell *cell = (StandbyCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:standbyCellID forIndexPath:indexPath];
-        
-        EVNUser *currentUser = [self.usersOnStandby objectAtIndex:indexPath.row];
-        
-        cell.profilePictureOfStandbyUser.image = [UIImage imageNamed:@"PersonDefault"];
-        cell.profilePictureOfStandbyUser.file = currentUser[@"profilePicture"];
-        [cell.profilePictureOfStandbyUser loadInBackground];
+    static NSString *standbyCellID = @"StandbyUserCell";
     
-        cell.profilePictureOfStandbyUser.objectForImageView = currentUser;
-        
-        return cell;
+    StandbyCollectionViewCell *cell = (StandbyCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:standbyCellID forIndexPath:indexPath];
+    
+    EVNUser *currentUser = [self.usersOnStandby objectAtIndex:indexPath.row];
+    
+    cell.profilePictureOfStandbyUser.image = [UIImage imageNamed:@"PersonDefault"];
+    cell.profilePictureOfStandbyUser.file = currentUser[@"profilePicture"];
+    [cell.profilePictureOfStandbyUser loadInBackground];
+    
+    cell.profilePictureOfStandbyUser.objectForImageView = currentUser;
+    
+    return cell;
     
 }
-
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
@@ -775,18 +709,26 @@
         [self.navigationController pushViewController:profileView animated:YES];
         
     }
-    
 }
 
 
 
+#pragma mark - User Actions
 
-
-#pragma mark - Actions Performed By User
+- (void) touchedMap {
+    
+    FullMapVC *mapViewController = [[FullMapVC alloc] init];
+    
+    mapViewController.locationPlacemark = self.locationPlacemark;
+    mapViewController.locationOfEvent = self.locationOfEvent;
+    mapViewController.eventLocationName = self.event.nameOfLocation;
+    mapViewController.hidesBottomBarWhenPushed = YES;
+    
+    [self.navigationController pushViewController:mapViewController animated:YES];
+    
+}
 
 - (void) viewCreatorProfile {
-    
-    NSLog(@"View Creator Profile - guest %@", [NSNumber numberWithBool:self.isGuestUser]);
     
     if (!self.isGuestUser) {
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
@@ -798,18 +740,14 @@
     
 }
 
+//TODO:  Must present this similarly to the way an add event modal is presented.
 - (void) editEvent {
-    
-    NSLog(@"Edit Event");
-    
-    //TODO:  Must present this similarly to the way an add event modal is presented.
     
     AddEventPrimaryVC *editEventVC = (AddEventPrimaryVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"CreateEventFirstStep"];
     editEventVC.delegate = self;
     editEventVC.eventToEdit = self.event;
     
     [self.navigationController pushViewController:editEventVC animated:YES];
-    
     
 }
 
@@ -830,11 +768,8 @@
         
         [self presentViewController:embedInThisVC animated:YES completion:nil];
         
-        //[self.navigationController pushViewController:invitePeopleVC animated:YES];
     }
 }
-
-
 
 
 - (void) viewEventAttenders {
@@ -865,11 +800,9 @@
     
     EventPicturesVC *allEventPictures = [[EventPicturesVC alloc] initWithCollectionViewLayout:flowLayout];
     
-    //Pass the Event
     allEventPictures.eventObject = self.event;
     allEventPictures.delegate = self;
     allEventPictures.hidesBottomBarWhenPushed = YES;
-    //allEventPictures.allowsAddingPictures = self.isCurrentUserAttending;
     
     if (self.isCurrentUsersEvent) {
         
@@ -887,6 +820,21 @@
 
     [self.navigationController pushViewController:allEventPictures animated:YES];
     
+}
+
+- (void) addNewComment {
+    
+    if (self.isCurrentUserAttending || self.isCurrentUsersEvent) {
+        
+        self.shouldRestoreNavBar = NO;
+        
+        EVNAddCommentVC *newCommentVC = [[EVNAddCommentVC alloc] init];
+        newCommentVC.delegate = self;
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newCommentVC];
+        
+        [self presentViewController:navController animated:YES completion:nil];
+    }
 }
 
 //Current: User is added to the event as a Relation.  No information about the activity is stored (ie timestamp)
@@ -1007,18 +955,8 @@
 
 #pragma mark - Delegate Methods for Editing An Event
 
-/*
-- (NSDictionary *) eventDetailsToEdit {
-    
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:self.event.typeOfEvent, @"type", self.event.title, @"title", self.backgroundForPictureSection.image, @"image", self.backgroundForPictureSection.file, @"file", self.event.description, @"description", self.event.locationOfEvent, @"coordinates", self.event.nameOfLocation, @"locationName", self.event.dateOfEvent, @"date", self.event, @"object", nil];
-    
-    return dictionary;
-}
-*/
-
-//update the view with the new event details - not pulling from parse
+//update the view with the new event details - not pulling from parse.. they have already been saved up.
 - (void) completedEventEditing:(EventObject *)updatedEvent {
-    
     
     self.eventTitle.text = updatedEvent.title;
     self.eventDescription.text = updatedEvent.descriptionOfEvent;
@@ -1062,8 +1000,8 @@
     self.timeOfEventLabel.text = [self.event eventTimeShortStye];
     
     id<EventDetailProtocol> strongDelegate = self.delegate;
-    if ([strongDelegate respondsToSelector:@selector(userCompletedEventEditing)]) {
-        [strongDelegate userCompletedEventEditing];
+    if ([strongDelegate respondsToSelector:@selector(updateEventCellAfterEdit)]) {
+        [strongDelegate updateEventCellAfterEdit];
     }
     
     [self recheckPublicApprovedAccess];
@@ -1075,30 +1013,30 @@
 
 
 - (void) canceledEventEditing {
-    NSLog(@"Back to Event Details - canceled event editing");
     
     [self.navigationController popViewControllerAnimated:YES];
 
 }
 
 #pragma mark - Delegate Method for Inviting Users to Event
-//Currently only sends out new invites.  No ability to UnInvite
+
 - (void)finishedSelectingInvitations:(NSArray *)selectedPeople {
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
     [self.event inviteUsers:selectedPeople completion:^(BOOL success) {
-        NSLog(@"finished inviting users with : %@", [NSNumber numberWithBool:success]);
+
     }];
     
     [self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        NSLog(@"Saved invite pfrelations");
+   
     }];
 
 }
 
 
 #pragma mark - Event Pictures Protocol
+
 - (void) newPictureAdded {
     
     NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
@@ -1117,23 +1055,7 @@
 
 
 
-#pragma mark - EVNComment Protocol
-
-- (void) addNewComment {
-    
-    if (self.isCurrentUserAttending || self.isCurrentUsersEvent) {
-        
-        self.shouldRestoreNavBar = NO;
-        
-        EVNAddCommentVC *newCommentVC = [[EVNAddCommentVC alloc] init];
-        newCommentVC.delegate = self;
-        
-        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:newCommentVC];
-        
-        [self presentViewController:navController animated:YES completion:nil];
-    }
-}
-
+#pragma mark - Event Comment Protocol
 
 - (void) cancelComment {
     
@@ -1173,10 +1095,12 @@
 }
 
 
--(void)dealloc
-{
-    [self.entireMapView.timerForRandomize invalidate];
+
+#pragma mark - Clean Up
+
+- (void) dealloc {
     
+    [self.entireMapView.timerForRandomize invalidate];
     NSLog(@"eventdetailsvc is being deallocated");
 }
 

@@ -8,9 +8,9 @@
 
 @protocol PictureViewerDelegate;
 
-#import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
+#import <UIKit/UIKit.h>
 
 @interface PictureFullScreenVC : UIViewController
 
@@ -25,6 +25,6 @@
 
 @protocol PictureViewerDelegate <NSObject>
 
--(void)returnToEventAndDeletePhoto:(BOOL) shouldDeletePhoto;
+- (void) returnToPicturesViewAndDeletePhoto:(BOOL) shouldDeletePhoto;
 
 @end

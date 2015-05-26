@@ -19,29 +19,54 @@
 
 @implementation EVNAddCommentVC
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
     self.view.backgroundColor = [UIColor blackColor];
-    //self.view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.3];
     
-    //TODO PUSH THIS VC ONTO A NAVIGATION CONTROLLER
-    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+    [self setupNavigationBar];
+    [self setupSubviews];
+    
+}
+
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    [self.commentTextView becomeFirstResponder];
+}
+
+
+- (void) viewDidDisappear:(BOOL)animated {
+    
+    [self.navigationController.navigationBar setBackgroundImage:nil
                                                   forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = nil;
+    self.navigationController.navigationBar.translucent = NO;
+    
+}
+
+
+- (void) setupNavigationBar {
+    
+    //Transparent Navigation Bar
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
     self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBar.alpha = 1;
     
-    
+    //Create Submit and Cancel Bar Butttons
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"CommentCancel"] style:UIBarButtonItemStylePlain target:self action:@selector(cancelComment)];
     
     UIBarButtonItem *submitButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"CommentSubmit"] style:UIBarButtonItemStylePlain target:self action:@selector(submitComment)];
-
+    
     [self.navigationItem setLeftBarButtonItem:cancelButton];
     [self.navigationItem setRightBarButtonItem:submitButton];
     
-    //Bar Button Item Text Attributes
+    //Customize Submit and Cancel Bar Butttons
     [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                    [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
                                                                    [UIColor whiteColor], NSForegroundColorAttributeName,
@@ -54,6 +79,11 @@
                                                                     nil]
                                                           forState:UIControlStateNormal];
     
+}
+
+
+- (void) setupSubviews {
+    
     CGSize size = [@"What's" sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:EVNFontLight size:21.0]}];
     
     self.placeholderLabel = [[UILabel alloc] initWithFrame:CGRectMake(25, 90, self.view.frame.size.width - 40, ceilf(size.height))];
@@ -61,7 +91,6 @@
     self.placeholderLabel.font = [UIFont fontWithName:EVNFontLight size:21.0];
     self.placeholderLabel.text = @"Add to the conversation...";
     self.placeholderLabel.backgroundColor = [UIColor clearColor];
-
     
     self.commentTextView = [[UITextView alloc] initWithFrame:CGRectMake(20, 80, self.view.frame.size.width - 40, 200)];
     self.commentTextView.textColor = [UIColor whiteColor];
@@ -69,7 +98,7 @@
     self.commentTextView.text = @"";
     self.commentTextView.delegate = self;
     self.commentTextView.backgroundColor = [UIColor clearColor];
-
+    
     self.commentLengthCount = [[UILabel alloc] initWithFrame:CGRectMake(20, self.commentTextView.frame.size.height + self.commentTextView.frame.origin.y, self.view.frame.size.width - 40, 40)];
     self.commentLengthCount.textColor = [UIColor whiteColor];
     self.commentLengthCount.textAlignment = NSTextAlignmentCenter;
@@ -83,27 +112,9 @@
     
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
-    [self.commentTextView becomeFirstResponder];
-}
 
-- (void) viewDidDisappear:(BOOL)animated {
-    
-    [self.navigationController.navigationBar setBackgroundImage:nil
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.shadowImage = nil;
-    self.navigationController.navigationBar.translucent = NO;
-    
-    
-}
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+#pragma mark - User Actions
 
 - (void) cancelComment {
     
@@ -140,15 +151,11 @@
             [maxCommentLength show];
             
         }
-        
-
-        
     }
-    
 }
 
 
-#pragma mark - TextView Delegate 
+#pragma mark - UITextView Delegate Methods
 
 - (void)textViewDidChange:(UITextView *)textView {
     
@@ -167,19 +174,5 @@
 }
 
 
-
-
-
-
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -13,8 +13,9 @@
 
 @implementation EVNUser
 
-@dynamic profilePicture, twitterHandle, instagramHandle, hometown, realName, bio;
+@dynamic profilePicture, twitterHandle, instagramHandle, hometown, realName, bio, username, email;
 
+#pragma mark - Required for Subclassing Parse PFUser
 
 + (void) load {
     [self registerSubclass];
@@ -28,6 +29,8 @@
     return (EVNUser *) [PFUser currentUser];
 }
 
+
+#pragma mark - Helper Methods
 
 - (NSString *) hometownText {
     
@@ -142,6 +145,7 @@
             
             followButton.enabled = YES;
             [followButton endedTask];
+            
         }];
         
         
@@ -197,13 +201,13 @@
         
         
     } else {
+        
         followButton.enabled = YES;
         [followButton endedTask];
+        
     }
     
 }
-
-
 
 
 - (void) isCurrentUserFollowingProfile:(EVNUser *)user completion:(void (^)(BOOL, BOOL))completionBlock {

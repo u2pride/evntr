@@ -13,12 +13,12 @@
 
 @interface EVNUser : PFUser <PFSubclassing>
 
-//@property (nonatomic, strong) NSString *username;
+@property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) PFFile *profilePicture;
 
 @property (nonatomic, strong) NSString *hometown;
 @property (nonatomic, strong) NSString *realName;
-//@property (nonatomic, strong) NSString *email;
+@property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *bio;
 @property (nonatomic, strong) NSString *twitterHandle;
 @property (nonatomic, strong) NSString *instagramHandle;
@@ -32,8 +32,6 @@
 
 - (void) followUser:(EVNUser *)userToFollow fromVC:(UIViewController *)activeVC withButton:(EVNButton *)followButton withCompletion:(void (^)(BOOL))completionBlock;
 
-
-//Return 0 if Error
 - (void) numberOfEventsWithCompletion:(void (^)(int))completionBlock;
 - (void) numberOfFollowersWithCompletion:(void (^)(int))completionBlock;
 - (void) numberOfFollowingWithCompletion:(void (^)(int))completionBlock;

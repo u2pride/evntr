@@ -19,13 +19,13 @@
 
 @implementation SearchHeaderView
 
-- (id)init {
-    
+#pragma mark - Initialization Methods
+
+- (id) init {
     return [self initWithFrame:CGRectZero];
-    
 }
 
-- (id)initWithFrame:(CGRect)frame {
+- (id) initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
     if (self) {
@@ -33,16 +33,21 @@
         self.backgroundColor = [UIColor whiteColor];
         [self setupLabels];
         [self setupConstraints];
-        
     }
+    
     return self;
 }
+
+#pragma mark - Layout Methods
 
 - (void)updateConstraints {
     
     [super updateConstraints];
     
 }
+
+
+#pragma mark - Helper Methods For Setting Subviews
 
 - (void) setupLabels {
     
@@ -64,7 +69,6 @@
     [self.peopleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.peopleLabel sizeToFit];
     
-    
     CALayer *separator = [CALayer layer];
     separator.frame = CGRectMake(self.center.x - 2, 10.0f, 0.5f, self.frame.size.height - 20);
     separator.backgroundColor = [UIColor lightGrayColor].CGColor;
@@ -72,7 +76,6 @@
     CALayer *bottomLayer = [CALayer layer];
     bottomLayer.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 1.0f);
     bottomLayer.backgroundColor = [UIColor orangeThemeColor].CGColor;
-    
     
     [self.layer addSublayer:separator];
     [self.layer addSublayer:bottomLayer];
@@ -83,7 +86,6 @@
 }
 
 - (void)setupConstraints {
-    
     
     //Distribute Labels Horizontally
     NSDictionary *viewsDictionary = @{@"EVENTS":self.eventLabel, @"PEOPLE":self.peopleLabel};
@@ -116,6 +118,8 @@
     
 
 }
+
+#pragma mark - Clean Up
 
 -(void)dealloc{
     NSLog(@"searchheaderview is being deallocated");

@@ -30,17 +30,13 @@
 - (IBAction)distance7Press:(id)sender;
 - (IBAction)distance8Press:(id)sender;
 
-@property (nonatomic, strong) NSNotificationCenter *notifcationCenter;
-
 @end
 
 @implementation FilterEventsVC
 
+#pragma mark - Lifecycle Methods
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    self.notifcationCenter = [NSNotificationCenter defaultCenter];
     
     self.distance1Button.tintColor = [UIColor orangeThemeColor];
     self.distance2Button.tintColor = [UIColor orangeThemeColor];
@@ -60,10 +56,7 @@
     self.distance7Button.layer.cornerRadius = self.distance7Button.bounds.size.width / 2.0f;
     self.distance8Button.layer.cornerRadius = self.distance8Button.bounds.size.width / 2.0f;
 
-
     int doubledValue = (int) (self.selectedFilterDistance * 2);
-    
-    NSLog(@"Int Value - %d", doubledValue);
     
     switch (doubledValue) {
         case 1: {
@@ -122,6 +115,8 @@
     
 }
 
+
+#pragma mark - User Actions
 
 - (IBAction)distance1Press:(id)sender {
     
@@ -243,8 +238,9 @@
     
 }
 
--(void)dealloc
-{
+#pragma mark - Clean Up
+
+-(void)dealloc {
     NSLog(@"filtereventsvc is being deallocated");
 }
 @end

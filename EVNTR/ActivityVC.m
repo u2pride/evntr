@@ -10,21 +10,17 @@
 #import "ActivityVC.h"
 #import "EVNConstants.h"
 #import "EVNNoResultsView.h"
+#import "EVNNotifcationsTitleView.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
-#import "EVNNotifcationsTitleView.h"
-
 
 @interface ActivityVC ()
 
 @property (nonatomic) EVNNoResultsView *noResultsView;
-@property (nonatomic, strong) NSString *navigationBarTitleText;
-@property (nonatomic, strong) UILabel *titleLabel;
-
 @property (nonatomic) CGPoint scrollViewOffset;
 @property (nonatomic) BOOL userScrolledUp;
 @property (nonatomic, strong) NSTimer *timerForAutomaticUpdates;
@@ -36,46 +32,10 @@
 
 @implementation ActivityVC
 
-- (void) updateRefreshTimestampWithDate:(NSDate *)updatedDate {
-    
-    self.secondaryUpdateTimestamp = self.primaryUpdateTimestamp;
-    
-    self.primaryUpdateTimestamp = updatedDate;
-    
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    
-    [userDefaults setObject:self.primaryUpdateTimestamp forKey:kPrimaryUpdateTimestamp];
-    [userDefaults setObject:self.secondaryUpdateTimestamp forKey:kSecondaryUpdateTimestamp];
-    
-    [userDefaults synchronize];
-    
-    NSLog(@"UpdateDates Primary - %@ and Secondary - %@", self.primaryUpdateTimestamp, self.secondaryUpdateTimestamp);
-    
-}
-
-- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    CGPoint newScrollOffset = scrollView.contentOffset;
-    
-    NSLog(@"Previous: %f and New: %f", self.scrollViewOffset.y, newScrollOffset.y);
-
-    if (newScrollOffset.y > self.scrollViewOffset.y) {
-        NSLog(@"Down");
-    } else {
-        NSLog(@"Up");
-        self.userScrolledUp = YES;
-        
-        [self updateRefreshTimestampWithDate:[NSDate date]];
-        
-    }
-    
-    self.scrollViewOffset = newScrollOffset;
-    
-}
 
 
-//TODO: move to viewDidLoad? - Doesn't depend on view though.
-//Only properties that will be available are ones in the super class (PFQueryTableViewController).  Only can access my instance variables.
+#pragma mark - Lifecycle Methods
+
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
     self = [super initWithCoder:aDecoder];
@@ -95,73 +55,50 @@
     
 }
 
-//HEY
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    [self updateRefreshTimestampWithDate:[NSDate date]];
-
+- (void)viewDidLoad {
+    [super viewDidLoad];
     
     //TODO:  ONLY FOR ALL ACTIVITIES
-    NSNumber *noNewActivities = 0;
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    [standardDefaults setObject:noNewActivities forKey:kNumberOfNotifications];
-    [standardDefaults synchronize];
-    //[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
     
-}
-
-- (void) setNavigationBarTitleText:(NSString *)navigationBarTitleText {
+    self.scrollViewOffset = self.tableView.contentOffset;
+    self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
     
-    //UIFont *boldFont = [UIFont fontWithName:@"Lato-Bold" size:kFontSize];
-    UIFont *regularFont = [UIFont fontWithName:@"Lato-Regular" size:kFontSize];
-    UIColor *foregroundColor = [UIColor whiteColor];
-    
-    // Create the attributes
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-                           [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
-                           regularFont, NSFontAttributeName,
-                           foregroundColor, NSForegroundColorAttributeName, @0, NSLigatureAttributeName, nil];
-    //NSDictionary *subAttrs = [NSDictionary dictionaryWithObjectsAndKeys:
-    //                          [NSNumber numberWithInt:NSUnderlineStyleSingle], NSUnderlineStyleAttributeName,
-    //                          boldFont, NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    //const NSRange range = NSMakeRange(14, 1);
-    
-    // Create the attributed string (text + attributes)
-    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@  v", navigationBarTitleText] attributes:attrs];
-    //[attributedText setAttributes:subAttrs range:range];
-    
-    // Set it in our UILabel and we are done!
-    [self.titleLabel setAttributedText:attributedText];
-    [self.titleLabel sizeToFit];
-
-}
-
-
-- (NSTimer *) timerForAutomaticUpdates {
-    
-    if (!_timerForAutomaticUpdates) {
-        
-        _timerForAutomaticUpdates = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:60] interval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
-        
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    if ([userDefaults objectForKey:kPrimaryUpdateTimestamp]) {
+        self.primaryUpdateTimestamp = (NSDate *) [userDefaults objectForKey:kPrimaryUpdateTimestamp];
+    } else {
+        self.primaryUpdateTimestamp = [NSDate date];
     }
     
-    return _timerForAutomaticUpdates;
+    if ([userDefaults objectForKey:kSecondaryUpdateTimestamp]) {
+        self.secondaryUpdateTimestamp = (NSDate *) [userDefaults objectForKey:kSecondaryUpdateTimestamp];
+    } else {
+        self.secondaryUpdateTimestamp = [NSDate date];
+    }
+    
+    //Needed for Dynamic Cell Heights
+    self.tableView.estimatedRowHeight = 100.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
+    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
+            
+    EVNNotifcationsTitleView *titleForNotifications = [[EVNNotifcationsTitleView alloc] initWithFrame:CGRectMake(0, 0, 150, 50)];
+    titleForNotifications.backgroundColor = [UIColor clearColor];
+    self.navigationItem.titleView = titleForNotifications;
+            
+    UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterActivityTable)];
+    tapgr.numberOfTapsRequired = 1;
+    tapgr.numberOfTouchesRequired = 1;
+    tapgr.delegate = self;
+    [self.navigationItem.titleView addGestureRecognizer:tapgr];
+    
 }
 
-- (void) backgroundActivityUpdate {
-    
-    NSLog(@"Timer Fired -Performing Background Update of Table");
-    self.typeOfActivityView = ACTIVITIES_ALL;
-    self.navigationBarTitleText = @"Notifications";
-    [self loadObjects];
-    
-}
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    NSLog(@"Timer Invalidated");
     [self.timerForAutomaticUpdates invalidate];
     [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
     self.userScrolledUp = NO;
@@ -169,203 +106,37 @@
     [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
 }
 
+
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    NSLog(@"Timer Added to Run Loop");
-    self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
+    //Start Background Timer for Updates
+    self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
     
 }
 
 
+#pragma mark - Custom Getters
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (NSTimer *) timerForAutomaticUpdates {
     
-    self.scrollViewOffset = self.tableView.contentOffset;
-    
-    NSLog(@"ViewDidLoad - Timer Added to Run Loop");
-    self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
-    
-    
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    NSLog(@"Got userdefaults");
-    if ([userDefaults objectForKey:kPrimaryUpdateTimestamp]) {
-        NSLog(@"Found objectforkey primary");
-        self.primaryUpdateTimestamp = (NSDate *) [userDefaults objectForKey:kPrimaryUpdateTimestamp];
-    } else {
-        self.primaryUpdateTimestamp = [NSDate date];
+    if (!_timerForAutomaticUpdates) {
+        
+        _timerForAutomaticUpdates = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:60] interval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
     }
     
-    if([userDefaults objectForKey:kSecondaryUpdateTimestamp]) {
-        self.secondaryUpdateTimestamp = (NSDate *) [userDefaults objectForKey:kSecondaryUpdateTimestamp];
-    } else {
-        self.secondaryUpdateTimestamp = [NSDate date];
-    }
-    
-    
-    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
-    
-    /* CHECK AGAINST BELOW
-    //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
-    
-    //Remove text for back button used in navigation
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self.navigationItem setBackBarButtonItem:backButtonItem];
-    */
-    
-    
-    //TODO:  ONLY FOR ALL ACTIVITIES
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
-
-
-    switch (self.typeOfActivityView) {
-        case ACTIVITIES_ALL: {
-            
-            self.titleLabel = [UILabel new];
-            self.titleLabel.textAlignment = NSTextAlignmentCenter;
-            self.navigationBarTitleText = @"Notifications";
-
-            self.titleLabel.userInteractionEnabled = YES;
-            //self.navigationItem.titleView = self.titleLabel;
-            
-            
-            EVNNotifcationsTitleView *titleForNotifications = [[EVNNotifcationsTitleView alloc] initWithFrame:CGRectMake(0, 0, 150, 50)];
-            titleForNotifications.backgroundColor = [UIColor clearColor];
-            self.navigationItem.titleView = titleForNotifications;
-            
-            
-            UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterActivityTable)];
-            tapgr.numberOfTapsRequired = 1;
-            tapgr.numberOfTouchesRequired = 1;
-            tapgr.delegate = self;
-            [self.navigationItem.titleView addGestureRecognizer:tapgr];
-            
-            
-            /* sample code
-             
-             NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
-             [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"test "
-             attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone)}]];
-             [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"s"
-             attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
-             NSBackgroundColorAttributeName: [UIColor clearColor]}]];
-             [attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"tring"]];
-             */
-            
-            
-            
-            /*
-            NSString *baseString = @"Notifications ";
-            //NSString *fullString = [baseString stringByAppendingString:@"\u25BC"];
-            
-
-            
-            NSDictionary *moreAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                             NSFontAttributeName: [UIFont fontWithName:@"Lato-Bold" size:kFontSize],
-                                         NSUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]};
-            
-            
-            NSAttributedString *downCarrot = [[NSAttributedString alloc] initWithString:@"v" attributes:moreAttributes];
-            
-            
-            NSString *fullString = [baseString stringByAppendingString:downCarrot.string];
-            
-            
-            
-            titleLabel.text = fullString;
-            NSDictionary *attributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                         NSUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]};
-            titleLabel.attributedText = [[NSAttributedString alloc] initWithString:titleLabel.text attributes:attributes];
-            [titleLabel sizeToFit];
-            self.navigationItem.titleView = titleLabel;
-            */
-            
-            //NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] init];
-            //[attributedString appendAttributedString:[[NSAttributedString alloc] initWithString:@"Notifications" attributes:@{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)}]];
-
-            
-            //NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
-            
-            //NSString *notificationsTitle = @"Notifications";
-            //NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:notificationsTitle attributes:underlineAttribute];
-            //self.navigationItem.title = attributedString.string;
-            //self.navigationItem.title = @"Notifications";
-            break;
-        }
-        case ACTIVITIES_INVITES: {
-            
-            /*
-            UILabel *titleLabel = [UILabel new];
-            titleLabel.text = @"Invites";
-            NSDictionary *attributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                         NSFontAttributeName: [UIFont fontWithName:@"Lato-Light" size:20.0],
-                                         NSUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]};
-            titleLabel.attributedText = [[NSAttributedString alloc] initWithString:self.navigationItem.title attributes:attributes];
-            [titleLabel sizeToFit];
-            self.navigationItem.titleView = titleLabel;
-            */
-            
-            self.navigationItem.title = @"Invites";
-            break;
-        }
-        case ACTIVITIES_REQUESTS_TO_ME: {
-            self.navigationItem.title = @"Access Requests";
-            break;
-        }
-        case ACTIVITIES_ATTENDED: {
-            self.navigationItem.title = @"Events Attended";
-            break;
-        }
-        case ACTIVITIES_MY_REQUESTS_STATUS: {
-            self.navigationItem.title = @"Access Responses";
-            break;
-        }
-        default:
-            
-            break;
-    }
-
-    
-    self.tableView.estimatedRowHeight = 100.0;
-    self.tableView.rowHeight = UITableViewAutomaticDimension;
-
-
+    return _timerForAutomaticUpdates;
 }
-
 
 
 
 #pragma mark - New Follow Notiification
 
-//Method that gets called when a new follow notification is posted
-//Used to update whether the current user is following/not following in the notification table.
-//TODO:  only reloads follow activities - eventually the notification should contain the username and the tableview should only update that one cell.  Need to add for requests maybe
+//TODO: Follow Notification Only Uploads Cells of Specific Username that you Followed/Unfollowed.  Reload everything for now to avoid DB issue.
 - (void)newFollowActivity:(NSNotification *)notification {
     
-    if ([notification.object isEqual:self]) {
-        NSLog(@"Notification is sent from myself - ignore");
-    
-    } else {
-        
+    if (![notification.object isEqual:self]) {
         [self loadObjects];
-        NSLog(@"Re-loading Objects in tableview");
-        
-        //TODO : just update objects of type follow
-        /*
-        for (PFObject *activity in self.objects) {
-            
-            NSNumber *type = [activity objectForKey:@"type"];
-            int value = [type integerValue];
-            
-            if (value == 1) {
-                NSLog(@"Found a cell with follow type - try to reload it");
-                //call cell for row at indexpath
-            }
-        }
-         */
     }
     
 }
@@ -376,54 +147,29 @@
 
 - (PFQuery *)queryForTable {
     
-    //TODO - use dot notation to fetch further objects for example... from.profilePicture so we don't have to do this later..
-
-    NSLog(@"Building the query");
-    
     PFQuery *queryForActivities = [PFQuery queryWithClassName:@"Activities"];
     [queryForActivities orderByDescending:@"updatedAt"];
 
-    //Build the query for the table
     switch (self.typeOfActivityView) {
         case ACTIVITIES_ALL: {
-            //[queryForActivities whereKey:@"type" notEqualTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
             
             PFQuery *coreActivities = [PFQuery queryWithClassName:@"Activities"];
             [coreActivities whereKey:@"to" equalTo:self.userForActivities];
-            //[coreActivities includeKey:@"to"];
-            //[coreActivities includeKey:@"from"];
-            //[coreActivities includeKey:@"activityContent"];
             
             PFQuery *requestsToEvents = [PFQuery queryWithClassName:@"Activities"];
             [requestsToEvents whereKey:@"from" equalTo:self.userForActivities];
             [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-            //[requestsToEvents includeKey:@"to"];
-            //[requestsToEvents includeKey:@"from"];
-            //[requestsToEvents includeKey:@"activityContent"];
-
-            
-            //PFQuery *coreActivities = [PFQuery queryWithClassName:@"Activities"];
-            //[queryForActivities whereKey:@"to" equalTo:self.userForActivities];
-            //[queryForActivities includeKey:@"to"];
-            //[queryForActivities includeKey:@"from"];
-            //[queryForActivities includeKey:@"activityContent"];
-            
             
             queryForActivities = [PFQuery orQueryWithSubqueries:@[coreActivities,requestsToEvents]];
             [queryForActivities includeKey:@"to"];
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
-
-            
-            // 3 - {from} requested that {to} give access to {activityContent}
-
-            // {to} - current user therefore Michael has requested access to Camping {}
-            // {from} - current user therefore You were added to the Standby list for Hiking
             
             break;
         }
         case ACTIVITIES_INVITES: {
+            
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
             [queryForActivities includeKey:@"from"];
@@ -432,10 +178,6 @@
             break;
         }
         case ACTIVITIES_REQUESTS_TO_ME: {
-            //list of people that want access to your events
-            //query activities where
-            
-            //TODO - Unnecessarily complex query
             
             //Get all events by User
             PFQuery *innerQueryForAuthor = [PFQuery queryWithClassName:@"Events"];
@@ -451,10 +193,10 @@
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
 
-            
             break;
         }
         case ACTIVITIES_ATTENDED: {
+            
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
             [queryForActivities includeKey:@"to"];
@@ -468,12 +210,9 @@
             [grantedAccessActivities whereKey:@"to" equalTo:self.userForActivities];
             [grantedAccessActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
             
-            
             PFQuery *requestsToEvents = [PFQuery queryWithClassName:@"Activities"];
             [requestsToEvents whereKey:@"from" equalTo:self.userForActivities];
             [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-
-            
             
             queryForActivities = [PFQuery orQueryWithSubqueries:@[grantedAccessActivities,requestsToEvents]];
             [queryForActivities includeKey:@"to"];
@@ -481,21 +220,16 @@
             [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
             
-            //[queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-            //[queryForActivities whereKey:@"to" equalTo:self.userForActivities];
-            //[queryForActivities includeKey:@"from"];
-            //[queryForActivities includeKey:@"activityContent"];
-            
             break;
         }
         default:
+            
             [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
             
             break;
     }
     
     
-
     return queryForActivities;
     
 }
@@ -504,58 +238,54 @@
     
     [super objectsDidLoad:error];
     
-    NSLog(@"objectsdidload");
-    
     if (self.objects.count == 0) {
         [self showNoResultsView];
     } else {
         self.noResultsView.hidden = YES;
     }
     
-    //TODO - Badge Values - Reset App Badge and Tab Bar Badge
+    //Update App Delegate of Latest Activity Pull
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
     
-    
-    int newObjectsCount = 0;
-    for (PFObject *notificationObject in self.objects) {
-
-        NSComparisonResult dateCompare = [notificationObject.createdAt compare:self.secondaryUpdateTimestamp];
-        
-        if (dateCompare == NSOrderedDescending) {
-            newObjectsCount++;
-        }
-    }
-    
-    
     //Table Load Performed in Background
     if (self.timerForAutomaticUpdates.valid) {
+        
+        int newObjectsCount = 0;
+        for (PFObject *notificationObject in self.objects) {
+            
+            NSComparisonResult dateCompare = [notificationObject.createdAt compare:self.secondaryUpdateTimestamp];
+            
+            if (dateCompare == NSOrderedDescending) {
+                newObjectsCount++;
+            }
+        }
+        
         if (newObjectsCount == 0) {
             [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
 
         } else {
-            //NSString *currentBadgeValue = [[self.tabBarController.tabBar.items objectAtIndex:2] badgeValue];
-            //int baseBadgeValue = [currentBadgeValue intValue];
-            //int newBadgeValue = baseBadgeValue + newObjectsCount;
             [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:[NSString stringWithFormat:@"%d", newObjectsCount]];
         }
     }
     
 }
 
+
+#pragma mark - Helper Methods
+
 - (void) showNoResultsView {
     
     if (!self.noResultsView) {
         self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
+        self.noResultsView.headerText = @"Where is Everyone?";
+        self.noResultsView.subHeaderText = @"Looks like there's no activity yet.  Once you start attending and creating events, you'll see your activity in here.";
+        self.noResultsView.actionButton.hidden = YES;
+        
+        [self.view addSubview:self.noResultsView];
     }
     
-    self.noResultsView.headerText = @"Where is Everyone?";
-    self.noResultsView.subHeaderText = @"Looks like there's no activity yet.  Once you start attending and creating events, you'll see your activity in here.";
-    self.noResultsView.actionButton.hidden = YES;
-    
-    [self.view addSubview:self.noResultsView];
-    
-    
+    self.noResultsView.hidden = NO;
 }
 
 - (void) hideNoResultsView {
@@ -563,54 +293,75 @@
     [self.noResultsView removeFromSuperview];
     
 }
+
+- (void) backgroundActivityUpdate {
+    
+    self.typeOfActivityView = ACTIVITIES_ALL;
+    [self loadObjects];
+    
+}
+
+
+- (void) updateRefreshTimestampWithDate:(NSDate *)updatedDate {
+    
+    self.secondaryUpdateTimestamp = self.primaryUpdateTimestamp;
+    
+    self.primaryUpdateTimestamp = updatedDate;
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults setObject:self.primaryUpdateTimestamp forKey:kPrimaryUpdateTimestamp];
+    [userDefaults setObject:self.secondaryUpdateTimestamp forKey:kSecondaryUpdateTimestamp];
+    
+    [userDefaults synchronize];
+    
+}
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    CGPoint newScrollOffset = scrollView.contentOffset;
+    
+    if (newScrollOffset.y > self.scrollViewOffset.y) {
+        //empty
+    } else {
+        self.userScrolledUp = YES;
+        [self updateRefreshTimestampWithDate:[NSDate date]];
+        
+    }
+    
+    self.scrollViewOffset = newScrollOffset;
+    
+}
     
 
+#pragma mark - UITableView Datasource Methods
 
 - (PFTableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
     
-    
-    NSLog(@"cellforrowatindexpath ----------");
-
     static NSString *cellIdentifier = @"activityCell";
 
     ActivityTableCell *activityCell = (ActivityTableCell *)[tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    
-    int activityType = (int) [[object objectForKey:@"type"] integerValue];
-
-    if (activityType == FOLLOW_ACTIVITY) {
-        NSLog(@"Follow Activity");
-    } else if (activityType == INVITE_ACTIVITY) {
-        NSLog(@"Invite Activity");
-    } else if (activityType == REQUEST_ACCESS_ACTIVITY) {
-        NSLog(@"Request Access Activity");
-    } else if (activityType == ATTENDING_ACTIVITY) {
-        NSLog(@"Attending Activity");
-    } else {
-        NSLog(@"Activity Type Not Found");
-    }
-    
-    //Update Cell UI
+    //Initial Cell Configuration
     activityCell.leftSideImageView.image = [UIImage imageNamed:@"PersonDefault"];
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
-    
+    activityCell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
+
+    //Determine if Cell Should be Highlighted as a New Notification
     NSComparisonResult dateCompare = [createdAtDate compare:self.secondaryUpdateTimestamp];
-    
     if (dateCompare == NSOrderedDescending && !self.userScrolledUp) {
         [activityCell highlightCellForNewNotification];
     }
     
-    activityCell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
-    
     //Remove Old Gestures and Targets from the Cell
     for (UIGestureRecognizer *recognizer in activityCell.leftSideImageView.gestureRecognizers) {
-        NSLog(@"Removing Gesture...");
         [activityCell.leftSideImageView removeGestureRecognizer:recognizer];
     }
-    
     [activityCell.actionButton removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
     
+    
+    int activityType = (int) [[object objectForKey:@"type"] integerValue];
     
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
@@ -647,10 +398,11 @@
                     activityCell.actionButton.personToFollow = userFollow;
                 }
                 
-                [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
+                if (!error) {
+                    [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
+                }
                 
             }];
-
         
             
             break;
@@ -672,14 +424,11 @@
             
             //Main Text Message
             EventObject *eventInvitedTo = (EventObject *) object[@"activityContent"];
-            
             activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ invited you to %@", username, eventInvitedTo.title];
-            activityCell.actionButton.eventToView = eventInvitedTo;
-            [activityCell.actionButton setIsSelected:NO];
-            
             
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
+            activityCell.actionButton.eventToView = eventInvitedTo;
             [activityCell.actionButton setIsSelected:NO];
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
             
@@ -695,7 +444,7 @@
                 
                 EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
                 
-                //Left Image Configuration
+                //Left Image Thumbnail
                 activityCell.leftSideImageView.file = [EVNUser currentUser][@"profilePicture"];
                 [activityCell.leftSideImageView loadInBackground];
                 activityCell.leftSideImageView.userInteractionEnabled = YES;
@@ -719,9 +468,10 @@
                 EVNUser *userRequestedAccess = (EVNUser *) object[@"from"];
                 EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
                 
-                //Left Image Configuration
+                //Left Image Thumbnail
                 activityCell.leftSideImageView.file = userRequestedAccess[@"profilePicture"];
                 [activityCell.leftSideImageView loadInBackground];
+                
                 activityCell.leftSideImageView.userInteractionEnabled = YES;
                 activityCell.leftSideImageView.objectForImageView = userRequestedAccess;
                 UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
@@ -734,7 +484,6 @@
                 activityCell.actionButton.personToGrantAccess = userRequestedAccess;
                 activityCell.actionButton.eventToGrantAccess = eventToAccess;
                 
-                
                 PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
                 [grantedActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
                 [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
@@ -745,18 +494,16 @@
                     if (!objects || !objects.count) {
                         activityCell.actionButton.titleText = kGrantAccess;
                         [activityCell.actionButton setIsSelected:NO];
-                        //[activityCell.actionButton setTitle:kGrantAccess forState:UIControlStateNormal];
                     } else {
                         activityCell.actionButton.titleText = kRevokeAccess;
                         [activityCell.actionButton setIsSelected:YES];
-                        //[activityCell.actionButton setTitle:kRevokeAccess forState:UIControlStateNormal];
                     }
                     
-                    [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
+                    if (!error) {
+                        [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
+                    }
                     
                 }];
-                
-
 
             }
             
@@ -776,12 +523,10 @@
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
             [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
             
-            
             //Main Text Message
             NSString *activityDescriptionString;
             NSDate *currentDate = [NSDate date];
             NSComparisonResult dateComparison = [currentDate compare:eventToAttend.dateOfEvent];
-            
             
             //Build the description string based off Time of Event and Current User
             if ([self.userForActivities.objectId isEqualToString:[EVNUser currentUser].objectId] ) {
@@ -789,11 +534,8 @@
                 if (dateComparison == NSOrderedAscending) {
                     activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", eventToAttend.title];
                     
-                } else if (dateComparison == NSOrderedDescending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"You went to %@", eventToAttend.title];
-                    
                 } else {
-                    activityDescriptionString = @"Failed comparison";
+                    activityDescriptionString = [NSString stringWithFormat:@"You went to %@", eventToAttend.title];
                 }
                 
             } else {
@@ -801,12 +543,8 @@
                 if (dateComparison == NSOrderedAscending) {
                     activityDescriptionString = [NSString stringWithFormat:@"%@ is going to %@", self.userForActivities[@"username"], eventToAttend.title];
                     
-                } else if (dateComparison == NSOrderedDescending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], eventToAttend.title];
-                    
                 } else {
-                    activityDescriptionString = @"Failed comparison2";
-                    
+                    activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], eventToAttend.title];
                 }
             
             }
@@ -816,11 +554,10 @@
             
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
-            [activityCell.actionButton setIsSelected:NO];
             activityCell.actionButton.eventToView = eventToAttend;
+            [activityCell.actionButton setIsSelected:NO];
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-            
             
             
             break;
@@ -839,15 +576,13 @@
             UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
             [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
             
-            
             //Main Text Message
             activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ let you in to %@", userGrantedAccess.username, eventGrantedAccess.title];
             
             //Right Action Button
             activityCell.actionButton.titleText = @"View";
-            [activityCell.actionButton setIsSelected:NO];
             activityCell.actionButton.eventToView = eventGrantedAccess;
-            
+            [activityCell.actionButton setIsSelected:NO];
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
             
@@ -856,68 +591,59 @@
         }
         default: {
             
-            UIAlertView *errorAlert2 = [[UIAlertView alloc] initWithTitle:@"Error #3" message:@"Please submit feedback with this error number" delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"That's Weird" message:@"Looks like something broke.  Send us an email/tweet and we'll help you figure out what happened." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
-            [errorAlert2 show];
-
+            [message show];
             
             break;
         }
     }
     
+    
     [activityCell setSelectionStyle:UITableViewCellSelectionStyleNone];
-
 
     return activityCell;
     
 }
 
 
+#pragma mark - UITableView Delegate Methods
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     
-    NSLog(@"Did Select Row at Index Path - %@", indexPath);
-    
 }
 
 
-#pragma mark - 
 #pragma mark - Filter Activity Table Type
 
 - (void) filterActivityTable {
-    
-    NSLog(@"Filter Activity Table");
     
     UIAlertController *filterOptions = [UIAlertController alertControllerWithTitle:@"Notification Types" message:@"Select the notifications you want to see" preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *eventsAttendedAction = [UIAlertAction actionWithTitle:@"Events Attended" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_ATTENDED;
-        self.navigationBarTitleText = @"Attended";
         [self loadObjects];
     }];
     
     UIAlertAction *accessRequestsAction = [UIAlertAction actionWithTitle:@"Requests to Your Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_REQUESTS_TO_ME;
-        self.navigationBarTitleText = @"Requests";
         [self loadObjects];
     }];
     
     UIAlertAction *accessResponsesAction = [UIAlertAction actionWithTitle:@"Your Requests to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_MY_REQUESTS_STATUS;
-        self.navigationBarTitleText = @"Responses";
         [self loadObjects];
     }];
     
     UIAlertAction *invitationsAction = [UIAlertAction actionWithTitle:@"Invitations to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_INVITES;
-        self.navigationBarTitleText = @"Invitations";
         [self loadObjects];
     }];
     
     UIAlertAction *allAction = [UIAlertAction actionWithTitle:@"All Notifications" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_ALL;
-        self.navigationBarTitleText = @"Notifications";
         [self loadObjects];
     }];
     
@@ -934,10 +660,8 @@
 }
 
 
-#pragma mark - 
-#pragma mark - Target-Action Method Implementations
+#pragma mark - User Performed Actions
 
-//View User Profile When Profile Image on Left Side is Selected
 - (void)viewProfile:(UITapGestureRecognizer *)tapgr {
     
     ImageViewPFExtended *tappedImage = (ImageViewPFExtended *)tapgr.view;
@@ -952,20 +676,24 @@
 
 - (void)viewEvent:(id)sender {
     
-    
     UIButtonPFExtended *viewButton = (UIButtonPFExtended *)sender;
     EventObject *object = viewButton.eventToView;
     
-    NSLog(@"View Event with - %@", object);
-
     EventDetailVC *eventDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
     
     eventDetailsVC.event = object;
     
     [self.navigationController pushViewController:eventDetailsVC animated:YES];
     
-    [viewButton endedTask];
     [viewButton setIsSelected:NO];
+    
+}
+
+- (void)tappedFollowButton:(id)sender {
+    
+    UIButtonPFExtended *followButton = (UIButtonPFExtended *)sender;
+    
+    [[EVNUser currentUser] followUser:followButton.personToFollow fromVC:self withButton:followButton withCompletion:^(BOOL success) {}];
     
 }
 
@@ -1002,18 +730,17 @@
                         
                         if (succeeded) {
                             grantButton.titleText = kGrantAccess;
+                            
+                            grantButton.enabled = YES;
+                            [grantButton endedTask];
                         }
                         
                     }];
                     
-                    
                 } else {
-                    NSLog(@"Error Deleting Grant Access Activity");
+                    grantButton.enabled = NO;
+                    [grantButton endedTask];
                 }
-                
-                //Re-Enable Button
-                grantButton.enabled = YES;
-                [grantButton endedTask];
                 
             }];
         }];
@@ -1027,32 +754,26 @@
         newActivity[@"type"] = [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY];
         newActivity[@"activityContent"] = grantButton.eventToGrantAccess;
         [newActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
             if (succeeded) {
                 
                 EventObject *event = grantButton.eventToGrantAccess;
-                
                 PFRelation *attendingRelation = [event relationForKey:@"attenders"];
                 [attendingRelation addObject:grantButton.personToGrantAccess];
                 [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
                     if (succeeded) {
                         grantButton.titleText = kRevokeAccess;
-
-                    } else {
-                        NSLog(@"Error saving relation");
+                        
+                        grantButton.enabled = YES;
+                        [grantButton endedTask];
                     }
-                    
-                    grantButton.enabled = YES;
-                    [grantButton endedTask];
-
                     
                 }];
                 
-                
             } else {
                 
-                NSLog(@"Error Saving New Grant Access Activity: %@", error);
-                grantButton.enabled = YES;
+                grantButton.enabled = NO;
                 [grantButton endedTask];
             
             }
@@ -1063,13 +784,8 @@
 }
 
 
-- (void)tappedFollowButton:(id)sender {
-    
-    UIButtonPFExtended *followButton = (UIButtonPFExtended *)sender;
-    
-    [[EVNUser currentUser] followUser:followButton.personToFollow fromVC:self withButton:followButton withCompletion:^(BOOL success) {}];
 
-}
+#pragma mark - CleanUp
 
 - (void) dealloc {
     

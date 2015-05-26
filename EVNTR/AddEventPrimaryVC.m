@@ -12,8 +12,8 @@
 #import "EVNUtility.h"
 #import "UIColor+EVNColors.h"
 
-@import Photos;
 #import <Parse/Parse.h>
+@import Photos;
 
 @interface AddEventPrimaryVC ()
 {
@@ -30,9 +30,8 @@
 @property (strong, nonatomic) IBOutlet EVNButton *nextButton;
 
 @property (weak, nonatomic) IBOutlet UIImageView *eventCoverPhotoView;
+
 @property (nonatomic, strong) UIView *tapToDismissView;
-
-
 @property (nonatomic, strong) PFFile *coverPhotoFile;
 @property (nonatomic) int selectedEventType;
 
@@ -49,38 +48,22 @@
 
 @implementation AddEventPrimaryVC
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     isEditing = NO;
+    self.selectedEventType = PUBLIC_EVENT_TYPE;
+    self.eventTitleField.delegate = self;
     
-
-    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
-
-    
-    /* CHECK AGAINST BELOW
-    //Navigation Bar Font & Color
-    NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
-    self.navigationController.navigationBar.titleTextAttributes = navFontDictionary;
-    
-
-    //Remove text for back button used in navigation
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self.navigationItem setBackBarButtonItem:backButtonItem];
-    
-     */
-     
     //Change Navigation Bar Color to Theme
     self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor]}];
     
+    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
 
-
-    
-    //Setting Delegate of Event Title Field to Allow Removal of Keyboard on Return
-    self.eventTitleField.delegate = self;
-    
     //Configuring Buttons
     self.publicButton.titleText = @"Public";
     self.publicApprovedButton.titleText = @"Public-Approved";
@@ -90,7 +73,6 @@
     self.nextButton.isSelected = YES;
     self.nextButton.isRounded = NO;
     self.nextButton.isStateless = YES;
-    
     [self.publicApprovedButton sizeToFit];
     
     // Initialize ImageView & Attach Tap Gesture
@@ -98,77 +80,33 @@
     self.eventCoverPhotoView.contentMode = UIViewContentModeScaleAspectFill;
     self.eventCoverPhotoView.image = [UIImage imageNamed:@"takePicture"];
     self.eventCoverPhotoView.userInteractionEnabled = YES;
+    
     UIGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectEventPhoto)];
     tapgr.delegate = self;
     [self.eventCoverPhotoView addGestureRecognizer:tapgr];
-    
-    self.selectedEventType = PUBLIC_EVENT_TYPE;
 
-    /*
-    //Determing Whether the User is Editing or Creating an Event
-    //Editing - Comes from EventDetailVC - Asks Delegate for the Event Details
-    if ([self.delegate isKindOfClass:NSClassFromString(@"EventDetailVC")]) {
-        
-        id<EventModalProtocol> strongDelegate = self.delegate;
-        if ([strongDelegate respondsToSelector:@selector(eventDetailsToEdit)]) {
-            
-            //NSDictionary *values = [strongDelegate eventDetailsToEdit];
-
-            NSNumber *type = [values objectForKey:@"type"];
-            NSString *title = [values objectForKey:@"title"];
-            UIImage *image = [values objectForKey:@"image"];
-            PFFile *imageFile = [values objectForKey:@"file"];
-            
-            self.selectedEventType = [type intValue];
-            self.eventTitleField.text = title;
-            self.eventCoverPhotoView.image = image;
-            self.coverPhotoFile = imageFile;
-            
-            NSString *description = [values objectForKey:@"description"];
-            PFGeoPoint *coordinates = [values objectForKey:@"coordinates"];
-            NSString *locationName = [values objectForKey:@"locationName"];
-            NSDate *date = [values objectForKey:@"date"];
-            
-            PFObject *eventObject = [values objectForKey:@"object"];
-            
-            //TOOD: Create NewEvent initializer that takes in an event object so I don't have to do all of this here.
-            self.eventEditing = [[NewEventModel alloc] initWithTitle:title eventType:[type intValue] coverImage:imageFile eventDescription:description location: coordinates locationName:locationName eventDate:date backingObject:eventObject];
-            
-
-        }
-        
-    }
-    
-     */
-
-    
+ 
     if (self.eventToEdit) {
         
+        isEditing = YES;
+        self.title = @"Edit Event";
+        self.navigationItem.leftBarButtonItems = nil;
+        
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
+        self.navigationItem.leftBarButtonItem = cancelButton;
+
         self.selectedEventType = [self.eventToEdit.typeOfEvent intValue];
         self.eventTitleField.text = self.eventToEdit.title;
         [self.eventToEdit coverImage:^(UIImage *image) {
             self.eventCoverPhotoView.image = image;
         }];
         
-        NSLog(@"CoverPhotoFile Before Edit: %@", self.eventToEdit.coverPhoto);
         self.coverPhotoFile = self.eventToEdit.coverPhoto;
-        
-        isEditing = YES;
     
-        self.title = @"Edit Event";
-        self.navigationItem.leftBarButtonItems = nil;
-        
-        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
-        self.navigationItem.leftBarButtonItem = cancelButton;
-        
-        //Navigation Bar Font & Color - THIS IS REPETITIVE TO WHAT IS ABOVE
-        //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
         self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
     }
     
 }
-
-
 
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -179,6 +117,8 @@
     }
 }
 
+
+#pragma mark - Custom Setters
 
 - (void) setSelectedEventType:(int)selectedEventType {
     
@@ -218,7 +158,7 @@
 
 
 
-#pragma mark - Selecting Cover Photo
+#pragma mark - User Actions
 
 - (void) selectEventPhoto {
     
@@ -264,15 +204,12 @@
         [PFAnalytics trackEventInBackground:@"LastPhotoUsed" block:nil];
         
         PHFetchOptions *fetchOptions = [PHFetchOptions new];
-        fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO],
-                                         ];
-        
+        fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], ];
+    
         PHFetchResult *fetchResults = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:fetchOptions];
-        
         PHAsset *lastPhotoAsset = [fetchResults firstObject];
         
         PHImageManager *defaultManager = [PHImageManager defaultManager];
-        
         PHImageRequestOptions *requestOptions = [PHImageRequestOptions new];
         requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
         
@@ -305,8 +242,6 @@
         stateSnapshot = [[NSMutableDictionary alloc] init];
     }
     
-    NSLog(@"event text: %@", self.eventTitleField.text);
-    
     [stateSnapshot setObject:self.eventTitleField.text forKey:@"kTitle"];
     [stateSnapshot setObject:[NSNumber numberWithInt:self.selectedEventType] forKey:@"kType"];
     
@@ -314,8 +249,6 @@
     
 }
 
-
-#pragma mark - Selecting Buttons for Event Type & Next Button
 
 - (IBAction)selectedPublic:(id)sender {
     
@@ -333,6 +266,11 @@
     
     self.selectedEventType = PRIVATE_EVENT_TYPE;
     
+}
+
+- (IBAction)canceledEventCreation:(id)sender {
+    
+    [self eventCreationCanceled];
 }
 
 
@@ -381,7 +319,6 @@
     }];
 
     UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
-    //UIImage *chosenImage = info[UIImagePickerControllerOriginalImage];
     
     self.eventCoverPhotoView.image = chosenImage;
     
@@ -393,7 +330,6 @@
         self.eventToEdit.coverPhoto = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
     }
     
-    //Restore Selections
     self.eventTitleField.text = [stateSnapshot objectForKey:@"kTitle"];
     self.selectedEventType = [[stateSnapshot objectForKey:@"kType"] intValue];
         
@@ -401,7 +337,6 @@
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     
-    //Restore Selections
     self.eventTitleField.text = [stateSnapshot objectForKey:@"kTitle"];
     self.selectedEventType = [[stateSnapshot objectForKey:@"kType"] intValue];
     
@@ -413,57 +348,9 @@
 }
 
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    
-    [textField resignFirstResponder];
-    
-    return YES;
-}
 
+#pragma mark - UITextField Delegate Methods
 
-
-#pragma mark - Navigation
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-    
-    AddEventSecondVC *nextStepVC = (AddEventSecondVC *) [segue destinationViewController];
-    
-    nextStepVC.title = self.eventTitleField.text;
-    nextStepVC.delegate = self;
-
-    
-    //If there is an Event Already Exisitng - We are editing the event
-    if (self.eventToEdit) {
-        
-        self.eventToEdit.title = self.eventTitleField.text;
-        self.eventToEdit.typeOfEvent = [NSNumber numberWithInt:self.selectedEventType];
-        self.coverPhotoFile = self.coverPhotoFile;
-        
-        nextStepVC.event = self.eventToEdit;
-        nextStepVC.isEditingEvent = YES;
-        
-        NSLog(@"FIRST STEP: %@", [NSNumber numberWithBool:nextStepVC.isEditingEvent] );
-        
-    } else {
-        
-        //Create New Event Object
-        
-        EventObject *newEvent = [EventObject object];
-        
-        newEvent.title = self.eventTitleField.text;
-        newEvent.typeOfEvent = [NSNumber numberWithInt:self.selectedEventType];
-        newEvent.coverPhoto = self.coverPhotoFile;
-        
-        nextStepVC.event = newEvent;
-        nextStepVC.isEditingEvent = NO;
-
-    }
-    
-}
-
-#pragma mark - Tap To Dismiss Keyboard
 - (void) textFieldDidBeginEditing:(UITextField *)textField {
     
     self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
@@ -500,14 +387,55 @@
 }
 
 - (void) textFieldDidEndEditing:(UITextField *)textField {
-    [self.tapToDismissView removeFromSuperview];
     
+    [self.tapToDismissView removeFromSuperview];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    
+    [textField resignFirstResponder];
+    
+    return YES;
 }
 
 - (void)tapToDismissKeyboard {
     [self.view endEditing:YES];
 }
 
+
+
+#pragma mark - Navigation
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    
+    AddEventSecondVC *nextStepVC = (AddEventSecondVC *) [segue destinationViewController];
+    
+    nextStepVC.title = self.eventTitleField.text;
+    nextStepVC.delegate = self;
+    
+    if (self.eventToEdit) {
+        
+        self.eventToEdit.title = self.eventTitleField.text;
+        self.eventToEdit.typeOfEvent = [NSNumber numberWithInt:self.selectedEventType];
+        self.coverPhotoFile = self.coverPhotoFile;
+        
+        nextStepVC.event = self.eventToEdit;
+        nextStepVC.isEditingEvent = YES;
+        
+    } else {
+        
+        EventObject *newEvent = [EventObject object];
+        
+        newEvent.title = self.eventTitleField.text;
+        newEvent.typeOfEvent = [NSNumber numberWithInt:self.selectedEventType];
+        newEvent.coverPhoto = self.coverPhotoFile;
+        
+        nextStepVC.event = newEvent;
+        nextStepVC.isEditingEvent = NO;
+        
+    }
+    
+}
 
 #pragma mark - Delegate Methods for EventCreation
 
@@ -528,7 +456,6 @@
 
 }
 
-
 - (void) eventCreationCanceled {
     
     [self.eventTitleField resignFirstResponder];
@@ -548,7 +475,6 @@
 }
 
 
-
 #pragma mark - Event Editing Delegates
 
 - (void) eventEditingComplete:(EventObject *)updatedEvent {
@@ -563,7 +489,6 @@
     
 }
 
-
 - (void) eventEditingCanceled {
     NSLog(@"Event Editing Canceled");
     
@@ -574,19 +499,6 @@
         [strongDelegate canceledEventEditing];
     }
 }
-
-
-
-
-#pragma mark -- Button Press on Storyboard
-
-
-- (IBAction)canceledEventCreation:(id)sender {
-    
-    [self eventCreationCanceled];
-}
-
-
 
 
 

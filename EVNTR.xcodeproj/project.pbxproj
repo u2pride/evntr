@@ -40,7 +40,6 @@
 		A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632F1A7688E900565BB6 /* Security.framework */; };
 		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
-		A4547E601B0E0788008A6C5B /* EVNSearchBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A4547E5F1B0E0788008A6C5B /* EVNSearchBar.m */; };
 		A4547E621B0E3D81008A6C5B /* evntrVideo.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4547E611B0E3D81008A6C5B /* evntrVideo.mov */; };
 		A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C61AB9B8AB009D3BCC /* MapForEventView.m */; };
 		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
@@ -88,14 +87,11 @@
 		A4E4B6B11ADEB60F00D38358 /* CommentsTableSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */; };
 		A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */; };
 		A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */; };
-		A4E5D4C51AA909BD00E86410 /* UserLocationTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */; };
-		A4E5D4C61AA909BD00E86410 /* UserLocationTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */; };
 		A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */; };
 		A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B11A7ABDF400614412 /* PersonCell.m */; };
 		A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */; };
 		A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B71A7AF65800614412 /* EVNConstants.m */; };
 		A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */; };
-		A4F6C4BE1AA620C1001C68BA /* EventPictureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */; };
 		A4F6C4C11AA6317C001C68BA /* PictureFullScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */; };
 /* End PBXBuildFile section */
 
@@ -164,8 +160,6 @@
 		A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
 		A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddEventPrimaryVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A4547E5E1B0E0788008A6C5B /* EVNSearchBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNSearchBar.h; sourceTree = "<group>"; };
-		A4547E5F1B0E0788008A6C5B /* EVNSearchBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNSearchBar.m; sourceTree = "<group>"; };
 		A4547E611B0E3D81008A6C5B /* evntrVideo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrVideo.mov; sourceTree = "<group>"; };
 		A45638C51AB9B8AB009D3BCC /* MapForEventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapForEventView.h; sourceTree = "<group>"; };
 		A45638C61AB9B8AB009D3BCC /* MapForEventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapForEventView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -250,9 +244,6 @@
 		A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNAddCommentVC.m; sourceTree = "<group>"; };
 		A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleResult.h; sourceTree = "<group>"; };
 		A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleResult.m; sourceTree = "<group>"; };
-		A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLocationTableCell.h; sourceTree = "<group>"; };
-		A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLocationTableCell.m; sourceTree = "<group>"; };
-		A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UserLocationTableCell.xib; sourceTree = "<group>"; };
 		A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PeopleVC.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PeopleVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4F2E9B01A7ABDF400614412 /* PersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonCell.h; sourceTree = "<group>"; };
@@ -262,8 +253,6 @@
 		A4F2E9B61A7AF65800614412 /* EVNConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EVNConstants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A4F2E9B71A7AF65800614412 /* EVNConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EVNConstants.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
-		A4F6C4BC1AA620C1001C68BA /* EventPictureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPictureCell.h; sourceTree = "<group>"; };
-		A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventPictureCell.m; sourceTree = "<group>"; };
 		A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PictureFullScreenVC.h; path = ../PictureFullScreenVC.h; sourceTree = "<group>"; };
 		A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PictureFullScreenVC.m; path = ../PictureFullScreenVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -474,8 +463,6 @@
 				A45638C91ABA2122009D3BCC /* EventPicturesVC.m */,
 				A4F6C4BF1AA6317C001C68BA /* PictureFullScreenVC.h */,
 				A4F6C4C01AA6317C001C68BA /* PictureFullScreenVC.m */,
-				A4F6C4BC1AA620C1001C68BA /* EventPictureCell.h */,
-				A4F6C4BD1AA620C1001C68BA /* EventPictureCell.m */,
 			);
 			name = Pictures;
 			sourceTree = "<group>";
@@ -507,8 +494,6 @@
 			children = (
 				A423F7F01A9BFF0900DF9ABE /* SearchVC.h */,
 				A423F7F11A9BFF0900DF9ABE /* SearchVC.m */,
-				A4547E5E1B0E0788008A6C5B /* EVNSearchBar.h */,
-				A4547E5F1B0E0788008A6C5B /* EVNSearchBar.m */,
 				A4B6FB1C1AB365C80033A3A1 /* SearchHeaderView.h */,
 				A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */,
 			);
@@ -626,9 +611,6 @@
 				A40443621B04D06200F36C6A /* EVNMapAnnotation.m */,
 				A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */,
 				A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */,
-				A4E5D4C21AA909BC00E86410 /* UserLocationTableCell.h */,
-				A4E5D4C31AA909BC00E86410 /* UserLocationTableCell.m */,
-				A4E5D4C41AA909BC00E86410 /* UserLocationTableCell.xib */,
 			);
 			name = "Set Location";
 			sourceTree = "<group>";
@@ -641,8 +623,7 @@
 				A425A1D61AE586D000AF26E6 /* Comments */,
 				A425A1D71AE586E600AF26E6 /* Pictures */,
 				A425A1D81AE586EE00AF26E6 /* Maps */,
-				A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */,
-				A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */,
+				A49F19B41B1374E20097FD88 /* UI Elements */,
 			);
 			name = "Event Details";
 			sourceTree = "<group>";
@@ -658,6 +639,15 @@
 				A4035FD71A786ACF00DB67E4 /* EventTableCell.m */,
 			);
 			name = "All Events";
+			sourceTree = "<group>";
+		};
+		A49F19B41B1374E20097FD88 /* UI Elements */ = {
+			isa = PBXGroup;
+			children = (
+				A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */,
+				A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */,
+			);
+			name = "UI Elements";
 			sourceTree = "<group>";
 		};
 		A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */ = {
@@ -822,7 +812,6 @@
 			files = (
 				A4C4EDD21A95118C000BC3AD /* Lato-Thin.ttf in Resources */,
 				A4C4EDCF1A95118C000BC3AD /* Lato-Bold.ttf in Resources */,
-				A4E5D4C61AA909BD00E86410 /* UserLocationTableCell.xib in Resources */,
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
@@ -879,7 +868,6 @@
 				A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */,
 				A4F2E9B81A7AF65800614412 /* EVNConstants.m in Sources */,
 				A474306A1A8155AD00CF3B8F /* ActivityTableCell.m in Sources */,
-				A4F6C4BE1AA620C1001C68BA /* EventPictureCell.m in Sources */,
 				A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */,
 				A4F6C4C11AA6317C001C68BA /* PictureFullScreenVC.m in Sources */,
 				A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */,
@@ -895,7 +883,6 @@
 				A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
 				A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */,
-				A4E5D4C51AA909BD00E86410 /* UserLocationTableCell.m in Sources */,
 				A4C4EDD61A95186A000BC3AD /* InitialScreenVC.m in Sources */,
 				A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
@@ -920,7 +907,6 @@
 				A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */,
 				A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
-				A4547E601B0E0788008A6C5B /* EVNSearchBar.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

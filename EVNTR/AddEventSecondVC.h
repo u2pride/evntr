@@ -15,7 +15,6 @@
 
 @protocol EventCreationCompleted;
 
-
 @interface AddEventSecondVC : UITableViewController <UITextViewDelegate, EventLocationSearch>
 
 @property (nonatomic, strong) EventObject *event;

@@ -11,28 +11,24 @@
 
 @implementation ActivityTableCell
 
+//Necessary for Dynamic Cell Heights
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    [self.contentView layoutIfNeeded];
+    
+    self.activityContentTextLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.activityContentTextLabel.frame);
+}
 
 - (void)setActivityContentTextLabel:(UILabel *)activityContentTextLabel {
     
-    //custom tasks here..
     _activityContentTextLabel = activityContentTextLabel;
-    
 }
 
 - (void)setTimestampActivity:(UILabel *)timestampActivity {
     
-        //JUST add customaization as a EVN Utility function to get a readable date.
     _timestampActivity = timestampActivity;
 }
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    [self.contentView layoutIfNeeded];
-    self.activityContentTextLabel.preferredMaxLayoutWidth = CGRectGetWidth(self.activityContentTextLabel.frame);
-}
-
 
 - (void) highlightCellForNewNotification {
         

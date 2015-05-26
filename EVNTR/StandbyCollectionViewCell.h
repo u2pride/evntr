@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "ImageViewPFExtended.h"
+
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
-#import "ImageViewPFExtended.h"
+#import <UIKit/UIKit.h>
 
 @interface StandbyCollectionViewCell : UICollectionViewCell
 

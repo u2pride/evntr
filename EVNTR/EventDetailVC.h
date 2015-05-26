@@ -6,14 +6,14 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AddEventPrimaryVC.h"
+#import "AddEventSecondVC.h"
+#import "CommentsTableSource.h"
+#import "EVNAddCommentVC.h"
 #import "EventObject.h"
 #import "EventPicturesVC.h"
 #import "PeopleVC.h"
 #import "PictureFullScreenVC.h"
-#import "AddEventPrimaryVC.h"
-#import "AddEventSecondVC.h"
-#import "EVNAddCommentVC.h"
-#import "CommentsTableSource.h"
 
 #import <MapKit/MapKit.h>
 #import <Parse/Parse.h>
@@ -22,7 +22,6 @@
 
 @protocol EventDetailProtocol;
 
-//TODO - ensure all protocols are necessary
 @interface EventDetailVC : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UINavigationControllerDelegate, PeopleVCDelegate, UIScrollViewDelegate, MKMapViewDelegate, EventModalProtocol, EventCreationCompleted, EventPicturesProtocol, EVNAddCommentProtocol, EVNCommentsTableProtocol>
 
 @property (nonatomic, strong) EventObject *event;
@@ -31,8 +30,11 @@
 @end
 
 
+//For UI Updates to Home Screen Cells
 @protocol EventDetailProtocol <NSObject>
 
-- (void) userCompletedEventEditing;
+@optional
+- (void) updateEventCellAfterEdit;
 - (void) rsvpStatusUpdatedToGoing:(BOOL)rsvp;
+
 @end
