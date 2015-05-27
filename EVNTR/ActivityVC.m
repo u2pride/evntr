@@ -13,6 +13,7 @@
 #import "EVNNotifcationsTitleView.h"
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
+#import "MBProgressHUD.h"
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
@@ -28,13 +29,14 @@
 @property (nonatomic, strong) NSDate *primaryUpdateTimestamp;
 @property (nonatomic, strong) NSDate *secondaryUpdateTimestamp;
 
+@property (nonatomic, strong) EVNNotifcationsTitleView *activityTitleText;
+@property (nonatomic, strong) MBProgressHUD *loadingIndicator;
+
 @end
 
 @implementation ActivityVC
 
-
-
-#pragma mark - Lifecycle Methods
+#pragma mark - Initialization
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     
@@ -48,12 +50,13 @@
         self.objectsPerPage = 15;
         _typeOfActivityView = ACTIVITIES_ALL;
         _userScrolledUp = NO;
-        
     }
     
     return self;
     
 }
+
+#pragma mark - Lifecycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -83,9 +86,10 @@
     
     [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
             
-    EVNNotifcationsTitleView *titleForNotifications = [[EVNNotifcationsTitleView alloc] initWithFrame:CGRectMake(0, 0, 150, 50)];
-    titleForNotifications.backgroundColor = [UIColor clearColor];
-    self.navigationItem.titleView = titleForNotifications;
+    self.activityTitleText = [[EVNNotifcationsTitleView alloc] initWithFrame:CGRectMake(0, 0, 150, 50)];
+    self.activityTitleText.backgroundColor = [UIColor clearColor];
+    self.activityTitleText.titleText = @"Notifications";
+    self.navigationItem.titleView = self.activityTitleText;
             
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(filterActivityTable)];
     tapgr.numberOfTapsRequired = 1;
@@ -238,6 +242,8 @@
     
     [super objectsDidLoad:error];
     
+    [self stopLoadingIndicator];
+    
     if (self.objects.count == 0) {
         [self showNoResultsView];
     } else {
@@ -277,8 +283,8 @@
 - (void) showNoResultsView {
     
     if (!self.noResultsView) {
-        self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-        self.noResultsView.headerText = @"Where is Everyone?";
+        self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
+        self.noResultsView.headerText = @"A Little Empty...";
         self.noResultsView.subHeaderText = @"Looks like there's no activity yet.  Once you start attending and creating events, you'll see your activity in here.";
         self.noResultsView.actionButton.hidden = YES;
         
@@ -291,6 +297,30 @@
 - (void) hideNoResultsView {
     
     [self.noResultsView removeFromSuperview];
+    
+}
+
+- (void) startLoadingIndicator {
+    
+    if (!self.loadingIndicator) {
+        
+        self.loadingIndicator = [[MBProgressHUD alloc] init];
+        self.loadingIndicator.removeFromSuperViewOnHide = YES;
+        self.loadingIndicator.center = self.view.center;
+        self.loadingIndicator.dimBackground = NO;
+        [self.view addSubview:self.loadingIndicator];
+        
+    }
+    
+    [self.loadingIndicator show:YES];
+    
+}
+
+- (void) stopLoadingIndicator {
+    
+    if (self.loadingIndicator) {
+        [self.loadingIndicator hide:YES];
+    }
     
 }
 
@@ -624,26 +654,36 @@
     
     UIAlertAction *eventsAttendedAction = [UIAlertAction actionWithTitle:@"Events Attended" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_ATTENDED;
+        self.activityTitleText.titleText = @"Attended";
+        [self startLoadingIndicator];
         [self loadObjects];
     }];
     
     UIAlertAction *accessRequestsAction = [UIAlertAction actionWithTitle:@"Requests to Your Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_REQUESTS_TO_ME;
+        self.activityTitleText.titleText = @"Requests";
+        [self startLoadingIndicator];
         [self loadObjects];
     }];
     
     UIAlertAction *accessResponsesAction = [UIAlertAction actionWithTitle:@"Your Requests to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_MY_REQUESTS_STATUS;
+        self.activityTitleText.titleText = @"Responses";
+        [self startLoadingIndicator];
         [self loadObjects];
     }];
     
     UIAlertAction *invitationsAction = [UIAlertAction actionWithTitle:@"Invitations to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_INVITES;
+        self.activityTitleText.titleText = @"Invites";
+        [self startLoadingIndicator];
         [self loadObjects];
     }];
     
     UIAlertAction *allAction = [UIAlertAction actionWithTitle:@"All Notifications" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         self.typeOfActivityView = ACTIVITIES_ALL;
+        self.activityTitleText.titleText = @"Notifications";
+        [self startLoadingIndicator];
         [self loadObjects];
     }];
     
@@ -676,7 +716,7 @@
 
 - (void)viewEvent:(id)sender {
     
-    UIButtonPFExtended *viewButton = (UIButtonPFExtended *)sender;
+    EVNButtonExtended *viewButton = (EVNButtonExtended *)sender;
     EventObject *object = viewButton.eventToView;
     
     EventDetailVC *eventDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
@@ -691,7 +731,7 @@
 
 - (void)tappedFollowButton:(id)sender {
     
-    UIButtonPFExtended *followButton = (UIButtonPFExtended *)sender;
+    EVNButtonExtended *followButton = (EVNButtonExtended *)sender;
     
     [[EVNUser currentUser] followUser:followButton.personToFollow fromVC:self withButton:followButton withCompletion:^(BOOL success) {}];
     
@@ -699,7 +739,7 @@
 
 - (void)grantAccess:(id)sender {
     
-    UIButtonPFExtended *grantButton = (UIButtonPFExtended *)sender;
+    EVNButtonExtended *grantButton = (EVNButtonExtended *)sender;
     [grantButton startedTask];
     grantButton.enabled = NO;
     
@@ -789,6 +829,7 @@
 
 - (void) dealloc {
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.timerForAutomaticUpdates invalidate];
 }
 

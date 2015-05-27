@@ -116,6 +116,15 @@
 
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
+    
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    NSLog(@"%li", (long)@([standardDefaults boolForKey:kIsGuest]).integerValue);
+    
+}
+
 
 #pragma mark - User Actions
 

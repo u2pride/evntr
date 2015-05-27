@@ -12,7 +12,7 @@
 #import "FBShimmeringView.h"
 #import "FacebookSDK/FacebookSDK.h"
 #import "HomeScreenVC.h"
-#import "IDTransitioningDelegate.h"
+#import "IDTTransitioningDelegate.h"
 #import "LogInVC.h"
 #import "MBProgressHUD.h"
 #import "ParseFacebookUtils/PFFacebookUtils.h"
@@ -60,7 +60,7 @@
     //Initialization
     self.isNewUserFromFacebook = NO;
     self.viewIsPulledUpForTextInput = NO;
-    self.transitioningDelegateForModal = [[IDTransitioningDelegate alloc] init];
+    self.transitioningDelegateForModal = [[IDTTransitioningDelegate alloc] init];
     
     self.usernameField.layer.borderColor = [UIColor orangeThemeColor].CGColor;
     self.usernameField.layer.borderWidth = 1.0f;
@@ -111,8 +111,6 @@
 - (void) viewWillDisappear:(BOOL)animated {
     
     [super viewWillDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 }
 
@@ -509,7 +507,9 @@
 #pragma mark - Clean Up
 
 - (void) dealloc {
+    
     NSLog(@"loginvc is being deallocated");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

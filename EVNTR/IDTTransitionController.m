@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Ian Dundas. All rights reserved.
 //
 
-#import "IDTransitionController.h"
+#import "IDTTransitionController.h"
 
-@implementation IDTransitionController
+@implementation IDTTransitionController
 
 @synthesize isPresenting;
 

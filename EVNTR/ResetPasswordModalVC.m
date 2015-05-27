@@ -7,7 +7,7 @@
 //
 
 #import "EVNUser.h"
-#import "IDTransitioningDelegate.h"
+#import "IDTTransitioningDelegate.h"
 #import "ResetPasswordModalVC.h"
 
 #import <Parse/Parse.h>

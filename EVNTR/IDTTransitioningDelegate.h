@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@interface IDTransitioningDelegate : NSObject <UIViewControllerTransitioningDelegate>
+@interface IDTTransitioningDelegate : NSObject <UIViewControllerTransitioningDelegate>
 
 @end

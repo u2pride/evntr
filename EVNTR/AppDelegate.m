@@ -221,8 +221,15 @@
         lastFetchTime = [NSDate date];
     }
     
-    //Perform Fetch Only if User is Logged In
-    if ([EVNUser currentUser]) {
+    
+    UIUserNotificationSettings *grantedSettings;
+    
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]){ // Check it's iOS 8 and above
+         grantedSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+    }
+    
+    //Perform Fetch Only if User is Logged In && Notifications Enabled
+    if ([EVNUser currentUser] && grantedSettings.types != UIUserNotificationTypeNone) {
     
         //Querying for Invite Activities that Are New
         PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];

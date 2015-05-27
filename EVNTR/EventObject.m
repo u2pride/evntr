@@ -31,6 +31,7 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.timeStyle = NSDateFormatterNoStyle;
     dateFormatter.dateStyle = NSDateFormatterShortStyle;
+    [dateFormatter setDoesRelativeDateFormatting:YES];
     
     return [dateFormatter stringFromDate:self.dateOfEvent];
     

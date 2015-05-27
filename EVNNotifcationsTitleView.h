@@ -10,4 +10,6 @@
 
 @interface EVNNotifcationsTitleView : UIView
 
+@property (nonatomic, strong) NSString *titleText;
+
 @end

@@ -191,7 +191,7 @@
             savingEvent.textColor = [UIColor whiteColor];
             savingEvent.textAlignment = NSTextAlignmentCenter;
             savingEvent.font = [UIFont fontWithName:EVNFontRegular size:27];
-            savingEvent.center = self.view.center;
+            savingEvent.center = CGPointMake([[UIScreen mainScreen] bounds].size.width/2, [[UIScreen mainScreen] bounds].size.height/2);
             [[darkBlurEffectView contentView] addSubview:savingEvent];
             
             [UIView animateWithDuration:3.0 animations:^{
@@ -428,6 +428,13 @@
     
     locationSearch.delegate = self;
     
+}
+
+#pragma mark - CleanUp
+
+- (void) dealloc {
+    NSLog(@"add event second dealloced");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

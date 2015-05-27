@@ -8,14 +8,14 @@
 
 #import <ParseUI/ParseUI.h>
 #import "ImageViewPFExtended.h"
-#import "UIButtonPFExtended.h"
+#import "EVNButtonExtended.h"
 
 @interface ActivityTableCell : PFTableViewCell
 
 @property (weak, nonatomic) IBOutlet ImageViewPFExtended *leftSideImageView;
 @property (weak, nonatomic) IBOutlet UILabel *activityContentTextLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timestampActivity;
-@property (weak, nonatomic) IBOutlet UIButtonPFExtended *actionButton;
+@property (weak, nonatomic) IBOutlet EVNButtonExtended *actionButton;
 
 - (void) highlightCellForNewNotification;
 

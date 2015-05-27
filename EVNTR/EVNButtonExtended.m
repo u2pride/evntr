@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "UIButtonPFExtended.h"
+#import "EVNButtonExtended.h"
 
-@implementation UIButtonPFExtended
-
+@implementation EVNButtonExtended
 
 @end

@@ -20,7 +20,7 @@
 @property (nonatomic, strong) EventObject *event;
 @property (nonatomic) BOOL isEditingEvent;
 
-@property (nonatomic, strong) id <EventCreationCompleted> delegate;
+@property (nonatomic, weak) id <EventCreationCompleted> delegate;
 
 @end
 

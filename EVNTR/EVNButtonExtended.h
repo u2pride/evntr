@@ -12,7 +12,7 @@
 #import "EVNUser.h"
 #import "EventObject.h"
 
-@interface UIButtonPFExtended : EVNButton
+@interface EVNButtonExtended : EVNButton
 
 @property (nonatomic, strong) EventObject *eventToView;
 @property (nonatomic, strong) EVNUser *personToFollow;

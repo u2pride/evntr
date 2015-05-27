@@ -77,7 +77,7 @@
     bottomLayer.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 1.0f);
     bottomLayer.backgroundColor = [UIColor orangeThemeColor].CGColor;
     
-    [self.layer addSublayer:separator];
+    //[self.layer addSublayer:separator];
     [self.layer addSublayer:bottomLayer];
     
     [self addSubview:self.eventLabel];

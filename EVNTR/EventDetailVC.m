@@ -16,14 +16,14 @@
 #import "EVNUtility.h"
 #import "EventDetailVC.h"
 #import "FullMapVC.h"
-#import "IDTransitioningDelegate.h"
+#import "IDTTransitioningDelegate.h"
 #import "MBProgressHUD.h"
 #import "MapForEventView.h"
 #import "PeopleVC.h"
 #import "PictureFullScreenVC.h"
 #import "ProfileVC.h"
 #import "StandbyCollectionViewCell.h"
-#import "UIButtonPFExtended.h"
+#import "EVNButtonExtended.h"
 #import "UIColor+EVNColors.h"
 #import "UIImageEffects.h"
 
@@ -41,8 +41,11 @@
 @property (nonatomic) BOOL isPublicApproved;
 @property (nonatomic) BOOL isCurrentUsersEvent;
 
+//UIViews
+@property (strong, nonatomic) IBOutlet UIView *detailsBackgroundView;
+
 //Buttons
-@property (strong, nonatomic) IBOutlet UIButtonPFExtended *rsvpStatusButton;
+@property (strong, nonatomic) IBOutlet EVNButtonExtended *rsvpStatusButton;
 @property (strong, nonatomic) IBOutlet UIButton *inviteButton;
 @property (strong, nonatomic) IBOutlet UILabel *viewAttending;
 
@@ -67,6 +70,7 @@
 //Loading Helpers
 @property (nonatomic, strong) MBProgressHUD *HUD;
 @property (nonatomic, strong) UIView *fadeOutBlackScreen;
+@property (nonatomic, strong) UIActivityIndicatorView *detailsLoadingView;
 
 //Mapping Location Component
 @property (strong, nonatomic) IBOutlet MapForEventView *entireMapView;
@@ -135,7 +139,7 @@
     
     //Transition Delegate, Default Images, and ScrollView
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
+    self.customTransitionDelegate = [[IDTTransitioningDelegate alloc] init];
     
     [self setupStaticEventDetailComponents];
     
@@ -175,7 +179,7 @@
     
 
     if (self.needsInfoUpdate) {
-
+        
         numNetworkCallsComplete = 0;
         
         self.fadeOutBlackScreen = [[UIView alloc] initWithFrame:self.view.frame];
@@ -188,6 +192,7 @@
         
         self.timeOfEventLabel.alpha = 0.0;
         self.dateOfEventLabel.alpha = 0.0;
+        self.viewAttending.alpha = 0.0;
         
     }
 }
@@ -216,6 +221,8 @@
     [super viewDidAppear:animated];
     
     if (self.needsInfoUpdate) {
+        
+        [self.detailsLoadingView startAnimating];
         
         [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
         
@@ -416,10 +423,17 @@
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
+    //Loading Indicator
+    self.detailsLoadingView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.detailsLoadingView.center = self.detailsBackgroundView.center;
+    self.detailsLoadingView.hidesWhenStopped = YES;
+    [self.detailsBackgroundView.superview addSubview:self.detailsLoadingView];
+    
     //View Users Attending
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEventAttenders)];
     tapgr.numberOfTapsRequired = 1;
     self.viewAttending.text = @"View Attending";
+    self.viewAttending.font = [UIFont fontWithName:@"Lato-Regular" size:14.0];
     self.viewAttending.textColor = [UIColor orangeThemeColor];
     self.viewAttending.userInteractionEnabled = YES;
     [self.viewAttending addGestureRecognizer:tapgr];
@@ -655,8 +669,11 @@
     UITapGestureRecognizer *tapMapView = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchedMap)];
     [self.transparentTouchView addGestureRecognizer:tapMapView];
     
+    [self.detailsLoadingView stopAnimating];
+    
     self.dateOfEventLabel.alpha = 1.0;
     self.timeOfEventLabel.alpha = 1.0;
+    self.viewAttending.alpha = 1.0;
 
 }
 

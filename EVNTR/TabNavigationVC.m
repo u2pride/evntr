@@ -11,7 +11,7 @@
 #import "EVNConstants.h"
 #import "EVNUser.h"
 #import "HomeScreenVC.h"
-#import "IDTransitionControllerTab.h"
+#import "IDTTransitionControllerTab.h"
 #import "ProfileVC.h"
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
@@ -24,7 +24,7 @@
 @property (nonatomic) BOOL isGuestUser;
 
 @property (nonatomic, strong) UIVisualEffectView *darkBlur;
-@property (nonatomic, strong) IDTransitionControllerTab *transitionController;
+@property (nonatomic, strong) IDTTransitionControllerTab *transitionController;
 @property (strong, nonatomic) UITabBarItem *activityItem;
 
 @end
@@ -39,7 +39,7 @@
     
     self.delegate = self;
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    self.transitionController = [[IDTransitionControllerTab alloc] init];
+    self.transitionController = [[IDTTransitionControllerTab alloc] init];
     
     //UI Updates to Tab & Navigation Bar
     self.tabBar.barTintColor = [UIColor whiteColor];
@@ -60,7 +60,7 @@
 
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
-    
+        
     if (self.isGuestUser) {
         
         NSMutableArray *viewControllersTab = [NSMutableArray arrayWithArray:[self viewControllers]];
@@ -241,6 +241,12 @@
     
     [self setSelectedIndex:0];
     
+}
+
+
+- (void) dealloc {
+    
+    NSLog(@"tabnavigation dealloced");
 }
 
  

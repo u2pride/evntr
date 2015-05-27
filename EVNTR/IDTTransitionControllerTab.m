@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Ian Dundas. All rights reserved.
 //
 
-#import "IDTransitionControllerTab.h"
+#import "IDTTransitionControllerTab.h"
 
-@implementation IDTransitionControllerTab
+@implementation IDTTransitionControllerTab
 
 @synthesize isPresenting;
 

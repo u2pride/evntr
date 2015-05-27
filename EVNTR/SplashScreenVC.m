@@ -7,7 +7,7 @@
 //
 
 #import "SplashScreenVC.h"
-#import "IDTransitioningDelegate.h"
+#import "IDTTransitioningDelegate.h"
 #import "InitialScreenVC.h"
 
 @interface SplashScreenVC ()
@@ -24,7 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
+    self.customTransitionDelegate = [[IDTTransitioningDelegate alloc] init];
     self.taglineLabel.alpha = 0;
     
 }

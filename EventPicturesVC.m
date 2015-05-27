@@ -10,7 +10,7 @@
 #import "EventPicturesVC.h"
 #import "EVNConstants.h"
 #import "EVNUtility.h"
-#import "IDTransitioningDelegate.h"
+#import "IDTTransitioningDelegate.h"
 #import "UIColor+EVNColors.h"
 
 static NSString * const reuseIdentifier = @"pictureCell";
@@ -36,7 +36,7 @@ static NSString * const reuseIdentifier = @"pictureCell";
     if (self) {
         _allowsAddingPictures = NO;
         _eventImages = [[NSMutableArray alloc] init];
-        _customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
+        _customTransitionDelegate = [[IDTTransitioningDelegate alloc] init];
     }
     
     return self;

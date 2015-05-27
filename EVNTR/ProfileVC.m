@@ -41,8 +41,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowersLabel;
 @property (strong, nonatomic) IBOutlet UIButton *followingHeaderButton;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *instagramIcon;
-@property (weak, nonatomic) IBOutlet UIImageView *twitterIcon;
 @property (strong, nonatomic) IBOutlet UILabel *userHometownLabel;
 @property (strong, nonatomic) IBOutlet UILabel *userSinceLabel;
 
@@ -98,6 +96,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.title = @"";
+    
     UINavigationBar *navigationBar = self.navigationController.navigationBar;
     [navigationBar setBackgroundImage:[UIImage new]
                        forBarPosition:UIBarPositionAny
@@ -121,9 +121,14 @@
             if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
                 self.profileType = CURRENT_USER_PROFILE;
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kEventCreated object:nil];
+                
+                UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SettingsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(viewSettings)];
+
+                self.navigationItem.rightBarButtonItem = settingsButton;
+                
+                
             } else {
                 self.profileType = OTHER_USER_PROFILE;
-                self.navigationItem.rightBarButtonItems = nil;
             }
             
             //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
@@ -136,7 +141,6 @@
             
         } else {
             
-            self.navigationItem.rightBarButtonItems = nil;
             self.eventsHeaderButton.hidden = YES;
             self.followingHeaderButton.hidden = YES;
             self.followersHeaderButton.hidden = YES;
@@ -215,8 +219,11 @@
     switch (self.profileType) {
         case CURRENT_USER_PROFILE: {
 
-            self.followButton.hidden = YES;
-            self.editProfileButton.hidden = NO;
+            //self.followButton.hidden = YES;
+            //self.editProfileButton.hidden = NO;
+            
+            [self showEditProfileButton];
+            
             [self.editProfileButton addTarget:self action:@selector(editUserProfile) forControlEvents:UIControlEventTouchUpInside];
             
             self.title = @"Profile";
@@ -226,8 +233,8 @@
         }
         case OTHER_USER_PROFILE: {
             
-            self.followButton.hidden = NO;
-            self.editProfileButton.hidden = YES;
+            //self.followButton.hidden = NO;
+            //self.editProfileButton.hidden = YES;
             
             self.navigationItem.title = [@"@" stringByAppendingString:self.profileUser.username];
             
@@ -235,10 +242,16 @@
                 
                 if (success) {
                     if (isFollowing) {
-                        self.followButton.titleText = @"Following";
+                        
+                        [self showFollowButtonWithText:kFollowingString];
                         self.followButton.isSelected = YES;
+
+                        //self.followButton.titleText = kFollowingString;
+                        
                     } else {
-                        self.followButton.titleText = @"Follow";
+                        
+                        [self showFollowButtonWithText:kFollowString];
+                        //self.followButton.titleText = kFollowString;
                     }
                 } else {
                     self.followButton.titleText = @"";
@@ -262,6 +275,7 @@
     
     PFFile *profilePictureFromParse = self.profileUser[@"profilePicture"];
     self.profileImageView.file = profilePictureFromParse;
+    
     [self.profileImageView loadInBackground];
 
     [self.profileUser numberOfEventsWithCompletion:^(int events) {
@@ -276,9 +290,47 @@
     [self.profileUser numberOfFollowingWithCompletion:^(int following) {
         self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", following];
     }];
-    
 
+}
+
+- (void) showEditProfileButton {
     
+    if (self.editProfileButton.hidden) {
+        
+        self.editProfileButton.alpha = 0;
+        self.editProfileButton.hidden = NO;
+        
+        [UIView animateWithDuration:0.7 animations:^{
+            
+            self.editProfileButton.alpha = 1;
+            
+        } completion:^(BOOL finished) {
+            
+            
+        }];
+    }
+}
+
+- (void) showFollowButtonWithText:(NSString *) followStateString {
+    
+    self.followButton.titleText = followStateString;
+    
+    if (self.followButton.hidden) {
+        
+        self.followButton.alpha = 0;
+        self.followButton.hidden = NO;
+        
+        [UIView animateWithDuration:0.7 animations:^{
+            
+            self.followButton.alpha = 1.0;
+            
+        } completion:^(BOOL finished) {
+            
+            
+        }];
+        
+    }
+
 }
 
 
@@ -321,6 +373,12 @@
     viewFollowingVC.userProfile = self.profileUser;
     
     [self.navigationController pushViewController:viewFollowingVC animated:YES];
+    
+}
+
+- (void) viewSettings {
+    
+    [self performSegueWithIdentifier:@"profileToSettings" sender:nil];
     
 }
 
@@ -448,10 +506,19 @@
          editProfileView.pictureData = UIImagePNGRepresentation(self.profileImageView.image);
          editProfileView.delegate = self;
          
+     } else if ([[segue identifier] isEqualToString:@"profileToSettings"]) {
+         //emtpy
      }
      
  }
 
+#pragma mark - Clean Up
+
+- (void) dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    NSLog(@"profile dealloced");
+}
 
 
 @end

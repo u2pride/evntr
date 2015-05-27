@@ -10,7 +10,7 @@
 #import "EVNConstants.h"
 #import "EVNUser.h"
 #import "GuestWelcomeVC.h"
-#import "IDTransitioningDelegate.h"
+#import "IDTTransitioningDelegate.h"
 #import "InitialScreenVC.h"
 #import "LogInVC.h"
 #import "MapForEventView.h"
@@ -38,6 +38,7 @@
 
 - (IBAction)showBetaInformation:(id)sender;
 - (IBAction)showBuildInformation:(id)sender;
+- (IBAction)skipForNow:(id)sender;
 
 @end
 
@@ -69,7 +70,7 @@
     self.registerButton.font = [UIFont fontWithName:EVNFontRegular size:20.0];
     self.registerButton.isStateless = YES;
     
-    self.customTransitionDelegate = [[IDTransitioningDelegate alloc] init];
+    self.customTransitionDelegate = [[IDTTransitioningDelegate alloc] init];
     
     //Setup Blur
     UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
@@ -121,7 +122,6 @@
     
     NSLog(@"Version: %@ and Build: %@", version, build);
     
-    
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     
     NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
@@ -129,6 +129,9 @@
     if ([versionBuildNumber isEqualToString:@"V0.70Build1"]) {
         
         if ([EVNUser currentUser]) {
+            
+            [standardDefaults setBool:NO forKey:kIsGuest];
+            [standardDefaults synchronize];
             
             [self stopMoviePlayer];
             [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
@@ -172,6 +175,24 @@
     [errorAlert show];
 }
 
+- (IBAction)skipForNow:(id)sender {
+    
+    [self leavingTransitionAnimations];
+    
+    //Set isGuest Object
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setBool:YES forKey:kIsGuest];
+    [standardDefaults synchronize];
+    
+    GuestWelcomeVC *guestWelcomeVC = (GuestWelcomeVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"GuestWelcomeViewController"];
+    guestWelcomeVC.transitioningDelegate = self.customTransitionDelegate;
+    guestWelcomeVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    
+    [self presentViewController:guestWelcomeVC animated:YES completion:nil];
+                
+    
+}
+
 - (void)continueIntoTheApp:(UIGestureRecognizer *)gr {
     
     NSInteger tag = gr.view.tag;
@@ -179,25 +200,43 @@
     EVNButton *button = (EVNButton *)gr.view;
     [button startedTask];
     
+    [self leavingTransitionAnimations];
+
     //Login Button
     if (tag == 1) {
         
-        [self performSegueWithIdentifier:@"InitialToLogin" sender:self];
-        [self.loginButton endedTask];
+        LogInVC *loginVC = (LogInVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+        loginVC.transitioningDelegate = self.customTransitionDelegate;
+        loginVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        loginVC.delegate = self;
         
-        //Register Button
+        [self presentViewController:loginVC animated:YES completion:^{
+            [self.loginButton endedTask];
+        }];
+        
+        //[self performSegueWithIdentifier:@"InitialToLogin" sender:self];
+        
     } else {
         
-        [self performSegueWithIdentifier:@"InitialToSignUp" sender:self];
-        self.registerButton.isSelected = YES;
-        [self.registerButton endedTask];
+        SignUpVC *signUpVC = (SignUpVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SignUpViewController"];
+        signUpVC.transitioningDelegate = self.customTransitionDelegate;
+        signUpVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        signUpVC.delegate = self;
+        
+        [self presentViewController:signUpVC animated:YES completion:^{
+            self.registerButton.isSelected = YES;
+            [self.registerButton endedTask];
+        }];
+        
+        //[self performSegueWithIdentifier:@"InitialToSignUp" sender:self];
+
     }
     
 }
 
 #pragma mark - Custom Getters
 
-- (MPMoviePlayerController *)moviePlayer {
+- (MPMoviePlayerController *) moviePlayer {
     NSLog(@"Accessed movie player controller variable");
     
     if (!_moviePlayer) {
@@ -245,45 +284,6 @@
     
     [self leavingTransitionAnimations];
     
-    if ([segue.identifier isEqualToString:@"InitialToLogin"]) {
-        
-        LogInVC *loginVC = (LogInVC *) [segue destinationViewController];
-        loginVC.transitioningDelegate = self.customTransitionDelegate;
-        loginVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        loginVC.delegate = self;
-        
-    } else if ([segue.identifier isEqualToString:@"NewUserFacebook"]) {
-        
-        NewUserFacebookVC *destVC = (NewUserFacebookVC *) [segue destinationViewController];
-        
-        destVC.transitioningDelegate = self.customTransitionDelegate;
-        destVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        destVC.informationFromFB = self.detailsFromFBRegistration;
-        
-    
-    } else if ([segue.identifier isEqualToString:@"InitialToSignUp"]) {
-        
-        SignUpVC *signUpView = (SignUpVC *) [segue destinationViewController];
-        signUpView.transitioningDelegate = self.customTransitionDelegate;
-        signUpView.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        signUpView.delegate = self;
-        
-    } else if ([segue.identifier isEqualToString:@"SkipForNowSegue"]) {
-        
-        //Set isGuest Object
-        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-        [standardDefaults setBool:YES forKey:kIsGuest];
-        [standardDefaults synchronize];
-        
-
-        GuestWelcomeVC *guestWelcomeView = (GuestWelcomeVC *) [segue destinationViewController];
-        guestWelcomeView.transitioningDelegate = self.customTransitionDelegate;
-        guestWelcomeView.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        
-    } else if ([segue.identifier isEqualToString:@"currentUserExists"]) {
-        
-    }
-    
 }
 
 
@@ -329,7 +329,15 @@
         //Pass FB Details
         self.detailsFromFBRegistration = [NSDictionary dictionaryWithDictionary:userDetailsFromFB];
         
-        [self performSegueWithIdentifier:@"NewUserFacebook" sender:self];
+        [self leavingTransitionAnimations];
+        
+        NewUserFacebookVC *destVC = (NewUserFacebookVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"NewUserFacebookViewController"];
+        destVC.transitioningDelegate = self.customTransitionDelegate;
+        destVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        destVC.informationFromFB = self.detailsFromFBRegistration;
+        
+        [destVC presentViewController:destVC animated:YES completion:nil];
+        //[self performSegueWithIdentifier:@"NewUserFacebook" sender:self];
         
     }];
     
@@ -341,8 +349,16 @@
     [self dismissViewControllerAnimated:YES completion:^{
         
         self.detailsFromFBRegistration = [NSDictionary dictionaryWithDictionary:userDetailsFromFB];
+        
+        [self leavingTransitionAnimations];
 
-        [self performSegueWithIdentifier:@"NewUserFacebook" sender:nil];
+        NewUserFacebookVC *destVC = (NewUserFacebookVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"NewUserFacebookViewController"];
+        destVC.transitioningDelegate = self.customTransitionDelegate;
+        destVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        destVC.informationFromFB = self.detailsFromFBRegistration;
+        
+        [destVC presentViewController:destVC animated:YES completion:nil];
+        //[self performSegueWithIdentifier:@"NewUserFacebook" sender:nil];
         
     }];
     
@@ -414,6 +430,7 @@
 
 - (void) dealloc {
     NSLog(@"initialscreenvc is being deallocated");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

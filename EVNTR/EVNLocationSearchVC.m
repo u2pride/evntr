@@ -570,8 +570,7 @@ const int NUMBER_OF_PLACES_RESULTS = 10;
 
 - (void) fetchedData: (NSData *)responseData {
     
-    NSError *error;
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:&error];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseData options:kNilOptions error:nil];
     
     NSArray *places = [json objectForKey:@"results"];
     

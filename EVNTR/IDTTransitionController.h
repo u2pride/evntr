@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface IDTransitionController : NSObject <UIViewControllerAnimatedTransitioning>
+@interface IDTTransitionController : NSObject <UIViewControllerAnimatedTransitioning>
 
 @property (nonatomic, assign) BOOL isPresenting;
 

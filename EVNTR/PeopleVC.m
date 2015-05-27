@@ -26,6 +26,8 @@
 @property (nonatomic, strong) NSMutableArray *previouslyInvitedUsers;
 @property (nonatomic, strong) NSMutableArray *allInvitedUsers;
 
+@property (nonatomic, strong) UIActivityIndicatorView *activitySpinner;
+
 @end
 
 
@@ -40,7 +42,12 @@
     
     self.previouslyInvitedUsers = [[NSMutableArray alloc] init];
     self.allInvitedUsers = [[NSMutableArray alloc] init];
-
+    
+    self.activitySpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.activitySpinner.hidesWhenStopped = YES;
+    self.activitySpinner.center = CGPointMake(self.view.center.x, self.view.center.y / 2.0);
+    [self.view addSubview:self.activitySpinner];
+    
     switch (self.typeOfUsers) {
         case VIEW_ALL_PEOPLE: {
             
@@ -80,7 +87,7 @@
                 //Populate All Invited Users Array with the Existing Invites
                 [self.allInvitedUsers addObjectsFromArray:self.previouslyInvitedUsers];
                 
-                [self.collectionView reloadData];
+                [self reloadCollectionView];
                 
             }];
             
@@ -115,6 +122,8 @@
 
 - (void)findUsersOnParse {
     
+    [self.activitySpinner startAnimating];
+    
     self.usersArray = [[NSArray alloc] init];
     self.usersMutableArray = [[NSMutableArray alloc] init];
     
@@ -140,7 +149,7 @@
                     
                 } else {
                     self.usersArray = [[NSArray alloc] initWithArray:usersFound];
-                    [self.collectionView reloadData];
+                    [self reloadCollectionView];
                 }
             
             }];
@@ -177,7 +186,7 @@
                     
                     self.usersArray = self.usersMutableArray;
                     
-                    [self.collectionView reloadData];
+                    [self reloadCollectionView];
 
                 }
             }];
@@ -203,7 +212,7 @@
                 } else {
                     
                     self.usersArray = [NSArray arrayWithArray:following];
-                    [self.collectionView reloadData];
+                    [self reloadCollectionView];
                 }
                 
                 
@@ -240,7 +249,7 @@
                 } else {
                     
                     self.usersArray = [NSArray arrayWithArray:following];
-                    [self.collectionView reloadData];
+                    [self reloadCollectionView];
                 }
                 
    
@@ -269,7 +278,7 @@
                     
                 } else {
                     self.usersArray = objects;
-                    [self.collectionView reloadData];
+                    [self reloadCollectionView];
                 }
                 
                 
@@ -391,6 +400,16 @@
 }
 
 
+
+#pragma mark - Helper Loading Methods
+
+- (void) reloadCollectionView {
+    
+    [self.activitySpinner stopAnimating];
+    
+    [self.collectionView reloadData];
+    
+}
 
 
 

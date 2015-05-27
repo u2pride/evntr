@@ -25,6 +25,7 @@
 @property (nonatomic, strong) NSMutableArray *searchResultsArray;
 
 @property (nonatomic, strong) SearchHeaderView *searchTypeSelectionView;
+@property (nonatomic, strong) UIActivityIndicatorView *activitySpinner;
 @property (nonatomic) BOOL isSearchingEvents;
 
 @end
@@ -81,6 +82,12 @@
     [self.searchTypeSelectionView.eventLabel addGestureRecognizer:tapEvents];
     [self.searchTypeSelectionView.peopleLabel addGestureRecognizer:tapPeople];
 
+    self.activitySpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.activitySpinner.hidesWhenStopped = YES;
+    self.activitySpinner.center = self.searchResultsTable.tableHeaderView.center;
+    
+    [self.view addSubview:self.activitySpinner];
+    
 }
 
 
@@ -117,12 +124,15 @@
     
     if (self.searchController.searchBar.text.length > 0) {
         
+        [self.activitySpinner startAnimating];
+        self.searchResultsTable.allowsSelection = NO;
+        
         if (self.isSearchingEvents) {
             
             NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
             
             PFQuery *searchQuery = [PFQuery queryWithClassName:@"Events"];
-            [searchQuery whereKey:@"title" containsString:self.searchController.searchBar.text];
+            [searchQuery whereKey:@"title" matchesRegex:self.searchController.searchBar.text modifiers:@"i"];
             [searchQuery whereKey:@"typeOfEvent" notEqualTo:[NSNumber numberWithInt:PRIVATE_EVENT_TYPE]];
             [searchQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
             [searchQuery orderByDescending:@"updatedAt"];
@@ -131,6 +141,8 @@
                 if (objects) {
                     self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
                     [self.searchResultsTable reloadData];
+                    [self.activitySpinner stopAnimating];
+                    self.searchResultsTable.allowsSelection = YES;
                 }
 
             }];
@@ -144,6 +156,8 @@
                 if (objects) {
                     self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
                     [self.searchResultsTable reloadData];
+                    [self.activitySpinner stopAnimating];
+                    self.searchResultsTable.allowsSelection = YES;
                 }
 
             }];
@@ -164,17 +178,27 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     }
     
-    if (self.isSearchingEvents) {
+    if (self.searchResultsArray.count == 0) {
         
-        EventObject *currentObject = (EventObject *)[self.searchResultsArray objectAtIndex:indexPath.row];
-        cell.textLabel.text = currentObject.title;
+        cell.textLabel.text = @"No Results";
         
     } else {
-    
-        EVNUser *currentUser = (EVNUser *) [self.searchResultsArray objectAtIndex:indexPath.row];
-        cell.textLabel.text = currentUser.username;
+        
+        if (self.isSearchingEvents) {
+            
+            EventObject *currentObject = (EventObject *)[self.searchResultsArray objectAtIndex:indexPath.row];
+            cell.textLabel.text = currentObject.title;
+            
+        } else {
+            
+            EVNUser *currentUser = (EVNUser *) [self.searchResultsArray objectAtIndex:indexPath.row];
+            cell.textLabel.text = currentUser.username;
+            
+        }
+        
         
     }
+
     
     cell.textLabel.font = [UIFont fontWithName:EVNFontRegular size:15];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -185,7 +209,12 @@
 
 
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.searchResultsArray.count;
+    
+    if (self.searchResultsArray.count == 0) {
+        return 1;
+    } else {
+        return self.searchResultsArray.count;
+    }
 }
 
 
@@ -195,32 +224,37 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    self.searchController.active = NO;
-    
     NSIndexPath *selectedIndexPath = [tableView indexPathForSelectedRow];
     
-    if (self.isSearchingEvents) {
+    if (!self.searchResultsArray.count == 0) {
         
-        EventObject *event = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
-        
-        EventDetailVC *eventVC = (EventDetailVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
-        
-        eventVC.event = event;
-        eventVC.delegate = self;
-        
-        [self.navigationController pushViewController:eventVC animated:YES];
-        
-    } else {
-        
-        EVNUser *selectedUser = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
-        
-        ProfileVC *profileVC = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-        
-        profileVC.userObjectID = selectedUser.objectId;
-        
-        [self.navigationController pushViewController:profileVC animated:YES];
+        if (self.isSearchingEvents) {
+            
+            EventObject *event = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
+            
+            EventDetailVC *eventVC = (EventDetailVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
+            
+            eventVC.event = event;
+            eventVC.delegate = self;
+            
+            [self.navigationController pushViewController:eventVC animated:YES];
+            
+        } else {
+            
+            EVNUser *selectedUser = [self.searchResultsArray objectAtIndex:selectedIndexPath.row];
+            
+            ProfileVC *profileVC = (ProfileVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+            
+            profileVC.userObjectID = selectedUser.objectId;
+            
+            [self.navigationController pushViewController:profileVC animated:YES];
+            
+        }
         
     }
+    
+    self.searchController.active = NO;
+
 
 }
 

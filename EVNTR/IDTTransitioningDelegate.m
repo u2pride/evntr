@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 Ian Dundas. All rights reserved.
 //
 
-#import "IDTransitioningDelegate.h"
-#import "IDTransitionController.h"
+#import "IDTTransitioningDelegate.h"
+#import "IDTTransitionController.h"
 
-@implementation IDTransitioningDelegate
+@implementation IDTTransitioningDelegate
 
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented
                                                                   presentingController:(UIViewController *)presenting
                                                                       sourceController:(UIViewController *)source
 {
-    IDTransitionController *transitioning = [[IDTransitionController alloc]init];
+    IDTTransitionController *transitioning = [[IDTTransitionController alloc]init];
     
     transitioning.isPresenting = YES;
     
@@ -24,7 +24,7 @@
 
 - (id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
 
-    IDTransitionController *transitioning = [[IDTransitionController alloc]init];
+    IDTTransitionController *transitioning = [[IDTTransitionController alloc]init];
 
     transitioning.isPresenting = NO;
     

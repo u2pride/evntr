@@ -234,4 +234,11 @@
     
 }
 
+#pragma mark - CleanUp
+
+- (void) dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end

@@ -10,6 +10,14 @@
 
 @implementation EVNNotifcationsTitleView
 
+
+- (void) setTitleText:(NSString *)titleText {
+    
+    [self setNeedsDisplay];
+    
+    _titleText = titleText;
+}
+
 - (void)drawRect:(CGRect)rect {
     
     //// General Declarations
@@ -18,7 +26,14 @@
     //// Text Drawing
     CGRect textRect = CGRectMake(1, 9, 125, 28);
     {
-        NSString* textContent = @"Notifications";
+        NSString *textContent;
+        
+        if (self.titleText) {
+            textContent = self.titleText;
+        } else {
+            textContent = @"Notifications";
+        }
+        
         NSMutableParagraphStyle* textStyle = NSMutableParagraphStyle.defaultParagraphStyle.mutableCopy;
         textStyle.alignment = NSTextAlignmentCenter;
         

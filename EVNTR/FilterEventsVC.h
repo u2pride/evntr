@@ -13,7 +13,7 @@
 @interface FilterEventsVC : UIViewController
 
 @property (nonatomic) float selectedFilterDistance;
-@property (nonatomic, strong) id <EVNFilterProtocol> delegate;
+@property (nonatomic, weak) id <EVNFilterProtocol> delegate;
 
 @end
 

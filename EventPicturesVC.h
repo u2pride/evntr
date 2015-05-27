@@ -19,7 +19,7 @@
 @property (nonatomic) BOOL allowsAddingPictures;
 
 @property (strong, nonatomic) EventObject *eventObject;
-@property (nonatomic, strong) id <EventPicturesProtocol> delegate;
+@property (nonatomic, weak) id <EventPicturesProtocol> delegate;
 
 @end
 

@@ -16,7 +16,7 @@
 
 @interface AddEventPrimaryVC : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, EventCreationCompleted>
 
-@property (nonatomic, strong) id <EventModalProtocol> delegate;
+@property (nonatomic, weak) id <EventModalProtocol> delegate;
 @property (nonatomic, strong) EventObject *eventToEdit;
 
 @end
