@@ -106,10 +106,7 @@
                     [self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         
                         if (succeeded) {
-                            
-                            //Notify VCs of new event creation - TODO: updates profile view.
-                            [[NSNotificationCenter defaultCenter] postNotificationName:kEventCreated object:nil userInfo:nil];
-                            
+                                                        
                             UIWindow *window = [[UIApplication sharedApplication] keyWindow];
                             MBProgressHUD *HUD = [[MBProgressHUD alloc] init];
                             HUD.center = window.center;
@@ -207,8 +204,7 @@
                             
                             if (succeeded) {
                                 
-                                //Notify VCs of new event creation - TODO: updates profile view.
-                                [[NSNotificationCenter defaultCenter] postNotificationName:kEventCreated object:nil userInfo:nil];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:kUserCreatedNewEvent object:nil userInfo:nil];
                                 
                                 [self.navigationController popViewControllerAnimated:NO];
                                 
@@ -434,9 +430,7 @@
 
 - (void) dealloc {
     NSLog(@"add event second dealloced");
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
 
 
 @end

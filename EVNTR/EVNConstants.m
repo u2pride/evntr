@@ -17,10 +17,9 @@ NSString *const kFirstLoginNewBuild = @"FIRST_LOGIN_NEW_BUILD";
 
 #pragma mark - Notification
 
-NSString *const kNotificationNewFollow = @"NotificationNewFollow";
-NSString *const kNotificationRemovedFollow = @"NotificationRemovedFollow";
-NSString *const kFollowActivity = @"FollowActivity";
-NSString *const kEventCreated = @"EventCreated";
+NSString *const kUserCreatedNewEvent = @"EventCreated";
+NSString *const kNewFollow = @"UserFollowedNewProfile";
+NSString *const kNewUnfollow = @"UserUnfollowedProfile";
 
 
 #pragma mark - String Constants for Event Detail View
@@ -36,6 +35,7 @@ NSString *const kGrantAccess = @"Let In";
 NSString *const kRevokeAccess = @"Revoke";
 NSString *const kFollowingString = @"Following";
 NSString *const kFollowString = @"Follow";
+
 
 #pragma mark - Notification String Constants
 
@@ -61,5 +61,11 @@ NSString *const EVNFontBold = @"Lato-Bold";
 NSString *const EVNFontRegular = @"Lato-Regular";
 NSString *const EVNFontLight = @"Lato-Light";
 NSString *const EVNFontThin = @"Lato-Thin";
+
+
+#pragma mark - Keys for Accessing Objects from Dictionaries
+
+NSString *const kFollowedUserObjectId = @"UserFollowedObjectId";
+NSString *const kUnfollowedUserObjectId = @"UserUnfollowedObjectId";
 
 

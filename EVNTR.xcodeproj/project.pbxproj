@@ -40,7 +40,6 @@
 		A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632F1A7688E900565BB6 /* Security.framework */; };
 		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
-		A4547E621B0E3D81008A6C5B /* evntrVideo.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4547E611B0E3D81008A6C5B /* evntrVideo.mov */; };
 		A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C61AB9B8AB009D3BCC /* MapForEventView.m */; };
 		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
 		A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */; };
@@ -62,6 +61,7 @@
 		A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
 		A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B2BC5E1AB870370004B084 /* EVNButton.m */; };
+		A4B4B3B11B175A80009DD737 /* evntrVideo.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4B4B3B01B175A80009DD737 /* evntrVideo.mov */; };
 		A4B68BC41AEE7F4D003EB822 /* WalkthroughScreensPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */; };
 		A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B6FB1A1AB349950033A3A1 /* FilterEventsVC.m */; };
 		A4B6FB1E1AB365C80033A3A1 /* SearchHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */; };
@@ -160,7 +160,6 @@
 		A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
 		A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddEventPrimaryVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A4547E611B0E3D81008A6C5B /* evntrVideo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrVideo.mov; sourceTree = "<group>"; };
 		A45638C51AB9B8AB009D3BCC /* MapForEventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapForEventView.h; sourceTree = "<group>"; };
 		A45638C61AB9B8AB009D3BCC /* MapForEventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapForEventView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A45638C81ABA2122009D3BCC /* EventPicturesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPicturesVC.h; sourceTree = "<group>"; };
@@ -196,6 +195,7 @@
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4B2BC5D1AB870370004B084 /* EVNButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNButton.h; sourceTree = "<group>"; };
 		A4B2BC5E1AB870370004B084 /* EVNButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNButton.m; sourceTree = "<group>"; };
+		A4B4B3B01B175A80009DD737 /* evntrVideo.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrVideo.mov; sourceTree = "<group>"; };
 		A4B68BC21AEE7F4D003EB822 /* WalkthroughScreensPVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WalkthroughScreensPVC.h; sourceTree = "<group>"; };
 		A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WalkthroughScreensPVC.m; sourceTree = "<group>"; };
 		A4B6FB191AB349940033A3A1 /* FilterEventsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterEventsVC.h; sourceTree = "<group>"; };
@@ -666,7 +666,7 @@
 		A4C4EDD31A95119C000BC3AD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A4547E611B0E3D81008A6C5B /* evntrVideo.mov */,
+				A4B4B3B01B175A80009DD737 /* evntrVideo.mov */,
 				A4C4EDCB1A95118C000BC3AD /* Lato-Bold.ttf */,
 				A4C4EDCC1A95118C000BC3AD /* Lato-Light.ttf */,
 				A4C4EDCD1A95118C000BC3AD /* Lato-Regular.ttf */,
@@ -817,7 +817,7 @@
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
-				A4547E621B0E3D81008A6C5B /* evntrVideo.mov in Resources */,
+				A4B4B3B11B175A80009DD737 /* evntrVideo.mov in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

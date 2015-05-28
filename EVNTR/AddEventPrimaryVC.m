@@ -94,6 +94,13 @@
         
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
         self.navigationItem.leftBarButtonItem = cancelButton;
+        
+        //Customize Cancel Bar Buttton
+        [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                       [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
+                                                                       [UIColor whiteColor], NSForegroundColorAttributeName,
+                                                                       nil]
+                                                             forState:UIControlStateNormal];
 
         self.selectedEventType = [self.eventToEdit.typeOfEvent intValue];
         self.eventTitleField.text = self.eventToEdit.title;

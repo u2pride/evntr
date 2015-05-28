@@ -416,7 +416,7 @@
     }
     
     //TODO - this is not right... success variable gets re-written after each save - this will only reflect the last save result
-    completionBlock(success);
+    //completionBlock(success);
     
 }
 

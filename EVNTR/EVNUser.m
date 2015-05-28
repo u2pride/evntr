@@ -134,7 +134,9 @@
             if (succeeded) {
                 
                 followButton.titleText = kFollowingString;
-                [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:activeVC userInfo:nil];
+                
+                NSDictionary *userInfoDict = [NSDictionary dictionaryWithObject:userToFollow.objectId forKey:kFollowedUserObjectId];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kNewFollow object:activeVC userInfo:userInfoDict];
                 
             } else {
                 
@@ -162,13 +164,17 @@
             
             [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
+                //TODO add error catching
+                
                 PFObject *previousFollowActivity = [objects firstObject];
                 [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
                     if (succeeded) {
                         
                         followButton.titleText = kFollowString;
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kFollowActivity object:activeVC userInfo:nil];
+                        
+                        NSDictionary *userInfoDict = [NSDictionary dictionaryWithObject:userToFollow.objectId forKey:kUnfollowedUserObjectId];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kNewUnfollow object:activeVC userInfo:userInfoDict];
                     
                     } else {
                         
@@ -234,11 +240,6 @@
     
 }
 
-#pragma mark - CleanUp
 
-- (void) dealloc {
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 @end

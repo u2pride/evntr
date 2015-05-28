@@ -72,7 +72,8 @@
     [super viewDidLoad];
     
     [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
-
+    self.refreshControl.tintColor = [UIColor orangeThemeColor];
+    
     //stop Movie Player on Initial Screen
     [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];
     
@@ -180,13 +181,13 @@
         
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
         self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
-        [self loadObjects];
+        //[self loadObjects];
         
     } else {
         
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
         self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
-        [self loadObjects];
+        //[self loadObjects];
     }
 }
 

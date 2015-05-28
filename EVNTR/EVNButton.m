@@ -154,9 +154,9 @@
     
     self.titleTextLabel.text = titleText;
     
-    if ([titleText isEqualToString:@"Follow"]) {
+    if ([titleText isEqualToString:kFollowString]) {
         [self setIsSelected:NO];
-    } else if ([titleText isEqualToString:@"Following"]) {
+    } else if ([titleText isEqualToString:kFollowingString]) {
         [self setIsSelected:YES];
     } else if ([titleText isEqualToString:@"Let In"]) {
         [self setIsSelected:NO];

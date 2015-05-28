@@ -19,6 +19,7 @@
 typedef enum {
     TBParseError_UsernameMissing = 200, // Username is missing or empty
     TBParseError_UsernameTaken = 202, // Username has already been taken
+    TBParseError_SessionError = 206,
     
 } TBParseError;
 
@@ -38,6 +39,8 @@ typedef enum {
 @property (weak, nonatomic) IBOutlet UITextField *bioTextField;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 
+@property (nonatomic) BOOL newProfilePictureChosen;
+
 - (IBAction)cancelEditProfile:(id)sender;
 - (IBAction)finishedEditProfile:(id)sender;
 
@@ -52,6 +55,8 @@ typedef enum {
     [super viewDidLoad];
     
     [self setupNavigationBar];
+    
+    self.newProfilePictureChosen = NO;
     
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.profileImageView.userInteractionEnabled = YES;
@@ -228,6 +233,8 @@ typedef enum {
         
     }];
     
+    self.newProfilePictureChosen = YES;
+    
     self.profileImageView.backgroundColor = [UIColor clearColor]; /* Clear Background for Masking */
 
     UIImage *chosenPicture = info[UIImagePickerControllerEditedImage];
@@ -255,20 +262,6 @@ typedef enum {
     }];
 
     [self restoreSavedValues];
-}
-
-
-- (void) restoreSavedValues {
-    
-    NSString *usernameStored = [self.persistedUserValues objectForKey:@"username"];
-    NSString *realNameStored = [self.persistedUserValues objectForKey:@"realName"];
-    NSString *hometownStored = [self.persistedUserValues objectForKey:@"hometown"];
-    NSString *bioStored = [self.persistedUserValues objectForKey:@"bio"];
-    
-    self.usernameTextField.text = usernameStored;
-    self.realNameTextField.text = realNameStored;
-    self.hometownTextField.text = hometownStored;
-    self.bioTextField.text = bioStored;
     
 }
 
@@ -302,69 +295,35 @@ typedef enum {
 
     if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH && submittedHometown.length <= MAX_HOMETOWN_LENGTH) {
         
-        PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
-        
-        [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        if (self.newProfilePictureChosen) {
             
-            if (succeeded){
-                [EVNUser currentUser][@"profilePicture"] = profilePictureFile;
+            NSLog(@"Saving Profile Picture");
+            
+            PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
+            
+            [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
-                [[EVNUser currentUser] setUsername:self.usernameTextField.text];
-                [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
-                [[EVNUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
-                [[EVNUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
-                [[EVNUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (succeeded){
                     
-                    if (succeeded) {
-                        NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
-                        
-                        id<ProfileEditDelegate> strongDelegate = self.delegate;
-                        
-                        if ([strongDelegate respondsToSelector:@selector(saveProfileWithNewInformation:withImageData:)]) {
-                            
-                            [strongDelegate saveProfileWithNewInformation:newUserValues withImageData:self.pictureData];
-                        }
-                        
-                    } else {
-                        
-                        switch ((TBParseError)error.code) {
-                                
-                            case TBParseError_UsernameMissing: {
-                                
-                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose a username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-                                
-                                [failureAlert show];
-                                
-                                break;
-                            }
-                            case TBParseError_UsernameTaken: {
-                                
-                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose another username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
-                                
-                                [failureAlert show];
-                                
-                                break;
-                            }
-                            default:
-                                break;
-                        }
-                        
-                        self.navigationItem.rightBarButtonItem.enabled = YES;
-                        
-                    }
-                }];
-            
-            } else {
-                
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Profile Picture" message:@"We had trouble saving your profile picture.  Try to save it again.  If that doesn't work, contact us through the settings page." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-                
-                [errorAlert show];
-                
-                self.navigationItem.rightBarButtonItem.enabled = YES;
+                    [EVNUser currentUser][@"profilePicture"] = profilePictureFile;
 
-            }
-        }];
+                    [self saveProfileDetails];
+                    
+                } else {
+                    
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Profile Picture" message:@"We had trouble saving your profile picture.  Try to save it again.  If that doesn't work, contact us through the settings page." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                    
+                    [errorAlert show];
+                    
+                    self.navigationItem.rightBarButtonItem.enabled = YES;
+                }
+            }];
         
+        } else {
+            
+            [self saveProfileDetails];
+            
+        }
         
     } else {
         
@@ -415,6 +374,88 @@ typedef enum {
         
     }
 
+}
+
+
+#pragma mark - Helper Methods
+
+- (void) saveProfileDetails {
+    
+    [[EVNUser currentUser] setUsername:self.usernameTextField.text];
+    [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
+    [[EVNUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
+    [[EVNUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
+    [[EVNUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (succeeded) {
+            NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
+            
+            id<ProfileEditDelegate> strongDelegate = self.delegate;
+            
+            if ([strongDelegate respondsToSelector:@selector(saveProfileWithNewInformation:withImageData:)]) {
+                
+                [strongDelegate saveProfileWithNewInformation:newUserValues withImageData:self.pictureData];
+            }
+            
+        
+        } else {
+            
+            switch ((TBParseError)error.code) {
+                    
+                case TBParseError_UsernameMissing: {
+                    
+                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose a username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+                    
+                    [failureAlert show];
+                    
+                    break;
+                }
+                case TBParseError_UsernameTaken: {
+                    
+                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose another username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+                    
+                    [failureAlert show];
+                    
+                    break;
+                }
+                case TBParseError_SessionError: {
+                    
+                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like you somehow got logged out.  Press cancel and then sign out (settings icon is on the top right of your profile) and log back in to fix this.  You have permission to be frustrated and send us angry tweets." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+                    
+                    [failureAlert show];
+                    
+                    break;
+                }
+                default: {
+                    
+                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Error Saving User" message:@"Try again and if it continues, press cancel and then logout and log back in." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                   
+                    [failureAlert show];
+
+                    break;
+                }
+            }
+            
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+            
+        }
+    }];
+
+}
+
+
+- (void) restoreSavedValues {
+    
+    NSString *usernameStored = [self.persistedUserValues objectForKey:@"username"];
+    NSString *realNameStored = [self.persistedUserValues objectForKey:@"realName"];
+    NSString *hometownStored = [self.persistedUserValues objectForKey:@"hometown"];
+    NSString *bioStored = [self.persistedUserValues objectForKey:@"bio"];
+    
+    self.usernameTextField.text = usernameStored;
+    self.realNameTextField.text = realNameStored;
+    self.hometownTextField.text = hometownStored;
+    self.bioTextField.text = bioStored;
+    
 }
 
 

@@ -24,10 +24,9 @@ extern NSString *const kLocationCurrent;
 
 #pragma mark - Notifications
 
-extern NSString *const kNotificationNewFollow;
-extern NSString *const kNotificationRemovedFollow;
-extern NSString *const kFollowActivity;
-extern NSString *const kEventCreated;
+extern NSString *const kUserCreatedNewEvent;
+extern NSString *const kNewFollow;
+extern NSString *const kNewUnfollow;
 
 
 #pragma mark - User Management
@@ -140,7 +139,17 @@ extern NSString *const EVNFontThin;
 #define BUTTON_CORNER_RADIUS 8
 
 
+#pragma mark - Keys for Accessing Objects from Dictionaries
+extern NSString *const kFollowedUserObjectId;
+extern NSString *const kUnfollowedUserObjectId;
+
+
+
 #pragma mark - Notes
+
+//Notifications Details
+// New Event Created - fired after creating new event
+//    Purpose:  update event count on currentUser profile page.
 
 // 1 - {from} followed {to}
 // 2 - {from} invited {to} to {activityContent}

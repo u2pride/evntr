@@ -25,7 +25,8 @@
     
     [super viewDidLoad];
 
-    self.continueButton.titleText = @"Got It!";
+    self.continueButton.titleText = @"Get Started!";
+    self.continueButton.font = [UIFont fontWithName:@"Lato-Regular" size:18];
     self.continueButton.isSelected = YES;
 
     [self.continueButton addTarget:self action:@selector(startUsingApp) forControlEvents:UIControlEventTouchUpInside];

@@ -61,11 +61,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    //TODO:  ONLY FOR ALL ACTIVITIES
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newFollowActivity:) name:kFollowActivity object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellsDueToFollow:) name:kNewFollow object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellsDueToUnfollow:) name:kNewUnfollow object:nil];
+
     
     self.scrollViewOffset = self.tableView.contentOffset;
     self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
+    self.refreshControl.tintColor = [UIColor orangeThemeColor];
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     if ([userDefaults objectForKey:kPrimaryUpdateTimestamp]) {
@@ -111,6 +113,9 @@
 }
 
 
+
+
+
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
@@ -136,15 +141,59 @@
 
 #pragma mark - New Follow Notiification
 
-//TODO: Follow Notification Only Uploads Cells of Specific Username that you Followed/Unfollowed.  Reload everything for now to avoid DB issue.
-- (void)newFollowActivity:(NSNotification *)notification {
+- (void) checkCellsDueToFollow:(NSNotification *)followNotification {
     
-    if (![notification.object isEqual:self]) {
-        [self loadObjects];
+    if (followNotification.object != self) {
+        
+        NSString *followUserID = [followNotification.userInfo objectForKey:kFollowedUserObjectId];
+        
+        for (PFObject *activityObject in self.objects) {
+            
+            if ([[activityObject objectForKey:@"type"] intValue] == FOLLOW_ACTIVITY) {
+                
+                PFObject *objectForKeyID = (PFObject *) [activityObject objectForKey:@"from"];
+                
+                if ([objectForKeyID.objectId isEqualToString:followUserID]) {
+                    
+                    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:[self.objects indexOfObject:activityObject] inSection:0];
+                    
+                    ActivityTableCell *cell = (ActivityTableCell *) [self.tableView cellForRowAtIndexPath:cellIndexPath];
+                    
+                    cell.actionButton.titleText = kFollowingString;
+                    [cell.actionButton setIsSelected:YES];
+                    
+                }
+            }
+        }
     }
-    
 }
 
+
+- (void) checkCellsDueToUnfollow:(NSNotification *)unFollowNotification {
+    
+    if (unFollowNotification.object != self) {
+        
+        NSString *unFollowUserID = [unFollowNotification.userInfo objectForKey:kUnfollowedUserObjectId];
+        
+        for (PFObject *activityObject in self.objects) {
+            
+            if ([[activityObject objectForKey:@"type"] intValue] == FOLLOW_ACTIVITY) {
+                
+                PFObject *objectForKeyID = (PFObject *) [activityObject objectForKey:@"from"];
+                
+                if ([objectForKeyID.objectId isEqualToString:unFollowUserID]) {
+                    
+                    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:[self.objects indexOfObject:activityObject] inSection:0];
+                    
+                    ActivityTableCell *cell = (ActivityTableCell *) [self.tableView cellForRowAtIndexPath:cellIndexPath];
+                    
+                    cell.actionButton.titleText = kFollowString;
+                    [cell.actionButton setIsSelected:NO];
+                }
+            }
+        }
+    }
+}
 
 
 #pragma mark - Parse UITableView Methods
@@ -419,11 +468,11 @@
             [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
                 if (!objects || !objects.count) {
-                    activityCell.actionButton.titleText = @"Follow";
+                    activityCell.actionButton.titleText = kFollowString;
                     activityCell.actionButton.personToFollow = userFollow;
                     [activityCell.actionButton setIsSelected:NO];
                 } else {
-                    activityCell.actionButton.titleText = @"Following";
+                    activityCell.actionButton.titleText = kFollowingString;
                     [activityCell.actionButton setIsSelected:YES];
                     activityCell.actionButton.personToFollow = userFollow;
                 }

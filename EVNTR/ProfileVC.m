@@ -106,6 +106,7 @@
     [navigationBar setShadowImage:[UIImage new]];
     self.navigationController.navigationBar.translucent = NO;
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     PFQuery *usernameQuery = [EVNUser query];
     [usernameQuery whereKey:@"objectId" equalTo:self.userObjectID];
@@ -120,24 +121,20 @@
             
             if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
                 self.profileType = CURRENT_USER_PROFILE;
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kEventCreated object:nil];
+                
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kUserCreatedNewEvent object:nil];
                 
                 UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SettingsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(viewSettings)];
-
                 self.navigationItem.rightBarButtonItem = settingsButton;
-                
                 
             } else {
                 self.profileType = OTHER_USER_PROFILE;
             }
             
-            //Register to Know when New Follows Have Happened and Refresh Profile View with Database Values
-            //TODO: Separate out what actually needs to be updated from database instead of updating all with updateUIWithUser
-            // make sure to include follow status and following and followers counts.
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUIDueToNewFollow:) name:kFollowActivity object:nil];
-            
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFromNewFollow:) name:kNewFollow object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFromNewUnfollow:) name:kNewUnfollow object:nil];
+
             [self updateUIAll];
-            
             
         } else {
             
@@ -148,7 +145,7 @@
             self.numberFollowingLabel.hidden = YES;
             self.numberFollowersLabel.hidden = YES;
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"User Missing" message:@"Looks like we can't find this user.  But don't worry!  We'll start a search party for them." delegate:self cancelButtonTitle:@"Phew" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"User Missing" message:@"Looks like we can't find this user.  But don't worry!  We'll start a search party for them." delegate:self cancelButtonTitle:@"Phew!" otherButtonTitles: nil];
             
             [errorAlert show];
         }
@@ -446,7 +443,81 @@
     
 }
 
+- (void) incrementFollowers {
+    
+    NSNumberFormatter *numFormat = [[NSNumberFormatter alloc] init];
+    NSNumber *followingCount = [numFormat numberFromString:self.numberFollowersLabel.text];
+    followingCount = [NSNumber numberWithInt:[followingCount intValue] + 1];
+    
+    self.numberFollowersLabel.text = [numFormat stringFromNumber:followingCount];
+    
+}
+
+- (void) decrementFollowers {
+    
+    NSNumberFormatter *numFormat = [[NSNumberFormatter alloc] init];
+    NSNumber *followingCount = [numFormat numberFromString:self.numberFollowersLabel.text];
+    followingCount = [NSNumber numberWithInt:[followingCount intValue] - 1];
+    
+    self.numberFollowersLabel.text = [numFormat stringFromNumber:followingCount];
+    
+}
+
+
+- (void) updateFromNewFollow:(NSNotification *)notification {
+    
+    NSString *followUserID = [notification.userInfo objectForKey:kFollowedUserObjectId];
+    
+    NSLog(@"User ID for Follow: %@", followUserID);
+    
+    if ([followUserID isEqualToString:self.userObjectID]) {
+        
+        NSLog(@"Followed a profile on stack - incrememting Followers and changing follow button");
+        
+        [self incrementFollowers];
+        
+        self.followButton.titleText = kFollowingString;
+        self.followButton.isSelected = YES;
+    }
+    
+    if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
+
+        NSLog(@"New Follow for My Profile - Incrementing Following");
+        [self incrementFollowing];
+        
+    }
+
+}
+
+- (void) updateFromNewUnfollow:(NSNotification *)notification {
+    
+    NSString *unFollowUserID = [notification.userInfo objectForKey:kUnfollowedUserObjectId];
+    
+    NSLog(@"User ID for Unfollow: %@", unFollowUserID);
+    
+    if ([unFollowUserID isEqualToString:self.userObjectID]) {
+    
+        NSLog(@"Unfollowed a profile on stack - decrementing Followers and changing follow button");
+        
+        [self decrementFollowers];
+        
+        self.followButton.titleText = kFollowString;
+        self.followButton.isSelected = NO;
+    
+    }
+    
+    if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
+        
+        NSLog(@"New Unfollow for My Profile - Decrementing Following");
+        [self decrementFollowing];
+        
+    }
+
+}
+
+
 //TODO - Perform this updates in the local cache - or just increment/decrement the right count.  Careful.
+/*
 - (void)updateUIDueToNewFollow:(NSNotification *)notification {
     
     if (notification.object != self && self.profileType != CURRENT_USER_PROFILE) {
@@ -455,10 +526,11 @@
             
             if (success) {
                 if (isFollowing) {
-                    self.followButton.titleText = @"Following";
+                    self.followButton.titleText = kFollowingString;
                     self.followButton.isSelected = YES;
                 } else {
-                    self.followButton.titleText = @"Follow";
+                    self.followButton.titleText = kFollowString;
+                    self.followButton.isSelected = NO;
                 }
             } else {
                 self.followButton.titleText = @"";
@@ -479,6 +551,7 @@
 
     
 }
+ */
 
 #pragma mark - Navigation
 
