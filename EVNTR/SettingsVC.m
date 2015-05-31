@@ -46,32 +46,12 @@
     
 }
 
-- (IBAction)submitFeedback:(id)sender {
-    
-    [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
-   
-    MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
-    
-    mailVC.mailComposeDelegate = self;
-    [mailVC setSubject:@"Invite Friends"];
-    [mailVC setToRecipients:@[@"aryan@evntr.co"]];
-    [mailVC setCcRecipients:@[@"kjaved@evntr.co", @"mfisher@evntr.co"]];
-    [mailVC setMessageBody:@"In order to invite your friends, we need their name and email address. <br><br> Name:  <br> Email:  <br><br> They should get an email invite within 48 hours.  Make sure they check their spam folder in case it doesn't come to their inbox." isHTML:YES];
-    
-    [self presentViewController:mailVC animated:YES completion:^{
-        
-        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-
-    }];
-    
-}
-
 - (IBAction)tweetEvntr:(id)sender {
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
         
         SLComposeViewController *twitterVC = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-        [twitterVC setInitialText:@"@EvntrApp @U2Pride14"];
+        [twitterVC setInitialText:@"@EvntrApp "];
         
         [self presentViewController:twitterVC animated:YES completion:nil];
         
@@ -83,6 +63,25 @@
         [errorAlert show];
         
     }
+    
+}
+
+- (IBAction)emailEvntr:(id)sender {
+    
+    [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
+    
+    MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
+    
+    mailVC.mailComposeDelegate = self;
+    [mailVC setSubject:@"Feedback - Evntr"];
+    [mailVC setToRecipients:@[@"aryan@evntr.co"]];
+    [mailVC setCcRecipients:@[@"kjaved@evntr.co", @"mfisher@evntr.co"]];
+    
+    [self presentViewController:mailVC animated:YES completion:^{
+        
+        [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+        
+    }];
     
 }
 
@@ -108,7 +107,6 @@
     }];
     
 }
-
 
 
 @end

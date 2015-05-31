@@ -86,6 +86,7 @@ typedef enum {
     self.registerButton.isStateless = YES;
     self.registerButton.font = [UIFont fontWithName:@"Lato-Light" size:21];
     self.registerButton.isRounded = NO;
+    self.registerButton.hasBorder = NO;
     self.registerButton.backgroundColor = [UIColor orangeThemeColor];
     
     self.backgroundView.layer.cornerRadius = 20;
@@ -147,7 +148,7 @@ typedef enum {
     
     [self blurViewDuringLoginWithMessage:@"Signing Up..."];
     
-    NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
+    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location"];
     
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
@@ -182,6 +183,8 @@ typedef enum {
                                   cancelButtonTitle:@"C'mon"
                                   otherButtonTitles:nil] show];
             }
+            
+            [PFAnalytics trackEventInBackground:@"SignUpIssue_Facebook" block:nil];
             
         } else {
             
@@ -241,14 +244,14 @@ typedef enum {
         NSData *pictureDataForParse = UIImagePNGRepresentation(fullyMaskedForData);
         
         PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:pictureDataForParse];
-
+        
         [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
             if (succeeded) {
                 
                 newUser[@"profilePicture"] = profilePictureFile;
                 
-                [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
                     if (succeeded) {
                         
@@ -312,6 +315,8 @@ typedef enum {
                             }
                             default: {
                                 
+                                [PFAnalytics trackEventInBackground:@"SignUpIssue_UnknownError" block:nil];
+                                
                                 UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Looks like there's a problem with the sign up process.  Try again and if it still doesn't work, send us a tweet @EvntrApp" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                                 
                                 [failureAlert show];
@@ -320,9 +325,9 @@ typedef enum {
                             }
                                 
                         }
-                    
+                        
                         [self cleanUpBeforeTransition];
-
+                        
                     }
                     
                 }];
@@ -335,7 +340,7 @@ typedef enum {
                 
                 [self cleanUpBeforeTransition];
             }
-        
+            
         }];
         
     } else {
@@ -682,14 +687,5 @@ typedef enum {
 }
 
 
-#pragma mark - Clean Up
-
--(void)dealloc {
-    
-    NSLog(@"signupvc is being deallocated");
-}
 
 @end
-
-
-

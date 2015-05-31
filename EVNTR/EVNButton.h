@@ -23,4 +23,7 @@
 - (void) startedTask;
 - (void) endedTask;
 
+- (void) endedTaskWithButtonEnabled:(BOOL) isButtonEnabled;
+
+
 @end

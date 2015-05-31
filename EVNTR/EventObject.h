@@ -20,6 +20,10 @@
 @property (nonatomic, strong) NSNumber *typeOfEvent;
 @property (nonatomic, strong, readonly) PFRelation *attenders;
 @property (nonatomic, strong, readonly) PFRelation *invitedUsers;
+@property (nonatomic, strong) NSNumber *numPictures;
+@property (nonatomic, strong) NSNumber *numAttenders;
+@property (nonatomic, strong) NSNumber *numComments;
+
 @property (nonatomic, strong) NSArray *eventImages;
 @property (nonatomic, strong) NSString *nameOfLocation;
 @property (nonatomic, strong) PFFile *coverPhoto;
@@ -34,8 +38,8 @@
 - (void) coverImage:(void (^)(UIImage *image))completionBlock;
 - (BOOL) allowUserToAddPhotosAtThisTime;
 
-- (void) queryRSVPForUserId:(NSString *)userObjectId completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
-- (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL isAttending, NSString *status))completionBlock;
+- (void) queryRSVPForUserId:(NSString *)userObjectId completion:(void (^)(BOOL isAttending, NSString *status, BOOL error))completionBlock;
+- (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL isAttending, NSString *status, BOOL error))completionBlock;
 
 - (void) requestAccessForUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
 - (void) rsvpUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;

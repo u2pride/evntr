@@ -23,6 +23,9 @@
 @property (nonatomic, strong) NSString *twitterHandle;
 @property (nonatomic, strong) NSString *instagramHandle;
 
+@property (nonatomic, strong) NSNumber *numEvents;
+@property (nonatomic, strong) NSNumber *numFollowers;
+@property (nonatomic, strong) NSNumber *numFollowing;
 
 + (EVNUser *) currentUser;
 

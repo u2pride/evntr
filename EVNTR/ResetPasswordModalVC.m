@@ -104,10 +104,4 @@
 }
 
 
-#pragma mark - Clean Up
-
-- (void) dealloc {
-    NSLog(@"resetpasswordvc is being deallocated");
-}
-
 @end

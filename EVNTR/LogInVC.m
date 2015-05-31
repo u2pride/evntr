@@ -139,7 +139,7 @@
             
         } else {
 
-            UIAlertView *loginIssue = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like you mistyped your username or password." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *loginIssue = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like you mistyped your username or password." delegate:self cancelButtonTitle:@"Try Again" otherButtonTitles: nil];
             
             [loginIssue show];
             
@@ -157,7 +157,7 @@
     [self blurViewDuringLoginWithMessage:@"Logging you in..."];
     
     // TODO:  Set permissions required from the facebook user account
-    NSArray *permissionsArray = @[ @"user_about_me", @"user_relationships", @"user_birthday", @"user_location"];
+    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location"];
     
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
@@ -193,7 +193,8 @@
                                   otherButtonTitles:nil] show];
             }
             
-            
+            [PFAnalytics trackEventInBackground:@"SignUpIssue_Facebook" block:nil];
+
         } else {
             
             if (user.isNew) {
@@ -247,6 +248,10 @@
             [activityIndicator stopAnimating];
             
             NSDictionary *userData = (NSDictionary *)result;
+            
+            NSLog(@"UserFacebookData: %@", userData);
+            
+            
             NSMutableDictionary *userDetailsForFBRegistration = [[NSMutableDictionary alloc] init];
             
             if (userData[@"id"]) {
@@ -508,7 +513,6 @@
 
 - (void) dealloc {
     
-    NSLog(@"loginvc is being deallocated");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

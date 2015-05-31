@@ -72,6 +72,8 @@
         }
         case VIEW_FOLLOWING_TO_INVITE: {
             
+            NSLog(@"ViewFollowingToInivte");
+            
             self.collectionView.allowsMultipleSelection = YES;
             
             //Taking the PFRelation and Querying for All the Invited Users
@@ -79,18 +81,21 @@
             PFQuery *invitedRelationQuery = [self.usersAlreadyInvited query];
             [invitedRelationQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                
-                for (EVNUser *user in objects) {
-                    //Save User IDs to Compare to Full List of Following
-                    [self.previouslyInvitedUsers addObject:user];
+                if (!error) {
+                    
+                    for (EVNUser *user in objects) {
+                        //Save User IDs to Compare to Full List of Following
+                        [self.previouslyInvitedUsers addObject:user];
+                    }
+                    
+                    //Populate All Invited Users Array with the Existing Invites
+                    [self.allInvitedUsers addObjectsFromArray:self.previouslyInvitedUsers];
+                    
+                    [self reloadCollectionView];
+                    
                 }
-                
-                //Populate All Invited Users Array with the Existing Invites
-                [self.allInvitedUsers addObjectsFromArray:self.previouslyInvitedUsers];
-                
-                [self reloadCollectionView];
-                
+
             }];
-            
             
             self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
             self.navigationController.navigationBar.translucent = NO;
@@ -135,7 +140,7 @@
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
-                if (error || usersFound.count == 0) {
+                if (error || [usersFound count] == 0) {
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"Hello?";
@@ -159,14 +164,14 @@
         case VIEW_FOLLOWERS: {
             
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"to" equalTo:self.userProfile];
+            [query whereKey:@"userTo" equalTo:self.userProfile];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
             [query orderByAscending:@"createdAt"];
-            [query selectKeys:@[@"from"]];
+            [query selectKeys:@[@"userFrom"]];
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
-                if (error || usersFound.count == 0) {
+                if (error || [usersFound count] == 0) {
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Followers";
@@ -181,7 +186,7 @@
                 } else {
                     
                     for (PFObject *object in usersFound) {
-                        [self.usersMutableArray addObject:object[@"from"]];
+                        [self.usersMutableArray addObject:object[@"userFrom"]];
                     }
                     
                     self.usersArray = self.usersMutableArray;
@@ -264,7 +269,7 @@
             PFQuery *queryForAttenders = [attendingRelation query];
             [queryForAttenders findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                if (error || objects.count == 0) {
+                if (error || [objects count] == 0) {
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Attendees";
@@ -319,19 +324,23 @@
         
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
-            PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
-            
-            cell.personTitle.text = object[@"username"];
-            cell.profileImage.file = profilePictureData;
-            [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+            if (!error){
                 
-                [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
+                
+                cell.personTitle.text = object[@"username"];
+                cell.profileImage.file = profilePictureData;
+                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                     
-                    cell.profileImage.image = maskedImage;
+                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                        
+                        cell.profileImage.image = maskedImage;
+                        
+                    }];
                     
                 }];
                 
-            }];
+            }
             
         }];
         
@@ -339,11 +348,15 @@
         
         [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
 
-            cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-            cell.personTitle.text = object[@"username"];
-            
-            [cell.profileImage loadInBackground];
-            
+            if (!error) {
+                
+                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+                cell.personTitle.text = object[@"username"];
+                
+                [cell.profileImage loadInBackground];
+                
+            }
+
         }];
         
     }
@@ -366,12 +379,16 @@
         
         [selectedUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
             
-            ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-            viewUserProfileVC.userObjectID = selectedUser.objectId;
-            viewUserProfileVC.hidesBottomBarWhenPushed = YES;
-            
-            [self.navigationController pushViewController:viewUserProfileVC animated:YES];
-            
+            if (!error) {
+                
+                ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+                viewUserProfileVC.userObjectID = selectedUser.objectId;
+                viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+                
+                [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+                
+            }
+
         }];
     }
 }
@@ -430,9 +447,11 @@
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 
-                cell.profileImage.file = (PFFile *) object[@"profilePicture"];
-                [cell.profileImage loadInBackground];
-                
+                if (!error){
+                    cell.profileImage.file = (PFFile *) object[@"profilePicture"];
+                    [cell.profileImage loadInBackground];
+                }
+
             }];
             
         } else {
@@ -443,27 +462,32 @@
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
     
-                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                if (!error) {
                     
-                    cell.profileImage.alpha = 0;
-                    
-                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                    cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+                    [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
                         
-                        cell.profileImage.image = maskedImage;
+                        cell.profileImage.alpha = 0;
+                        
+                        [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                            
+                            cell.profileImage.image = maskedImage;
+                            
+                        }];
+                        
+                        cell.profileImage.alpha = 0.0;
+                        cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
+                        
+                        [UIView animateWithDuration:0.24 animations:^{
+                            
+                            cell.profileImage.alpha = 1.0;
+                            cell.profileImage.layer.transform = CATransform3DIdentity;
+                        }];
                         
                     }];
                     
-                    cell.profileImage.alpha = 0.0;
-                    cell.profileImage.layer.transform = CATransform3DMakeScale(0.2, 0.2, 1);
-                    
-                    [UIView animateWithDuration:0.24 animations:^{
-                        
-                        cell.profileImage.alpha = 1.0;
-                        cell.profileImage.layer.transform = CATransform3DIdentity;
-                    }];
-                    
-                }];
+                }
+
             }];
             
             
@@ -509,7 +533,7 @@
 - (void) queryForUsersFollowing:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock {
     
     PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-    [query whereKey:@"from" equalTo:user];
+    [query whereKey:@"userFrom" equalTo:user];
     [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [query includeKey:@"to"];
     [query orderByAscending:@"createdAt"];
@@ -521,7 +545,7 @@
         if (!error) {
             for (PFObject *object in usersFound) {
                 
-                EVNUser *userFollowing = object[@"to"];
+                EVNUser *userFollowing = object[@"userTo"];
                 
                 if (![finalResults containsObject:userFollowing]) {
                     

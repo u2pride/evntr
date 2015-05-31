@@ -23,6 +23,7 @@ typedef enum {
     TBParseError_UserEmailTaken = 203, // Email has already been taken
     TBParseError_UsernameMissing = 200, // Username is missing or empty
     TBParseError_UsernameTaken = 202, // Username has already been taken
+    TBParseError_SessionError = 206, //Session expired
     
 } TBParseError;
 
@@ -173,7 +174,7 @@ typedef enum {
         
         [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
-            if (succeeded){
+            if (succeeded) {
                 currentUser[@"profilePicture"] = profilePictureFile;
                 
                 currentUser.username = self.usernameField.text;
@@ -231,6 +232,14 @@ typedef enum {
                             case TBParseError_UsernameTaken: {
                                 
                                 UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another username." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                                
+                                [failureAlert show];
+                                
+                                break;
+                            }
+                            case TBParseError_SessionError: {
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like you somehow got logged out already.  This is embarassing.  Contact us - http://evntr.co - and we'll get this fixed for you." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
                                 
                                 [failureAlert show];
                                 
@@ -525,12 +534,6 @@ typedef enum {
     }];
     
     
-}
-
-#pragma mark - Clean Up
-
-- (void) dealloc {
-    NSLog(@"newuserfacebokvc is being deallocated");
 }
 
 

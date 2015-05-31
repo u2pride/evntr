@@ -138,13 +138,11 @@
             [searchQuery orderByDescending:@"updatedAt"];
             [searchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                if (objects) {
-                    self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
-                    [self.searchResultsTable reloadData];
-                    [self.activitySpinner stopAnimating];
-                    self.searchResultsTable.allowsSelection = YES;
-                }
-
+                self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
+                [self.searchResultsTable reloadData];
+                [self.activitySpinner stopAnimating];
+                self.searchResultsTable.allowsSelection = YES;
+                
             }];
             
         } else {
@@ -153,13 +151,11 @@
             [peopleSearchQuery whereKey:@"username" matchesRegex:self.searchController.searchBar.text modifiers:@"i"];
             [peopleSearchQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                if (objects) {
-                    self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
-                    [self.searchResultsTable reloadData];
-                    [self.activitySpinner stopAnimating];
-                    self.searchResultsTable.allowsSelection = YES;
-                }
-
+                self.searchResultsArray = [NSMutableArray arrayWithArray:objects];
+                [self.searchResultsTable reloadData];
+                [self.activitySpinner stopAnimating];
+                self.searchResultsTable.allowsSelection = YES;
+                
             }];
         }
     }
@@ -272,12 +268,6 @@
     
     [self.navigationItem setHidesBackButton:NO animated:YES];
     [self.searchController.searchBar sizeToFit];
-}
-
-
--(void)dealloc {
-    
-    NSLog(@"searchvc is being deallocated");
 }
 
 

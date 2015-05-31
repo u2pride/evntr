@@ -42,8 +42,4 @@
 }
 
 
-- (void) dealloc {
-    NSLog(@"guestwelcomevc is being deallocated");
-}
-
 @end

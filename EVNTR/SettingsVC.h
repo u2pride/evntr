@@ -13,7 +13,8 @@
 @interface SettingsVC : UIViewController <MFMailComposeViewControllerDelegate, UINavigationControllerDelegate, UIAlertViewDelegate>
 
 - (IBAction)logOut:(id)sender;
-- (IBAction)submitFeedback:(id)sender;
+
 - (IBAction)tweetEvntr:(id)sender;
+- (IBAction)emailEvntr:(id)sender;
 
 @end

@@ -119,11 +119,5 @@
 
 }
 
-#pragma mark - Clean Up
-
--(void)dealloc{
-    NSLog(@"searchheaderview is being deallocated");
-}
-
 
 @end

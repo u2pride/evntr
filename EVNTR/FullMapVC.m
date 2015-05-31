@@ -7,6 +7,7 @@
 //
 
 #import "FullMapVC.h"
+#import <Parse/Parse.h>
 #import <MapKit/MapKit.h>
 
 @interface FullMapVC ()
@@ -49,6 +50,8 @@
 
 - (void) getDirectionsToEvent {
     
+    [PFAnalytics trackEventInBackground:@"GetDirectionsToEventAccessed" block:nil];
+    
     CLLocation *fromLocation = self.locationOfEvent;
     
     MKPlacemark *eventPlacemark = [[MKPlacemark alloc] initWithPlacemark:self.locationPlacemark];
@@ -70,12 +73,5 @@
 
 }
 
-
-
-#pragma mark - CleanUp
-
-- (void) dealloc {
-    NSLog(@"fullmapvc is being deallocated");
-}
 
 @end

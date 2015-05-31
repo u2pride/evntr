@@ -151,7 +151,7 @@
             
             if ([[activityObject objectForKey:@"type"] intValue] == FOLLOW_ACTIVITY) {
                 
-                PFObject *objectForKeyID = (PFObject *) [activityObject objectForKey:@"from"];
+                PFObject *objectForKeyID = (PFObject *) [activityObject objectForKey:@"userFrom"];
                 
                 if ([objectForKeyID.objectId isEqualToString:followUserID]) {
                     
@@ -179,7 +179,7 @@
             
             if ([[activityObject objectForKey:@"type"] intValue] == FOLLOW_ACTIVITY) {
                 
-                PFObject *objectForKeyID = (PFObject *) [activityObject objectForKey:@"from"];
+                PFObject *objectForKeyID = (PFObject *) [activityObject objectForKey:@"userFrom"];
                 
                 if ([objectForKeyID.objectId isEqualToString:unFollowUserID]) {
                     
@@ -207,10 +207,10 @@
         case ACTIVITIES_ALL: {
             
             PFQuery *coreActivities = [PFQuery queryWithClassName:@"Activities"];
-            [coreActivities whereKey:@"to" equalTo:self.userForActivities];
+            [coreActivities whereKey:@"userTo" equalTo:self.userForActivities];
             
             PFQuery *requestsToEvents = [PFQuery queryWithClassName:@"Activities"];
-            [requestsToEvents whereKey:@"from" equalTo:self.userForActivities];
+            [requestsToEvents whereKey:@"userFrom" equalTo:self.userForActivities];
             [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
             
             queryForActivities = [PFQuery orQueryWithSubqueries:@[coreActivities,requestsToEvents]];
@@ -224,7 +224,7 @@
         case ACTIVITIES_INVITES: {
             
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
-            [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities whereKey:@"userTo" equalTo:self.userForActivities];
             [queryForActivities includeKey:@"from"];
             [queryForActivities includeKey:@"activityContent"];
             
@@ -238,7 +238,7 @@
             
             //Get all request access activities
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-            [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities whereKey:@"userTo" equalTo:self.userForActivities];
             
             //now find access activities that are from the current user
             [queryForActivities whereKey:@"activityContent" matchesQuery:innerQueryForAuthor];
@@ -251,7 +251,7 @@
         case ACTIVITIES_ATTENDED: {
             
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
-            [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities whereKey:@"userTo" equalTo:self.userForActivities];
             [queryForActivities includeKey:@"to"];
             [queryForActivities includeKey:@"activityContent"];
             
@@ -260,11 +260,11 @@
         case ACTIVITIES_MY_REQUESTS_STATUS: {
             
             PFQuery *grantedAccessActivities = [PFQuery queryWithClassName:@"Activities"];
-            [grantedAccessActivities whereKey:@"to" equalTo:self.userForActivities];
+            [grantedAccessActivities whereKey:@"userTo" equalTo:self.userForActivities];
             [grantedAccessActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
             
             PFQuery *requestsToEvents = [PFQuery queryWithClassName:@"Activities"];
-            [requestsToEvents whereKey:@"from" equalTo:self.userForActivities];
+            [requestsToEvents whereKey:@"userFrom" equalTo:self.userForActivities];
             [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
             
             queryForActivities = [PFQuery orQueryWithSubqueries:@[grantedAccessActivities,requestsToEvents]];
@@ -277,7 +277,7 @@
         }
         default:
             
-            [queryForActivities whereKey:@"to" equalTo:self.userForActivities];
+            [queryForActivities whereKey:@"userTo" equalTo:self.userForActivities];
             
             break;
     }
@@ -445,7 +445,7 @@
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
             
-            EVNUser *userFollow = object[@"from"];
+            EVNUser *userFollow = object[@"userFrom"];
             
             //Left Image Thumbnail
             activityCell.leftSideImageView.file = userFollow[@"profilePicture"];
@@ -462,19 +462,21 @@
             
             //Right Action Button
             PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-            [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
+            [followActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
             [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [followActivity whereKey:@"to" equalTo:userFollow];
+            [followActivity whereKey:@"userTo" equalTo:userFollow];
             [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                if (!objects || !objects.count) {
+                if ([objects count] == 0 || error) {
                     activityCell.actionButton.titleText = kFollowString;
                     activityCell.actionButton.personToFollow = userFollow;
                     [activityCell.actionButton setIsSelected:NO];
+                    
                 } else {
                     activityCell.actionButton.titleText = kFollowingString;
                     [activityCell.actionButton setIsSelected:YES];
                     activityCell.actionButton.personToFollow = userFollow;
+                    
                 }
                 
                 if (!error) {
@@ -488,7 +490,7 @@
         }
         case INVITE_ACTIVITY: {
             
-            EVNUser *userInvite = (EVNUser *) object[@"from"];
+            EVNUser *userInvite = (EVNUser *) object[@"userFrom"];
             
             __block NSString *username = userInvite[@"username"];
             
@@ -516,7 +518,7 @@
         }
         case REQUEST_ACCESS_ACTIVITY: {
             
-            EVNUser *fromUser = object[@"from"];
+            EVNUser *fromUser = object[@"userFrom"];
             
             //Current User is On the Standby List
             if ([fromUser.objectId isEqualToString:[EVNUser currentUser].objectId]) {
@@ -544,7 +546,7 @@
             //Current User Has a Request for Access to An Event
             } else {
                 
-                EVNUser *userRequestedAccess = (EVNUser *) object[@"from"];
+                EVNUser *userRequestedAccess = (EVNUser *) object[@"userFrom"];
                 EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
                 
                 //Left Image Thumbnail
@@ -564,13 +566,13 @@
                 activityCell.actionButton.eventToGrantAccess = eventToAccess;
                 
                 PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
-                [grantedActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
+                [grantedActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
                 [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-                [grantedActivity whereKey:@"to" equalTo:userRequestedAccess];
+                [grantedActivity whereKey:@"userTo" equalTo:userRequestedAccess];
                 [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
                 [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                     
-                    if (!objects || !objects.count) {
+                    if ([objects count] == 0 || error) {
                         activityCell.actionButton.titleText = kGrantAccess;
                         [activityCell.actionButton setIsSelected:NO];
                     } else {
@@ -590,7 +592,7 @@
         }
         case ATTENDING_ACTIVITY: {
             
-            EVNUser *userAttend = object[@"to"];
+            EVNUser *userAttend = object[@"userTo"];
             EventObject *eventToAttend = object[@"activityContent"];
 
             //Left Image Thumbnail
@@ -643,7 +645,7 @@
         }
         case ACCESS_GRANTED_ACTIVITY: {
             
-            EVNUser *userGrantedAccess = (EVNUser *) object[@"from"];
+            EVNUser *userGrantedAccess = (EVNUser *) object[@"userFrom"];
             EventObject *eventGrantedAccess = (EventObject *) object[@"activityContent"];
             
             //Left Side Thumbnail
@@ -788,9 +790,10 @@
 
 - (void)grantAccess:(id)sender {
     
+    NSLog(@"GRANT ACCESS FUNCTION");
+    
     EVNButtonExtended *grantButton = (EVNButtonExtended *)sender;
     [grantButton startedTask];
-    grantButton.enabled = NO;
     
     NSString *grantState = grantButton.titleText;
     
@@ -800,46 +803,53 @@
         //Find and Delete Old Granted Access Activity
         PFQuery *findGrantActivity = [PFQuery queryWithClassName:@"Activities"];
         
-        [findGrantActivity whereKey:@"from" equalTo:self.userForActivities];
-        [findGrantActivity whereKey:@"to" equalTo:grantButton.personToGrantAccess];
+        [findGrantActivity whereKey:@"userFrom" equalTo:self.userForActivities];
+        [findGrantActivity whereKey:@"userTo" equalTo:grantButton.personToGrantAccess];
         [findGrantActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
         [findGrantActivity whereKey:@"activityContent" equalTo:grantButton.eventToGrantAccess];
         
         [findGrantActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
-            PFObject *previousGrantActivity = [objects firstObject];
-            [previousGrantActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if (!error && [objects count] > 0) {
                 
-                if (succeeded){
+                PFObject *previousGrantActivity = [objects firstObject];
+                [previousGrantActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
-                    EventObject *event = grantButton.eventToGrantAccess;
-                    PFRelation *attendingRelation = [event relationForKey:@"attenders"];
-                    [attendingRelation removeObject:grantButton.personToGrantAccess];
-                    [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (succeeded){
                         
-                        if (succeeded) {
-                            grantButton.titleText = kGrantAccess;
+                        EventObject *event = grantButton.eventToGrantAccess;
+                        PFRelation *attendingRelation = [event relationForKey:@"attenders"];
+                        [attendingRelation removeObject:grantButton.personToGrantAccess];
+                        [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                             
-                            grantButton.enabled = YES;
-                            [grantButton endedTask];
-                        }
+                            if (succeeded) {
+                                grantButton.titleText = kGrantAccess;
+                                [grantButton endedTask];
+                            } else {
+                                [grantButton endedTaskWithButtonEnabled:NO];
+                            }
+                            
+                        }];
                         
-                    }];
+                    } else {
+                        [grantButton endedTaskWithButtonEnabled:NO];
+                    }
                     
-                } else {
-                    grantButton.enabled = NO;
-                    [grantButton endedTask];
-                }
+                }];
+            
+            } else  {
                 
-            }];
-        }];
+                [grantButton endedTaskWithButtonEnabled:NO];
+                
+            }
         
+        }];
         
     } else {
         
         PFObject *newActivity = [PFObject objectWithClassName:@"Activities"];
-        newActivity[@"from"] = self.userForActivities;
-        newActivity[@"to"] = grantButton.personToGrantAccess;
+        newActivity[@"userFrom"] = self.userForActivities;
+        newActivity[@"userTo"] = grantButton.personToGrantAccess;
         newActivity[@"type"] = [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY];
         newActivity[@"activityContent"] = grantButton.eventToGrantAccess;
         [newActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -853,18 +863,16 @@
                     
                     if (succeeded) {
                         grantButton.titleText = kRevokeAccess;
-                        
-                        grantButton.enabled = YES;
                         [grantButton endedTask];
+                    } else {
+                        [grantButton endedTaskWithButtonEnabled:NO];
                     }
                     
                 }];
                 
             } else {
-                
-                grantButton.enabled = NO;
-                [grantButton endedTask];
-            
+                grantButton.alpha = 0.3;
+                [grantButton endedTaskWithButtonEnabled:NO];
             }
 
         }];
@@ -877,7 +885,6 @@
 #pragma mark - CleanUp
 
 - (void) dealloc {
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.timerForAutomaticUpdates invalidate];
 }

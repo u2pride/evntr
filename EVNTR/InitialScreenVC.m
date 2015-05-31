@@ -16,7 +16,6 @@
 #import "MapForEventView.h"
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
-#import "UIImageEffects.h"
 
 #import <Parse/Parse.h>
 @import MediaPlayer;
@@ -28,7 +27,6 @@
 @property (nonatomic, strong) NSDictionary *detailsFromFBRegistration;
 @property (strong, nonatomic) IBOutlet EVNButton *loginButton;
 @property (strong, nonatomic) IBOutlet EVNButton *registerButton;
-@property (weak, nonatomic) IBOutlet UILabel *logoView;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (strong, nonatomic) IBOutlet UIButton *skipLoginButton;
 
@@ -36,8 +34,6 @@
 @property (strong, nonatomic) UIVisualEffectView *darkBlurEffectView;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
-- (IBAction)showBetaInformation:(id)sender;
-- (IBAction)showBuildInformation:(id)sender;
 - (IBAction)skipForNow:(id)sender;
 
 @end
@@ -117,33 +113,27 @@
     [super viewDidAppear:animated];
     
     
-    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleShortVersionString"];
-    NSString *build = [[NSBundle mainBundle] objectForInfoDictionaryKey: (NSString *)kCFBundleVersionKey];
-    
-    NSLog(@"Version: %@ and Build: %@", version, build);
-    
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    
-    NSString *versionBuildNumber = [standardDefaults objectForKey:kFirstLoginNewBuild];
-    
-    if ([versionBuildNumber isEqualToString:@"V0.85Build1"]) {
+    if ([EVNUser currentUser]) {
         
-        if ([EVNUser currentUser]) {
-            
-            [standardDefaults setBool:NO forKey:kIsGuest];
-            [standardDefaults synchronize];
-            
-            [self stopMoviePlayer];
-            [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
-            
-        }
-        
-    } else {
-        
-        [standardDefaults setObject:@"V0.85Build1" forKey:kFirstLoginNewBuild];
+        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+        [standardDefaults setBool:NO forKey:kIsGuest];
         [standardDefaults synchronize];
         
+        [self stopMoviePlayer];
+        [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+        
     }
+    
+
+    
+    
+    [PFCloud callFunctionInBackground:@"hello"
+                       withParameters:@{}
+                                block:^(NSString *result, NSError *error) {
+                                    if (!error) {
+                                        NSLog(@"result: %@", result);
+                                    }
+                                }];
     
 }
 
@@ -159,25 +149,11 @@
 
 #pragma mark - User Actions
 
-//TODO: Remove for Launch
-- (IBAction)showBetaInformation:(id)sender {
-    
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Welcome to the Beta" message:@"Just a couple of quick things... First, each new major update includes a database wipe - which explains why you sometimes log in and all your data is gone.  If you are having issues logging in, delete the app and reinstall from TestFlight.  Finally, if you have feedback - send us an email or tweet at us from Settings.  We would love to hear from you!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-    
-    [errorAlert show];
-}
-
-//TODO: Remove for Launch Also
-- (IBAction)showBuildInformation:(id)sender {
-    
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Version 0.85 - Build 1" message:@"Thanks for downloading the latest version.  As usual, if you run into issues, shoot us an email or send a tweet from the settings page (top right corner of the profile page).  We love to hear new feature ideas, usability changes, and visual updates. It's your chance to shape this app before it's released!" delegate:self cancelButtonTitle:@"Cool Deal" otherButtonTitles: nil];
-    
-    [errorAlert show];
-}
-
 - (IBAction)skipForNow:(id)sender {
     
     [self leavingTransitionAnimations];
+    
+    [PFAnalytics trackEventInBackground:@"SkipForNow" block:nil];
     
     //Set isGuest Object
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -214,8 +190,6 @@
             [self.loginButton endedTask];
         }];
         
-        //[self performSegueWithIdentifier:@"InitialToLogin" sender:self];
-        
     } else {
         
         SignUpVC *signUpVC = (SignUpVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SignUpViewController"];
@@ -228,8 +202,6 @@
             [self.registerButton endedTask];
         }];
         
-        //[self performSegueWithIdentifier:@"InitialToSignUp" sender:self];
-
     }
     
 }
@@ -240,7 +212,7 @@
     NSLog(@"Accessed movie player controller variable");
     
     if (!_moviePlayer) {
-        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrVideo" withExtension:@"mov"];
+        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"EvntrVidDarker" withExtension:@"mov"];
         _moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
         _moviePlayer.controlStyle = MPMovieControlStyleNone;
         _moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
@@ -292,7 +264,6 @@
     [UIView animateWithDuration:0.65 animations:^{
         self.darkBlurEffectView.alpha = 0.76;
         self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
-        self.logoView.alpha = 0;
         self.loginButton.alpha = 0;
         self.registerButton.alpha = 0;
         self.skipLoginButton.alpha = 0;
@@ -308,7 +279,6 @@
     [UIView animateWithDuration:0.5 animations:^{
         self.backgroundImageView.transform = CGAffineTransformMakeScale(1, 1);
         self.darkBlurEffectView.alpha = 0;
-        self.logoView.alpha = 1;
         self.loginButton.alpha = 1;
         self.registerButton.alpha = 1;
         self.skipLoginButton.alpha = 1;
@@ -336,7 +306,7 @@
         destVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         destVC.informationFromFB = self.detailsFromFBRegistration;
         
-        [destVC presentViewController:destVC animated:YES completion:nil];
+        [self presentViewController:destVC animated:YES completion:nil];
         //[self performSegueWithIdentifier:@"NewUserFacebook" sender:self];
         
     }];
@@ -357,7 +327,7 @@
         destVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         destVC.informationFromFB = self.detailsFromFBRegistration;
         
-        [destVC presentViewController:destVC animated:YES completion:nil];
+        [self presentViewController:destVC animated:YES completion:nil];
         //[self performSegueWithIdentifier:@"NewUserFacebook" sender:nil];
         
     }];
@@ -429,7 +399,7 @@
 #pragma mark - Clean Up
 
 - (void) dealloc {
-    NSLog(@"initialscreenvc is being deallocated");
+
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

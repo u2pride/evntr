@@ -44,9 +44,8 @@
     //Connecting App to Parse and Enabling Analytics
     [ParseCrashReporting enable];
     [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
-    //[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
-
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
     
@@ -131,6 +130,9 @@
     
     switch ([error code]) {
         case kCLErrorDenied: {
+            
+            [PFAnalytics trackEventInBackground:@"LocationManagerDisabled" block:nil];
+            
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates Disabled" message:@"Please enable location updates for EVNTR.\n\nLocation updates are essential for finding events near you." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
             [errorAlert show];
@@ -234,10 +236,11 @@
         //Querying for Invite Activities that Are New
         PFQuery *queryForInvites = [PFQuery queryWithClassName:@"Activities"];
         [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
-        [queryForInvites whereKey:@"to" equalTo:[EVNUser currentUser]];
+        [queryForInvites whereKey:@"userTo" equalTo:[EVNUser currentUser]];
         [queryForInvites whereKey:@"createdAt" greaterThanOrEqualTo:lastFetchTime];
         [queryForInvites includeKey:@"from"];
         [queryForInvites findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            
             if (error) {
                 [PFAnalytics trackEvent:@"BackgroundFetchFailed"];
                 completionHandler(UIBackgroundFetchResultFailed);
@@ -246,7 +249,7 @@
                 
                 if (numberOfNewInvites == 1) {
                     PFObject *newInviteActivity = [objects firstObject];
-                    EVNUser *userWhoInvited = newInviteActivity[@"from"];
+                    EVNUser *userWhoInvited = newInviteActivity[@"userFrom"];
                     
                     //Scheduling Local Notification
                     UILocalNotification* localNotification = [[UILocalNotification alloc] init];
@@ -345,8 +348,6 @@
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
     
     [self startLocationManager];
-
-    [PFAnalytics trackAppOpenedWithLaunchOptions:nil];
     
 }
 

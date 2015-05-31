@@ -135,6 +135,11 @@
             }
             
         } else {
+            
+            UIAlertView *issueRemoving = [[UIAlertView alloc] initWithTitle:@"Whoops..." message:@"We couldn't delete the photo, try again. Send us an email or tweet from the Settings page if it still doesn't work." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+            
+            [issueRemoving show];
+            
             self.removePhoto.enabled = YES;
         }
     
@@ -153,11 +158,6 @@
     }
 }
 
-#pragma mark - Clean Up
-
-- (void)dealloc {
-    NSLog(@"picturefullscreenvc is being deallocated");
-}
 
 
 @end

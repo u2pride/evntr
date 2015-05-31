@@ -102,13 +102,16 @@ static NSString * const reuseIdentifier = @"pictureCell";
 - (UICollectionViewCell *) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    
     cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PictureLoading"]];
     
     PFFile *fileForPhoto = [[self.eventImages objectAtIndex:indexPath.row] objectForKey:@"pictureFile"];
     
     [fileForPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         
-        cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:data]];
+        if (data) {
+            cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:data]];
+        }
         
     }];
     
@@ -348,11 +351,6 @@ static NSString * const reuseIdentifier = @"pictureCell";
 }
 
 
-#pragma mark - Clean Up
-
-- (void) dealloc {
-    NSLog(@"eventpictures is being deallocated");
-}
 
 
 @end

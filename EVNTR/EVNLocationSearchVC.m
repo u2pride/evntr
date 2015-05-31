@@ -604,12 +604,4 @@ const int NUMBER_OF_PLACES_RESULTS = 10;
 }
 
 
-
-#pragma mark - CleanUp
-
-- (void) dealloc {
-    NSLog(@"EVNLOCation dealloced");
-}
-
-
 @end

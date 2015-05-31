@@ -173,7 +173,7 @@
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
-        [PFAnalytics trackEventInBackground:@"CameraUsed" block:nil];
+        [PFAnalytics trackEventInBackground:@"CreateEvent_CameraUsed" block:nil];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -187,7 +187,7 @@
     
     UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
-        [PFAnalytics trackEventInBackground:@"PhotoPickerUsed" block:nil];
+        [PFAnalytics trackEventInBackground:@"CreateEvent_PhotoPickerUsed" block:nil];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -208,7 +208,7 @@
     
     UIAlertAction *lastPhoto = [UIAlertAction actionWithTitle:@"Use Last Photo Taken" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
        
-        [PFAnalytics trackEventInBackground:@"LastPhotoUsed" block:nil];
+        [PFAnalytics trackEventInBackground:@"CreateEvent_LastPhotoUsed" block:nil];
         
         PHFetchOptions *fetchOptions = [PHFetchOptions new];
         fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], ];
@@ -222,7 +222,10 @@
         
         [defaultManager requestImageForAsset:lastPhotoAsset targetSize:CGSizeMake(200, 200) contentMode:PHImageContentModeAspectFill options:requestOptions resultHandler:^(UIImage *result, NSDictionary *info) {
             
-            self.eventCoverPhotoView.image = result;
+            //PHImageManager - Result Handler is Run on Background Thread - UI Needs to Be Updated on Main Thread
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.eventCoverPhotoView.image = result;
+            });
             
             NSData *pictureData = UIImageJPEGRepresentation(result, 0.5);
             self.coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
@@ -506,6 +509,7 @@
         [strongDelegate canceledEventEditing];
     }
 }
+
 
 
 

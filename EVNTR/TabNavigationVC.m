@@ -194,7 +194,6 @@
     
     [PFAnalytics trackEventInBackground:@"NavigationPatterns" dimensions:dimensions block:nil];
     
-    
     if (toVCIndex == TAB_CREATE) {
         self.transitionController.isPresenting = YES;
         return self.transitionController;
@@ -222,6 +221,7 @@
     
     [navController popToRootViewControllerAnimated:YES];
     
+    
     allEventsVC.tableView.contentOffset = CGPointMake(0, 0 - allEventsVC.tableView.contentInset.top);
     
     [allEventsVC loadObjects];
@@ -241,12 +241,6 @@
     
     [self setSelectedIndex:0];
     
-}
-
-
-- (void) dealloc {
-    
-    NSLog(@"tabnavigation dealloced");
 }
 
  

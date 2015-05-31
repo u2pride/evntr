@@ -138,12 +138,18 @@
             
         } else {
             
+            [PFAnalytics trackEventInBackground:@"ProfileNotFound" block:nil];
+
             self.eventsHeaderButton.hidden = YES;
             self.followingHeaderButton.hidden = YES;
             self.followersHeaderButton.hidden = YES;
             self.numberEventsLabel.hidden = YES;
             self.numberFollowingLabel.hidden = YES;
             self.numberFollowersLabel.hidden = YES;
+            self.userSinceLabel.hidden = YES;
+            
+            UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SettingsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(viewSettings)];
+            self.navigationItem.rightBarButtonItem = settingsButton;
             
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"User Missing" message:@"Looks like we can't find this user.  But don't worry!  We'll start a search party for them." delegate:self cancelButtonTitle:@"Phew!" otherButtonTitles: nil];
             
@@ -242,13 +248,10 @@
                         
                         [self showFollowButtonWithText:kFollowingString];
                         self.followButton.isSelected = YES;
-
-                        //self.followButton.titleText = kFollowingString;
                         
                     } else {
                         
                         [self showFollowButtonWithText:kFollowString];
-                        //self.followButton.titleText = kFollowString;
                     }
                 } else {
                     self.followButton.titleText = @"";
@@ -386,7 +389,15 @@
 
 - (IBAction)followUser:(id)sender {
 
-    [[EVNUser currentUser] followUser:self.profileUser fromVC:self withButton:self.followButton withCompletion:^(BOOL success) { }];
+    if (self.followButton.titleText.length == 0) {
+        
+        UIAlertView *error = [[UIAlertView alloc] initWithTitle:@"Well..." message:@"Looks like we can't figure out if you're following this user or not yet... you should probably send us an angry email.  Just go to your profile and tap Settings." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles:nil];
+        
+        [error show];
+        
+    } else {
+        [[EVNUser currentUser] followUser:self.profileUser fromVC:self withButton:self.followButton withCompletion:^(BOOL success) { }];
+    }
     
 }
 
@@ -590,7 +601,6 @@
 - (void) dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    NSLog(@"profile dealloced");
 }
 
 

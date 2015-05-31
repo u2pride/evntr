@@ -250,9 +250,11 @@
         
         [self.event.coverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
             
-            UIImage *coverImage = [UIImage imageWithData:data];
-            
-            [self setBackgroundOfPictureSectionWithImage:coverImage];
+            if (!error) {
+                UIImage *coverImage = [UIImage imageWithData:data];
+                [self setBackgroundOfPictureSectionWithImage:coverImage];
+            }
+
             [self networkCallComplete];
         }];
         
@@ -268,7 +270,7 @@
             
             [self.event queryForStandbyUsersWithIncludeKey:nil completion:^(NSError *error, NSArray *users) {
                 
-                if (error || users == nil) {
+                if (error || [users count] == 0) {
                     self.usersOnStandby = nil;
                 } else {
                     self.usersOnStandby = users;
@@ -316,17 +318,22 @@
             switch (eventType) {
                 case PUBLIC_EVENT_TYPE: {
                     
-                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status) {
+                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status, BOOL error) {
                         
-                        if (!self.isCurrentUsersEvent) {
-                            self.isCurrentUserAttending = isAttending;
-                            self.rsvpStatusButton.titleText = status;
-                            
-                            if (isAttending) {
-                                self.rsvpStatusButton.isSelected = YES;
+                        NSLog(@"Returned with error: %d", (int) error);
+                        if (!error) {
+                            if (!self.isCurrentUsersEvent) {
+                                self.isCurrentUserAttending = isAttending;
+                                self.rsvpStatusButton.titleText = status;
+                                
+                                if (isAttending) {
+                                    self.rsvpStatusButton.isSelected = YES;
+                                }
                             }
+                        } else {
+                            self.rsvpStatusButton.titleText = @"";
                         }
-                        
+                
                         NSLog(@"Num3");
                         [self networkCallComplete]; //3
                         
@@ -340,15 +347,19 @@
                 }
                 case PRIVATE_EVENT_TYPE: {
                     
-                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status) {
+                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status, BOOL error) {
                         
-                        if (!self.isCurrentUsersEvent) {
-                            self.isCurrentUserAttending = isAttending;
-                            self.rsvpStatusButton.titleText = status;
-                            
-                            if (isAttending) {
-                                self.rsvpStatusButton.isSelected = YES;
+                        if (!error) {
+                            if (!self.isCurrentUsersEvent) {
+                                self.isCurrentUserAttending = isAttending;
+                                self.rsvpStatusButton.titleText = status;
+                                
+                                if (isAttending) {
+                                    self.rsvpStatusButton.isSelected = YES;
+                                }
                             }
+                        } else {
+                            self.rsvpStatusButton.titleText = @"";
                         }
                         
                         NSLog(@"Num3");
@@ -371,15 +382,12 @@
                     //Determine the state of the user with the event
                     // Hasn't requested Accesss - Requested Access - Granted Acccess
                     
-                    [self.event queryApprovalStatusOfUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status) {
+                    [self.event queryApprovalStatusOfUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
                         
-                        if ([status isEqualToString:@"Error"]) {
-                            //TODO: Error Handling
-                            self.isCurrentUserAttending = NO;
-                            self.rsvpStatusButton.titleText = @"Unknown";
-                        } else {
+                        if (!error) {
                             
                             if (!self.isCurrentUsersEvent) {
+                                
                                 self.isCurrentUserAttending = isAttending;
                                 self.rsvpStatusButton.titleText = status;
                                 
@@ -391,10 +399,15 @@
                                 }
                                 
                             }
+
+                        } else {
                             
-                            NSLog(@"Num3");
-                            [self networkCallComplete]; //3
+                            self.isCurrentUserAttending = NO;
+                            self.rsvpStatusButton.titleText = @"";
                         }
+                        
+                        NSLog(@"Num3");
+                        [self networkCallComplete]; //3
                         
                     }];
                 
@@ -554,22 +567,32 @@
 
     [self.event.parent fetchInBackgroundWithBlock:^(PFObject *user, NSError *error) {
         
-        UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
-        
-        self.creatorName.textColor = [UIColor orangeThemeColor];
-        self.creatorName.text = user[@"username"];
-        self.creatorName.userInteractionEnabled = YES;
-        [self.creatorName addGestureRecognizer:tapgr2];
-        
-        self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
-        [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
+        if (!error) {
             
-            NSLog(@"Num6");
+            UITapGestureRecognizer *tapgr2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewCreatorProfile)];
+            
+            self.creatorName.textColor = [UIColor orangeThemeColor];
+            self.creatorName.text = user[@"username"];
+            self.creatorName.userInteractionEnabled = YES;
+            [self.creatorName addGestureRecognizer:tapgr2];
+            
+            self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
+            [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
+                
+                NSLog(@"Num6");
+                [self networkCallComplete]; //6
+            }];
+            
+            NSLog(@"Num7");
+            [self networkCallComplete]; //7
+            
+        } else {
+            
+            //TODO : Temp Solution - this fails and creator component is empty.
             [self networkCallComplete]; //6
-        }];
-        
-        NSLog(@"Num7");
-        [self networkCallComplete]; //7
+            [self networkCallComplete]; //7
+
+        }
         
     }];
     
@@ -674,7 +697,7 @@
     self.dateOfEventLabel.alpha = 1.0;
     self.timeOfEventLabel.alpha = 1.0;
     self.viewAttending.alpha = 1.0;
-
+    
 }
 
 
@@ -760,6 +783,8 @@
 //TODO:  Must present this similarly to the way an add event modal is presented.
 - (void) editEvent {
     
+    [PFAnalytics trackEventInBackground:@"EventEditAccessed" block:nil];
+    
     AddEventPrimaryVC *editEventVC = (AddEventPrimaryVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"CreateEventFirstStep"];
     editEventVC.delegate = self;
     editEventVC.eventToEdit = self.event;
@@ -774,6 +799,8 @@
     if (!self.isGuestUser) {
         
         self.shouldRestoreNavBar = NO;
+        
+        [PFAnalytics trackEventInBackground:@"InviteUsersFromEventPage" block:nil];
         
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
@@ -809,6 +836,8 @@
 
 
 - (IBAction)viewEventPictures:(id)sender {
+    
+    [PFAnalytics trackEventInBackground:@"ViewEventPhotos" block:nil];
     
     UICollectionViewFlowLayout* flowLayout = [[UICollectionViewFlowLayout alloc]init];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
@@ -869,16 +898,23 @@
         [self performSegueWithIdentifier:@"EventDetailToInitial" sender:self];
         
         
+    } else if ([self.rsvpStatusButton.titleText isEqualToString:@""]) {
+        
+        UIAlertView *issueView = [[UIAlertView alloc] initWithTitle:@"Whoops..." message:@"Looks like we're having trouble figuring out if you have already joined this event.  You should send us an angry tweet from the Settings page (top right on your profile page)." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles:nil];
+    
+        [issueView show];
+        
     } else if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
         
         //Currently only allowing A Request for access not to revoke
         if ([self.rsvpStatusButton.titleText isEqualToString:kNOTRSVPedForEvent]) {
             
-            self.rsvpStatusButton.enabled = NO;
+            [self.rsvpStatusButton startedTask];
             
             [self.event requestAccessForUser:[EVNUser currentUser] completion:^(BOOL success) {
                 
                 if (success) {
+                    
                     self.rsvpStatusButton.titleText = kRSVPedForEvent;
                     self.rsvpStatusButton.isSelected = YES;
                     
@@ -886,8 +922,16 @@
                     [updatedStandbyListWithCurrentUser addObject:[EVNUser currentUser]];
                     self.usersOnStandby = [NSArray arrayWithArray:updatedStandbyListWithCurrentUser];
                     [self.standbyUsersCollectionView reloadData];
+                
+                } else {
+                    
+                    UIAlertView *issueView = [[UIAlertView alloc] initWithTitle:@"Whoops..." message:@"Looks like we're having trouble requesting access for you.  Send us an angry tweet from the Settings page... that normally fixes things." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issueView show];
+                    
                 }
-                self.rsvpStatusButton.enabled = YES;
+                
+                [self.rsvpStatusButton endedTask];
                 
             }];
 
@@ -896,7 +940,7 @@
     } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
         
         PFRelation *attendersRelation = self.event.attenders;
-        self.rsvpStatusButton.enabled = NO;
+        [self.rsvpStatusButton startedTask];
         
         //Updating Relation
         if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
@@ -932,11 +976,14 @@
                         [strongDelegate rsvpStatusUpdatedToGoing:NO];
                     }
                 } else {
-                    //TODO: PFAnalytics
+                   
+                    UIAlertView *issueView = [[UIAlertView alloc] initWithTitle:@"Unable to UnRSVP" message:@"We're having trouble un-rsvping you from this event.  Are you sure you don't want to go?  Jk... send us an email or a tweet from settings so we can help figure out your issue." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issueView show];
+                    
                 }
-                
-                //Re-Enable RSVP Button
-                self.rsvpStatusButton.enabled = YES;
+            
+                [self.rsvpStatusButton endedTask];
                 
             }];
             
@@ -955,11 +1002,13 @@
                         [strongDelegate rsvpStatusUpdatedToGoing:YES];
                     }
                 } else {
-                    //TODO: Log Error with PFAnalytics
+
+                    UIAlertView *issueView = [[UIAlertView alloc] initWithTitle:@"Unable to RSVP" message:@"We're having trouble RSVPing you to this event.  Are you sure you want to go?  Jk... send us an email or a tweet from settings so we can help figure out your issue." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issueView show];
                 }
                 
-                //Re-Enable Button
-                self.rsvpStatusButton.enabled = YES;
+                [self.rsvpStatusButton endedTask];
                 
             }];
             
@@ -985,7 +1034,7 @@
         
         [updatedEvent queryForStandbyUsersWithIncludeKey:nil completion:^(NSError *error, NSArray *users) {
             
-            if (error || users == nil) {
+            if (error || [users count] == 0) {
                 self.usersOnStandby = nil;
             } else {
                 self.usersOnStandby = users;
@@ -1045,9 +1094,9 @@
 
     }];
     
-    [self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-   
-    }];
+    //TODO - Do we need this??
+    //[self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    //}];
 
 }
 
@@ -1101,24 +1150,17 @@
                 [self.commentsController.commentsTable insertRowsAtIndexPaths:firstIndexPath withRowAnimation:UITableViewRowAnimationFade];
 
             }];
-
             
         } else {
-            //error
+            
+            UIAlertView *issueSaving = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"We couldn't save your comment. Try submitting it again." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+            
+            [issueSaving show];
         }
         
     }];
     
 }
 
-
-
-#pragma mark - Clean Up
-
-- (void) dealloc {
-    
-    [self.entireMapView.timerForRandomize invalidate];
-    NSLog(@"eventdetailsvc is being deallocated");
-}
 
 @end

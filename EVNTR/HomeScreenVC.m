@@ -117,21 +117,11 @@
 
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    NSLog(@"%li", (long)@([standardDefaults boolForKey:kIsGuest]).integerValue);
-    
-}
-
-
 #pragma mark - User Actions
 
 - (void)displaySearchController {
     
-    [PFAnalytics trackEventInBackground:@"SearchAccessed" block:nil];
+    [PFAnalytics trackEventInBackground:@"SearchFeatureAccessed" block:nil];
     
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     
@@ -141,7 +131,7 @@
 
 - (void) displayFilterView {
     
-    [PFAnalytics trackEventInBackground:@"FilterAccessed" block:nil];
+    [PFAnalytics trackEventInBackground:@"FilterFeatureAccessed" block:nil];
     
     FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
@@ -458,7 +448,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     
     [self.eventForInvites inviteUsers:selectedPeople completion:nil];
-    [self.eventForInvites saveInBackgroundWithBlock:nil];
+    //[self.eventForInvites saveInBackgroundWithBlock:nil];
 
 }
 
@@ -467,7 +457,7 @@
     
     self.eventForInvites = event;
     
-    double delayInSeconds = 1.0;
+    double delayInSeconds = 1.5;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
@@ -488,7 +478,6 @@
 #pragma mark - Clean Up
 
 - (void) dealloc {
-    NSLog(@"homescreen is being deallocated - deregister notifications");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

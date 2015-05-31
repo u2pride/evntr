@@ -93,7 +93,7 @@ static NSString *const cellIdentifier = @"commentsCell";
     
     [event queryForCommentsWithCompletion:^(NSArray *comments) {
         
-        if(comments) {
+        if (comments) {
             _commentsData = [NSMutableArray arrayWithArray:comments];
         }
         

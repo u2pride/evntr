@@ -13,7 +13,7 @@
 
 @implementation EVNUser
 
-@dynamic profilePicture, twitterHandle, instagramHandle, hometown, realName, bio, username, email;
+@dynamic profilePicture, twitterHandle, instagramHandle, hometown, realName, bio, username, email, numEvents, numFollowers, numFollowing;
 
 #pragma mark - Required for Subclassing Parse PFUser
 
@@ -83,7 +83,7 @@
 - (void) numberOfFollowersWithCompletion:(void (^)(int))completionBlock {
 
     PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowersQuery whereKey:@"to" equalTo:self];
+    [countFollowersQuery whereKey:@"userTo" equalTo:self];
     [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
         
@@ -101,7 +101,7 @@
 - (void) numberOfFollowingWithCompletion:(void (^)(int))completionBlock {
     
     PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowingQuery whereKey:@"from" equalTo:self];
+    [countFollowingQuery whereKey:@"userFrom" equalTo:self];
     [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
     
@@ -119,15 +119,14 @@
 
 - (void) followUser:(EVNUser *)userToFollow fromVC:(UIViewController *)activeVC withButton:(EVNButton *)followButton withCompletion:(void (^)(BOOL))completionBlock {
     
-    followButton.enabled = NO;
     [followButton startedTask];
     
     if ([followButton.titleText isEqualToString:kFollowString]) {
         
         PFObject *newFollowActivity = [PFObject objectWithClassName:@"Activities"];
         newFollowActivity[@"type"] = [NSNumber numberWithInt:FOLLOW_ACTIVITY];
-        newFollowActivity[@"from"] = [EVNUser currentUser];
-        newFollowActivity[@"to"] = userToFollow;
+        newFollowActivity[@"userFrom"] = [EVNUser currentUser];
+        newFollowActivity[@"userTo"] = userToFollow;
         
         [newFollowActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
@@ -140,12 +139,13 @@
                 
             } else {
                 
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to Follow" message:@"If you continue to get this error, send us a tweet or email from settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                [PFAnalytics trackEventInBackground:@"FollowUserError" block:nil];
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to Follow" message:@"If you continue to get this error, send us a tweet or email from Settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                 [errorAlert show];
                 
             }
             
-            followButton.enabled = YES;
             [followButton endedTask];
             
         }];
@@ -159,34 +159,43 @@
             
             PFQuery *findFollowActivity = [PFQuery queryWithClassName:@"Activities"];
             [findFollowActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [findFollowActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
-            [findFollowActivity whereKey:@"to" equalTo:userToFollow];
+            [findFollowActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
+            [findFollowActivity whereKey:@"userTo" equalTo:userToFollow];
             
             [findFollowActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                //TODO add error catching
-                
-                PFObject *previousFollowActivity = [objects firstObject];
-                [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                if (!error) {
                     
-                    if (succeeded) {
+                    PFObject *previousFollowActivity = [objects firstObject];
+                    [previousFollowActivity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         
-                        followButton.titleText = kFollowString;
+                        if (succeeded) {
+                            
+                            followButton.titleText = kFollowString;
+                            
+                            NSDictionary *userInfoDict = [NSDictionary dictionaryWithObject:userToFollow.objectId forKey:kUnfollowedUserObjectId];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kNewUnfollow object:activeVC userInfo:userInfoDict];
+                            
+                        } else {
+                            
+                            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to UnFollow" message:@"If you continue to get this error, send us a tweet or email from settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                            [errorAlert show];
+                            
+                        }
                         
-                        NSDictionary *userInfoDict = [NSDictionary dictionaryWithObject:userToFollow.objectId forKey:kUnfollowedUserObjectId];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kNewUnfollow object:activeVC userInfo:userInfoDict];
+                        [followButton endedTask];
+                        
+                    }];
                     
-                    } else {
-                        
-                        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to UnFollow" message:@"If you continue to get this error, send us a tweet or email from settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                        [errorAlert show];
-                        
-                    }
+                } else {
                     
-                    followButton.enabled = YES;
+                    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to UnFollow" message:@"If you continue to get this error, send us a tweet or email from settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                    [errorAlert show];
+                    
                     [followButton endedTask];
                     
-                }];
+                }
+                
             }];
             
             
@@ -194,7 +203,6 @@
         
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
             
-            followButton.enabled = YES;
             [followButton endedTask];
             
         }];
@@ -208,7 +216,6 @@
         
     } else {
         
-        followButton.enabled = YES;
         [followButton endedTask];
         
     }
@@ -220,13 +227,17 @@
     
     //Determine whether the current user is following this user
     PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-    [followActivity whereKey:@"from" equalTo:[EVNUser currentUser]];
+    [followActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
     [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [followActivity whereKey:@"to" equalTo:user];
+    [followActivity whereKey:@"userTo" equalTo:user];
     [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
         if (error) {
-            completionBlock (NO, NO);
+            if (error.code == kPFErrorObjectNotFound) {
+                completionBlock(NO, YES);
+            } else {
+                completionBlock (NO, NO);
+            }
         } else {
             if (objects.count > 0) {
                 completionBlock(YES, YES);

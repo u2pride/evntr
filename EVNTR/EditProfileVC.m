@@ -388,6 +388,7 @@ typedef enum {
     [[EVNUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {
+            
             NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
             
             id<ProfileEditDelegate> strongDelegate = self.delegate;
@@ -397,7 +398,6 @@ typedef enum {
                 [strongDelegate saveProfileWithNewInformation:newUserValues withImageData:self.pictureData];
             }
             
-        
         } else {
             
             switch ((TBParseError)error.code) {

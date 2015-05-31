@@ -97,8 +97,4 @@ CGImageRef CopyImageAndAddAlphaChannel(CGImageRef sourceImage) {
 }
 
 
-
-
-
-
 @end

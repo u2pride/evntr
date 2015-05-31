@@ -284,6 +284,12 @@
 
 - (void) endedTask {
     
+    [self endedTaskWithButtonEnabled:YES];
+    
+}
+
+- (void) endedTaskWithButtonEnabled:(BOOL) isButtonEnabled {
+    
     [UIView animateWithDuration:0.25 animations:^{
         
         self.titleTextLabel.alpha = 1;
@@ -291,11 +297,10 @@
         
         [self.activityIndicator stopAnimating];
         
-
     } completion:^(BOOL finished) {
         
-        self.enabled = YES;
-
+        self.enabled = isButtonEnabled;
+        
     }];
     
 }
@@ -327,7 +332,6 @@
     return YES;
     
 }
-
 
 
 @end

@@ -82,14 +82,12 @@
 }
 
 
-
-
 #pragma mark - Create Event Button
 
 - (IBAction)createEvent:(id)sender {
     
     NSDictionary *dimensions = @{ @"UserID": [EVNUser currentUser].objectId};
-    [PFAnalytics trackEventInBackground:@"EventCreation" dimensions:dimensions block:nil];
+    [PFAnalytics trackEventInBackground:@"EventCreatedByUser" dimensions:dimensions block:nil];
     
     if (self.event.descriptionOfEvent && self.event.nameOfLocation) {
         
@@ -128,6 +126,7 @@
                                 }
                                 
                                 [HUD hide:YES afterDelay:0.5];
+                                
                             });
                             
                         } else {
@@ -214,7 +213,6 @@
                                     
                                     [strongDelegate eventCreationComplete:darkBlurEffectView withEvent:self.event];
                                 }
-                                
                                 
                             } else {
                                 UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"We had trouble creating your event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
@@ -426,11 +424,7 @@
     
 }
 
-#pragma mark - CleanUp
 
-- (void) dealloc {
-    NSLog(@"add event second dealloced");
-}
 
 
 @end

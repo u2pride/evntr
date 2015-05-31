@@ -436,11 +436,5 @@
 }
 
 
-#pragma mark - Clean Up
-
-- (void) dealloc {
-    NSLog(@"Dealloc mapview");
-}
-
 
 @end

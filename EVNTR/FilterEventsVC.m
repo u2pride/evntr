@@ -238,9 +238,5 @@
     
 }
 
-#pragma mark - Clean Up
 
--(void)dealloc {
-    NSLog(@"filtereventsvc is being deallocated");
-}
 @end
