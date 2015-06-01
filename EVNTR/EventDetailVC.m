@@ -151,8 +151,6 @@
     [super viewWillAppear:animated];
     
     [PFAnalytics trackEventInBackground:@"ViewEvent" block:nil];
-
-    NSLog(@"Event invitedUsers: %@", self.event.invitedUsers);
     
     if (self.shouldRestoreNavBar) {
         //Transparent Navigation Bar - Store Current State to Restore
@@ -233,8 +231,8 @@
         CGRect originalFrame = self.eventDescription.frame;
         
         self.eventTitle.text = self.event.title;
-        self.dateOfEventLabel.text = [self.event eventDateShortStyle];
-        self.timeOfEventLabel.text = [self.event eventTimeShortStye];
+        self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
+        self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
         self.eventDescription.text = self.event.descriptionOfEvent;
         self.eventDescription.textAlignment = NSTextAlignmentCenter;
         self.eventDescription.numberOfLines = 0;
@@ -313,12 +311,12 @@
         } else {
             
             int eventType = [self.event.typeOfEvent intValue];
-            NSString *userObjectId = [EVNUser currentUser].objectId;
+            //NSString *userObjectId = [EVNUser currentUser].objectId;
             
             switch (eventType) {
                 case PUBLIC_EVENT_TYPE: {
                     
-                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status, BOOL error) {
+                    [self.event queryRSVPForUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
                         
                         NSLog(@"Returned with error: %d", (int) error);
                         if (!error) {
@@ -347,7 +345,7 @@
                 }
                 case PRIVATE_EVENT_TYPE: {
                     
-                    [self.event queryRSVPForUserId:userObjectId completion:^(BOOL isAttending, NSString *status, BOOL error) {
+                    [self.event queryRSVPForUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
                         
                         if (!error) {
                             if (!self.isCurrentUsersEvent) {
@@ -391,9 +389,9 @@
                                 self.isCurrentUserAttending = isAttending;
                                 self.rsvpStatusButton.titleText = status;
                                 
-                                if ([status isEqualToString:kGrantedAccessToEvent] || [status isEqualToString:kRSVPedForEvent]) {
+                                if ([status isEqualToString:kAttendingEvent] || [status isEqualToString:kRSVPedForEvent]) {
                                     self.rsvpStatusButton.isSelected = YES;
-                                    self.rsvpStatusButton.isStateless = YES;
+                                    //self.rsvpStatusButton.isStateless = YES;
                                 } else {
                                     self.rsvpStatusButton.isSelected = NO;
                                 }
@@ -462,7 +460,6 @@
     //Standby Component - UICollectionView
     self.standbyUsersCollectionView.delegate = self;
     self.standbyUsersCollectionView.dataSource = self;
-    //self.standbyUsersCollectionView.backgroundColor = [UIColor orangeThemeColor];
     self.standbyUsersCollectionView.tag = 2;
     UICollectionViewFlowLayout *collectionViewLayout2 = (UICollectionViewFlowLayout*)self.standbyUsersCollectionView.collectionViewLayout;
     collectionViewLayout2.minimumInteritemSpacing = 20;
@@ -477,11 +474,13 @@
     self.viewPicturesButton.isStateless = YES;
     self.viewPicturesButton.isSelected = NO;
     self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];
-
-    [self.event estimateNumberOfPhotosWithCompletion:^(int count) {
-        self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", count];
-    }];
-
+    
+    if (self.event.numPictures) {
+        self.numberOfPicturesLabel.text = [self.event.numPictures stringValue];
+    } else {
+        self.numberOfPicturesLabel.text = @"0";
+    }
+    
     if (!self.isGuestUser) {
         
         //Add Edit Button if Creator is Current User
@@ -684,6 +683,9 @@
         
         NSLog(@"In the right place");
         
+        self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
+        self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
+        
         [self.rsvpStatusButton endedTask];
         [self.entireMapView finishedLoadingWithLocationAvailable:YES];
         
@@ -699,10 +701,6 @@
     self.viewAttending.alpha = 1.0;
     
 }
-
-
-
-
 
 
 
@@ -805,7 +803,7 @@
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
         invitePeopleVC.userProfile = [EVNUser currentUser];
-        invitePeopleVC.usersAlreadyInvited = self.event.invitedUsers;
+        invitePeopleVC.eventForInvites = self.event;
         invitePeopleVC.delegate = self;
         
         UINavigationController *embedInThisVC = [[UINavigationController alloc] initWithRootViewController:invitePeopleVC];
@@ -906,8 +904,85 @@
         
     } else if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
         
-        //Currently only allowing A Request for access not to revoke
-        if ([self.rsvpStatusButton.titleText isEqualToString:kNOTRSVPedForEvent]) {
+        /*
+        
+         if it says show interest, then add a requestaccess activity
+         if it says interested, then remove a requestaccess activity
+         if it says join, then add an attending activity
+         if it says attending, then remove an attending activity
+         
+         if creator lets in, then add a granted activity and an attending activity immmediately after.
+        
+         NSString *const kAttendingEvent = @"Attending";
+         NSString *const kNotAttendingEvent = @"Join";
+         NSString *const kRSVPedForEvent = @"Interested";
+         NSString *const kNOTRSVPedForEvent = @"Show Interest";
+         NSString *const kGrantedAccessToEvent = @"Attending";
+         
+        */
+        
+        //Join - RSVP User
+        if ([self.rsvpStatusButton.titleText isEqualToString:kNotAttendingEvent]) {
+            
+            [self.rsvpStatusButton startedTask];
+
+            [self.event rsvpUser:[EVNUser currentUser] completion:^(BOOL success) {
+                
+                if (success) {
+                    self.isCurrentUserAttending = YES;
+                    self.rsvpStatusButton.titleText = kAttendingEvent;
+                    self.rsvpStatusButton.isSelected = YES;
+                    
+                    //Notify Table Cell of Update in RSVP Count
+                    id<EventDetailProtocol> strongDelegate = self.delegate;
+                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
+                        [strongDelegate rsvpStatusUpdatedToGoing:YES];
+                    }
+                } else {
+                    
+                    UIAlertView *issueView = [[UIAlertView alloc] initWithTitle:@"Unable to RSVP" message:@"We're having trouble RSVPing you to this event.  Are you sure you want to go?  Jk... send us an email or a tweet from settings so we can help figure out your issue." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issueView show];
+                }
+                
+                [self.rsvpStatusButton endedTask];
+                
+            }];
+
+            
+        
+        //Attending - UNRSVP User
+        } else if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
+            
+            [self.rsvpStatusButton startedTask];
+
+            [self.event unRSVPUser:[EVNUser currentUser] completion:^(BOOL success) {
+                
+                if (success) {
+                    self.isCurrentUserAttending = NO;
+                    self.rsvpStatusButton.titleText = kNotAttendingEvent;
+                    self.rsvpStatusButton.isSelected = NO;
+                    
+                    //Notify Table Cell of Update in RSVP Count
+                    id<EventDetailProtocol> strongDelegate = self.delegate;
+                    if ([strongDelegate respondsToSelector:@selector(rsvpStatusUpdatedToGoing:)]) {
+                        [strongDelegate rsvpStatusUpdatedToGoing:NO];
+                    }
+                } else {
+                    
+                    UIAlertView *issueView = [[UIAlertView alloc] initWithTitle:@"Unable to UnRSVP" message:@"We're having trouble un-rsvping you from this event.  Are you sure you don't want to go?  Jk... send us an email or a tweet from settings so we can help figure out your issue." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issueView show];
+                    
+                }
+                
+                [self.rsvpStatusButton endedTask];
+                
+            }];
+            
+          
+        //Show Interest - Request Access for User and Add to Standby
+        } else if ([self.rsvpStatusButton.titleText isEqualToString:kNOTRSVPedForEvent]) {
             
             [self.rsvpStatusButton startedTask];
             
@@ -935,30 +1010,16 @@
                 
             }];
 
+        //Interested - Remove Request for Access
+        }  else if ([self.rsvpStatusButton.titleText isEqualToString:kRSVPedForEvent]) {
+            
+        
+        
         }
         
     } else if (eventType == PUBLIC_EVENT_TYPE || eventType == PRIVATE_EVENT_TYPE) {
         
-        PFRelation *attendersRelation = self.event.attenders;
         [self.rsvpStatusButton startedTask];
-        
-        //Updating Relation
-        if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
-            
-            [attendersRelation removeObject:[EVNUser currentUser]];
-            [self.event saveInBackground];
-            
-            //[self.rsvpButton setTitle:kNotAttendingEvent forState:UIControlStateNormal];
-            
-        } else {
-            
-            //Create New Relation and Add User to List of Attenders for Event
-            [attendersRelation addObject:[EVNUser currentUser]];
-            [self.event saveInBackground];
-            
-            //[self.rsvpButton setTitle:kAttendingEvent forState:UIControlStateNormal];
-        }
-        
         
         //Updating the Activity Table (choose one?)
         if ([self.rsvpStatusButton.titleText isEqualToString:kAttendingEvent]) {
@@ -1062,8 +1123,8 @@
     [self setupMapComponent];
     
     //Update Date and Time
-    self.dateOfEventLabel.text = [self.event eventDateShortStyle];
-    self.timeOfEventLabel.text = [self.event eventTimeShortStye];
+    self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
+    self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
     
     id<EventDetailProtocol> strongDelegate = self.delegate;
     if ([strongDelegate respondsToSelector:@selector(updateEventCellAfterEdit)]) {

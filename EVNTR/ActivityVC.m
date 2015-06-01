@@ -214,8 +214,8 @@
             [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
             
             queryForActivities = [PFQuery orQueryWithSubqueries:@[coreActivities,requestsToEvents]];
-            [queryForActivities includeKey:@"to"];
-            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"userTo"];
+            [queryForActivities includeKey:@"userFrom"];
             [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
             
@@ -225,7 +225,7 @@
             
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
             [queryForActivities whereKey:@"userTo" equalTo:self.userForActivities];
-            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"userFrom"];
             [queryForActivities includeKey:@"activityContent"];
             
             break;
@@ -243,7 +243,7 @@
             //now find access activities that are from the current user
             [queryForActivities whereKey:@"activityContent" matchesQuery:innerQueryForAuthor];
             
-            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"userFrom"];
             [queryForActivities includeKey:@"activityContent"];
 
             break;
@@ -252,7 +252,7 @@
             
             [queryForActivities whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
             [queryForActivities whereKey:@"userTo" equalTo:self.userForActivities];
-            [queryForActivities includeKey:@"to"];
+            [queryForActivities includeKey:@"userTo"];
             [queryForActivities includeKey:@"activityContent"];
             
             break;
@@ -268,8 +268,8 @@
             [requestsToEvents whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
             
             queryForActivities = [PFQuery orQueryWithSubqueries:@[grantedAccessActivities,requestsToEvents]];
-            [queryForActivities includeKey:@"to"];
-            [queryForActivities includeKey:@"from"];
+            [queryForActivities includeKey:@"userTo"];
+            [queryForActivities includeKey:@"userFrom"];
             [queryForActivities includeKey:@"activityContent"];
             [queryForActivities orderByDescending:@"updatedAt"];
             
@@ -817,19 +817,8 @@
                     
                     if (succeeded){
                         
-                        EventObject *event = grantButton.eventToGrantAccess;
-                        PFRelation *attendingRelation = [event relationForKey:@"attenders"];
-                        [attendingRelation removeObject:grantButton.personToGrantAccess];
-                        [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                            
-                            if (succeeded) {
-                                grantButton.titleText = kGrantAccess;
-                                [grantButton endedTask];
-                            } else {
-                                [grantButton endedTaskWithButtonEnabled:NO];
-                            }
-                            
-                        }];
+                        grantButton.titleText = kGrantAccess;
+                        [grantButton endedTask];
                         
                     } else {
                         [grantButton endedTaskWithButtonEnabled:NO];
@@ -856,18 +845,21 @@
             
             if (succeeded) {
                 
-                EventObject *event = grantButton.eventToGrantAccess;
-                PFRelation *attendingRelation = [event relationForKey:@"attenders"];
-                [attendingRelation addObject:grantButton.personToGrantAccess];
-                [event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
+                newAttendingActivity[@"userTo"] = grantButton.personToGrantAccess;
+                newAttendingActivity[@"type"] = [NSNumber numberWithInt:ATTENDING_ACTIVITY];
+                newAttendingActivity[@"activityContent"] = grantButton.eventToGrantAccess;
+                [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
                     if (succeeded) {
                         grantButton.titleText = kRevokeAccess;
                         [grantButton endedTask];
                     } else {
+                        [PFAnalytics trackEventInBackground:@"RSVPUserIssue" block:nil];
+                        grantButton.alpha = 0.3;
                         [grantButton endedTaskWithButtonEnabled:NO];
                     }
-                    
+                
                 }];
                 
             } else {

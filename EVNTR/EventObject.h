@@ -18,8 +18,6 @@
 @property (nonatomic, strong) NSDate *dateOfEvent;
 @property (nonatomic, strong) PFGeoPoint *locationOfEvent;
 @property (nonatomic, strong) NSNumber *typeOfEvent;
-@property (nonatomic, strong, readonly) PFRelation *attenders;
-@property (nonatomic, strong, readonly) PFRelation *invitedUsers;
 @property (nonatomic, strong) NSNumber *numPictures;
 @property (nonatomic, strong) NSNumber *numAttenders;
 @property (nonatomic, strong) NSNumber *numComments;
@@ -32,23 +30,21 @@
 + (NSString *)parseClassName;
 
 - (NSString *) eventTypeForHomeView;
-- (NSString *) eventDateShortStyle;
-- (NSString *) eventTimeShortStye;
+- (NSString *) eventDateShortStyleAndVisible:(BOOL)visible;
+- (NSString *) eventTimeShortStyeAndVisible:(BOOL)visible;
 
 - (void) coverImage:(void (^)(UIImage *image))completionBlock;
 - (BOOL) allowUserToAddPhotosAtThisTime;
 
-- (void) queryRSVPForUserId:(NSString *)userObjectId completion:(void (^)(BOOL isAttending, NSString *status, BOOL error))completionBlock;
+- (void) queryRSVPForUser:(EVNUser *)userObject completion:(void (^)(BOOL isAttending, NSString *status, BOOL error))completionBlock;
 - (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL isAttending, NSString *status, BOOL error))completionBlock;
 
-- (void) requestAccessForUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
 - (void) rsvpUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
 - (void) unRSVPUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
+- (void) requestAccessForUser:(EVNUser *)user completion:(void (^)(BOOL success))completionBlock;
 - (void) inviteUsers:(NSArray *)users completion:(void (^)(BOOL success))completionBlock;
 
-- (void) estimateNumberOfPhotosWithCompletion:(void (^)(int count))completionBlock;
-- (void) totalNumberOfAttendersInBackground:(void (^)(int count))completionBlock;
-
+- (void) queryForAttendersWithCompletion:(void (^)(NSArray *attenders))completionBlock;
 - (void) queryForStandbyUsersWithIncludeKey:(NSString *)key completion:(void (^)(NSError *error, NSArray *users))completionBlock;
 - (void) queryForImagesWithCompletion:(void (^)(NSArray *images))completionBlock;
 - (void) queryForCommentsWithCompletion:(void (^)(NSArray *comments))completionBlock;

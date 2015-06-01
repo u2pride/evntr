@@ -86,7 +86,6 @@ extern NSString *const kAttendingEvent;
 extern NSString *const kNotAttendingEvent;
 extern NSString *const kRSVPedForEvent;
 extern NSString *const kNOTRSVPedForEvent;
-extern NSString *const kGrantedAccessToEvent;
 extern NSString *const kInviteUsers;
 
 extern NSString *const kGrantAccess;

@@ -20,9 +20,7 @@
 @property (nonatomic, assign) int typeOfUsers;
 @property (nonatomic, strong) EVNUser *userProfile;
 @property (nonatomic, strong) EventObject *eventToViewAttenders;
-
-//Property for PeopleVC during Invite Process
-@property (nonatomic, strong) PFRelation *usersAlreadyInvited;
+@property (nonatomic, strong) EventObject *eventForInvites;
 
 @end
 
@@ -32,6 +30,7 @@
 - (void)finishedSelectingInvitations:(NSArray *)selectedPeople;
 
 @end
+
 
 
 

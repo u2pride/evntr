@@ -26,9 +26,9 @@
 
 #pragma mark - Helper Methods
 
-- (NSString *) eventDateShortStyle {
+- (NSString *) eventDateShortStyleAndVisible:(BOOL)visible {
     
-    if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE) {
+    if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE && !visible) {
         
         return @"Unknown";
         
@@ -44,9 +44,9 @@
 }
 
 
-- (NSString *) eventTimeShortStye {
+- (NSString *) eventTimeShortStyeAndVisible:(BOOL)visible {
     
-    if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE) {
+    if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE && !visible) {
         
         return @"Unknown";
         
@@ -96,23 +96,6 @@
     
 }
 
-- (void) totalNumberOfAttendersInBackground:(void (^)(int count))completionBlock {
-    
-    PFRelation *relation = self.attenders;
-    PFQuery *query = [relation query];
-    
-    [query countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        
-        if (error) {
-            completionBlock(0);
-        } else {
-            completionBlock(number);
-        }
-        
-    }];
-
-}
-
 
 //Users Can Only Post Photos To An Event Starting An Hour Before the Event.
 //Creators of the Event Can Post Photos At All Times
@@ -160,12 +143,41 @@
 }
 
 
+- (void) queryForAttendersWithCompletion:(void (^)(NSArray *))completionBlock {
+    
+    PFQuery *queryForAttenders = [PFQuery queryWithClassName:@"Activities"];
+    [queryForAttenders whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
+    [queryForAttenders whereKey:@"activityContent" equalTo:self];
+    [queryForAttenders includeKey:@"userTo"];
+    [queryForAttenders findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+       
+        if (error) {
+            
+            completionBlock(0);
+        
+        } else {
+            
+            NSMutableArray *eventAttenders = [[NSMutableArray alloc] init];
+            [eventAttenders removeAllObjects];
+            
+            for (PFObject *attendingActivity in objects) {
+                [eventAttenders addObject:attendingActivity[@"userTo"]];
+            }
+            
+            completionBlock(eventAttenders);
+        }
+        
+    }];
+    
+}
+
+
 - (void) queryForStandbyUsersWithIncludeKey:(NSString *)key completion:(void (^)(NSError *, NSArray *))completionBlock {
     
     PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
     [queryForStandbyUsers whereKey:@"activityContent" equalTo:self];
     [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY]];
-    [queryForStandbyUsers includeKey:@"from"];
+    [queryForStandbyUsers includeKey:@"userFrom"];
     [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *standbyActivities, NSError *error) {
         
         __block NSMutableArray *usersOnStandby = [[NSMutableArray alloc] init];
@@ -188,7 +200,7 @@
             PFQuery *queryForStandbyUsers = [PFQuery queryWithClassName:@"Activities"];
             [queryForStandbyUsers whereKey:@"activityContent" equalTo:self];
             [queryForStandbyUsers whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-            [queryForStandbyUsers includeKey:@"to"];
+            [queryForStandbyUsers includeKey:@"userTo"];
             [queryForStandbyUsers findObjectsInBackgroundWithBlock:^(NSArray *accessActivities, NSError *error) {
                 
                 NSMutableArray *usersGrantedAccess = [[NSMutableArray alloc] init];
@@ -238,35 +250,35 @@
     
 }
 
-//getFirstObject - only parse call that will return an error for no results (ie no object)
-- (void) queryRSVPForUserId:(NSString *)userObjectId completion:(void (^)(BOOL, NSString *, BOOL))completionBlock {
+
+- (void) queryRSVPForUser:(EVNUser *)userObject completion:(void (^)(BOOL, NSString *, BOOL))completionBlock {
     
-    PFRelation *eventAttendersRelation = self.attenders;
-    PFQuery *attendingQuery = [eventAttendersRelation query];
-    [attendingQuery whereKey:@"objectId" equalTo:userObjectId];
-    [attendingQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+    PFQuery *eventAttendersQuery = [PFQuery queryWithClassName:@"Activities"];
+    [eventAttendersQuery whereKey:@"userTo" equalTo:userObject];
+    [eventAttendersQuery whereKey:@"activityContent" equalTo:self];
+    [eventAttendersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
+    [eventAttendersQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         
         if (error) {
             
-            if (error.code == kPFErrorObjectNotFound) {
-                completionBlock(NO, kNotAttendingEvent, NO);
-            } else {
-                completionBlock(NO, kNotAttendingEvent, YES);
-            }
+            completionBlock(NO, kNotAttendingEvent, YES);
             
         } else {
-            if (object) {
+            
+            if ([objects count] > 0) {
                 completionBlock(YES, kAttendingEvent, NO);
             } else {
                 completionBlock(NO, kNotAttendingEvent, NO);
             }
         }
         
+        
     }];
     
 }
 
 
+//TODO: Test this.
 - (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL, NSString *, BOOL))completionBlock {
     
     //activityTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY], [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY], nil];
@@ -284,40 +296,76 @@
     [grantedActivty whereKey:@"userTo" equalTo:user];
     [grantedActivty whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
     
-    PFQuery *statusQuery = [PFQuery orQueryWithSubqueries:@[requestActivity, grantedActivty]];
+    // 2 - {from} invited {to} to {activityContent}
+    // 4 - {to} is attending {activityContent}
+    
+    PFQuery *invitedQuery = [PFQuery queryWithClassName:@"Activities"];
+    [invitedQuery whereKey:@"activityContent" equalTo:self];
+    [invitedQuery whereKey:@"userTo" equalTo:user];
+    [invitedQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
+    
+    PFQuery *attendingQuery = [PFQuery queryWithClassName:@"Activities"];
+    [attendingQuery whereKey:@"activityContent" equalTo:self];
+    [attendingQuery whereKey:@"userTo" equalTo:user];
+    [attendingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:ATTENDING_ACTIVITY]];
+    
+    
+    PFQuery *statusQuery = [PFQuery orQueryWithSubqueries:@[requestActivity, grantedActivty, invitedQuery, attendingQuery]];
     
     [statusQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
         if (error) {
             
-            //if no requests or grants found, user is not rsvped for the event.
-            if (error.code == kPFErrorObjectNotFound) {
-                completionBlock(NO, kNOTRSVPedForEvent, NO);
-            } else {
-                completionBlock(NO, @"", YES);
-            }
+            completionBlock(NO, @"", YES);
             
         } else {
             
+            NSLog(@"Activities Returned: %@", objects);
+            
             NSString *status = kNOTRSVPedForEvent;
+            
+            BOOL isInvited = NO;
+            BOOL isGrantedAccess = NO;
             BOOL isAttending = NO;
+            BOOL isRequestedAccess = NO;
             
             for (PFObject *activity in objects) {
                 
                 int activityType = (int) [[activity objectForKey:@"type"] integerValue];
                 
-                if (activityType == ACCESS_GRANTED_ACTIVITY) {
-                    NSLog(@"Granted Access - Now Return Before Next Checkpoint");
-                    status = kGrantedAccessToEvent;
+                if (activityType == INVITE_ACTIVITY) {
+                    isInvited = YES;
+                } else if (activityType == ATTENDING_ACTIVITY) {
                     isAttending = YES;
-                    break;
+                } else if (activityType == ACCESS_GRANTED_ACTIVITY) {
+                    isGrantedAccess = YES;
+                } else if (activityType == REQUEST_ACCESS_ACTIVITY) {
+                    isRequestedAccess = YES;
                 }
                 
-                if (activityType == REQUEST_ACCESS_ACTIVITY) {
-                    NSLog(@"On Standby for Event");
-                    status = kRSVPedForEvent;
-                }
+                NSLog(@"invited - %d attending - %d granted - %d requested - %d", (int)isInvited, (int)isAttending, (int) isGrantedAccess, (int) isRequestedAccess);
+                
             }
+            
+        
+            if (isInvited || isGrantedAccess) {
+                
+                if (isAttending) {
+                    status = kAttendingEvent;
+                } else {
+                    status = kNotAttendingEvent;
+                }
+                
+            } else {
+                
+                if (isRequestedAccess) {
+                    status = kRSVPedForEvent;
+                } else {
+                    status = kNOTRSVPedForEvent;
+                }
+                
+            }
+            
             
             completionBlock(isAttending, status, NO);
         }
@@ -393,41 +441,17 @@
     }];
 }
 
-//TODO: Is this how I want to go about inviting users for the backend design?
+//TODO: Test this Code
 - (void) inviteUsers:(NSArray *)users completion:(void (^)(BOOL))completionBlock {
     
     
     [PFAnalytics trackEventInBackground:@"InviteUsersIssue" block:nil];
-
-    __block BOOL success = YES;
+    
+    __block int totalSavesRequired = (int)[users count];
+    __block int savesCompleted = 0;
     
     for (EVNUser *user in users) {
-        
-        //If the user is invited to a public approved event, they are automatically granted access. This will be changed.
-        if (self.typeOfEvent.intValue == PUBLIC_APPROVED_EVENT_TYPE) {
-            PFObject *newActivity = [PFObject objectWithClassName:@"Activities"];
-            newActivity[@"userFrom"] = [EVNUser currentUser];
-            newActivity[@"userTo"] = user;
-            newActivity[@"type"] = [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY];
-            newActivity[@"activityContent"] = self;
-            [newActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (succeeded) {
-                    
-                    PFRelation *attendingRelation = [self relationForKey:@"attenders"];
-                    [attendingRelation addObject:user];
-                    [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        
-                        
-                    }];
-                }
-                
-            }];
-            
-        }
-        
-        
-        //If Private Event - Also Add Invited People to invitedUsers column as a PFRelation - actually maybe not
-        
+    
         PFObject *newInvitationActivity = [PFObject objectWithClassName:@"Activities"];
         
         newInvitationActivity[@"type"] = [NSNumber numberWithInt:INVITE_ACTIVITY];
@@ -435,31 +459,21 @@
         newInvitationActivity[@"userTo"] = user;
         newInvitationActivity[@"activityContent"] = self;
         
-        //save the invitation activities
         [newInvitationActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
-            success = (succeeded) ? YES : NO;
-            
-            if (error) {
-                NSLog(@"Developer Note:  Error saving invitations: %@", error);
+            if (succeeded) {
+                savesCompleted++;
+            } else {
+                completionBlock(NO);
             }
+            
+            if (totalSavesRequired == savesCompleted) {
+                completionBlock(YES);
+            }
+            
         }];
         
-        PFRelation *invitedUsersRelation = [self relationForKey:@"invitedUsers"];
-        [invitedUsersRelation addObject:user];
-        [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            success = (succeeded) ? YES : NO;
-            
-            if (succeeded) {
-                //empty
-            }
-            
-        }];
     }
-    
-    //TODO - this is not right... success variable gets re-written after each save - this will only reflect the last save result
-    //completionBlock(success);
     
 }
 
@@ -476,26 +490,6 @@
             completionBlock(0);
         } else {
             completionBlock(objects);
-        }
-        
-    }];
-    
-}
-
-
-- (void) estimateNumberOfPhotosWithCompletion:(void (^)(int))completionBlock {
-    
-    PFQuery *imagesQuery = [PFQuery queryWithClassName:@"Pictures"];
-    [imagesQuery includeKey:@"takenBy"]; /* Include the EVNUser who took the photo */
-    [imagesQuery whereKey:@"eventParent" equalTo:self];
-    [imagesQuery orderByAscending:@"createdAt"];
-    
-    [imagesQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        
-        if (error) {
-            completionBlock(0);
-        } else {
-            completionBlock(number);
         }
         
     }];

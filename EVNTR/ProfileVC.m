@@ -278,18 +278,25 @@
     
     [self.profileImageView loadInBackground];
 
-    [self.profileUser numberOfEventsWithCompletion:^(int events) {
-        self.numberEventsLabel.text = [NSString stringWithFormat:@"%d", events];
-    }];
+    //Counts on Events, Followers, Following
+    if (self.profileUser.numEvents) {
+        self.numberEventsLabel.text = [self.profileUser.numEvents stringValue];
+    } else {
+        self.numberEventsLabel.text = @"0";
+    }
     
-    //Update Following / Followers Counts
-    [self.profileUser numberOfFollowersWithCompletion:^(int followers) {
-        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", followers];
-    }];
+    if (self.profileUser.numFollowers) {
+        self.numberFollowersLabel.text = [self.profileUser.numFollowers stringValue];
+    } else {
+        self.numberFollowersLabel.text = @"0";
+    }
     
-    [self.profileUser numberOfFollowingWithCompletion:^(int following) {
-        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", following];
-    }];
+    if (self.profileUser.numFollowing) {
+        self.numberFollowingLabel.text = [self.profileUser.numFollowing stringValue];
+    } else {
+        self.numberFollowingLabel.text = @"0";
+    }
+
 
 }
 
@@ -525,44 +532,6 @@
     }
 
 }
-
-
-//TODO - Perform this updates in the local cache - or just increment/decrement the right count.  Careful.
-/*
-- (void)updateUIDueToNewFollow:(NSNotification *)notification {
-    
-    if (notification.object != self && self.profileType != CURRENT_USER_PROFILE) {
-        
-        [[EVNUser currentUser] isCurrentUserFollowingProfile:self.profileUser completion:^(BOOL isFollowing, BOOL success) {
-            
-            if (success) {
-                if (isFollowing) {
-                    self.followButton.titleText = kFollowingString;
-                    self.followButton.isSelected = YES;
-                } else {
-                    self.followButton.titleText = kFollowString;
-                    self.followButton.isSelected = NO;
-                }
-            } else {
-                self.followButton.titleText = @"";
-                self.followButton.enabled = NO;
-            }
-        }];
-        
-    }
-    
-    //Update Following / Followers Counts
-    [self.profileUser numberOfFollowersWithCompletion:^(int followers) {
-        self.numberFollowersLabel.text = [NSString stringWithFormat:@"%d", followers];
-    }];
-    
-    [self.profileUser numberOfFollowingWithCompletion:^(int following) {
-        self.numberFollowingLabel.text = [NSString stringWithFormat:@"%d", following];
-    }];
-
-    
-}
- */
 
 #pragma mark - Navigation
 

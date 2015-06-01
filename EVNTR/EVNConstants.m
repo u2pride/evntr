@@ -28,7 +28,6 @@ NSString *const kAttendingEvent = @"Attending";
 NSString *const kNotAttendingEvent = @"Join";
 NSString *const kRSVPedForEvent = @"Interested";
 NSString *const kNOTRSVPedForEvent = @"Show Interest";
-NSString *const kGrantedAccessToEvent = @"Attending";
 NSString *const kInviteUsers = @"Invite Users";
 
 NSString *const kGrantAccess = @"Let In";

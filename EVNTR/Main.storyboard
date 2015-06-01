@@ -3608,23 +3608,6 @@ Click continue when you're ready.</string>
             </objects>
             <point key="canvasLocation" x="2139" y="159"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="uNq-Sf-tjf">
-            <objects>
-                <viewController id="jhm-9T-JLZ" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="OTw-Sh-1KU"/>
-                        <viewControllerLayoutGuide type="bottom" id="N3t-tJ-YUU"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="0Rg-aw-qd2">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KXd-gH-A7o" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
     <resources>
         <image name="CustomBackButton" width="24" height="24"/>

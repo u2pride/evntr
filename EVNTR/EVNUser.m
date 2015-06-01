@@ -13,7 +13,7 @@
 
 @implementation EVNUser
 
-@dynamic profilePicture, twitterHandle, instagramHandle, hometown, realName, bio, username, email, numEvents, numFollowers, numFollowing;
+@dynamic profilePicture, hometown, realName, bio, username, email, numEvents, numFollowers, numFollowing;
 
 #pragma mark - Required for Subclassing Parse PFUser
 
@@ -59,60 +59,6 @@
     } else {
         return @"My bio is empty.  I think I'm just too flattered that you would ask me about myself.";
     }
-    
-}
-
-
-- (void) numberOfEventsWithCompletion:(void (^)(int))completionBlock {
-    
-    PFQuery *countEventsQuery = [PFQuery queryWithClassName:@"Events"];
-    [countEventsQuery whereKey:@"parent" equalTo:self];
-    [countEventsQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        
-        if (error) {
-            completionBlock(0);
-        } else {
-            completionBlock(number);
-        }
-    
-    }];
-    
-}
-
-
-- (void) numberOfFollowersWithCompletion:(void (^)(int))completionBlock {
-
-    PFQuery *countFollowersQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowersQuery whereKey:@"userTo" equalTo:self];
-    [countFollowersQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [countFollowersQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-        
-        if (error) {
-            completionBlock(0);
-        } else {
-            completionBlock(number);
-        }
-        
-    }];
-    
-}
-
-
-- (void) numberOfFollowingWithCompletion:(void (^)(int))completionBlock {
-    
-    PFQuery *countFollowingQuery = [PFQuery queryWithClassName:@"Activities"];
-    [countFollowingQuery whereKey:@"userFrom" equalTo:self];
-    [countFollowingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [countFollowingQuery countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-    
-        if (error) {
-            completionBlock(0);
-        } else {
-            completionBlock(number);
-        }
-    
-    }];
-    
     
 }
 

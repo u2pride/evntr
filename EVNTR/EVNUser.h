@@ -20,8 +20,6 @@
 @property (nonatomic, strong) NSString *realName;
 @property (nonatomic, strong) NSString *email;
 @property (nonatomic, strong) NSString *bio;
-@property (nonatomic, strong) NSString *twitterHandle;
-@property (nonatomic, strong) NSString *instagramHandle;
 
 @property (nonatomic, strong) NSNumber *numEvents;
 @property (nonatomic, strong) NSNumber *numFollowers;
@@ -34,10 +32,6 @@
 - (NSString *) bioText;
 
 - (void) followUser:(EVNUser *)userToFollow fromVC:(UIViewController *)activeVC withButton:(EVNButton *)followButton withCompletion:(void (^)(BOOL))completionBlock;
-
-- (void) numberOfEventsWithCompletion:(void (^)(int))completionBlock;
-- (void) numberOfFollowersWithCompletion:(void (^)(int))completionBlock;
-- (void) numberOfFollowingWithCompletion:(void (^)(int))completionBlock;
 
 - (void) isCurrentUserFollowingProfile:(EVNUser *)user completion:(void (^)(BOOL isFollowing, BOOL success))completionBlock;
 

@@ -29,7 +29,6 @@
 		A423F7EE1A9BC46600DF9ABE /* EVNButtonExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* EVNButtonExtended.m */; };
 		A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7F11A9BFF0900DF9ABE /* SearchVC.m */; };
 		A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A430EE091AF264B30090ECB6 /* EVNUser.m */; };
-		A4331E161B1A50C900DF0FC8 /* EvntrVidDarker.mov in Resources */ = {isa = PBXBuildFile; fileRef = A4331E151B1A50C900DF0FC8 /* EvntrVidDarker.mov */; };
 		A43C57941AF15B48008E8EA2 /* SplashScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */; };
 		A44661161AA7589C00E6C3C6 /* AddEventPrimaryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */; };
 		A44BB8961A7832EA00735C93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563231A7688BB00565BB6 /* AudioToolbox.framework */; };
@@ -45,6 +44,7 @@
 		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
 		A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */; };
 		A459AE161B14E5C800EB6FEF /* InitialScreenVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A459AE151B14E5C800EB6FEF /* InitialScreenVC.m */; };
+		A45ACFF61B1BE76100BA8AF3 /* evntrBackground.mov in Resources */ = {isa = PBXBuildFile; fileRef = A45ACFF51B1BE76100BA8AF3 /* evntrBackground.mov */; };
 		A4628CFA1AB77C4B00EBD959 /* FullMapVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4628CF91AB77C4B00EBD959 /* FullMapVC.m */; };
 		A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A463633B1A9D00F100AD461D /* UIImageEffects.m */; };
 		A46472C91A9688E200D93401 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A46472C81A9688E200D93401 /* FacebookSDK.framework */; };
@@ -156,7 +156,6 @@
 		A423F7F11A9BFF0900DF9ABE /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SearchVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A430EE081AF264B30090ECB6 /* EVNUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNUser.h; sourceTree = "<group>"; };
 		A430EE091AF264B30090ECB6 /* EVNUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EVNUser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A4331E151B1A50C900DF0FC8 /* EvntrVidDarker.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = EvntrVidDarker.mov; sourceTree = "<group>"; };
 		A43C57921AF15B48008E8EA2 /* SplashScreenVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplashScreenVC.h; sourceTree = "<group>"; };
 		A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
@@ -168,6 +167,7 @@
 		A45638CB1ABB4693009D3BCC /* EVNNoResultsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNNoResultsView.h; sourceTree = "<group>"; };
 		A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EVNNoResultsView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A459AE151B14E5C800EB6FEF /* InitialScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InitialScreenVC.m; sourceTree = "<group>"; };
+		A45ACFF51B1BE76100BA8AF3 /* evntrBackground.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = evntrBackground.mov; sourceTree = "<group>"; };
 		A4628CF81AB77C4B00EBD959 /* FullMapVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullMapVC.h; sourceTree = "<group>"; };
 		A4628CF91AB77C4B00EBD959 /* FullMapVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullMapVC.m; sourceTree = "<group>"; };
 		A463633A1A9D00F100AD461D /* UIImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageEffects.h; sourceTree = "<group>"; };
@@ -666,7 +666,7 @@
 		A4C4EDD31A95119C000BC3AD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A4331E151B1A50C900DF0FC8 /* EvntrVidDarker.mov */,
+				A45ACFF51B1BE76100BA8AF3 /* evntrBackground.mov */,
 				A4C4EDCB1A95118C000BC3AD /* Lato-Bold.ttf */,
 				A4C4EDCC1A95118C000BC3AD /* Lato-Light.ttf */,
 				A4C4EDCD1A95118C000BC3AD /* Lato-Regular.ttf */,
@@ -813,10 +813,10 @@
 			files = (
 				A4C4EDD21A95118C000BC3AD /* Lato-Thin.ttf in Resources */,
 				A4C4EDCF1A95118C000BC3AD /* Lato-Bold.ttf in Resources */,
+				A45ACFF61B1BE76100BA8AF3 /* evntrBackground.mov in Resources */,
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
-				A4331E161B1A50C900DF0FC8 /* EvntrVidDarker.mov in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
 			);

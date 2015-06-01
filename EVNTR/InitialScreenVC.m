@@ -212,7 +212,7 @@
     NSLog(@"Accessed movie player controller variable");
     
     if (!_moviePlayer) {
-        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"EvntrVidDarker" withExtension:@"mov"];
+        NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrBackground" withExtension:@"mov"];
         _moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:videoURL];
         _moviePlayer.controlStyle = MPMovieControlStyleNone;
         _moviePlayer.scalingMode = MPMovieScalingModeAspectFill;

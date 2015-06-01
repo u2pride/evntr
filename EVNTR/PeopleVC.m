@@ -76,25 +76,40 @@
             
             self.collectionView.allowsMultipleSelection = YES;
             
-            //Taking the PFRelation and Querying for All the Invited Users
-            //TODO:  Change this to a column of objectIDs for all of the users that have been invited?
-            PFQuery *invitedRelationQuery = [self.usersAlreadyInvited query];
-            [invitedRelationQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-               
+            // 2 - {from} invited {to} to {activityContent}
+
+            
+            //Disable interaction until users are loaded.
+            self.collectionView.userInteractionEnabled = NO;
+            
+            PFQuery *usersInvitedAlready = [PFQuery queryWithClassName:@"Activities"];
+            [usersInvitedAlready whereKey:@"userFrom" equalTo:self.userProfile];
+            [usersInvitedAlready whereKey:@"activityContent" equalTo:self.eventForInvites];
+            [usersInvitedAlready whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
+            [usersInvitedAlready includeKey:@"userTo"];
+            [usersInvitedAlready findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                
                 if (!error) {
                     
-                    for (EVNUser *user in objects) {
+                    NSLog(@"already invited users: %@", objects);
+                    
+                    for (EVNUser *activity in objects) {
+                        
                         //Save User IDs to Compare to Full List of Following
-                        [self.previouslyInvitedUsers addObject:user];
+                        [self.previouslyInvitedUsers addObject:activity[@"userTo"]];
                     }
                     
                     //Populate All Invited Users Array with the Existing Invites
                     [self.allInvitedUsers addObjectsFromArray:self.previouslyInvitedUsers];
                     
+                    NSLog(@"All Invited Users: %@", self.allInvitedUsers);
+                    
+                    self.collectionView.userInteractionEnabled = YES;
+
                     [self reloadCollectionView];
                     
                 }
-
+                
             }];
             
             self.navigationController.navigationBar.barTintColor = [UIColor orangeThemeColor];
@@ -229,8 +244,6 @@
         case VIEW_FOLLOWING_TO_INVITE: {
             
             //VC to Invite is Presented Modally - Thus Minor UI Tweaks are Needed to Nav Bar
-            //TODO: UTLITY Navigation Bar Font & Color
-            //NSDictionary *navFontDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
             self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
             
             //Bar Button Item Text Attributes
@@ -265,11 +278,9 @@
         
         case VIEW_EVENT_ATTENDERS: {
             
-            PFRelation *attendingRelation = [self.eventToViewAttenders relationForKey:@"attenders"];
-            PFQuery *queryForAttenders = [attendingRelation query];
-            [queryForAttenders findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            [self.eventToViewAttenders queryForAttendersWithCompletion:^(NSArray *attenders) {
                 
-                if (error || [objects count] == 0) {
+                if ([attenders count] == 0) {
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
                     noResultsView.headerText = @"No Attendees";
@@ -282,13 +293,15 @@
                     [self.view addSubview:noResultsView];
                     
                 } else {
-                    self.usersArray = objects;
+                    
+                    NSLog(@"attenders given to PeopleVC:  %@", attenders);
+                    
+                    self.usersArray = attenders;
                     [self reloadCollectionView];
                 }
                 
                 
             }];
-            
             
             break;
         }
@@ -312,6 +325,8 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
+    NSLog(@"Hereeeed");
+    
     static NSString *cellIdentifier = @"personCell";
     
     PersonCell *cell = (PersonCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
@@ -396,8 +411,10 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self determineSelectionStateForIndexPath:indexPath];
-    
+    if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
+        [self determineSelectionStateForIndexPath:indexPath];
+    }
+
 }
 
 
@@ -442,9 +459,7 @@
         if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
             
             [self removeUser:currentUser fromArray:self.allInvitedUsers];
-            
-            [self.usersAlreadyInvited removeObject:currentUser];
-            
+                        
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 
                 if (!error){
@@ -457,8 +472,6 @@
         } else {
             
             [self.allInvitedUsers addObject:currentUser];
-            
-            [self.usersAlreadyInvited addObject:currentUser];
             
             [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
     
@@ -500,6 +513,9 @@
 
 - (BOOL) isUser:(EVNUser *)user alreadyInArray:(NSMutableArray *) array  {
     
+    NSLog(@"usertesting: %@", user);
+    NSLog(@"arraytesting: %@", array);
+    
     for (EVNUser *userInArray in array) {
         if ([userInArray.objectId isEqualToString:user.objectId]) {
             return YES;
@@ -535,7 +551,7 @@
     PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
     [query whereKey:@"userFrom" equalTo:user];
     [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [query includeKey:@"to"];
+    [query includeKey:@"userTo"];
     [query orderByAscending:@"createdAt"];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {

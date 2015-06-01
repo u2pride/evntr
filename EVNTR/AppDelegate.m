@@ -238,7 +238,7 @@
         [queryForInvites whereKey:@"type" equalTo:[NSNumber numberWithInt:INVITE_ACTIVITY]];
         [queryForInvites whereKey:@"userTo" equalTo:[EVNUser currentUser]];
         [queryForInvites whereKey:@"createdAt" greaterThanOrEqualTo:lastFetchTime];
-        [queryForInvites includeKey:@"from"];
+        [queryForInvites includeKey:@"userFrom"];
         [queryForInvites findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             
             if (error) {

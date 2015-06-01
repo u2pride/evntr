@@ -312,15 +312,17 @@
     cell.eventTitle.text = eventForCell.title;
     
     cell.eventTypeLabel.text = [eventForCell eventTypeForHomeView];
-    cell.dateOfEventLabel.text = [eventForCell eventDateShortStyle];
-    cell.timeOfEventLabel.text = [eventForCell eventTimeShortStye];
+    cell.dateOfEventLabel.text = [eventForCell eventDateShortStyleAndVisible:NO];
+    cell.timeOfEventLabel.text = [eventForCell eventTimeShortStyeAndVisible:NO];
     
     cell.eventCoverImage.file = (PFFile *) eventForCell.coverPhoto;
     [cell.eventCoverImage loadInBackground];
     
-    [eventForCell totalNumberOfAttendersInBackground:^(int count) {
-        cell.attendersCountLabel.text = [NSString stringWithFormat:@"%d", count];
-    }];
+    if (eventForCell.numAttenders) {
+        cell.attendersCountLabel.text = [eventForCell.numAttenders stringValue];
+    } else {
+        cell.attendersCountLabel.text = @"0";
+    }
     
     CLLocation *locationOfEvent = [[CLLocation alloc] initWithLatitude:eventForCell.locationOfEvent.latitude longitude:eventForCell.locationOfEvent.longitude];
     CLLocation *locationCurrent = [[CLLocation alloc] initWithLatitude:self.currentUserLocation.latitude longitude:self.currentUserLocation.longitude];
@@ -464,7 +466,7 @@
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
         invitePeopleVC.userProfile = [EVNUser currentUser];
-        invitePeopleVC.usersAlreadyInvited = nil;
+        invitePeopleVC.eventForInvites = event;
         invitePeopleVC.delegate = self;
         
         UINavigationController *embedInThisVC = [[UINavigationController alloc] initWithRootViewController:invitePeopleVC];
