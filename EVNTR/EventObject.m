@@ -12,7 +12,7 @@
 
 @implementation EventObject
 
-@dynamic dateOfEvent, nameOfLocation, title, descriptionOfEvent, typeOfEvent, locationOfEvent, coverPhoto, eventImages, parent, numAttenders, numComments, numPictures;
+@dynamic dateOfEvent, nameOfLocation, title, descriptionOfEvent, typeOfEvent, locationOfEvent, coverPhoto, parent, numAttenders, numComments, numPictures;
 
 #pragma mark - Required For Subclassing PFUser
 

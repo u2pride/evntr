@@ -48,6 +48,8 @@ typedef enum {
 @property (nonatomic, strong) UILabel *blurMessage;
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
 
+@property (nonatomic, strong) UIView *tapToDismissView;
+
 @property (nonatomic) BOOL viewIsPulledUpForTextInput;
 @property (nonatomic) BOOL userIsAddingCustomPicture;
 
@@ -416,9 +418,20 @@ typedef enum {
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     
-    CGRect    screenRect;
-    CGRect    windowRect;
-    CGRect    viewRect;
+    self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.tapToDismissView.backgroundColor = [UIColor clearColor];
+    
+    [self.view addSubview:self.tapToDismissView];
+    
+    //Gesture Recognizer to Dismiss Keyboard on Tap in View
+    UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
+    tapToDismiss.cancelsTouchesInView = YES;
+    
+    [self.view addGestureRecognizer:tapToDismiss];
+    
+    CGRect screenRect;
+    CGRect windowRect;
+    CGRect viewRect;
     
     screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
@@ -435,6 +448,8 @@ typedef enum {
 
 
 - (void)keyboardWillHide:(NSNotification *)notification {
+    
+    [self.tapToDismissView removeFromSuperview];
     
     CGRect screenRect;
     CGRect windowRect;
@@ -463,6 +478,12 @@ typedef enum {
         [self.nameField resignFirstResponder];
     }
 }
+
+- (void)tapToDismissKeyboard {
+    
+    [self.view endEditing:YES];
+}
+
 
 
 #pragma mark - Helper Methods

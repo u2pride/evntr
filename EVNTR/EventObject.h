@@ -22,7 +22,6 @@
 @property (nonatomic, strong) NSNumber *numAttenders;
 @property (nonatomic, strong) NSNumber *numComments;
 
-@property (nonatomic, strong) NSArray *eventImages;
 @property (nonatomic, strong) NSString *nameOfLocation;
 @property (nonatomic, strong) PFFile *coverPhoto;
 @property (nonatomic, strong) EVNUser *parent;

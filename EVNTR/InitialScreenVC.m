@@ -30,6 +30,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (strong, nonatomic) IBOutlet UIButton *skipLoginButton;
 
+@property (nonatomic) BOOL isRunningValidCodeVersion;
+
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (strong, nonatomic) UIVisualEffectView *darkBlurEffectView;
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
@@ -50,6 +52,7 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
     //Initialization
+    self.isRunningValidCodeVersion = NO;
     self.loginButton.buttonColor = [UIColor orangeThemeColor];
     self.loginButton.titleText = @"Log In";
     self.loginButton.isRounded = NO;
@@ -99,42 +102,88 @@
 }
 
 
+- (void) checkAppVersion {
+    
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *versionString = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    
+    NSArray *numbersSeparated = [versionString componentsSeparatedByString:@"."];
+    
+    NSString *majorVersion = [[NSString alloc] init];
+    NSString *minorVersion = [[NSString alloc] init];
+    
+    if ([numbersSeparated count] >= 1) {
+        majorVersion = [numbersSeparated objectAtIndex:0];
+    }
+    
+    if ([numbersSeparated count] >= 2) {
+        minorVersion = [numbersSeparated objectAtIndex:1];
+    }
+    
+    [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion} block:^(NSString *result, NSError *error) {
+        
+        if ([result isEqualToString:@"true"]) {
+            self.isRunningValidCodeVersion = YES;
+            
+            if ([EVNUser currentUser]) {
+                
+                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                [standardDefaults setBool:NO forKey:kIsGuest];
+                [standardDefaults synchronize];
+                
+                //[self stopMoviePlayer];
+                [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+                
+            } else {
+                NSLog(@"View Will Appear - Start Movie");
+                
+                [self.moviePlayer play];
+            }
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Update Required" message:@"Looks like you are running an old version of the app, head over to the app store to grab the latest update." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+            [self.moviePlayer play];
+            
+        }
+        
+        
+        if (error) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Try Again" message:@"We're having trouble connecting to the internet." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            errorAlert.tag = 2;
+            
+            [errorAlert addButtonWithTitle:@"Retry"];
+            
+            [errorAlert show];
+            
+            [self.moviePlayer play];
+
+        }
+        
+        
+    }];
+
+    
+}
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+
+    if (alertView.tag == 2) {
+        [self checkAppVersion];
+    }
+
+}
+
+
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
     
-    NSLog(@"View Will Appear - Start Movie");
-    [self.moviePlayer play];
-    
-}
-
-
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    
-    if ([EVNUser currentUser]) {
-        
-        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-        [standardDefaults setBool:NO forKey:kIsGuest];
-        [standardDefaults synchronize];
-        
-        [self stopMoviePlayer];
-        [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
-        
-    }
-    
-
-    
-    
-    [PFCloud callFunctionInBackground:@"hello"
-                       withParameters:@{}
-                                block:^(NSString *result, NSError *error) {
-                                    if (!error) {
-                                        NSLog(@"result: %@", result);
-                                    }
-                                }];
-    
+    [self checkAppVersion];
 }
 
 
@@ -151,57 +200,64 @@
 
 - (IBAction)skipForNow:(id)sender {
     
-    [self leavingTransitionAnimations];
-    
-    [PFAnalytics trackEventInBackground:@"SkipForNow" block:nil];
-    
-    //Set isGuest Object
-    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    [standardDefaults setBool:YES forKey:kIsGuest];
-    [standardDefaults synchronize];
-    
-    GuestWelcomeVC *guestWelcomeVC = (GuestWelcomeVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"GuestWelcomeViewController"];
-    guestWelcomeVC.transitioningDelegate = self.customTransitionDelegate;
-    guestWelcomeVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    
-    [self presentViewController:guestWelcomeVC animated:YES completion:nil];
-                
+    if (self.isRunningValidCodeVersion) {
+        
+        [self leavingTransitionAnimations];
+        
+        [PFAnalytics trackEventInBackground:@"SkipForNow" block:nil];
+        
+        //Set isGuest Object
+        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+        [standardDefaults setBool:YES forKey:kIsGuest];
+        [standardDefaults synchronize];
+        
+        GuestWelcomeVC *guestWelcomeVC = (GuestWelcomeVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"GuestWelcomeViewController"];
+        guestWelcomeVC.transitioningDelegate = self.customTransitionDelegate;
+        guestWelcomeVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+        
+        [self presentViewController:guestWelcomeVC animated:YES completion:nil];
+        
+    }
     
 }
 
 - (void)continueIntoTheApp:(UIGestureRecognizer *)gr {
     
-    NSInteger tag = gr.view.tag;
-    
-    EVNButton *button = (EVNButton *)gr.view;
-    [button startedTask];
-    
-    [self leavingTransitionAnimations];
+    if (self.isRunningValidCodeVersion) {
+        
+        NSInteger tag = gr.view.tag;
+        
+        EVNButton *button = (EVNButton *)gr.view;
+        [button startedTask];
+        
+        [self leavingTransitionAnimations];
+        
+        //Login Button
+        if (tag == 1) {
+            
+            LogInVC *loginVC = (LogInVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
+            loginVC.transitioningDelegate = self.customTransitionDelegate;
+            loginVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+            loginVC.delegate = self;
+            
+            [self presentViewController:loginVC animated:YES completion:^{
+                [self.loginButton endedTask];
+            }];
+            
+        } else {
+            
+            SignUpVC *signUpVC = (SignUpVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SignUpViewController"];
+            signUpVC.transitioningDelegate = self.customTransitionDelegate;
+            signUpVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+            signUpVC.delegate = self;
+            
+            [self presentViewController:signUpVC animated:YES completion:^{
+                self.registerButton.isSelected = YES;
+                [self.registerButton endedTask];
+            }];
+            
+        }
 
-    //Login Button
-    if (tag == 1) {
-        
-        LogInVC *loginVC = (LogInVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"LoginViewController"];
-        loginVC.transitioningDelegate = self.customTransitionDelegate;
-        loginVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        loginVC.delegate = self;
-        
-        [self presentViewController:loginVC animated:YES completion:^{
-            [self.loginButton endedTask];
-        }];
-        
-    } else {
-        
-        SignUpVC *signUpVC = (SignUpVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SignUpViewController"];
-        signUpVC.transitioningDelegate = self.customTransitionDelegate;
-        signUpVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        signUpVC.delegate = self;
-        
-        [self presentViewController:signUpVC animated:YES completion:^{
-            self.registerButton.isSelected = YES;
-            [self.registerButton endedTask];
-        }];
-        
     }
     
 }

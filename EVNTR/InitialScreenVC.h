@@ -12,6 +12,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface InitialScreenVC : UIViewController <NewUserFacebookDelegate, NewUserFacebookSignUpDelegate>
+@interface InitialScreenVC : UIViewController <NewUserFacebookDelegate, NewUserFacebookSignUpDelegate, UIAlertViewDelegate>
 
 @end

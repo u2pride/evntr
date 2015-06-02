@@ -1749,6 +1749,7 @@ Click continue when you're ready.</string>
                             <constraint firstItem="ip8-o7-UOQ" firstAttribute="top" secondItem="G3o-Tf-H1k" secondAttribute="bottom" constant="9" id="hjy-HO-Od8"/>
                             <constraint firstItem="G3o-Tf-H1k" firstAttribute="centerX" secondItem="uYO-wh-CD7" secondAttribute="centerX" id="jSp-dU-Vm7"/>
                             <constraint firstItem="ip8-o7-UOQ" firstAttribute="top" secondItem="uYO-wh-CD7" secondAttribute="bottom" constant="49" id="jhS-IF-BBA"/>
+                            <constraint firstItem="uYO-wh-CD7" firstAttribute="top" secondItem="0vx-fy-rZa" secondAttribute="bottom" constant="70" id="lnm-AH-XKh"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ekM-Zk-pWu" secondAttribute="trailing" constant="16" id="sCN-qY-wqB"/>
                             <constraint firstItem="ekM-Zk-pWu" firstAttribute="top" secondItem="ip8-o7-UOQ" secondAttribute="bottom" constant="27" id="tlV-7r-hAw"/>
                             <constraint firstItem="G3o-Tf-H1k" firstAttribute="top" secondItem="uYO-wh-CD7" secondAttribute="bottom" constant="15" id="wnU-m8-feq"/>
@@ -1759,6 +1760,7 @@ Click continue when you're ready.</string>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="8hN-l2-Xbd"/>
+                                <exclude reference="lnm-AH-XKh"/>
                                 <exclude reference="2DL-hh-PIY"/>
                                 <exclude reference="jhS-IF-BBA"/>
                                 <exclude reference="wnU-m8-feq"/>
@@ -3625,8 +3627,8 @@ Click continue when you're ready.</string>
         <image name="takePicture" width="450" height="450"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="hsO-YW-5Lp"/>
-        <segue reference="5Up-I2-E1D"/>
+        <segue reference="vng-gU-3GQ"/>
+        <segue reference="BOp-e6-wrB"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

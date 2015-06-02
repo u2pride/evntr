@@ -405,10 +405,14 @@
         self.milesAwayLabel.alpha = 1.0;
 
     }];
+
     
     if (isLocationVisible) {
         MKCoordinateRegion region = MKCoordinateRegionMake(self.eventLocation.coordinate, MKCoordinateSpanMake(0.05, 0.05));
         [self.mapView setRegion:region animated:YES];
+        if (self.timerForRandomize) {
+            [self.timerForRandomize invalidate];
+        }
     } else {
         [self randomizeLocation];
         self.timerForRandomize = [NSTimer scheduledTimerWithTimeInterval:4.0 target:self selector:@selector(randomizeLocation) userInfo:nil repeats:YES];

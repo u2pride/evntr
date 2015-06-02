@@ -449,9 +449,10 @@
     
     [self dismissViewControllerAnimated:YES completion:nil];
     
-    [self.eventForInvites inviteUsers:selectedPeople completion:nil];
-    //[self.eventForInvites saveInBackgroundWithBlock:nil];
-
+    [self.eventForInvites inviteUsers:selectedPeople completion:^(BOOL success) {
+        
+    }];
+    
 }
 
 

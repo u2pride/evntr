@@ -152,12 +152,7 @@
     
     [PFAnalytics trackEventInBackground:@"ViewEvent" block:nil];
     
-    if (self.shouldRestoreNavBar) {
-        //Transparent Navigation Bar - Store Current State to Restore
-        //self.navbarShadow = self.navigationController.navigationBar.shadowImage;
-        //self.navBarBackground = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
-
-    } else {
+    if (!self.shouldRestoreNavBar) {
         self.shouldRestoreNavBar = YES;
     }
 
@@ -193,6 +188,7 @@
         self.viewAttending.alpha = 0.0;
         
     }
+    
 }
 
 
@@ -220,213 +216,218 @@
     
     if (self.needsInfoUpdate) {
         
-        [self.detailsLoadingView startAnimating];
+        [self updateDetailView];
         
-        [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
-        
-        ///////////////////////////
-        //Configuring Basic Details
-        ///////////////////////////
-        
-        CGRect originalFrame = self.eventDescription.frame;
-        
-        self.eventTitle.text = self.event.title;
-        self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
-        self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
-        self.eventDescription.text = self.event.descriptionOfEvent;
-        self.eventDescription.textAlignment = NSTextAlignmentCenter;
-        self.eventDescription.numberOfLines = 0;
-        
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        paragraphStyle.hyphenationFactor = 0.5f;
-        paragraphStyle.alignment = NSTextAlignmentCenter;
-        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.event.descriptionOfEvent attributes:@{ NSParagraphStyleAttributeName : paragraphStyle }];
-        self.eventDescription.attributedText = attributedString;
-        
-        CGRect resizedFrame = self.eventDescription.frame;
-        self.eventDescription.frame = CGRectMake(resizedFrame.origin.x, resizedFrame.origin.y, originalFrame.size.width, resizedFrame.size.height);
-        
-        [self.event.coverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-            
-            if (!error) {
-                UIImage *coverImage = [UIImage imageWithData:data];
-                [self setBackgroundOfPictureSectionWithImage:coverImage];
-            }
-
-            [self networkCallComplete];
-        }];
-        
-        [self setupCreatorComponent];
-        [self setupMapComponent];
-        
-        ///////////////////////
-        //Find Users on Standby
-        ///////////////////////
-        int eventType = [self.event.typeOfEvent intValue];
-
-        if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
-            
-            [self.event queryForStandbyUsersWithIncludeKey:nil completion:^(NSError *error, NSArray *users) {
-                
-                if (error || [users count] == 0) {
-                    self.usersOnStandby = nil;
-                } else {
-                    self.usersOnStandby = users;
-                }
-                
-                [self.standbyUsersCollectionView reloadData];
-                
-                NSLog(@"Num2");
-                [self networkCallComplete]; //2
-                
-            }];
-            
-        } else {
-            //collection view will see 0 when self.usersOnStandby.count is run
-            self.usersOnStandby = nil;
-        }
-        
-        ////////////////////////////
-        //Configuring Action Buttons
-        ////////////////////////////
-        
-        if (self.isGuestUser) {
-            
-            self.isCurrentUserAttending = NO;
-            self.isCurrentUsersEvent = NO;
-            self.standbyUsersCollectionView.allowsSelection = NO;
-            
-            self.rsvpStatusButton.titleText = @"Sign Up Required";
-            self.viewAttending.text = @"Sign Up to View Attending Users";
-            [self.inviteButton setTitle:@"Sign Up to Attend" forState:UIControlStateNormal];
-            
-            int eventType = [self.event.typeOfEvent intValue];
-            if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
-                self.standbyUsersCollectionView.hidden = YES;
-                self.standbyListTitle.hidden = YES;
-            }
-            
-            [self networkCallComplete]; //3
-            
-        } else {
-            
-            int eventType = [self.event.typeOfEvent intValue];
-            //NSString *userObjectId = [EVNUser currentUser].objectId;
-            
-            switch (eventType) {
-                case PUBLIC_EVENT_TYPE: {
-                    
-                    [self.event queryRSVPForUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
-                        
-                        NSLog(@"Returned with error: %d", (int) error);
-                        if (!error) {
-                            if (!self.isCurrentUsersEvent) {
-                                self.isCurrentUserAttending = isAttending;
-                                self.rsvpStatusButton.titleText = status;
-                                
-                                if (isAttending) {
-                                    self.rsvpStatusButton.isSelected = YES;
-                                }
-                            }
-                        } else {
-                            self.rsvpStatusButton.titleText = @"";
-                        }
-                
-                        NSLog(@"Num3");
-                        [self networkCallComplete]; //3
-                        
-                    }];
-                    
-                    //Hide Collection View for Standby Users
-                    self.standbyUsersCollectionView.hidden = YES;
-                    self.standbyListTitle.hidden = YES;
-                    
-                    break;
-                }
-                case PRIVATE_EVENT_TYPE: {
-                    
-                    [self.event queryRSVPForUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
-                        
-                        if (!error) {
-                            if (!self.isCurrentUsersEvent) {
-                                self.isCurrentUserAttending = isAttending;
-                                self.rsvpStatusButton.titleText = status;
-                                
-                                if (isAttending) {
-                                    self.rsvpStatusButton.isSelected = YES;
-                                }
-                            }
-                        } else {
-                            self.rsvpStatusButton.titleText = @"";
-                        }
-                        
-                        NSLog(@"Num3");
-                        [self networkCallComplete]; //3
-                        
-                    }];
-                    
-                    //Hide Collection View for Standby Users
-                    self.standbyUsersCollectionView.hidden = YES;
-                    self.standbyListTitle.hidden = YES;
-                    
-                    break;
-                }
-                case PUBLIC_APPROVED_EVENT_TYPE: {
-                    
-                    self.isPublicApproved = YES;
-                    
-                    NSLog(@"CHECKPOINT 0");
-                    
-                    //Determine the state of the user with the event
-                    // Hasn't requested Accesss - Requested Access - Granted Acccess
-                    
-                    [self.event queryApprovalStatusOfUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
-                        
-                        if (!error) {
-                            
-                            if (!self.isCurrentUsersEvent) {
-                                
-                                self.isCurrentUserAttending = isAttending;
-                                self.rsvpStatusButton.titleText = status;
-                                
-                                if ([status isEqualToString:kAttendingEvent] || [status isEqualToString:kRSVPedForEvent]) {
-                                    self.rsvpStatusButton.isSelected = YES;
-                                    //self.rsvpStatusButton.isStateless = YES;
-                                } else {
-                                    self.rsvpStatusButton.isSelected = NO;
-                                }
-                                
-                            }
-
-                        } else {
-                            
-                            self.isCurrentUserAttending = NO;
-                            self.rsvpStatusButton.titleText = @"";
-                        }
-                        
-                        NSLog(@"Num3");
-                        [self networkCallComplete]; //3
-                        
-                    }];
-                
-                    break;
-                }
-                    
-                default: {
-                    break;
-                }
-            }
-        }
-       
-        self.needsInfoUpdate = NO;
-    } else {
-        //empty.
     }
     
 }
 
 
 #pragma mark - Helper Setup Methods
+
+- (void) updateDetailView {
+    
+    [self.detailsLoadingView startAnimating];
+    
+    [self setBackgroundOfPictureSectionWithImage:[UIImage imageNamed:@"EventDefault"]];
+    
+    ///////////////////////////
+    //Configuring Basic Details
+    ///////////////////////////
+    
+    CGRect originalFrame = self.eventDescription.frame;
+    
+    self.eventTitle.text = self.event.title;
+    self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
+    self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
+    self.eventDescription.text = self.event.descriptionOfEvent;
+    self.eventDescription.textAlignment = NSTextAlignmentCenter;
+    self.eventDescription.numberOfLines = 0;
+    
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    paragraphStyle.hyphenationFactor = 0.5f;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.event.descriptionOfEvent attributes:@{ NSParagraphStyleAttributeName : paragraphStyle }];
+    self.eventDescription.attributedText = attributedString;
+    
+    CGRect resizedFrame = self.eventDescription.frame;
+    self.eventDescription.frame = CGRectMake(resizedFrame.origin.x, resizedFrame.origin.y, originalFrame.size.width, resizedFrame.size.height);
+    
+    [self.event.coverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+        
+        if (!error) {
+            UIImage *coverImage = [UIImage imageWithData:data];
+            [self setBackgroundOfPictureSectionWithImage:coverImage];
+        }
+        
+        [self networkCallComplete];
+    }];
+    
+    [self setupCreatorComponent];
+    [self setupMapComponent];
+    
+    ///////////////////////
+    //Find Users on Standby
+    ///////////////////////
+    int eventType = [self.event.typeOfEvent intValue];
+    
+    if (eventType == PUBLIC_APPROVED_EVENT_TYPE) {
+        
+        [self.event queryForStandbyUsersWithIncludeKey:nil completion:^(NSError *error, NSArray *users) {
+            
+            if (error || [users count] == 0) {
+                self.usersOnStandby = nil;
+            } else {
+                self.usersOnStandby = users;
+            }
+            
+            [self.standbyUsersCollectionView reloadData];
+            
+            NSLog(@"Num2");
+            [self networkCallComplete]; //2
+            
+        }];
+        
+    } else {
+        //collection view will see 0 when self.usersOnStandby.count is run
+        self.usersOnStandby = nil;
+    }
+    
+    ////////////////////////////
+    //Configuring Action Buttons
+    ////////////////////////////
+    
+    if (self.isGuestUser) {
+        
+        self.isCurrentUserAttending = NO;
+        self.isCurrentUsersEvent = NO;
+        self.standbyUsersCollectionView.allowsSelection = NO;
+        
+        self.rsvpStatusButton.titleText = @"Sign Up Required";
+        self.viewAttending.text = @"Sign Up to View Attending Users";
+        [self.inviteButton setTitle:@"Sign Up to Attend" forState:UIControlStateNormal];
+        
+        int eventType = [self.event.typeOfEvent intValue];
+        if (eventType != PUBLIC_APPROVED_EVENT_TYPE) {
+            self.standbyUsersCollectionView.hidden = YES;
+            self.standbyListTitle.hidden = YES;
+        }
+        
+        [self networkCallComplete]; //3
+        
+    } else {
+        
+        int eventType = [self.event.typeOfEvent intValue];
+        //NSString *userObjectId = [EVNUser currentUser].objectId;
+        
+        switch (eventType) {
+            case PUBLIC_EVENT_TYPE: {
+                
+                [self.event queryRSVPForUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
+                    
+                    NSLog(@"Returned with error: %d", (int) error);
+                    if (!error) {
+                        if (!self.isCurrentUsersEvent) {
+                            self.isCurrentUserAttending = isAttending;
+                            self.rsvpStatusButton.titleText = status;
+                            
+                            if (isAttending) {
+                                self.rsvpStatusButton.isSelected = YES;
+                            }
+                        }
+                    } else {
+                        self.rsvpStatusButton.titleText = @"";
+                    }
+                    
+                    NSLog(@"Num3");
+                    [self networkCallComplete]; //3
+                    
+                }];
+                
+                //Hide Collection View for Standby Users
+                self.standbyUsersCollectionView.hidden = YES;
+                self.standbyListTitle.hidden = YES;
+                
+                break;
+            }
+            case PRIVATE_EVENT_TYPE: {
+                
+                [self.event queryRSVPForUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
+                    
+                    if (!error) {
+                        if (!self.isCurrentUsersEvent) {
+                            self.isCurrentUserAttending = isAttending;
+                            self.rsvpStatusButton.titleText = status;
+                            
+                            if (isAttending) {
+                                self.rsvpStatusButton.isSelected = YES;
+                            }
+                        }
+                    } else {
+                        self.rsvpStatusButton.titleText = @"";
+                    }
+                    
+                    NSLog(@"Num3");
+                    [self networkCallComplete]; //3
+                    
+                }];
+                
+                //Hide Collection View for Standby Users
+                self.standbyUsersCollectionView.hidden = YES;
+                self.standbyListTitle.hidden = YES;
+                
+                break;
+            }
+            case PUBLIC_APPROVED_EVENT_TYPE: {
+                
+                self.isPublicApproved = YES;
+                
+                NSLog(@"CHECKPOINT 0");
+                
+                //Determine the state of the user with the event
+                // Hasn't requested Accesss - Requested Access - Granted Acccess
+                
+                [self.event queryApprovalStatusOfUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
+                    
+                    if (!error) {
+                        
+                        if (!self.isCurrentUsersEvent) {
+                            
+                            self.isCurrentUserAttending = isAttending;
+                            self.rsvpStatusButton.titleText = status;
+                            
+                            if ([status isEqualToString:kAttendingEvent] || [status isEqualToString:kRSVPedForEvent]) {
+                                self.rsvpStatusButton.isSelected = YES;
+                                //self.rsvpStatusButton.isStateless = YES;
+                            } else {
+                                self.rsvpStatusButton.isSelected = NO;
+                            }
+                            
+                        }
+                        
+                    } else {
+                        
+                        self.isCurrentUserAttending = NO;
+                        self.rsvpStatusButton.titleText = @"";
+                    }
+                    
+                    NSLog(@"Num3");
+                    [self networkCallComplete]; //3
+                    
+                }];
+                
+                break;
+            }
+                
+            default: {
+                break;
+            }
+        }
+    }
+    
+    self.needsInfoUpdate = NO;
+    
+}
 
 - (void) setupStaticEventDetailComponents {
     
@@ -612,7 +613,9 @@
 - (void)setIsCurrentUserAttending:(BOOL)isCurrentUserAttending {
     
     self.commentsController.allowAddingComments = isCurrentUserAttending;
+
     _isCurrentUserAttending = isCurrentUserAttending;
+    
 }
 
 - (void) setIsCurrentUsersEvent:(BOOL)isCurrentUsersEvent {
@@ -635,7 +638,15 @@
     
     if (numNetworkCallsComplete == 5) {
         
-        [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recheckPublicApprovedAccess) userInfo:nil repeats:NO];
+        //[NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(recheckPublicApprovedAccessDueToNewRSVP:) userInfo:nil repeats:NO];
+        
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            
+            [self recheckPublicApprovedAccessDueToNewRSVP:NO];
+            
+        });
+        
         
         [UIView animateWithDuration:1.0 animations:^{
             
@@ -651,7 +662,7 @@
     
 }
 
-- (void) recheckPublicApprovedAccess {
+- (void) recheckPublicApprovedAccessDueToNewRSVP:(BOOL) newRSVP {
     
     //unhide all important details
     // map location - address and distance - use function [map finishedWithDetails] - loading before this finishes.
@@ -660,7 +671,8 @@
     
     //keep these all disabled until loading is finished.
     //currently:  the following things are what contribute to the event details load:
-    
+
+    NSLog(@"New RSVP: %@", [NSNumber numberWithBool:newRSVP]);
 
     NSLog(@"Rechecking Pa Access - %@ and %@ and %@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending], [NSNumber numberWithBool:self.isCurrentUsersEvent], [NSNumber numberWithBool:self.isGuestUser]);
     
@@ -682,6 +694,13 @@
     } else {
         
         NSLog(@"In the right place");
+        
+        if (newRSVP) {
+            NSLog(@"resetup map component");
+            self.transparentTouchView.hidden = NO;
+
+            [self setupMapComponent];
+        }
         
         self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
         self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
@@ -946,6 +965,8 @@
                 }
                 
                 [self.rsvpStatusButton endedTask];
+                [self recheckPublicApprovedAccessDueToNewRSVP:YES];
+
                 
             }];
 
@@ -977,6 +998,8 @@
                 }
                 
                 [self.rsvpStatusButton endedTask];
+                [self recheckPublicApprovedAccessDueToNewRSVP:YES];
+
                 
             }];
             
@@ -1131,7 +1154,7 @@
         [strongDelegate updateEventCellAfterEdit];
     }
     
-    [self recheckPublicApprovedAccess];
+    [self recheckPublicApprovedAccessDueToNewRSVP:NO];
     
     [self.navigationController popViewControllerAnimated:YES];
 
@@ -1154,10 +1177,6 @@
     [self.event inviteUsers:selectedPeople completion:^(BOOL success) {
 
     }];
-    
-    //TODO - Do we need this??
-    //[self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-    //}];
 
 }
 
