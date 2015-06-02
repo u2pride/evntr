@@ -789,9 +789,7 @@
 }
 
 - (void)grantAccess:(id)sender {
-    
-    NSLog(@"GRANT ACCESS FUNCTION");
-    
+        
     EVNButtonExtended *grantButton = (EVNButtonExtended *)sender;
     [grantButton startedTask];
     

@@ -228,7 +228,7 @@
                                 </constraints>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="EvntrLogo" translatesAutoresizingMaskIntoConstraints="NO" id="SHt-a4-4iC">
-                                <rect key="frame" x="40" y="35" width="240" height="240"/>
+                                <rect key="frame" x="40" y="14" width="240" height="240"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="SHt-a4-4iC" secondAttribute="height" multiplier="1:1" id="Qeo-wx-HOF"/>
                                 </constraints>
@@ -255,9 +255,11 @@
                             <constraint firstItem="ewD-eX-OyW" firstAttribute="leading" secondItem="Ur4-U2-J7u" secondAttribute="trailing" constant="10" id="qPQ-io-T0r"/>
                             <constraint firstAttribute="centerY" secondItem="MTQ-bR-0Ma" secondAttribute="centerY" id="rfc-yu-3T6"/>
                             <constraint firstItem="SHt-a4-4iC" firstAttribute="leading" secondItem="MTQ-bR-0Ma" secondAttribute="trailing" constant="-280" id="xyr-E4-U78"/>
+                            <constraint firstAttribute="centerY" secondItem="SHt-a4-4iC" secondAttribute="centerY" constant="150" id="z9g-mp-eQu"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="GN3-8y-OlQ"/>
                                 <exclude reference="njz-hJ-kGk"/>
                                 <exclude reference="xyr-E4-U78"/>
                                 <exclude reference="2Or-Wv-w3s"/>
@@ -437,7 +439,7 @@ Click continue when you're ready.</string>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yQ9-Gj-eTl">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yQ9-Gj-eTl">
                                 <rect key="frame" x="36" y="174" width="248" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="JlR-mP-pV3"/>
@@ -455,7 +457,7 @@ Click continue when you're ready.</string>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eca-y7-Av6">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eca-y7-Av6">
                                 <rect key="frame" x="36" y="250" width="248" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="OcH-4w-OQ6"/>
@@ -473,7 +475,7 @@ Click continue when you're ready.</string>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QoT-E3-pSN">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QoT-E3-pSN">
                                 <rect key="frame" x="36" y="326" width="248" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="OdY-UJ-i6h"/>
@@ -1925,13 +1927,13 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="je7-RV-7pX">
-                                <rect key="frame" x="150" y="399" width="120" height="70"/>
+                                <rect key="frame" x="175" y="399" width="70" height="70"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="120" id="0Va-s4-2F8"/>
+                                    <constraint firstAttribute="width" constant="70" id="0Va-s4-2F8"/>
                                     <constraint firstAttribute="height" constant="70" id="kuI-2J-iPa"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="45"/>
-                                <state key="normal" title="1000">
+                                <state key="normal" title="30">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -3627,8 +3629,8 @@ Click continue when you're ready.</string>
         <image name="takePicture" width="450" height="450"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="vng-gU-3GQ"/>
-        <segue reference="BOp-e6-wrB"/>
+        <segue reference="0HK-TD-lr3"/>
+        <segue reference="5Up-I2-E1D"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

@@ -488,8 +488,7 @@
 #pragma mark - Event Editing Delegates
 
 - (void) eventEditingComplete:(EventObject *)updatedEvent {
-    NSLog(@"Event Editing Complete");
-        
+    
     id<EventModalProtocol> strongDelegate = self.delegate;
     
     if ([strongDelegate respondsToSelector:@selector(completedEventEditing:)]) {
@@ -500,7 +499,6 @@
 }
 
 - (void) eventEditingCanceled {
-    NSLog(@"Event Editing Canceled");
     
     id<EventModalProtocol> strongDelegate = self.delegate;
     

@@ -48,8 +48,6 @@ typedef enum {
 @property (nonatomic, strong) UILabel *blurMessage;
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
 
-@property (nonatomic, strong) UIView *tapToDismissView;
-
 @property (nonatomic) BOOL viewIsPulledUpForTextInput;
 @property (nonatomic) BOOL userIsAddingCustomPicture;
 
@@ -78,6 +76,11 @@ typedef enum {
     self.continueButton.titleText = @"Continue";
     self.continueButton.isSelected = YES;
     self.continueButton.hasBorder = NO;
+    
+    //Labels
+    self.usernameField.textColor = [UIColor blackColor];
+    self.emailField.textColor = [UIColor blackColor];
+    self.nameField.textColor = [UIColor blackColor];
     
     //Actions
     UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePhoto)];
@@ -417,18 +420,7 @@ typedef enum {
 
 
 - (void)keyboardWillShow:(NSNotification *)notification {
-    
-    self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
-    self.tapToDismissView.backgroundColor = [UIColor clearColor];
-    
-    [self.view addSubview:self.tapToDismissView];
-    
-    //Gesture Recognizer to Dismiss Keyboard on Tap in View
-    UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
-    tapToDismiss.cancelsTouchesInView = YES;
-    
-    [self.view addGestureRecognizer:tapToDismiss];
-    
+
     CGRect screenRect;
     CGRect windowRect;
     CGRect viewRect;
@@ -448,8 +440,6 @@ typedef enum {
 
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    
-    [self.tapToDismissView removeFromSuperview];
     
     CGRect screenRect;
     CGRect windowRect;
@@ -472,14 +462,13 @@ typedef enum {
 //Tap Dismisses Keyboard
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     
+    /*
     if (self.viewIsPulledUpForTextInput) {
         [self.usernameField resignFirstResponder];
         [self.emailField resignFirstResponder];
         [self.nameField resignFirstResponder];
     }
-}
-
-- (void)tapToDismissKeyboard {
+     */
     
     [self.view endEditing:YES];
 }

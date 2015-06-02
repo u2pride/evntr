@@ -581,7 +581,6 @@ const int NUMBER_OF_PLACES_RESULTS = 10;
     
     for (int i = 0; i < numberOfResults; i++) {
         
-        
         NSDictionary *place = [places objectAtIndex:i];
         NSDictionary *geo = [place objectForKey:@"geometry"];
         NSDictionary *location = [geo objectForKey:@"location"];

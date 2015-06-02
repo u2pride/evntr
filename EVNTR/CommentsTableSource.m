@@ -161,7 +161,7 @@ static NSString *const cellIdentifier = @"commentsCell";
     EVNUser *commentParent = (EVNUser *) [comment objectForKey:@"commentParent"];
     
     NSString *commentString = comment[@"commentText"];
-    NSString *usernameComponent = [commentParent.username stringByAppendingString:@": "];
+    NSString *usernameComponent = [commentParent.username stringByAppendingString:@":  "];
     
     commentCell.commentTextLabel.attributedText = [self buildAttributedCommentWithText:commentString andUsername:usernameComponent];
 

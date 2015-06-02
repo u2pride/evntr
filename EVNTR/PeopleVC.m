@@ -71,9 +71,7 @@
             break;
         }
         case VIEW_FOLLOWING_TO_INVITE: {
-            
-            NSLog(@"ViewFollowingToInivte");
-            
+                        
             self.collectionView.allowsMultipleSelection = YES;
             
             // 2 - {from} invited {to} to {activityContent}
@@ -91,8 +89,6 @@
                 
                 if (!error) {
                     
-                    NSLog(@"already invited users: %@", objects);
-                    
                     for (EVNUser *activity in objects) {
                         
                         //Save User IDs to Compare to Full List of Following
@@ -101,8 +97,6 @@
                     
                     //Populate All Invited Users Array with the Existing Invites
                     [self.allInvitedUsers addObjectsFromArray:self.previouslyInvitedUsers];
-                    
-                    NSLog(@"All Invited Users: %@", self.allInvitedUsers);
                     
                     self.collectionView.userInteractionEnabled = YES;
 
@@ -294,8 +288,6 @@
                     
                 } else {
                     
-                    NSLog(@"attenders given to PeopleVC:  %@", attenders);
-                    
                     self.usersArray = attenders;
                     [self reloadCollectionView];
                 }
@@ -324,8 +316,6 @@
 
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSLog(@"Hereeeed");
     
     static NSString *cellIdentifier = @"personCell";
     
@@ -513,9 +503,6 @@
 
 - (BOOL) isUser:(EVNUser *)user alreadyInArray:(NSMutableArray *) array  {
     
-    NSLog(@"usertesting: %@", user);
-    NSLog(@"arraytesting: %@", array);
-    
     for (EVNUser *userInArray in array) {
         if ([userInArray.objectId isEqualToString:user.objectId]) {
             return YES;
@@ -570,7 +557,7 @@
                     }
                     
                 } else {
-                    NSLog(@"Developer Note:  Duplicate attendee found.");
+                    //Duplicate Attendee Found
                 }
             }
         }

@@ -177,12 +177,12 @@
                 alertMessage = @"Your current session is no longer valid. Please log in again.";
                 
             } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-                NSLog(@"user cancelled login");
+                //NSLog(@"user cancelled login");
                 
             } else {
                 alertTitle  = @"Something went wrong";
                 alertMessage = @"Please try again later.";
-                NSLog(@"Unexpected error:%@", error);
+                //NSLog(@"Unexpected error:%@", error);
             }
             
             if (alertMessage) {
@@ -248,9 +248,6 @@
             [activityIndicator stopAnimating];
             
             NSDictionary *userData = (NSDictionary *)result;
-            
-            NSLog(@"UserFacebookData: %@", userData);
-            
             
             NSMutableDictionary *userDetailsForFBRegistration = [[NSMutableDictionary alloc] init];
             

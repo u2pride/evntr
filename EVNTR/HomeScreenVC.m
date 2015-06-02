@@ -96,7 +96,6 @@
             break;
         }
         case CURRENT_USER_EVENTS: {
-            NSLog(@"EventsView - My Events");
             [self.navigationItem setTitle:@"My Events"];
             self.navigationItem.rightBarButtonItems = nil;
             self.navigationItem.leftBarButtonItems = nil;
@@ -104,7 +103,6 @@
             break;
         }
         case OTHER_USER_EVENTS: {
-            NSLog(@"EventsView - User Events");
             [self.navigationItem setTitle:@"User's Public Events"];
             self.navigationItem.rightBarButtonItems = nil;
             self.navigationItem.leftBarButtonItems = nil;
@@ -204,6 +202,15 @@
     //Wait Until A Location Is Found
     if (!self.currentUserLocation) {
         [self performSelector:@selector(loadObjects) withObject:nil afterDelay:0.1];
+        
+        if (!self.noResultsView) {
+            [self showNoResultsView];
+        }
+        
+        self.noResultsView.headerText = @"Where are you?";
+        self.noResultsView.subHeaderText = @"Looks like we can't find you.  Let me press a few buttons and see if that fixes it.  If not, go ahead and restart the app";
+        self.noResultsView.actionButton.hidden = YES;
+        
         return nil;
     }
     
@@ -219,14 +226,14 @@
             
             NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
             [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
-            [eventsQuery orderByDescending:@"updatedAt"];
+            [eventsQuery orderByDescending:@"createdAt"];
             
             break;
         }
         case CURRENT_USER_EVENTS: {
             
             [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
-            [eventsQuery orderByDescending:@"updatedAt"];
+            [eventsQuery orderByDescending:@"createdAt"];
             
             break;
         }
@@ -235,7 +242,7 @@
             [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
             NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
             [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
-            [eventsQuery orderByDescending:@"updatedAt"];
+            [eventsQuery orderByDescending:@"createdAt"];
             
             break;
         }

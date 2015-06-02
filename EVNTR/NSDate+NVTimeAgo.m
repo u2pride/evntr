@@ -286,7 +286,7 @@
 /*
     Test the format
     TODO: Implement unit tests
- */
+
 + (void)runTests
 {
     NSLog(@"1 Second in the future: %@\n", [[NSDate dateWithTimeIntervalSinceNow:1] formattedAsTimeAgo]);
@@ -309,7 +309,7 @@
     NSLog(@"1 Year - 1 second: %@\n", [[NSDate dateWithTimeIntervalSinceNow:-YEAR+1] formattedAsTimeAgo]);
     NSLog(@"1 Year + 1 second: %@\n", [[NSDate dateWithTimeIntervalSinceNow:-YEAR+1] formattedAsTimeAgo]);
 }
-/*
+
  =======================================================================
  */
 

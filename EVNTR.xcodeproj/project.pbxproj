@@ -733,6 +733,7 @@
 				A41562BD1A767D3A00565BB6 /* Sources */,
 				A41562BE1A767D3A00565BB6 /* Frameworks */,
 				A41562BF1A767D3A00565BB6 /* Resources */,
+				A45534981B1DEC90001F8C34 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -829,6 +830,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A45534981B1DEC90001F8C34 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=/usr/local/bin:$PATH\ncd /Users/U2Pride/Documents/iOS\\ Development/Evntr/EVNTR/parse\n\nparse symbols -p \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A41562BD1A767D3A00565BB6 /* Sources */ = {

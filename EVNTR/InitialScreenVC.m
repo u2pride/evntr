@@ -102,89 +102,13 @@
 }
 
 
-- (void) checkAppVersion {
-    
-    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-    NSString *versionString = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
-    
-    NSArray *numbersSeparated = [versionString componentsSeparatedByString:@"."];
-    
-    NSString *majorVersion = [[NSString alloc] init];
-    NSString *minorVersion = [[NSString alloc] init];
-    
-    if ([numbersSeparated count] >= 1) {
-        majorVersion = [numbersSeparated objectAtIndex:0];
-    }
-    
-    if ([numbersSeparated count] >= 2) {
-        minorVersion = [numbersSeparated objectAtIndex:1];
-    }
-    
-    [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion} block:^(NSString *result, NSError *error) {
-        
-        if ([result isEqualToString:@"true"]) {
-            self.isRunningValidCodeVersion = YES;
-            
-            if ([EVNUser currentUser]) {
-                
-                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-                [standardDefaults setBool:NO forKey:kIsGuest];
-                [standardDefaults synchronize];
-                
-                //[self stopMoviePlayer];
-                [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
-                
-            } else {
-                NSLog(@"View Will Appear - Start Movie");
-                
-                [self.moviePlayer play];
-            }
-        } else {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Update Required" message:@"Looks like you are running an old version of the app, head over to the app store to grab the latest update." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-            [self.moviePlayer play];
-            
-        }
-        
-        
-        if (error) {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Try Again" message:@"We're having trouble connecting to the internet." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-            
-            errorAlert.tag = 2;
-            
-            [errorAlert addButtonWithTitle:@"Retry"];
-            
-            [errorAlert show];
-            
-            [self.moviePlayer play];
-
-        }
-        
-        
-    }];
-
-    
-}
-
-- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-
-    if (alertView.tag == 2) {
-        [self checkAppVersion];
-    }
-
-}
-
-
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
     
     [self checkAppVersion];
 }
+
 
 
 - (void) viewDidDisappear:(BOOL)animated {
@@ -291,6 +215,9 @@
     
     NSLog(@"Back from logout unwind segue");
     NSLog(@"-- REGISTER for App Enters Foreground and Movie Finished Notifications - Should not be registered for them right now");
+    
+    [self checkAppVersion];
+    
     [self registerForNotifications];
     
     [self.moviePlayer play];
@@ -345,6 +272,15 @@
     
 }
 
+#pragma mark - UIAlertView Delegate
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    if (alertView.tag == 2) {
+        [self checkAppVersion];
+    }
+    
+}
 
 #pragma mark - Facebook Delegate Methods
 
@@ -400,6 +336,9 @@
 
 - (void)backFromForeground {
     NSLog(@"Play MoviePlayer - Back from foreground notification or restart notificaiton");
+    
+    [self checkAppVersion];
+    
     [self.moviePlayer play];
 
     //Reregister for Everthing except the foreground notification
@@ -449,6 +388,76 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 
+}
+
+
+- (void) checkAppVersion {
+    
+    NSLog(@"Check App Version Code Run");
+    
+    self.isRunningValidCodeVersion = NO;
+    
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *versionString = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    
+    NSArray *numbersSeparated = [versionString componentsSeparatedByString:@"."];
+    
+    NSString *majorVersion = [[NSString alloc] init];
+    NSString *minorVersion = [[NSString alloc] init];
+    
+    if ([numbersSeparated count] >= 1) {
+        majorVersion = [numbersSeparated objectAtIndex:0];
+    }
+    
+    if ([numbersSeparated count] >= 2) {
+        minorVersion = [numbersSeparated objectAtIndex:1];
+    }
+    
+    [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion} block:^(NSString *result, NSError *error) {
+        
+        if ([result isEqualToString:@"true"]) {
+            self.isRunningValidCodeVersion = YES;
+            
+            if ([EVNUser currentUser]) {
+                
+                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                [standardDefaults setBool:NO forKey:kIsGuest];
+                [standardDefaults synchronize];
+                
+                //[self stopMoviePlayer];
+                [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+                
+            } else {
+                NSLog(@"View Will Appear - Start Movie");
+                
+                [self.moviePlayer play];
+            }
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Update Required" message:@"Looks like you are running an old version of the app, head over to the app store to grab the latest update." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+            [self.moviePlayer play];
+            
+        }
+        
+        
+        if (error) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Try Again" message:@"We're having trouble connecting to the internet." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            errorAlert.tag = 2;
+            
+            [errorAlert addButtonWithTitle:@"Retry"];
+            
+            [errorAlert show];
+            
+            [self.moviePlayer play];
+            
+        }
+        
+    }];
 }
 
 

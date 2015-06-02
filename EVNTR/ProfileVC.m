@@ -486,11 +486,7 @@
     
     NSString *followUserID = [notification.userInfo objectForKey:kFollowedUserObjectId];
     
-    NSLog(@"User ID for Follow: %@", followUserID);
-    
     if ([followUserID isEqualToString:self.userObjectID]) {
-        
-        NSLog(@"Followed a profile on stack - incrememting Followers and changing follow button");
         
         [self incrementFollowers];
         
@@ -500,7 +496,6 @@
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
 
-        NSLog(@"New Follow for My Profile - Incrementing Following");
         [self incrementFollowing];
         
     }
@@ -511,22 +506,16 @@
     
     NSString *unFollowUserID = [notification.userInfo objectForKey:kUnfollowedUserObjectId];
     
-    NSLog(@"User ID for Unfollow: %@", unFollowUserID);
-    
     if ([unFollowUserID isEqualToString:self.userObjectID]) {
-    
-        NSLog(@"Unfollowed a profile on stack - decrementing Followers and changing follow button");
         
         [self decrementFollowers];
         
         self.followButton.titleText = kFollowString;
         self.followButton.isSelected = NO;
-    
     }
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
         
-        NSLog(@"New Unfollow for My Profile - Decrementing Following");
         [self decrementFollowing];
         
     }

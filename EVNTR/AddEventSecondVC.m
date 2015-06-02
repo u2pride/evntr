@@ -132,9 +132,8 @@
                         } else {
                             
                             //TODO: Test by changing to if(!succeeded)
-                            NSLog(@"Failed saving event");
 
-                            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"We had trouble updating your event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+                            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"We had trouble updating your cover photo." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
                             
                             [errorAlert show];
                             

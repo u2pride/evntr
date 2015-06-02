@@ -102,7 +102,7 @@
 
             break;
         }
-        case 2000: {
+        case 60: {
             self.distance8Button.backgroundColor = [UIColor orangeThemeColor];
             [self.distance8Button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 
@@ -233,7 +233,7 @@
     
     if ([strongDelegate respondsToSelector:@selector(completedFiltering:)]) {
         
-        [strongDelegate completedFiltering:1000];
+        [strongDelegate completedFiltering:30];
     }
     
 }

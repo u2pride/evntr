@@ -296,9 +296,7 @@ typedef enum {
     if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH && submittedHometown.length <= MAX_HOMETOWN_LENGTH) {
         
         if (self.newProfilePictureChosen) {
-            
-            NSLog(@"Saving Profile Picture");
-            
+                        
             PFFile *profilePictureFile = [PFFile fileWithName:@"profilepic.jpg" data:self.pictureData];
             
             [profilePictureFile saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
