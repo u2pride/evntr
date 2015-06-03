@@ -96,7 +96,6 @@
     [self.loginButton addGestureRecognizer:tapgr2];
     
     
-    NSLog(@"-- REGISTER for Movie Player Finished, Command to Stop Player, Command to Restart Movie Play, and UIApplicationWill Come Back into Foreground Notifications");
     [self registerForNotifications];
 
 }
@@ -110,12 +109,10 @@
 }
 
 
-
+//Not Called Due to Custom Segue
 - (void) viewDidDisappear:(BOOL)animated {
     
     [super viewDidDisappear:animated];
-    
-    NSLog(@"ViewDidDisappear - not called because we use a custom transistion");
     
 }
 
@@ -189,7 +186,6 @@
 #pragma mark - Custom Getters
 
 - (MPMoviePlayerController *) moviePlayer {
-    NSLog(@"Accessed movie player controller variable");
     
     if (!_moviePlayer) {
         NSURL *videoURL = [[NSBundle mainBundle] URLForResource:@"evntrBackground" withExtension:@"mov"];
@@ -199,7 +195,6 @@
         _moviePlayer.view.frame = self.view.frame;
         [self.view insertSubview:_moviePlayer.view atIndex:0];
         
-        NSLog(@"Created Movie Player");
     }
     
     return _moviePlayer;
@@ -212,9 +207,6 @@
 - (IBAction) logOutUnwindSegue:(UIStoryboardSegue *)unwindSegue {
     
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    
-    NSLog(@"Back from logout unwind segue");
-    NSLog(@"-- REGISTER for App Enters Foreground and Movie Finished Notifications - Should not be registered for them right now");
     
     [self checkAppVersion];
     
@@ -229,7 +221,6 @@
 //Unwind Segue from Register or Login Pages - Via Back Button (or Cancel from FB Page - TODO)
 - (IBAction) backToLoginSignUpScreen:(UIStoryboardSegue *)unwindSegue {
     
-    NSLog(@"Unwind from Login Screens");
     [self returningTransitionAnimations];
     
 }
@@ -330,12 +321,10 @@
 #pragma mark - Movie Player
 
 - (void)loopVideo {
-    NSLog(@"Loop video notification");
     [self.moviePlayer play];
 }
 
 - (void)backFromForeground {
-    NSLog(@"Play MoviePlayer - Back from foreground notification or restart notificaiton");
     
     [self checkAppVersion];
     
@@ -350,7 +339,7 @@
 }
 
 - (void) appEnteredBackground {
-    NSLog(@"app entered background");
+
     [self stopMoviePlayer];
 
     //Reregister for foreground notifications
@@ -360,9 +349,8 @@
 }
 
 - (void)stopMoviePlayer {
-    NSLog(@"Stop movie player and ----- DEREGISTER ------ observers");
+
     [self.moviePlayer stop];
-    
     [self deregisterForNotifications];
 
 }
@@ -393,8 +381,6 @@
 
 - (void) checkAppVersion {
     
-    NSLog(@"Check App Version Code Run");
-    
     self.isRunningValidCodeVersion = NO;
     
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
@@ -413,24 +399,38 @@
         minorVersion = [numbersSeparated objectAtIndex:1];
     }
     
-    [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion} block:^(NSString *result, NSError *error) {
+    NSString *currentUserID = [EVNUser currentUser].objectId;
+    
+    [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion, @"userID": currentUserID} block:^(NSString *result, NSError *error) {
         
         if ([result isEqualToString:@"true"]) {
             self.isRunningValidCodeVersion = YES;
             
             if ([EVNUser currentUser]) {
                 
-                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-                [standardDefaults setBool:NO forKey:kIsGuest];
-                [standardDefaults synchronize];
-                
-                //[self stopMoviePlayer];
-                [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+                [[EVNUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                    
+                    if (!error){
+                        
+                        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                        [standardDefaults setBool:NO forKey:kIsGuest];
+                        [standardDefaults synchronize];
+                        
+                        //[self stopMoviePlayer];
+                        [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+                        
+                    } else {
+                        
+                        [self.moviePlayer play];
+                    
+                    }
+                    
+                }];
                 
             } else {
-                NSLog(@"View Will Appear - Start Movie");
                 
                 [self.moviePlayer play];
+                
             }
         } else {
             

@@ -3044,7 +3044,7 @@ Click continue when you're ready.</string>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="21" id="m3c-DT-ZBq"/>
                                             </constraints>
-                                            <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="14"/>
+                                            <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="12"/>
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>

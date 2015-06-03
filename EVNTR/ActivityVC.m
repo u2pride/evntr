@@ -843,24 +843,13 @@
             
             if (succeeded) {
                 
-                PFObject *newAttendingActivity = [PFObject objectWithClassName:@"Activities"];
-                newAttendingActivity[@"userTo"] = grantButton.personToGrantAccess;
-                newAttendingActivity[@"type"] = [NSNumber numberWithInt:ATTENDING_ACTIVITY];
-                newAttendingActivity[@"activityContent"] = grantButton.eventToGrantAccess;
-                [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                    
-                    if (succeeded) {
-                        grantButton.titleText = kRevokeAccess;
-                        [grantButton endedTask];
-                    } else {
-                        [PFAnalytics trackEventInBackground:@"RSVPUserIssue" block:nil];
-                        grantButton.alpha = 0.3;
-                        [grantButton endedTaskWithButtonEnabled:NO];
-                    }
-                
-                }];
+                grantButton.titleText = kRevokeAccess;
+                [grantButton endedTask];
                 
             } else {
+                
+                [PFAnalytics trackEventInBackground:@"GrantAccessIssue" block:nil];
+
                 grantButton.alpha = 0.3;
                 [grantButton endedTaskWithButtonEnabled:NO];
             }

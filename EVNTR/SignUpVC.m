@@ -168,7 +168,7 @@ typedef enum {
                 alertMessage = @"Your current session is no longer valid. Please log in again.";
                 
             } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-                //NSLog(@"user cancelled login");
+                //@"user cancelled login"
                 
             } else {
                 alertTitle  = @"Something went wrong";

@@ -283,7 +283,6 @@
             
             [self.standbyUsersCollectionView reloadData];
             
-            NSLog(@"Num2");
             [self networkCallComplete]; //2
             
         }];
@@ -325,7 +324,6 @@
                 
                 [self.event queryRSVPForUser:[EVNUser currentUser] completion:^(BOOL isAttending, NSString *status, BOOL error) {
                     
-                    NSLog(@"Returned with error: %d", (int) error);
                     if (!error) {
                         if (!self.isCurrentUsersEvent) {
                             self.isCurrentUserAttending = isAttending;
@@ -339,7 +337,6 @@
                         self.rsvpStatusButton.titleText = @"";
                     }
                     
-                    NSLog(@"Num3");
                     [self networkCallComplete]; //3
                     
                 }];
@@ -367,7 +364,6 @@
                         self.rsvpStatusButton.titleText = @"";
                     }
                     
-                    NSLog(@"Num3");
                     [self networkCallComplete]; //3
                     
                 }];
@@ -381,8 +377,6 @@
             case PUBLIC_APPROVED_EVENT_TYPE: {
                 
                 self.isPublicApproved = YES;
-                
-                NSLog(@"CHECKPOINT 0");
                 
                 //Determine the state of the user with the event
                 // Hasn't requested Accesss - Requested Access - Granted Acccess
@@ -411,7 +405,6 @@
                         self.rsvpStatusButton.titleText = @"";
                     }
                     
-                    NSLog(@"Num3");
                     [self networkCallComplete]; //3
                     
                 }];
@@ -540,7 +533,6 @@
         
         self.entireMapView.address = self.event.nameOfLocation;
         
-        NSLog(@"Num5");
         [self networkCallComplete]; //5
         
         
@@ -579,11 +571,9 @@
             self.creatorPhoto.file = (PFFile *)user[@"profilePicture"];
             [self.creatorPhoto loadInBackground:^(UIImage *image, NSError *error) {
                 
-                NSLog(@"Num6");
                 [self networkCallComplete]; //6
             }];
             
-            NSLog(@"Num7");
             [self networkCallComplete]; //7
             
         } else {
@@ -634,7 +624,6 @@
 - (void) networkCallComplete {
     
     numNetworkCallsComplete += 1;
-    NSLog(@"NumNetworkCallsComplete: %d", numNetworkCallsComplete);
     
     if (numNetworkCallsComplete == 5) {
         
@@ -1220,7 +1209,6 @@
     [newComment saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {
-            NSLog(@"saved comment");
             
             [self dismissViewControllerAnimated:YES completion:^{
                 

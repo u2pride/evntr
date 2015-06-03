@@ -28,11 +28,11 @@
 
 - (NSString *) eventDateShortStyleAndVisible:(BOOL)visible {
     
-    if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE && !visible) {
+    //if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE && !visible) {
         
-        return @"Unknown";
+        //return @"Unknown";
         
-    } else {
+    //} else {
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         dateFormatter.timeStyle = NSDateFormatterNoStyle;
@@ -40,24 +40,24 @@
         [dateFormatter setDoesRelativeDateFormatting:YES];
         
         return [dateFormatter stringFromDate:self.dateOfEvent];
-    }
+    //}
 }
 
 
 - (NSString *) eventTimeShortStyeAndVisible:(BOOL)visible {
     
-    if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE && !visible) {
+    //if ([self.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE && !visible) {
         
-        return @"Unknown";
+        //return @"Unknown";
         
-    } else {
+    //} else {
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         dateFormatter.timeStyle = NSDateFormatterShortStyle;
         dateFormatter.dateStyle = NSDateFormatterNoStyle;
         
         return [dateFormatter stringFromDate:self.dateOfEvent];
-    }
+    //}
 }
 
 - (void) coverImage:(void (^)(UIImage *))completionBlock {
@@ -320,8 +320,6 @@
             
         } else {
             
-            NSLog(@"Activities Returned: %@", objects);
-            
             NSString *status = kNOTRSVPedForEvent;
             
             BOOL isInvited = NO;
@@ -343,9 +341,12 @@
                     isRequestedAccess = YES;
                 }
                 
-                NSLog(@"invited - %d attending - %d granted - %d requested - %d", (int)isInvited, (int)isAttending, (int) isGrantedAccess, (int) isRequestedAccess);
                 
             }
+            
+            
+            NSLog(@"invited - %d attending - %d granted - %d requested - %d", (int)isInvited, (int)isAttending, (int) isGrantedAccess, (int) isRequestedAccess);
+
             
         
             if (isInvited || isGrantedAccess) {
@@ -357,6 +358,8 @@
                 }
                 
             } else {
+                
+                isAttending = NO;
                 
                 if (isRequestedAccess) {
                     status = kRSVPedForEvent;

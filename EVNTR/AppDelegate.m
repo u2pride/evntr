@@ -28,9 +28,7 @@
 #pragma mark - App Lifecycle Methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    NSLog(@"NUMBER 1 - applicationDidFinishLaunchingWithOptions");
-    
+        
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     //Enabling Local Notifications.
@@ -46,14 +44,6 @@
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebook];
     
-    //TODO NO, this Doesn't work for Auto SignIn - ONly do this for cold launches - duplicate when app becomes active from background
-    //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
-    //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        
-        //[self startLocationManager];
-
-    //});
-    
     //Audio Session - Continue Playing Background Music
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
     [audioSession setCategory:AVAudioSessionCategoryAmbient error:nil];
@@ -66,7 +56,6 @@
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     
-    NSLog(@"Invalidating Timer for Location Updates");
     [self.locationUpdateTimer invalidate];
 }
 
@@ -87,7 +76,12 @@
     
     [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
     
-    [self startLocationManager];
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+    
+        [self startLocationManager];
+    
+    });
     
 }
 
@@ -103,7 +97,6 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     
-    NSLog(@"New location Found...");
     CLLocation *newLocation = [locations lastObject];
 
     //Check the most recent location update and make sure it's not cached and recent.
@@ -121,8 +114,6 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"newLocationNotif" object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];
         
-        
-        NSLog(@"Stopping Location Manager - Fresh Location Found Found %@ and %@...", latitude, longitude);
         [self.locationManagerGlobal stopUpdatingLocation];
         
         //Add a Timer to Get New Location Every 5 Mins & Invalidate After Close/Background
@@ -137,19 +128,10 @@
     switch ([error code]) {
         case kCLErrorDenied: {
             
-            NSLog(@"LME 1");
-            
-            [PFAnalytics trackEventInBackground:@"LocationManagerDisabled" block:nil];
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates Disabled" message:@"Evntr can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-            
-            [errorAlert show];
             break;
         }
         case kCLErrorNetwork: {
             
-            NSLog(@"LME 2");
-
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Network Error" message:@"Please check your network connection so Evntr can find events nearby." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
             [errorAlert show];
@@ -157,17 +139,10 @@
         }
         case kCLErrorLocationUnknown: {
             
-            NSLog(@"LME 3");
-
-            NSLog(@"Location Unknown - Rechecking location.");
-            
             break;
         }
         default: {
             
-            NSLog(@"LME 4");
-
-            NSLog(@"Location Manager failed with unknown error");
             break;
         }
     }
@@ -178,48 +153,28 @@
     switch (status) {
         case kCLAuthorizationStatusDenied: {
             
-            NSLog(@"LME 5");
-
-            NSLog(@"kCLAuthorizationStatusDenied");
+            [PFAnalytics trackEventInBackground:@"LocationManagerDisabled" block:nil];
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates Disabled" message:@"Evntr can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            [errorAlert show];
             
             break;
         }
         case kCLAuthorizationStatusAuthorizedWhenInUse: {
             
-            //Here is where we start updating location
-            /*
-             
-             locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-             locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters;
-             [locationManager startUpdatingLocation];
-             
-             CLLocation *currentLocation = locationManager.location;
-             if (currentLocation) {
-             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-             [appDelegate setCurrentLocation:currentLocation];
-             }
-             */
-        
-            NSLog(@"LME 6");
-
-            NSLog(@"App Has Been Authorized to Use Location While in Use");
             break;
         }
         case kCLAuthorizationStatusAuthorizedAlways: {
-            NSLog(@"LME 7");
 
             break;
         }
         case kCLAuthorizationStatusNotDetermined: {
-            NSLog(@"LME 8");
 
-            NSLog(@"kCLAuthorizationStatusNotDetermined");
             break;
         }
         case kCLAuthorizationStatusRestricted: {
-            NSLog(@"LME 9");
    
-            NSLog(@"kCLAuthorizationStatusRestricted");
             break;
         }
     }
@@ -230,24 +185,25 @@
 
 - (void) startLocationManager {
     
-    NSLog(@"Starting Location Manager....");
     if (!self.locationManagerGlobal) {
         self.locationManagerGlobal = [[CLLocationManager alloc] init];
         self.locationManagerGlobal.desiredAccuracy = kCLLocationAccuracyHundredMeters;
         self.locationManagerGlobal.distanceFilter = 600;
         self.locationManagerGlobal.delegate = self;
-        NSLog(@"Created Location Manager");
+        self.locationManagerGlobal.pausesLocationUpdatesAutomatically = NO;
     }
     
     if ([CLLocationManager locationServicesEnabled]) {
         if ([self.locationManagerGlobal respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-            NSLog(@"Requesting In Use Authorization");
             [self.locationManagerGlobal requestWhenInUseAuthorization];
-            NSLog(@"Start Updating Locations");
             [self.locationManagerGlobal startUpdatingLocation];
         } else {
             [self.locationManagerGlobal startUpdatingLocation];
         }
+    } else {
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates" message:@"Looks like we can't find your location.  Go to Settings to allow Evntr to use your current location inside the app." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+        
+        [errorAlert show];
     }
     
 }
@@ -351,15 +307,12 @@
 
 #pragma mark - Notifications
 
-//TODO: use to determine your current privileges granted by user.  gracefully degrade if not allowed anymore.
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
     //UIUserNotificationType allowedTypes = [notificationSettings types];
 }
 
-//TODO: what needs to be accomplished here?
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
     
-    NSLog(@"NOTIFICATION Recieved");
     UIApplicationState applicationState = application.applicationState;
     if (applicationState == UIApplicationStateBackground) {
         [application presentLocalNotificationNow:notification];
@@ -377,7 +330,6 @@
                   sourceApplication:sourceApplication
                         withSession:[PFFacebookUtils session]];
 }
-
 
 
 

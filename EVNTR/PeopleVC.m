@@ -215,7 +215,7 @@
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
                     noResultsView.headerText = @"Following No Users";
-                    noResultsView.subHeaderText = @"Looks like you aren't following anyone.";
+                    noResultsView.subHeaderText = @"Looks like you aren't following anyone.  Find users to follow by clicking on the search icon on the top right of the home screen.";
                     noResultsView.actionButton.titleText = @"Refresh";
                     
                     UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
