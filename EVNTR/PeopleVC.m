@@ -183,10 +183,21 @@
                 if (error || [usersFound count] == 0) {
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-                    noResultsView.headerText = @"No Followers";
-                    noResultsView.subHeaderText = @"This can't be right... who wouldn't want to follow you?";
-                    noResultsView.actionButton.titleText = @"Refresh";
                     
+                    if ([self.userProfile.objectId isEqualToString:[EVNUser currentUser].objectId]) {
+                       
+                        noResultsView.headerText = @"No Followers";
+                        noResultsView.subHeaderText = @"This can't be right... who wouldn't want to follow you?";
+                        noResultsView.actionButton.titleText = @"Refresh";
+                        
+                    } else {
+                        
+                        noResultsView.headerText = @"No Followers";
+                        noResultsView.subHeaderText = @"Their cool-ness has not been discovered yet.";
+                        noResultsView.actionButton.titleText = @"Refresh";
+                        
+                    }
+                
                     UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
                     [noResultsView.actionButton addGestureRecognizer:tapReload];
                     
@@ -214,10 +225,21 @@
                 if (following.count == 0) {
                     
                     EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-                    noResultsView.headerText = @"Following No Users";
-                    noResultsView.subHeaderText = @"Looks like you aren't following anyone.  Find users to follow by clicking on the search icon on the top right of the home screen.";
-                    noResultsView.actionButton.titleText = @"Refresh";
-                    
+
+                    if ([self.userProfile.objectId isEqualToString:[EVNUser currentUser].objectId]) {
+
+                        noResultsView.headerText = @"Following No Users";
+                        noResultsView.subHeaderText = @"Find users to follow by clicking on the search icon on the top right of the home screen.";
+                        noResultsView.actionButton.titleText = @"Refresh";
+                        
+                    } else {
+                        
+                        noResultsView.headerText = @"Following No Users";
+                        noResultsView.subHeaderText = @"They're not following anyone - no one has quite piqued their interest yet!";
+                        noResultsView.actionButton.titleText = @"Refresh";
+                        
+                    }
+
                     UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
                     [noResultsView.actionButton addGestureRecognizer:tapReload];
                     

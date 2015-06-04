@@ -393,7 +393,7 @@ typedef enum {
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         
         if (!error) {
-            
+                        
             [activityIndicator stopAnimating];
             
             NSDictionary *userData = (NSDictionary *)result;

@@ -398,10 +398,8 @@
     if ([numbersSeparated count] >= 2) {
         minorVersion = [numbersSeparated objectAtIndex:1];
     }
-    
-    NSString *currentUserID = [EVNUser currentUser].objectId;
-    
-    [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion, @"userID": currentUserID} block:^(NSString *result, NSError *error) {
+        
+    [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion} block:^(NSString *result, NSError *error) {
         
         if ([result isEqualToString:@"true"]) {
             self.isRunningValidCodeVersion = YES;

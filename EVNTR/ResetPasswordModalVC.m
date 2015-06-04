@@ -55,7 +55,7 @@
                 
             } else {
                 
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hmmmm" message:@"Are you sure that's the right email?  We don't recognize it." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hmm..." message:@"Are you sure that's the right email?  We don't recognize it." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
                 
                 [errorAlert show];
                 

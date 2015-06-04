@@ -19,6 +19,7 @@
 @property (nonatomic, weak) id<PeopleVCDelegate> delegate;
 @property (nonatomic, assign) int typeOfUsers;
 @property (nonatomic, strong) EVNUser *userProfile;
+
 @property (nonatomic, strong) EventObject *eventToViewAttenders;
 @property (nonatomic, strong) EventObject *eventForInvites;
 

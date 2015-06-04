@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNUtility.h"
 #import "SignUpTabVC.h"
 
 @interface SignUpTabVC ()
@@ -18,6 +19,9 @@
     [super viewDidLoad];
     
     self.title = @"Sign Up";
+    
+    self.navigationController.navigationBar.titleTextAttributes = [EVNUtility navigationFontAttributes];
+
 }
 
 
