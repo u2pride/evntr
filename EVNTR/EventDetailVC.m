@@ -120,7 +120,7 @@
 
 #pragma mark - Lifecycle Methods
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"";
@@ -219,6 +219,21 @@
         [self updateDetailView];
         
     }
+    
+    //Update Picture Count
+    [self.event fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+       
+        NSLog(@"Fetched the latest object data and updating photos...");
+        
+        EventObject *eventFetched = (EventObject *) object;
+        
+        if (eventFetched.numPictures) {
+            self.numberOfPicturesLabel.text = [eventFetched.numPictures stringValue];
+        } else {
+            self.numberOfPicturesLabel.text = @"0";
+        }
+        
+    }];
     
 }
 
@@ -468,12 +483,7 @@
     self.viewPicturesButton.isStateless = YES;
     self.viewPicturesButton.isSelected = NO;
     self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];
-    
-    if (self.event.numPictures) {
-        self.numberOfPicturesLabel.text = [self.event.numPictures stringValue];
-    } else {
-        self.numberOfPicturesLabel.text = @"0";
-    }
+    self.numberOfPicturesLabel.text = @"0";
     
     if (!self.isGuestUser) {
         
@@ -674,8 +684,8 @@
         
         self.entireMapView.address = [NSString stringWithFormat:@"Unknown"];
         self.entireMapView.distanceAway = 0.0f;
-        self.dateOfEventLabel.text = @"Unknown";
-        self.timeOfEventLabel.text = @"Unknown";
+        //self.dateOfEventLabel.text = @"Unknown";
+        //self.timeOfEventLabel.text = @"Unknown";
         
         [self.rsvpStatusButton endedTask];
         [self.entireMapView finishedLoadingWithLocationAvailable:NO];
@@ -691,8 +701,8 @@
             [self setupMapComponent];
         }
         
-        self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
-        self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
+        //self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
+        //self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
         
         [self.rsvpStatusButton endedTask];
         [self.entireMapView finishedLoadingWithLocationAvailable:YES];
@@ -1174,17 +1184,17 @@
 
 - (void) newPictureAdded {
     
-    NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
-    int newCount = [currentPictureCountString intValue] + 1;
-    self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
+    //NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
+    //int newCount = [currentPictureCountString intValue] + 1;
+    //self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
     
 }
 
 - (void) pictureRemoved {
     
-    NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
-    int newCount = [currentPictureCountString intValue] - 1;
-    self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
+    //NSString *currentPictureCountString = self.numberOfPicturesLabel.text;
+    //int newCount = [currentPictureCountString intValue] - 1;
+    //self.numberOfPicturesLabel.text = [NSString stringWithFormat:@"%d", newCount];
     
 }
 

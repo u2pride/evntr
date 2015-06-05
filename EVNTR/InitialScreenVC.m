@@ -138,6 +138,10 @@
         
         [self presentViewController:guestWelcomeVC animated:YES completion:nil];
         
+    } else {
+        
+        [self checkAppVersion];
+
     }
     
 }
@@ -179,6 +183,10 @@
             
         }
 
+    } else {
+        
+        [self checkAppVersion];
+        
     }
     
 }
@@ -321,6 +329,7 @@
 #pragma mark - Movie Player
 
 - (void)loopVideo {
+    
     [self.moviePlayer play];
 }
 

@@ -18,7 +18,7 @@
 @interface AddEventPrimaryVC ()
 {
     NSMutableDictionary *stateSnapshot;
-    BOOL isEditing;
+    BOOL isEditingEvent;
 }
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
@@ -53,7 +53,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    isEditing = NO;
+    isEditingEvent = NO;
     self.selectedEventType = PUBLIC_EVENT_TYPE;
     self.eventTitleField.delegate = self;
     
@@ -88,20 +88,22 @@
  
     if (self.eventToEdit) {
         
-        isEditing = YES;
+        isEditingEvent = YES;
         self.title = @"Edit Event";
         self.navigationItem.leftBarButtonItems = nil;
         
-        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(eventEditingCanceled)];
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"CommentCancel"] style:UIBarButtonItemStylePlain target:self action:@selector(eventEditingCanceled)];
+        
         self.navigationItem.leftBarButtonItem = cancelButton;
         
-        //Customize Cancel Bar Buttton
+        /*Customize Cancel Bar Buttton
         [self.navigationItem.leftBarButtonItem setTitleTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                        [UIFont fontWithName:EVNFontLight size:16.0], NSFontAttributeName,
                                                                        [UIColor whiteColor], NSForegroundColorAttributeName,
                                                                        nil]
                                                              forState:UIControlStateNormal];
 
+        */
         self.selectedEventType = [self.eventToEdit.typeOfEvent intValue];
         self.eventTitleField.text = self.eventToEdit.title;
         [self.eventToEdit coverImage:^(UIImage *image) {
@@ -231,7 +233,7 @@
             self.coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
             
             //Editing Event - Add New Cover Photo to the Event
-            if (isEditing) {
+            if (isEditingEvent) {
                 self.eventToEdit.coverPhoto = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
             }
             
@@ -262,19 +264,32 @@
 
 - (IBAction)selectedPublic:(id)sender {
     
-    self.selectedEventType = PUBLIC_EVENT_TYPE;
+    if (isEditingEvent) {
+        [self showEditingPopup];
+    } else {
+        self.selectedEventType = PUBLIC_EVENT_TYPE;
+    }
     
 }
 
 - (IBAction)selectedPublicApproved:(id)sender {
     
-    self.selectedEventType = PUBLIC_APPROVED_EVENT_TYPE;
+    if (isEditingEvent) {
+        [self showEditingPopup];
+    } else {
+        self.selectedEventType = PUBLIC_APPROVED_EVENT_TYPE;
+    }
     
 }
 
 - (IBAction)selectedPrivate:(id)sender {
     
-    self.selectedEventType = PRIVATE_EVENT_TYPE;
+
+    if (isEditingEvent) {
+        [self showEditingPopup];
+    } else {
+        self.selectedEventType = PRIVATE_EVENT_TYPE;
+    }
     
 }
 
@@ -336,7 +351,7 @@
     self.coverPhotoFile = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
     
     //Editing Event - Add New Cover Photo to the Event
-    if (isEditing) {
+    if (isEditingEvent) {
         self.eventToEdit.coverPhoto = [PFFile fileWithName:@"eventCoverPhoto.jpg" data:pictureData];
     }
     
@@ -446,6 +461,17 @@
     }
     
 }
+
+#pragma mark - Helper Methods
+
+- (void) showEditingPopup {
+    
+    UIAlertView *editDisabled = [[UIAlertView alloc] initWithTitle:@"Indecisive Are We?" message:@"It's too late in the game to change your event type and besides, everyone knows once you change type you lose all the hype..." delegate:self cancelButtonTitle:@"Try Again Soon" otherButtonTitles: nil];
+    
+    [editDisabled show];
+    
+}
+
 
 #pragma mark - Delegate Methods for EventCreation
 

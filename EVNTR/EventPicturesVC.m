@@ -80,7 +80,7 @@ static NSString * const reuseIdentifier = @"pictureCell";
 }
 
 
-#pragma mark UICollectionView Data Source
+#pragma mark - UICollectionView Data Source
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     
@@ -115,15 +115,18 @@ static NSString * const reuseIdentifier = @"pictureCell";
         
     }];
     
-    self.selectedPhoto = indexPath;
     
     return cell;
 }
 
 
+#pragma mark - UICollection View Delegate Methods
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     [self animateBackgroundDarkBlur];
+    
+    self.selectedPhoto = indexPath;
     
     PFObject *pictureObject = (PFObject *) [self.eventImages objectAtIndex:indexPath.row];
     EVNUser *pictureTakenBy = (EVNUser *)[pictureObject objectForKey:@"takenBy"];
@@ -161,6 +164,32 @@ static NSString * const reuseIdentifier = @"pictureCell";
     }];
     
 }
+
+
+- (void) collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    cell.alpha = 0;
+    cell.transform = CGAffineTransformMakeScale(0.2, 0.2);
+    
+    [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction animations:^{
+        
+        cell.alpha = 1;
+        cell.transform = CGAffineTransformIdentity;
+        
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
+
+#pragma mark - UICollectionFlowLayout Delegate Methods
+
+- (UIEdgeInsets) collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    
+    return UIEdgeInsetsMake(10, 10, 10, 10);
+    
+}
+
 
 
 #pragma mark - Delegate Methods for UIImagePickerController

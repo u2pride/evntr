@@ -302,6 +302,7 @@
     //Update App Delegate of Latest Activity Pull
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     [standardDefaults setValue:[NSDate date] forKey:kLastBackgroundFetchTimeStamp];
+    [standardDefaults synchronize];
     
     //Table Load Performed in Background
     if (self.timerForAutomaticUpdates.valid) {
@@ -437,10 +438,13 @@
     for (UIGestureRecognizer *recognizer in activityCell.leftSideImageView.gestureRecognizers) {
         [activityCell.leftSideImageView removeGestureRecognizer:recognizer];
     }
+    
     [activityCell.actionButton removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
     
     
     int activityType = (int) [[object objectForKey:@"type"] integerValue];
+    
+    [activityCell.actionButton startedTask];
     
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
@@ -467,20 +471,28 @@
             [followActivity whereKey:@"userTo" equalTo:userFollow];
             [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                 
-                if ([objects count] == 0 || error) {
-                    activityCell.actionButton.titleText = kFollowString;
-                    activityCell.actionButton.personToFollow = userFollow;
-                    [activityCell.actionButton setIsSelected:NO];
-                    
-                } else {
-                    activityCell.actionButton.titleText = kFollowingString;
-                    [activityCell.actionButton setIsSelected:YES];
-                    activityCell.actionButton.personToFollow = userFollow;
-                    
-                }
+                //Make sure the cell is still visible before updating.
+                ActivityTableCell *testCell = (ActivityTableCell *) [tableView cellForRowAtIndexPath:indexPath];
                 
-                if (!error) {
-                    [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
+                if (testCell) {
+                
+                    if ([objects count] == 0 || error) {
+                        activityCell.actionButton.titleText = kFollowString;
+                        activityCell.actionButton.personToFollow = userFollow;
+                        [activityCell.actionButton setIsSelected:NO];
+                        
+                    } else {
+                        activityCell.actionButton.titleText = kFollowingString;
+                        [activityCell.actionButton setIsSelected:YES];
+                        activityCell.actionButton.personToFollow = userFollow;
+                        
+                    }
+                    
+                    if (!error) {
+                        [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
+                        [activityCell.actionButton endedTask];
+                    }
+
                 }
                 
             }];
@@ -513,6 +525,8 @@
             [activityCell.actionButton setIsSelected:NO];
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
             
+            [activityCell.actionButton endedTask];
+            
             
             break;
         }
@@ -541,6 +555,8 @@
                 activityCell.actionButton.titleText = @"View";
                 [activityCell.actionButton setIsSelected:NO];
                 [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                
+                [activityCell.actionButton endedTask];
                 
         
             //Current User Has a Request for Access to An Event
@@ -572,16 +588,24 @@
                 [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
                 [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                     
-                    if ([objects count] == 0 || error) {
-                        activityCell.actionButton.titleText = kGrantAccess;
-                        [activityCell.actionButton setIsSelected:NO];
-                    } else {
-                        activityCell.actionButton.titleText = kRevokeAccess;
-                        [activityCell.actionButton setIsSelected:YES];
-                    }
+                    //Make sure the cell is still visible before updating.
+                    ActivityTableCell *testCell = (ActivityTableCell *) [tableView cellForRowAtIndexPath:indexPath];
                     
-                    if (!error) {
-                        [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
+                    if (testCell) {
+                        
+                        if ([objects count] == 0 || error) {
+                            activityCell.actionButton.titleText = kGrantAccess;
+                            [activityCell.actionButton setIsSelected:NO];
+                        } else {
+                            activityCell.actionButton.titleText = kRevokeAccess;
+                            [activityCell.actionButton setIsSelected:YES];
+                        }
+                        
+                        if (!error) {
+                            [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
+                            [activityCell.actionButton endedTask];
+                        }
+
                     }
                     
                 }];
@@ -639,6 +663,7 @@
             [activityCell.actionButton setIsSelected:NO];
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+            [activityCell.actionButton endedTask];
             
             
             break;
@@ -666,13 +691,14 @@
             [activityCell.actionButton setIsSelected:NO];
             
             [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+            [activityCell.actionButton endedTask];
             
         
             break;
         }
         default: {
             
-            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"That's Weird" message:@"Looks like something broke.  Send us an email/tweet and we'll help you figure out what happened." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"That's Weird" message:@"Looks like something broke.  Send us an email or tweet from the settings page and we'll help you figure out what happened." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
             [message show];
             
