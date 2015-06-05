@@ -27,7 +27,6 @@
 @property (nonatomic, strong) NSDictionary *detailsFromFBRegistration;
 @property (strong, nonatomic) IBOutlet EVNButton *loginButton;
 @property (strong, nonatomic) IBOutlet EVNButton *registerButton;
-@property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 @property (strong, nonatomic) IBOutlet UIButton *skipLoginButton;
 
 @property (nonatomic) BOOL isRunningValidCodeVersion;
@@ -245,7 +244,6 @@
     
     [UIView animateWithDuration:0.65 animations:^{
         self.darkBlurEffectView.alpha = 0.76;
-        self.backgroundImageView.transform = CGAffineTransformMakeScale(1.4, 1.4);
         self.loginButton.alpha = 0;
         self.registerButton.alpha = 0;
         self.skipLoginButton.alpha = 0;
@@ -259,7 +257,6 @@
 - (void) returningTransitionAnimations {
     
     [UIView animateWithDuration:0.5 animations:^{
-        self.backgroundImageView.transform = CGAffineTransformMakeScale(1, 1);
         self.darkBlurEffectView.alpha = 0;
         self.loginButton.alpha = 1;
         self.registerButton.alpha = 1;

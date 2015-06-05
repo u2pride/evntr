@@ -1110,9 +1110,7 @@
     }
 
     
-    //TODO: Not Working
     [updatedEvent coverImage:^(UIImage *image) {
-        
         [self setBackgroundOfPictureSectionWithImage:image];
     }];
     

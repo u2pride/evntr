@@ -38,7 +38,7 @@
     
     //Connecting App to Parse and Enabling Analytics
     [ParseCrashReporting enable];
-    [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
+    [Parse setApplicationId:@"pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs" clientKey:@"3s0PDgQzp01DLs588gDqPqaEVepbHaoYmfkcAlXJ"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     //Initializing the Parse FB Utility

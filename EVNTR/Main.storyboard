@@ -195,7 +195,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.49999999999999961" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LoginBackground" translatesAutoresizingMaskIntoConstraints="NO" id="MTQ-bR-0Ma">
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.49999999999999961" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="WalkthroughBackground" translatesAutoresizingMaskIntoConstraints="NO" id="MTQ-bR-0Ma">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q6f-MP-XFO">
@@ -268,7 +268,6 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
-                        <outlet property="backgroundImageView" destination="MTQ-bR-0Ma" id="ZhP-V1-7bq"/>
                         <outlet property="loginButton" destination="Ur4-U2-J7u" id="4Xx-LU-UDP"/>
                         <outlet property="registerButton" destination="ewD-eX-OyW" id="jQd-wE-QRg"/>
                         <outlet property="skipLoginButton" destination="Q6f-MP-XFO" id="h2Q-xy-cv8"/>
@@ -588,10 +587,6 @@ Click continue when you're ready.</string>
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LoginBackground" translatesAutoresizingMaskIntoConstraints="NO" id="RUo-cJ-rnt">
-                                <rect key="frame" x="0.0" y="0.0" width="2509" height="1673"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="slF-lZ-Wo1">
                                 <rect key="frame" x="16" y="40" width="36" height="36"/>
                                 <constraints>
@@ -3620,13 +3615,13 @@ Click continue when you're ready.</string>
         </scene>
     </scenes>
     <resources>
-        <image name="CustomBackButton" width="24" height="24"/>
+        <image name="CustomBackButton" width="16" height="16"/>
         <image name="EvntrLogo" width="210" height="210"/>
-        <image name="LoginBackground" width="2509" height="1673"/>
         <image name="PersonDefault" width="150" height="150"/>
-        <image name="SplashScreenEmptyMiddle" width="640" height="1136"/>
-        <image name="SplashScreenSingle" width="640" height="1136"/>
-        <image name="mapIcon" width="18" height="24"/>
+        <image name="SplashScreenEmptyMiddle" width="640" height="960"/>
+        <image name="SplashScreenSingle" width="640" height="960"/>
+        <image name="WalkthroughBackground" width="320" height="568"/>
+        <image name="mapIcon" width="9" height="12"/>
         <image name="tabActivity" width="25" height="25"/>
         <image name="tabAdd" width="25" height="25"/>
         <image name="tabHome" width="25" height="25"/>
@@ -3635,7 +3630,7 @@ Click continue when you're ready.</string>
         <image name="takePicture" width="450" height="450"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="0HK-TD-lr3"/>
+        <segue reference="RrY-qt-VAd"/>
         <segue reference="5Up-I2-E1D"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

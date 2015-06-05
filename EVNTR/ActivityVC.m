@@ -439,7 +439,6 @@
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     activityCell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
-
     
     //Determine if Cell Should be Highlighted as a New Notification
     NSComparisonResult dateCompare = [createdAtDate compare:self.secondaryUpdateTimestamp];
@@ -463,144 +462,29 @@
     switch (activityType) {
         case FOLLOW_ACTIVITY: {
             
-            EVNUser *userFollow = object[@"userFrom"];
-            
-            //Left Image Thumbnail
-            activityCell.leftSideImageView.file = userFollow[@"profilePicture"];
-            [activityCell.leftSideImageView loadInBackground];
-            
-            activityCell.leftSideImageView.userInteractionEnabled = YES;
-            activityCell.leftSideImageView.objectForImageView = userFollow;
-            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-            
-            //Main Text Message
-            NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", userFollow.username];
-            activityCell.activityContentTextLabel.text = textForActivityCell;
-            
-            //Right Action Button
-            PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
-            [followActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
-            [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [followActivity whereKey:@"userTo" equalTo:userFollow];
-            [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            if (object[@"userFrom"]) {
                 
-                //Make sure the cell is still visible before updating.
-                ActivityTableCell *testCell = (ActivityTableCell *) [tableView cellForRowAtIndexPath:indexPath];
-                
-                if (testCell) {
-                
-                    if ([objects count] == 0 || error) {
-                        activityCell.actionButton.titleText = kFollowString;
-                        activityCell.actionButton.personToFollow = userFollow;
-                        [activityCell.actionButton setIsSelected:NO];
-                        
-                    } else {
-                        activityCell.actionButton.titleText = kFollowingString;
-                        [activityCell.actionButton setIsSelected:YES];
-                        activityCell.actionButton.personToFollow = userFollow;
-                        
-                    }
-                    
-                    if (!error) {
-                        [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
-                        [activityCell.actionButton endedTask];
-                    }
-
-                }
-                
-            }];
-        
-            
-            break;
-        }
-        case INVITE_ACTIVITY: {
-            
-            EVNUser *userInvite = (EVNUser *) object[@"userFrom"];
-            
-            __block NSString *username = userInvite[@"username"];
-            
-            //Left Image Thumbnail
-            activityCell.leftSideImageView.file = userInvite[@"profilePicture"];
-            [activityCell.leftSideImageView loadInBackground];
-            
-            activityCell.leftSideImageView.userInteractionEnabled = YES;
-            activityCell.leftSideImageView.objectForImageView = userInvite;
-            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-            
-            //Main Text Message
-            EventObject *eventInvitedTo = (EventObject *) object[@"activityContent"];
-            activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ invited you to %@", username, eventInvitedTo.title];
-            
-            //Right Action Button
-            activityCell.actionButton.titleText = @"View";
-            activityCell.actionButton.eventToView = eventInvitedTo;
-            [activityCell.actionButton setIsSelected:NO];
-            [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-            
-            [activityCell.actionButton endedTask];
-            
-            
-            break;
-        }
-        case REQUEST_ACCESS_ACTIVITY: {
-            
-            EVNUser *fromUser = object[@"userFrom"];
-            
-            //Current User is On the Standby List
-            if ([fromUser.objectId isEqualToString:[EVNUser currentUser].objectId]) {
-                
-                EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
+                EVNUser *userFollow = object[@"userFrom"];
                 
                 //Left Image Thumbnail
-                activityCell.leftSideImageView.file = [EVNUser currentUser][@"profilePicture"];
+                activityCell.leftSideImageView.file = userFollow[@"profilePicture"];
                 [activityCell.leftSideImageView loadInBackground];
+                
                 activityCell.leftSideImageView.userInteractionEnabled = YES;
-                activityCell.leftSideImageView.objectForImageView = [EVNUser currentUser];
+                activityCell.leftSideImageView.objectForImageView = userFollow;
                 UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
                 [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
                 
                 //Main Text Message
-                activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"You showed interest in %@", eventToAccess.title];
+                NSString *textForActivityCell = [NSString stringWithFormat:@"%@ followed you.", userFollow.username];
+                activityCell.activityContentTextLabel.text = textForActivityCell;
                 
-                //Right Button Configuration
-                activityCell.actionButton.eventToView = eventToAccess;
-                activityCell.actionButton.titleText = @"View";
-                [activityCell.actionButton setIsSelected:NO];
-                [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-                
-                [activityCell.actionButton endedTask];
-                
-        
-            //Current User Has a Request for Access to An Event
-            } else {
-                
-                EVNUser *userRequestedAccess = (EVNUser *) object[@"userFrom"];
-                EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
-                
-                //Left Image Thumbnail
-                activityCell.leftSideImageView.file = userRequestedAccess[@"profilePicture"];
-                [activityCell.leftSideImageView loadInBackground];
-                
-                activityCell.leftSideImageView.userInteractionEnabled = YES;
-                activityCell.leftSideImageView.objectForImageView = userRequestedAccess;
-                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-                
-                //Main Text Message
-                activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ requested access to %@", userRequestedAccess.username, eventToAccess.title];
-                
-                //Right Button Configuration
-                activityCell.actionButton.personToGrantAccess = userRequestedAccess;
-                activityCell.actionButton.eventToGrantAccess = eventToAccess;
-                
-                PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
-                [grantedActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
-                [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
-                [grantedActivity whereKey:@"userTo" equalTo:userRequestedAccess];
-                [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
-                [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                //Right Action Button
+                PFQuery *followActivity = [PFQuery queryWithClassName:@"Activities"];
+                [followActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
+                [followActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+                [followActivity whereKey:@"userTo" equalTo:userFollow];
+                [followActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
                     
                     //Make sure the cell is still visible before updating.
                     ActivityTableCell *testCell = (ActivityTableCell *) [tableView cellForRowAtIndexPath:indexPath];
@@ -608,18 +492,22 @@
                     if (testCell) {
                         
                         if ([objects count] == 0 || error) {
-                            activityCell.actionButton.titleText = kGrantAccess;
+                            activityCell.actionButton.titleText = kFollowString;
+                            activityCell.actionButton.personToFollow = userFollow;
                             [activityCell.actionButton setIsSelected:NO];
+                            
                         } else {
-                            activityCell.actionButton.titleText = kRevokeAccess;
+                            activityCell.actionButton.titleText = kFollowingString;
                             [activityCell.actionButton setIsSelected:YES];
+                            activityCell.actionButton.personToFollow = userFollow;
+                            
                         }
                         
                         if (!error) {
-                            [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
+                            [activityCell.actionButton addTarget:self action:@selector(tappedFollowButton:) forControlEvents:UIControlEventTouchUpInside];
                             [activityCell.actionButton endedTask];
                         }
-
+                        
                     }
                     
                 }];
@@ -628,85 +516,212 @@
             
             break;
         }
-        case ATTENDING_ACTIVITY: {
+        case INVITE_ACTIVITY: {
             
-            EVNUser *userAttend = object[@"userTo"];
-            EventObject *eventToAttend = object[@"activityContent"];
+            if (object[@"userFrom"]) {
+                
+                EVNUser *userInvite = (EVNUser *) object[@"userFrom"];
+                
+                __block NSString *username = userInvite[@"username"];
+                
+                //Left Image Thumbnail
+                activityCell.leftSideImageView.file = userInvite[@"profilePicture"];
+                [activityCell.leftSideImageView loadInBackground];
+                
+                activityCell.leftSideImageView.userInteractionEnabled = YES;
+                activityCell.leftSideImageView.objectForImageView = userInvite;
+                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                
+                //Main Text Message
+                EventObject *eventInvitedTo = (EventObject *) object[@"activityContent"];
+                activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ invited you to %@", username, eventInvitedTo.title];
+                
+                //Right Action Button
+                activityCell.actionButton.titleText = @"View";
+                activityCell.actionButton.eventToView = eventInvitedTo;
+                [activityCell.actionButton setIsSelected:NO];
+                [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                
+                [activityCell.actionButton endedTask];
 
-            //Left Image Thumbnail
-            activityCell.leftSideImageView.file = userAttend[@"profilePicture"];
-            [activityCell.leftSideImageView loadInBackground];
-            
-            activityCell.leftSideImageView.userInteractionEnabled = YES;
-            activityCell.leftSideImageView.objectForImageView = userAttend;
-            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-            
-            //Main Text Message
-            NSString *activityDescriptionString;
-            NSDate *currentDate = [NSDate date];
-            NSComparisonResult dateComparison = [currentDate compare:eventToAttend.dateOfEvent];
-            
-            //Build the description string based off Time of Event and Current User
-            if ([self.userForActivities.objectId isEqualToString:[EVNUser currentUser].objectId] ) {
-                
-                if (dateComparison == NSOrderedAscending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", eventToAttend.title];
-                    
-                } else {
-                    activityDescriptionString = [NSString stringWithFormat:@"You went to %@", eventToAttend.title];
-                }
-                
-            } else {
-                
-                if (dateComparison == NSOrderedAscending) {
-                    activityDescriptionString = [NSString stringWithFormat:@"%@ is going to %@", self.userForActivities[@"username"], eventToAttend.title];
-                    
-                } else {
-                    activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], eventToAttend.title];
-                }
-            
             }
             
-            activityCell.activityContentTextLabel.text = activityDescriptionString;
+            break;
+        }
+        case REQUEST_ACCESS_ACTIVITY: {
             
+            if (object[@"userFrom"]) {
+                
+                EVNUser *fromUser = object[@"userFrom"];
+                
+                //Current User is On the Standby List
+                if ([fromUser.objectId isEqualToString:[EVNUser currentUser].objectId]) {
+                    
+                    EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
+                    
+                    //Left Image Thumbnail
+                    activityCell.leftSideImageView.file = [EVNUser currentUser][@"profilePicture"];
+                    [activityCell.leftSideImageView loadInBackground];
+                    activityCell.leftSideImageView.userInteractionEnabled = YES;
+                    activityCell.leftSideImageView.objectForImageView = [EVNUser currentUser];
+                    UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+                    [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                    
+                    //Main Text Message
+                    activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"You showed interest in %@", eventToAccess.title];
+                    
+                    //Right Button Configuration
+                    activityCell.actionButton.eventToView = eventToAccess;
+                    activityCell.actionButton.titleText = @"View";
+                    [activityCell.actionButton setIsSelected:NO];
+                    [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                    
+                    [activityCell.actionButton endedTask];
+                    
+                    
+                //Current User Has a Request for Access to An Event
+                } else {
+                    
+                    EVNUser *userRequestedAccess = (EVNUser *) object[@"userFrom"];
+                    EventObject *eventToAccess = (EventObject *) object[@"activityContent"];
+                    
+                    //Left Image Thumbnail
+                    activityCell.leftSideImageView.file = userRequestedAccess[@"profilePicture"];
+                    [activityCell.leftSideImageView loadInBackground];
+                    
+                    activityCell.leftSideImageView.userInteractionEnabled = YES;
+                    activityCell.leftSideImageView.objectForImageView = userRequestedAccess;
+                    UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+                    [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                    
+                    //Main Text Message
+                    activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ requested access to %@", userRequestedAccess.username, eventToAccess.title];
+                    
+                    //Right Button Configuration
+                    activityCell.actionButton.personToGrantAccess = userRequestedAccess;
+                    activityCell.actionButton.eventToGrantAccess = eventToAccess;
+                    
+                    PFQuery *grantedActivity = [PFQuery queryWithClassName:@"Activities"];
+                    [grantedActivity whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
+                    [grantedActivity whereKey:@"type" equalTo:[NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY]];
+                    [grantedActivity whereKey:@"userTo" equalTo:userRequestedAccess];
+                    [grantedActivity whereKey:@"activityContent" equalTo:eventToAccess];
+                    [grantedActivity findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                        
+                        //Make sure the cell is still visible before updating.
+                        ActivityTableCell *testCell = (ActivityTableCell *) [tableView cellForRowAtIndexPath:indexPath];
+                        
+                        if (testCell) {
+                            
+                            if ([objects count] == 0 || error) {
+                                activityCell.actionButton.titleText = kGrantAccess;
+                                [activityCell.actionButton setIsSelected:NO];
+                            } else {
+                                activityCell.actionButton.titleText = kRevokeAccess;
+                                [activityCell.actionButton setIsSelected:YES];
+                            }
+                            
+                            if (!error) {
+                                [activityCell.actionButton addTarget:self action:@selector(grantAccess:) forControlEvents:UIControlEventTouchUpInside];
+                                [activityCell.actionButton endedTask];
+                            }
+                            
+                        }
+                        
+                    }];
+                    
+                }
+                
+            }
             
-            //Right Action Button
-            activityCell.actionButton.titleText = @"View";
-            activityCell.actionButton.eventToView = eventToAttend;
-            [activityCell.actionButton setIsSelected:NO];
+            break;
+        }
+        case ATTENDING_ACTIVITY: {
             
-            [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-            [activityCell.actionButton endedTask];
-            
+            if (object[@"userTo"]) {
+                
+                EVNUser *userAttend = object[@"userTo"];
+                EventObject *eventToAttend = object[@"activityContent"];
+                
+                //Left Image Thumbnail
+                activityCell.leftSideImageView.file = userAttend[@"profilePicture"];
+                [activityCell.leftSideImageView loadInBackground];
+                
+                activityCell.leftSideImageView.userInteractionEnabled = YES;
+                activityCell.leftSideImageView.objectForImageView = userAttend;
+                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                
+                //Main Text Message
+                NSString *activityDescriptionString;
+                NSDate *currentDate = [NSDate date];
+                NSComparisonResult dateComparison = [currentDate compare:eventToAttend.dateOfEvent];
+                
+                //Build the description string based off Time of Event and Current User
+                if ([self.userForActivities.objectId isEqualToString:[EVNUser currentUser].objectId] ) {
+                    
+                    if (dateComparison == NSOrderedAscending) {
+                        activityDescriptionString = [NSString stringWithFormat:@"You're going to %@", eventToAttend.title];
+                        
+                    } else {
+                        activityDescriptionString = [NSString stringWithFormat:@"You went to %@", eventToAttend.title];
+                    }
+                    
+                } else {
+                    
+                    if (dateComparison == NSOrderedAscending) {
+                        activityDescriptionString = [NSString stringWithFormat:@"%@ is going to %@", self.userForActivities[@"username"], eventToAttend.title];
+                        
+                    } else {
+                        activityDescriptionString = [NSString stringWithFormat:@"%@ went to %@", self.userForActivities[@"username"], eventToAttend.title];
+                    }
+                    
+                }
+                
+                activityCell.activityContentTextLabel.text = activityDescriptionString;
+                
+                
+                //Right Action Button
+                activityCell.actionButton.titleText = @"View";
+                activityCell.actionButton.eventToView = eventToAttend;
+                [activityCell.actionButton setIsSelected:NO];
+                
+                [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                [activityCell.actionButton endedTask];
+                
+            }
             
             break;
         }
         case ACCESS_GRANTED_ACTIVITY: {
             
-            EVNUser *userGrantedAccess = (EVNUser *) object[@"userFrom"];
-            EventObject *eventGrantedAccess = (EventObject *) object[@"activityContent"];
-            
-            //Left Side Thumbnail
-            activityCell.leftSideImageView.file = userGrantedAccess[@"profilePicture"];
-            [activityCell.leftSideImageView loadInBackground];
-            
-            activityCell.leftSideImageView.userInteractionEnabled = YES;
-            activityCell.leftSideImageView.objectForImageView = userGrantedAccess;
-            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
-            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
-            
-            //Main Text Message
-            activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ let you in to %@", userGrantedAccess.username, eventGrantedAccess.title];
-            
-            //Right Action Button
-            activityCell.actionButton.titleText = @"View";
-            activityCell.actionButton.eventToView = eventGrantedAccess;
-            [activityCell.actionButton setIsSelected:NO];
-            
-            [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
-            [activityCell.actionButton endedTask];
-            
+            if (object[@"userFrom"]) {
+                
+                EVNUser *userGrantedAccess = (EVNUser *) object[@"userFrom"];
+                EventObject *eventGrantedAccess = (EventObject *) object[@"activityContent"];
+                
+                //Left Side Thumbnail
+                activityCell.leftSideImageView.file = userGrantedAccess[@"profilePicture"];
+                [activityCell.leftSideImageView loadInBackground];
+                
+                activityCell.leftSideImageView.userInteractionEnabled = YES;
+                activityCell.leftSideImageView.objectForImageView = userGrantedAccess;
+                UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+                [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+                
+                //Main Text Message
+                activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ let you in to %@", userGrantedAccess.username, eventGrantedAccess.title];
+                
+                //Right Action Button
+                activityCell.actionButton.titleText = @"View";
+                activityCell.actionButton.eventToView = eventGrantedAccess;
+                [activityCell.actionButton setIsSelected:NO];
+                
+                [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+                [activityCell.actionButton endedTask];
+
+            }
         
             break;
         }

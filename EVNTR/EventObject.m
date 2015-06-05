@@ -278,7 +278,6 @@
 }
 
 
-//TODO: Test this.
 - (void) queryApprovalStatusOfUser:(EVNUser *)user completion:(void (^)(BOOL, NSString *, BOOL))completionBlock {
     
     //activityTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:REQUEST_ACCESS_ACTIVITY], [NSNumber numberWithInt:ACCESS_GRANTED_ACTIVITY], nil];
@@ -440,11 +439,7 @@
     }];
 }
 
-//TODO: Test this Code
 - (void) inviteUsers:(NSArray *)users completion:(void (^)(BOOL))completionBlock {
-    
-    
-    [PFAnalytics trackEventInBackground:@"InviteUsersIssue" block:nil];
     
     __block int totalSavesRequired = (int)[users count];
     __block int savesCompleted = 0;
@@ -463,6 +458,7 @@
             if (succeeded) {
                 savesCompleted++;
             } else {
+                [PFAnalytics trackEventInBackground:@"InviteUsersIssue" block:nil];
                 completionBlock(NO);
             }
             
