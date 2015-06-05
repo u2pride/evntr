@@ -344,10 +344,6 @@
                 
             }
             
-            
-            NSLog(@"invited - %d attending - %d granted - %d requested - %d", (int)isInvited, (int)isAttending, (int) isGrantedAccess, (int) isRequestedAccess);
-
-            
         
             if (isInvited || isGrantedAccess) {
                 

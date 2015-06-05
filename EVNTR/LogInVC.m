@@ -177,12 +177,10 @@
                 alertMessage = @"Your current session is no longer valid. Please log in again.";
                 
             } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-                //NSLog(@"user cancelled login");
                 
             } else {
                 alertTitle  = @"Something went wrong";
                 alertMessage = @"Please try again later.";
-                //NSLog(@"Unexpected error:%@", error);
             }
             
             if (alertMessage) {

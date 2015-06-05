@@ -222,8 +222,6 @@
     
     //Update Picture Count
     [self.event fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-       
-        NSLog(@"Fetched the latest object data and updating photos...");
         
         EventObject *eventFetched = (EventObject *) object;
         
@@ -663,46 +661,23 @@
 
 - (void) recheckPublicApprovedAccessDueToNewRSVP:(BOOL) newRSVP {
     
-    //unhide all important details
-    // map location - address and distance - use function [map finishedWithDetails] - loading before this finishes.
-    // event details - blank with loading indicator. [details finishedWithTime: andDateString: ]
-    // RSVP Button - loading indicator.  set text throughout loading but keep hidden until finished checking public approved
-    
-    //keep these all disabled until loading is finished.
-    //currently:  the following things are what contribute to the event details load:
-
-    NSLog(@"New RSVP: %@", [NSNumber numberWithBool:newRSVP]);
-
-    NSLog(@"Rechecking Pa Access - %@ and %@ and %@ and %@", [NSNumber numberWithBool:self.isPublicApproved], [NSNumber numberWithBool:self.isCurrentUserAttending], [NSNumber numberWithBool:self.isCurrentUsersEvent], [NSNumber numberWithBool:self.isGuestUser]);
-    
     if ((self.isPublicApproved && !self.isCurrentUserAttending && !self.isCurrentUsersEvent) || self.isGuestUser) {
-        
-        NSLog(@"In the wrong place");
-    
+            
         self.transparentTouchView.hidden = YES;
         self.locationOfEvent = [[CLLocation alloc] initWithLatitude:37.749 longitude:-122.4167];
         
         self.entireMapView.address = [NSString stringWithFormat:@"Unknown"];
         self.entireMapView.distanceAway = 0.0f;
-        //self.dateOfEventLabel.text = @"Unknown";
-        //self.timeOfEventLabel.text = @"Unknown";
         
         [self.rsvpStatusButton endedTask];
         [self.entireMapView finishedLoadingWithLocationAvailable:NO];
         
     } else {
         
-        NSLog(@"In the right place");
-        
         if (newRSVP) {
-            NSLog(@"resetup map component");
             self.transparentTouchView.hidden = NO;
-
             [self setupMapComponent];
         }
-        
-        //self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
-        //self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
         
         [self.rsvpStatusButton endedTask];
         [self.entireMapView finishedLoadingWithLocationAvailable:YES];

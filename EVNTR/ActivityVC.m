@@ -50,6 +50,7 @@
         self.objectsPerPage = 15;
         _typeOfActivityView = ACTIVITIES_ALL;
         _userScrolledUp = NO;
+        _backgroundUpdateOccurred = NO;
     }
     
     return self;
@@ -111,8 +112,6 @@
     
     [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
 }
-
-
 
 
 
@@ -287,6 +286,18 @@
     
 }
 
+- (void) objectsWillLoad {
+    
+    [super objectsWillLoad];
+    
+    if (!self.timerForAutomaticUpdates.valid) {
+        [self updateRefreshTimestampWithDate:[NSDate date]];
+    }
+    
+}
+
+
+
 - (void) objectsDidLoad:(NSError *)error {
     
     [super objectsDidLoad:error];
@@ -377,6 +388,7 @@
 - (void) backgroundActivityUpdate {
     
     self.typeOfActivityView = ACTIVITIES_ALL;
+    self.backgroundUpdateOccurred = YES;
     [self loadObjects];
     
 }
@@ -405,7 +417,7 @@
         //empty
     } else {
         self.userScrolledUp = YES;
-        [self updateRefreshTimestampWithDate:[NSDate date]];
+        //[self updateRefreshTimestampWithDate:[NSDate date]];
         
     }
     
@@ -428,10 +440,13 @@
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     activityCell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
 
+    
     //Determine if Cell Should be Highlighted as a New Notification
     NSComparisonResult dateCompare = [createdAtDate compare:self.secondaryUpdateTimestamp];
-    if (dateCompare == NSOrderedDescending && !self.userScrolledUp) {
+    if (dateCompare == NSOrderedDescending) {
         [activityCell highlightCellForNewNotification];
+    } else {
+        [activityCell resetHighlighting];
     }
     
     //Remove Old Gestures and Targets from the Cell
@@ -440,7 +455,6 @@
     }
     
     [activityCell.actionButton removeTarget:nil action:NULL forControlEvents:UIControlEventTouchUpInside];
-    
     
     int activityType = (int) [[object objectForKey:@"type"] integerValue];
     

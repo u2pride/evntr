@@ -14,5 +14,9 @@
 
 @property (nonatomic, assign) int typeOfActivityView;
 @property (nonatomic, strong) EVNUser *userForActivities;
+@property (nonatomic) BOOL backgroundUpdateOccurred;
+
+- (void) updateRefreshTimestampWithDate:(NSDate *)updatedDate;
+
 
 @end

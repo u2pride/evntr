@@ -124,6 +124,20 @@
         activityVC.userForActivities = [EVNUser currentUser];
         activityVC.typeOfActivityView = ACTIVITIES_ALL;
         
+        if (activityVC.backgroundUpdateOccurred) {
+            [activityVC updateRefreshTimestampWithDate:[NSDate date]];
+            activityVC.backgroundUpdateOccurred = NO;
+        }
+        
+        //TODO: remove
+        //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC);
+        //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+    
+        
+        //});
+
+        
     //Profile VC
     } else if (viewController == [self.viewControllers objectAtIndex:3] && !self.isGuestUser) {
     

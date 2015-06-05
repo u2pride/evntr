@@ -18,5 +18,7 @@
 @property (weak, nonatomic) IBOutlet EVNButtonExtended *actionButton;
 
 - (void) highlightCellForNewNotification;
+- (void) resetHighlighting;
+
 
 @end

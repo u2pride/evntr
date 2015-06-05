@@ -32,17 +32,23 @@
 
 - (void) highlightCellForNewNotification {
         
-    self.backgroundColor = [UIColor colorWithRed:0.922 green:0.333 blue:0.141 alpha:0.2];
+    self.backgroundColor = [UIColor colorWithRed:0.922 green:0.333 blue:0.141 alpha:0.15];
     
-    [UIView animateWithDuration:3.0 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
+    //[UIView animateWithDuration:3.0 delay:0.0 options:UIViewAnimationOptionAllowUserInteraction animations:^{
         
-        self.backgroundColor = [UIColor whiteColor];
+    //    self.backgroundColor = [UIColor whiteColor];
         
-    } completion:^(BOOL finished) {
+    //} completion:^(BOOL finished) {
         
-    }];
+    //}];
     
     
+}
+
+- (void) resetHighlighting {
+    
+    self.backgroundColor = [UIColor whiteColor];
+
 }
 
 @end

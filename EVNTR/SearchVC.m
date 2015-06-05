@@ -112,7 +112,7 @@
     }
     
     self.searchController.searchBar.text = @"";
-    self.searchResultsArray = [[NSMutableArray alloc] init];
+    [self.searchResultsArray removeAllObjects];
     [self.searchResultsTable reloadData];
     
 }
@@ -183,12 +183,18 @@
         if (self.isSearchingEvents) {
             
             EventObject *currentObject = (EventObject *)[self.searchResultsArray objectAtIndex:indexPath.row];
-            cell.textLabel.text = currentObject.title;
+            
+            if (currentObject.title) {
+                cell.textLabel.text = currentObject.title;
+            }
             
         } else {
             
             EVNUser *currentUser = (EVNUser *) [self.searchResultsArray objectAtIndex:indexPath.row];
-            cell.textLabel.text = currentUser.username;
+            
+            if (currentUser.username) {
+                cell.textLabel.text = currentUser.username;
+            }
             
         }
         
