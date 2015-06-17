@@ -16,5 +16,6 @@
 
 - (IBAction)tweetEvntr:(id)sender;
 - (IBAction)emailEvntr:(id)sender;
+- (IBAction)viewTerms:(id)sender;
 
 @end

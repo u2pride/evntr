@@ -36,6 +36,7 @@
 @property (nonatomic, strong) id<UIViewControllerTransitioningDelegate> customTransitionDelegate;
 
 - (IBAction)skipForNow:(id)sender;
+- (IBAction)viewTerms:(id)sender;
 
 @end
 
@@ -94,8 +95,9 @@
     [self.registerButton addGestureRecognizer:tapgr];
     [self.loginButton addGestureRecognizer:tapgr2];
     
-    
     [self registerForNotifications];
+    
+    
 
 }
 
@@ -142,6 +144,12 @@
         [self checkAppVersion];
 
     }
+    
+}
+
+- (IBAction)viewTerms:(id)sender {
+    
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://evntr.co/terms"]];
     
 }
 
@@ -273,7 +281,9 @@
 - (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     
     if (alertView.tag == 2) {
-        [self checkAppVersion];
+        if (buttonIndex == 1) {
+            [self checkAppVersion];
+        }
     }
     
 }

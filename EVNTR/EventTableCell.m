@@ -24,6 +24,8 @@
     self.roundForAttendersView.layer.cornerRadius = self.roundForAttendersView.frame.size.width / 2.0f;
     self.roundForAttendersView.backgroundColor = [UIColor orangeThemeColor];
     
+    self.flagButton.userInteractionEnabled = YES;
+    
 }
 
 

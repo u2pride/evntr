@@ -48,6 +48,7 @@
 @property (strong, nonatomic) IBOutlet EVNButtonExtended *rsvpStatusButton;
 @property (strong, nonatomic) IBOutlet UIButton *inviteButton;
 @property (strong, nonatomic) IBOutlet UILabel *viewAttending;
+@property (strong, nonatomic) IBOutlet UIImageView *flagEvent;
 
 //Labels
 @property (weak, nonatomic) IBOutlet UILabel *eventTitle;
@@ -447,6 +448,11 @@
     self.detailsLoadingView.hidesWhenStopped = YES;
     [self.detailsBackgroundView.superview addSubview:self.detailsLoadingView];
     
+    //Setup Flag Button
+    self.flagEvent.userInteractionEnabled = YES;
+    UITapGestureRecognizer *flagGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(flagCurrentEvent)];
+    [self.flagEvent addGestureRecognizer:flagGR];
+    
     //View Users Attending
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEventAttenders)];
     tapgr.numberOfTapsRequired = 1;
@@ -745,6 +751,12 @@
 
 
 #pragma mark - User Actions
+
+- (void) flagCurrentEvent {
+    
+    [self.event flagEventFromVC:self];
+    
+}
 
 - (void) touchedMap {
     

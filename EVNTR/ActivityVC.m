@@ -727,10 +727,13 @@
         }
         default: {
             
-            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"That's Weird" message:@"Looks like something broke.  Send us an email or tweet from the settings page and we'll help you figure out what happened." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            //Unrecognized Activity Cell Type
             
-            [message show];
-            
+            activityCell.activityContentTextLabel.text = @"Unknown Type";
+            activityCell.actionButton.titleText = @"...";
+            [activityCell.actionButton setIsSelected:NO];
+
+
             break;
         }
     }

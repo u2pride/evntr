@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNFullWebViewController.h"
 #import "EVNUser.h"
 #import "ProfileVC.h"
 #import "SettingsVC.h"
@@ -82,6 +83,15 @@
         [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
         
     }];
+    
+}
+
+- (IBAction)viewTerms:(id)sender {
+    
+    EVNFullWebViewController *termsWeb = [[EVNFullWebViewController alloc] init];
+    
+    [self.navigationController pushViewController:termsWeb animated:YES];
+    
     
 }
 

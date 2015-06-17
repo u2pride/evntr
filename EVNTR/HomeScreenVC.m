@@ -285,6 +285,16 @@
     
     if (cell) {
         
+        //Flagging
+        for (UIGestureRecognizer *recognizer in cell.flagButton.gestureRecognizers) {
+            [cell.flagButton removeGestureRecognizer:recognizer];
+        }
+        
+        cell.flagButton.tag = indexPath.row;
+
+        UITapGestureRecognizer *flagGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(flagEvent:)];
+        [cell.flagButton addGestureRecognizer:flagGR];
+        
         cell.eventCoverImage.image = [UIImage imageNamed:@"EventDefault"];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
@@ -398,6 +408,17 @@
     
     self.noResultsView.actionButton.isSelected = NO;
     
+}
+
+
+- (void) flagEvent:(UIGestureRecognizer *)sender {
+    
+    UIImageView *flagButton = (UIImageView *)sender.view;
+    
+    EventObject *eventToFlag = (EventObject *) [self.objects objectAtIndex:flagButton.tag];
+    
+    [eventToFlag flagEventFromVC:self];
+
 }
 
 #pragma mark - Event Details Delegate Methods

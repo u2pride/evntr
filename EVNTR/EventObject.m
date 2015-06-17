@@ -513,5 +513,124 @@
 }
 
 
+- (void) flagEventFromVC:(UIViewController *)currentVC {
+    
+    UIAlertController *flagSelection = [UIAlertController alertControllerWithTitle:@"Flag Content" message:@"Please select why you are flagging this content.  What content is inappropriate?" preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    
+    UIAlertAction *eventName = [UIAlertAction actionWithTitle:@"Event Name" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        [self createFlaggingAlertViewWithType:@"EventName" andMessage:@"Please add a description to explain why the event name is inappropriate." onVC:currentVC];
+        
+    }];
+    
+    UIAlertAction *eventDescription = [UIAlertAction actionWithTitle:@"Event Description" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        [self createFlaggingAlertViewWithType:@"EventDescription" andMessage:@"Please add a description to explain why the event description is inappropriate." onVC:currentVC];
+        
+    }];
+    
+    UIAlertAction *eventContent = [UIAlertAction actionWithTitle:@"Event Content" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        [self createFlaggingAlertViewWithType:@"EventContent" andMessage:@"Please identify which event comment or picture is innapropriate." onVC:currentVC];
+        
+    }];
+    
+    UIAlertAction *otherContent = [UIAlertAction actionWithTitle:@"Other" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        [self createFlaggingAlertViewWithType:@"Other" andMessage:@"Please describe the content you are reporting and why it is inappropriate." onVC:currentVC];
+        
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        
+        
+    }];
+    
+    
+    [flagSelection addAction:eventName];
+    [flagSelection addAction:eventDescription];
+    [flagSelection addAction:eventContent];
+    [flagSelection addAction:otherContent];
+    [flagSelection addAction:cancelAction];
+    
+    [currentVC presentViewController:flagSelection animated:YES completion:nil];
+    
+}
+
+
+- (void) createFlaggingAlertViewWithType:(NSString *)type andMessage:(NSString *)message onVC:(UIViewController *)vc {
+    
+    __block UITextField *descriptionText;
+    
+    UIAlertController *submitReport = [UIAlertController alertControllerWithTitle:@"Report Content" message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    [submitReport addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        
+        textField.autocorrectionType = UITextAutocorrectionTypeYes;
+        textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+        descriptionText = textField;
+        
+    }];
+    
+    UIAlertAction *submit = [UIAlertAction actionWithTitle:@"Submit Report" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        
+        PFObject *reportObject = [PFObject objectWithClassName:@"Reports"];
+        [reportObject setObject:[EVNUser currentUser] forKey:@"userFrom"];
+        [reportObject setObject:self forKey:@"flaggedEvent"];
+        [reportObject setObject:descriptionText.text forKey:@"flagDescription"];
+        [reportObject setObject:type forKey:@"flagType"];
+        
+        [reportObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            if (succeeded) {
+                
+                UIAlertController *submitVerification = [UIAlertController alertControllerWithTitle:@"Submitted" message:@"Thanks for submitting a report.  We'll review this content within 24 hours and remove if it violates our policy." preferredStyle:UIAlertControllerStyleAlert];
+                
+                [vc presentViewController:submitVerification animated:YES completion:^{
+                    
+                    double delayInSeconds = 2;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        
+                        [vc dismissViewControllerAnimated:YES completion:nil];
+                        
+                    });
+                    
+                }];
+                
+            } else {
+                
+                UIAlertController *submitVerification = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Please try to submit again." preferredStyle:UIAlertControllerStyleAlert];
+                
+                [vc presentViewController:submitVerification animated:YES completion:^{
+                    
+                    double delayInSeconds = 2;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        
+                        [vc dismissViewControllerAnimated:YES completion:nil];
+                        
+                    });
+                    
+                }];
+                
+            }
+            
+        }];
+        
+    }];
+    
+    UIAlertAction *cancelReport = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        
+    }];
+    
+    [submitReport addAction:submit];
+    [submitReport addAction:cancelReport];
+    
+    [vc presentViewController:submitReport animated:YES completion:nil];
+    
+}
+
 
 @end

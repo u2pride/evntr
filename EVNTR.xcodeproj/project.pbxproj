@@ -87,6 +87,7 @@
 		A4E4B6B11ADEB60F00D38358 /* CommentsTableSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B01ADEB60F00D38358 /* CommentsTableSource.m */; };
 		A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */; };
 		A4E5D4BE1AA8CA0C00E86410 /* GoogleResult.m in Sources */ = {isa = PBXBuildFile; fileRef = A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */; };
+		A4F2B5F61B31C2F00006A82F /* EVNFullWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2B5F51B31C2F00006A82F /* EVNFullWebViewController.m */; };
 		A4F2E9AB1A7AB4CE00614412 /* PeopleVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */; };
 		A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B11A7ABDF400614412 /* PersonCell.m */; };
 		A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = A4F2E9B41A7AF5CF00614412 /* EVNUtility.m */; };
@@ -113,7 +114,7 @@
 		A40443621B04D06200F36C6A /* EVNMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNMapAnnotation.m; sourceTree = "<group>"; };
 		A41352531A81B80200034222 /* ImageViewPFExtended.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageViewPFExtended.h; sourceTree = "<group>"; };
 		A41352541A81B80200034222 /* ImageViewPFExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewPFExtended.m; sourceTree = "<group>"; };
-		A41562C11A767D3A00565BB6 /* EVNTR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EVNTR.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A41562C11A767D3A00565BB6 /* Evntr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Evntr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A41562C51A767D3A00565BB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A41562C61A767D3A00565BB6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A41562C81A767D3A00565BB6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -244,6 +245,8 @@
 		A4E4B6B31ADEE01B00D38358 /* EVNAddCommentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNAddCommentVC.m; sourceTree = "<group>"; };
 		A4E5D4BC1AA8CA0C00E86410 /* GoogleResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleResult.h; sourceTree = "<group>"; };
 		A4E5D4BD1AA8CA0C00E86410 /* GoogleResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleResult.m; sourceTree = "<group>"; };
+		A4F2B5F41B31C2F00006A82F /* EVNFullWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNFullWebViewController.h; sourceTree = "<group>"; };
+		A4F2B5F51B31C2F00006A82F /* EVNFullWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNFullWebViewController.m; sourceTree = "<group>"; };
 		A4F2E9A91A7AB4CE00614412 /* PeopleVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PeopleVC.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A4F2E9AA1A7AB4CE00614412 /* PeopleVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PeopleVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4F2E9B01A7ABDF400614412 /* PersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PersonCell.h; sourceTree = "<group>"; };
@@ -308,7 +311,7 @@
 		A41562C21A767D3A00565BB6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A41562C11A767D3A00565BB6 /* EVNTR.app */,
+				A41562C11A767D3A00565BB6 /* Evntr.app */,
 				A41562DA1A767D3A00565BB6 /* EVNTRTests.xctest */,
 			);
 			name = Products;
@@ -702,6 +705,8 @@
 				A4C4EDD81A9538FB000BC3AD /* TabNavigationVC.m */,
 				A41B2A111ABCBE3F00F7CE44 /* SignUpTabVC.h */,
 				A41B2A121ABCBE3F00F7CE44 /* SignUpTabVC.m */,
+				A4F2B5F41B31C2F00006A82F /* EVNFullWebViewController.h */,
+				A4F2B5F51B31C2F00006A82F /* EVNFullWebViewController.m */,
 				A4B24D421A7709D200B4C3A6 /* SettingsVC.h */,
 				A4B24D431A7709D200B4C3A6 /* SettingsVC.m */,
 				A49A9E2B1AAE479300358D65 /* Third Party Code */,
@@ -741,7 +746,7 @@
 			);
 			name = EVNTR;
 			productName = EVNTR;
-			productReference = A41562C11A767D3A00565BB6 /* EVNTR.app */;
+			productReference = A41562C11A767D3A00565BB6 /* Evntr.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A41562D91A767D3A00565BB6 /* EVNTRTests */ = {
@@ -843,7 +848,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=/usr/local/bin:$PATH\ncd /Users/U2Pride/Documents/iOS\\ Development/Evntr/EVNTR/parse\n\nparse symbols -p \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"";
+			shellScript = "export PATH=/usr/local/bin:$PATH\ncd /Users/U2Pride/Documents/iOS\\ Development/Evntr/EVNTR/CloudCode_Production\n\nparse symbols -p \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -884,6 +889,7 @@
 				A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */,
 				A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
+				A4F2B5F61B31C2F00006A82F /* EVNFullWebViewController.m in Sources */,
 				A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */,
 				A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
@@ -1032,7 +1038,7 @@
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Evntr;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
@@ -1052,7 +1058,7 @@
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Evntr;
 				PROVISIONING_PROFILE = "";
 			};
 			name = Release;

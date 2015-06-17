@@ -48,6 +48,7 @@
 - (void) queryForImagesWithCompletion:(void (^)(NSArray *images))completionBlock;
 - (void) queryForCommentsWithCompletion:(void (^)(NSArray *comments))completionBlock;
 
+- (void) flagEventFromVC:(UIViewController *)currentVC;
 
 /*
 
