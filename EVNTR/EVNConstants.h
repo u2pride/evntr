@@ -107,7 +107,7 @@ extern NSString *const kSecondaryUpdateTimestamp;
 #define MAX_USERNAME_LENGTH 20
 #define MIN_REALNAME_LENGTH 2
 #define MAX_REALNAME_LENGTH 20
-#define MAX_BIO_LENGTH 40
+#define MAX_BIO_LENGTH 160
 #define MIN_PASSWORD_LENGTH 2
 #define MAX_HOMETOWN_LENGTH 30
 #define MIN_EVENTTITLE_LENGTH 2

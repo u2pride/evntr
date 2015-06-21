@@ -30,6 +30,8 @@
 //Structure Related Views
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIView *colorBackgroundView;
+@property (strong, nonatomic) NSLayoutConstraint *bioConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *pictureBottomConstraint;
 
 //User Information
 @property (strong, nonatomic) IBOutlet UILabel *bioLabel;
@@ -42,7 +44,6 @@
 @property (strong, nonatomic) IBOutlet UIButton *followingHeaderButton;
 @property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
 @property (strong, nonatomic) IBOutlet UILabel *userHometownLabel;
-@property (strong, nonatomic) IBOutlet UILabel *userSinceLabel;
 
 //Buttons For Actions On Profile
 @property (strong, nonatomic) IBOutlet EVNButton *followButton;
@@ -78,18 +79,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontLight size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+    
     self.colorBackgroundView.backgroundColor = [UIColor orangeThemeColor];
-
+    
     [self setupButtons];
     [self wireUpTapRecognizers];
     
     self.nameLabel.adjustsFontSizeToFitWidth = YES;
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
-    
+    self.scrollView.alwaysBounceVertical = YES;
 }
 
 
@@ -117,7 +121,6 @@
             self.profileUser = (EVNUser *)object;
             
             self.userHometownLabel.text = [self.profileUser hometownText];
-            self.userSinceLabel.text = [NSString stringWithFormat:@"Joined %@", [self.profileUser.createdAt formattedAsTimeAgo]];
             
             if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
                 self.profileType = CURRENT_USER_PROFILE;
@@ -146,7 +149,6 @@
             self.numberEventsLabel.hidden = YES;
             self.numberFollowingLabel.hidden = YES;
             self.numberFollowersLabel.hidden = YES;
-            self.userSinceLabel.hidden = YES;
             
             UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SettingsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(viewSettings)];
             self.navigationItem.rightBarButtonItem = settingsButton;
@@ -155,6 +157,8 @@
             
             [errorAlert show];
         }
+        
+        [self updateViewConstraints];
         
     }];
     
@@ -171,6 +175,39 @@
     
 }
 
+
+- (void) updateViewConstraints {
+    
+    [super updateViewConstraints];
+    
+    //self.bioLabel.text = [self.profileUser bioText];
+
+    CGSize moreSize = CGSizeMake(self.bioLabel.frame.size.width, 9999);
+    CGSize anotherSize = [self.bioLabel sizeThatFits:moreSize];
+    
+    if (!self.bioConstraint) {
+        
+        self.bioConstraint = [NSLayoutConstraint constraintWithItem:self.bioLabel
+                                                          attribute:NSLayoutAttributeHeight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:nil
+                                                          attribute:NSLayoutAttributeNotAnAttribute
+                                                         multiplier:1.0
+                                                           constant:anotherSize.height];
+        
+        
+        
+        [self.view addConstraint:self.bioConstraint];
+        
+    } else {
+        
+        self.bioConstraint.constant = anotherSize.height;
+        
+    }
+    
+
+    
+}
 
 #pragma mark - Helper Methods for VC Lifecycle
 
@@ -200,6 +237,7 @@
     UITapGestureRecognizer *viewEvents = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEvents)];
     UITapGestureRecognizer *viewFollowing = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewFollowing)];
     UITapGestureRecognizer *viewFollowers = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewFollowers)];
+    UITapGestureRecognizer *viewProfilePicture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resizeProfilePicture)];
     
     [self.eventsHeaderButton addTarget:self action:@selector(viewEvents) forControlEvents:UIControlEventTouchUpInside];
     
@@ -210,10 +248,12 @@
     self.numberEventsLabel.userInteractionEnabled = YES;
     self.numberFollowingLabel.userInteractionEnabled = YES;
     self.numberFollowersLabel.userInteractionEnabled = YES;
+    self.profileImageView.userInteractionEnabled = YES;
     
     [self.numberEventsLabel addGestureRecognizer:viewEvents];
     [self.numberFollowingLabel addGestureRecognizer:viewFollowing];
     [self.numberFollowersLabel addGestureRecognizer:viewFollowers];
+    [self.profileImageView addGestureRecognizer:viewProfilePicture];
     
 }
 
@@ -230,7 +270,10 @@
             [self.editProfileButton addTarget:self action:@selector(editUserProfile) forControlEvents:UIControlEventTouchUpInside];
             
             self.title = @"Profile";
-            self.navigationItem.title = [@"@" stringByAppendingString:self.profileUser.username];
+            
+            //CHANGED
+            //self.navigationItem.title = [@"@" stringByAppendingString:self.profileUser.username];
+            self.navigationItem.title = [self.profileUser nameText];
             
             break;
         }
@@ -268,10 +311,10 @@
             break;
     }
     
+    self.nameLabel.text = [@"@" stringByAppendingString:self.profileUser.username];
+    self.nameLabel.font = [UIFont fontWithName:@"Lato-Regular" size:24];
     
-    self.nameLabel.text = [self.profileUser nameText];
     self.bioLabel.text = [self.profileUser bioText];
-    
     
     PFFile *profilePictureFromParse = self.profileUser[@"profilePicture"];
     self.profileImageView.file = profilePictureFromParse;
@@ -342,11 +385,58 @@
 
 
 
-
 #pragma mark - ProfileActions
 
-- (void) viewEvents {
+- (void) resizeProfilePicture {
     
+    if (self.nameLabel.alpha == 0.0) {
+        
+        self.navigationItem.title = [self.profileUser nameText];
+
+        [self.view layoutIfNeeded];
+        
+        self.pictureBottomConstraint.constant = 4;
+        
+
+        [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:0.7 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+            [self.view layoutIfNeeded];
+            
+            self.bioLabel.alpha = 1.0;
+            self.nameLabel.alpha = 1.0;
+            self.userHometownLabel.alpha = 1.0;
+            
+        } completion:^(BOOL finished) {
+        
+        }];
+        
+    } else {
+        
+        
+        [self.view layoutIfNeeded];
+        
+        float totalIncrease = self.nameLabel.frame.size.height + self.userHometownLabel.frame.size.height + self.bioLabel.frame.size.height;
+
+        self.pictureBottomConstraint.constant -= totalIncrease;
+        
+        [UIView animateWithDuration:0.5 delay:0.0 usingSpringWithDamping:0.7 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            
+            [self.view layoutIfNeeded];
+            
+            self.bioLabel.alpha = 0.0;
+            self.nameLabel.alpha = 0.0;
+            self.userHometownLabel.alpha = 0.0;
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }
+    
+}
+
+- (void) viewEvents {
+
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
@@ -358,7 +448,7 @@
     }
     
     [self.navigationController pushViewController:eventVC animated:YES];
-
+    
 }
 
 - (void) viewFollowers {

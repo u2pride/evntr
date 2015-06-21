@@ -40,10 +40,10 @@
     [ParseCrashReporting enable];
     
     //parse init - DEVELOPMENT
-    //[Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
+    [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
 
     //parse init - PRODUCTION
-    [Parse setApplicationId:@"pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs" clientKey:@"3s0PDgQzp01DLs588gDqPqaEVepbHaoYmfkcAlXJ"];
+    //[Parse setApplicationId:@"pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs" clientKey:@"3s0PDgQzp01DLs588gDqPqaEVepbHaoYmfkcAlXJ"];
 
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
