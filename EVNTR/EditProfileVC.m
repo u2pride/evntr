@@ -288,12 +288,12 @@ typedef enum {
     
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    NSString *submittedUsername = self.usernameTextField.text;
+    NSString *submittedUsername = [self.usernameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     NSString *submittedName = self.realNameTextField.text;
     NSString *submittedBio = self.bioTextField.text;
     NSString *submittedHometown = self.hometownTextField.text;
 
-    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH && submittedHometown.length <= MAX_HOMETOWN_LENGTH) {
+    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH && submittedHometown.length <= MAX_HOMETOWN_LENGTH && [self validUsername:submittedUsername]) {
         
         if (self.newProfilePictureChosen) {
                         
@@ -358,6 +358,17 @@ typedef enum {
         } else if (submittedHometown.length > MAX_HOMETOWN_LENGTH) {
             
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hometown" message:[NSString stringWithFormat:@"Please use a location that is %d characters or shorter.", (MAX_HOMETOWN_LENGTH)] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+        } else if (![self validUsername:submittedUsername]) {
+            
+            NSArray *characterSets = [submittedUsername componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            NSString *correctedUsername = [characterSets componentsJoinedByString:@""];
+            
+            self.usernameTextField.text = correctedUsername;
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Let us help you out some.  We've removed the spaces in your username.  Go ahead and click register again."] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
@@ -453,6 +464,17 @@ typedef enum {
     self.realNameTextField.text = realNameStored;
     self.hometownTextField.text = hometownStored;
     self.bioTextField.text = bioStored;
+    
+}
+
+
+- (BOOL) validUsername:(NSString *)username {
+    
+    if ([[username componentsSeparatedByString:@" "] count] > 1) {
+        return NO;
+    } else {
+        return YES;
+    }
     
 }
 

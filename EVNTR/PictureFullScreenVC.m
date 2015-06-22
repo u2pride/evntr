@@ -25,7 +25,7 @@
         
         _removePhoto = [[UIButton alloc] init];
         _removePhoto.titleLabel.textColor = [UIColor redColor];
-        [_removePhoto setTitle:@"X" forState:UIControlStateNormal];
+        [_removePhoto setTitle:@"Remove" forState:UIControlStateNormal];
         _removePhoto.titleLabel.font = [UIFont fontWithName:@"Lato-Light" size:24];
         [_removePhoto addTarget:self action:@selector(removePhotoFromEvent) forControlEvents:UIControlEventTouchUpInside];
         _removePhoto.translatesAutoresizingMaskIntoConstraints = NO;
@@ -122,9 +122,9 @@
 - (void) removePhotoFromEvent {
     
     
-    UIAlertController *removePhotoVerifySheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertController *removePhotoVerifySheet = [UIAlertController alertControllerWithTitle:@"Are you sure?" message:nil preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Remove Photo" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Remove" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
         
         self.removePhoto.enabled = NO;
         

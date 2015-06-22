@@ -230,11 +230,12 @@ typedef enum {
     newUser.password = self.passwordField.text;
     newUser.email = self.emailField.text;
     
-    NSString *submittedUsername = self.usernameField.text;
+    NSString *submittedUsername = [self.usernameField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     NSString *submittedPassword = self.passwordField.text;
     NSString *submittedEmail = self.emailField.text;
-
-    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedPassword.length >= MIN_PASSWORD_LENGTH && submittedEmail.length > 0) {
+    
+    
+    if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedPassword.length >= MIN_PASSWORD_LENGTH && submittedEmail.length > 0 && [self validUsername:submittedUsername]) {
         
         if (!self.userPickedProfileImage) {
             self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
@@ -369,6 +370,17 @@ typedef enum {
             
             [errorAlert show];
             
+        } else if (![self validUsername:submittedUsername]) {
+          
+            NSArray *characterSets = [submittedUsername componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            NSString *correctedUsername = [characterSets componentsJoinedByString:@""];
+            
+            self.usernameField.text = correctedUsername;
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Let us help you out some.  We've removed the spaces in your username.  Go ahead and click register again."] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
         } else {
             
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Issue" message:@"Please make sure to fill in all fields before signing up." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
@@ -379,6 +391,8 @@ typedef enum {
         [self cleanUpBeforeTransition];
         
     }
+    
+    
 }
 
 
@@ -632,6 +646,16 @@ typedef enum {
     } completion:^(BOOL finished) {
         self.viewIsPulledUpForTextInput = (up ? YES : NO);
     }];
+    
+}
+
+- (BOOL) validUsername:(NSString *)username {
+    
+    if ([[username componentsSeparatedByString:@" "] count] > 1) {
+        return NO;
+    } else {
+        return YES;
+    }
     
 }
 

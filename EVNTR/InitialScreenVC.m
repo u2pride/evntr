@@ -417,46 +417,6 @@
         
     [PFCloud callFunctionInBackground:@"checkVersion" withParameters:@{@"majorVersion": majorVersion, @"minorVersion": minorVersion} block:^(NSString *result, NSError *error) {
         
-        if ([result isEqualToString:@"true"]) {
-            self.isRunningValidCodeVersion = YES;
-            
-            if ([EVNUser currentUser]) {
-                
-                [[EVNUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    
-                    if (!error){
-                        
-                        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-                        [standardDefaults setBool:NO forKey:kIsGuest];
-                        [standardDefaults synchronize];
-                        
-                        //[self stopMoviePlayer];
-                        [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
-                        
-                    } else {
-                        
-                        [self.moviePlayer play];
-                    
-                    }
-                    
-                }];
-                
-            } else {
-                
-                [self.moviePlayer play];
-                
-            }
-        } else {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Update Required" message:@"Looks like you are running an old version of the app, head over to the app store to grab the latest update." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-            [self.moviePlayer play];
-            
-        }
-        
-        
         if (error) {
             
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Try Again" message:@"We're having trouble connecting to the internet." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
@@ -468,6 +428,52 @@
             [errorAlert show];
             
             [self.moviePlayer play];
+            
+        } else {
+            
+            if ([result isEqualToString:@"true"]) {
+                self.isRunningValidCodeVersion = YES;
+                
+                if ([EVNUser currentUser]) {
+                    
+                    [[EVNUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                        
+                        if (!error){
+                            
+                            NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                            [standardDefaults setBool:NO forKey:kIsGuest];
+                            [standardDefaults synchronize];
+                            
+                            //[self stopMoviePlayer];
+                            [self performSegueWithIdentifier:@"currentUserExists" sender:nil];
+                            
+                        } else {
+                            
+                            [self.moviePlayer play];
+                            
+                        }
+                        
+                    }];
+                    
+                } else {
+                    
+                    [self.moviePlayer play];
+                    
+                }
+            
+            } else if ([result isEqualToString:@"false"]) {
+                
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Update Required" message:@"Looks like you are running an old version of the app, head over to the app store to grab the latest update." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                
+                [errorAlert show];
+                
+                [self.moviePlayer play];
+                
+            } else {
+                
+                //?
+                
+            }
             
         }
         
