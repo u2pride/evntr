@@ -25,8 +25,8 @@
         
         _removePhoto = [[UIButton alloc] init];
         _removePhoto.titleLabel.textColor = [UIColor redColor];
-        [_removePhoto setTitle:@"Remove Photo" forState:UIControlStateNormal];
-        _removePhoto.titleLabel.font = [UIFont fontWithName:@"Lato-Light" size:21];
+        [_removePhoto setTitle:@"X" forState:UIControlStateNormal];
+        _removePhoto.titleLabel.font = [UIFont fontWithName:@"Lato-Light" size:24];
         [_removePhoto addTarget:self action:@selector(removePhotoFromEvent) forControlEvents:UIControlEventTouchUpInside];
         _removePhoto.translatesAutoresizingMaskIntoConstraints = NO;
         _showRemovePhotoAction = NO;
@@ -61,7 +61,7 @@
     
     NSString *removePhotosString = @"Remove Photos";
     
-    CGSize size = [removePhotosString sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Lato-Light" size:21]}];
+    CGSize size = [removePhotosString sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:@"Lato-Light" size:24]}];
     CGSize adjustedSize = CGSizeMake(ceilf(size.width), ceilf(size.height));
     
     //Center X
@@ -82,7 +82,7 @@
                               toItem:self.eventPhotoView
                               attribute:NSLayoutAttributeBottom
                               multiplier:1.0
-                              constant:32]];
+                              constant:12]];
     
     //80% Width
     [self.view addConstraint:[NSLayoutConstraint
@@ -121,29 +121,48 @@
 
 - (void) removePhotoFromEvent {
     
-    self.removePhoto.enabled = NO;
     
-    [self.eventPictureObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-       
-        if (succeeded) {
+    UIAlertController *removePhotoVerifySheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *deleteAction = [UIAlertAction actionWithTitle:@"Remove Photo" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+        
+        self.removePhoto.enabled = NO;
+        
+        [self.eventPictureObject deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             
-            id<PictureViewerDelegate> strongDelegate = self.delegate;
-            
-            if ([strongDelegate respondsToSelector:@selector(returnToPicturesViewAndDeletePhoto:)]) {
+            if (succeeded) {
                 
-                [strongDelegate returnToPicturesViewAndDeletePhoto:YES];
+                id<PictureViewerDelegate> strongDelegate = self.delegate;
+                
+                if ([strongDelegate respondsToSelector:@selector(returnToPicturesViewAndDeletePhoto:)]) {
+                    
+                    [strongDelegate returnToPicturesViewAndDeletePhoto:YES];
+                }
+                
+            } else {
+                
+                UIAlertView *issueRemoving = [[UIAlertView alloc] initWithTitle:@"Whoops..." message:@"We couldn't delete the photo, try again. Send us an email or tweet from the Settings page if it still doesn't work." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                
+                [issueRemoving show];
+                
+                self.removePhoto.enabled = YES;
             }
             
-        } else {
-            
-            UIAlertView *issueRemoving = [[UIAlertView alloc] initWithTitle:@"Whoops..." message:@"We couldn't delete the photo, try again. Send us an email or tweet from the Settings page if it still doesn't work." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-            
-            [issueRemoving show];
-            
-            self.removePhoto.enabled = YES;
-        }
-    
+        }];
+        
     }];
+    
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        
+    }];
+    
+    
+    [removePhotoVerifySheet addAction:deleteAction];
+    [removePhotoVerifySheet addAction:cancelAction];
+    
+    [self presentViewController:removePhotoVerifySheet animated:YES completion:nil];
+
     
 }
 

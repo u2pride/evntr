@@ -56,8 +56,8 @@
 		A47584321ADBF4310065196D /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A47584311ADBF4310065196D /* libstdc++.6.dylib */; };
 		A47DC07A1AF7D19C00D245A8 /* EVNNotifcationsTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */; };
 		A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A488B35B1A801FE800738B4F /* MapKit.framework */; };
-		A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48EEFED1A797B82007145E3 /* EventDetailVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
+		A495B0D71B382FBF005C96E5 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A495B0D61B382FBF005C96E5 /* EventDetailVC.m */; };
 		A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */; };
 		A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
@@ -187,8 +187,8 @@
 		A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNNotifcationsTitleView.m; sourceTree = "<group>"; };
 		A488B35B1A801FE800738B4F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A48EEFEC1A797B82007145E3 /* EventDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailVC.h; sourceTree = "<group>"; };
-		A48EEFED1A797B82007145E3 /* EventDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EventDetailVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		A495B0D61B382FBF005C96E5 /* EventDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailVC.m; sourceTree = "<group>"; };
 		A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StandbyCollectionViewCell.h; sourceTree = "<group>"; };
 		A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StandbyCollectionViewCell.m; sourceTree = "<group>"; };
 		A4A1850A1AE91DC00009AC43 /* UIImage+EVNEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EVNEffects.h"; sourceTree = "<group>"; };
@@ -622,7 +622,7 @@
 			isa = PBXGroup;
 			children = (
 				A48EEFEC1A797B82007145E3 /* EventDetailVC.h */,
-				A48EEFED1A797B82007145E3 /* EventDetailVC.m */,
+				A495B0D61B382FBF005C96E5 /* EventDetailVC.m */,
 				A425A1D61AE586D000AF26E6 /* Comments */,
 				A425A1D71AE586E600AF26E6 /* Pictures */,
 				A425A1D81AE586EE00AF26E6 /* Maps */,
@@ -890,12 +890,12 @@
 				A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
 				A4F2B5F61B31C2F00006A82F /* EVNFullWebViewController.m in Sources */,
-				A48EEFEE1A797B82007145E3 /* EventDetailVC.m in Sources */,
 				A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
 				A46DB25C1AAE7B0500208973 /* MBProgressHUD.m in Sources */,
 				A4CC92761AFBAA84005EA199 /* EVNLocationSearchVC.m in Sources */,
 				A40443631B04D06200F36C6A /* EVNMapAnnotation.m in Sources */,
+				A495B0D71B382FBF005C96E5 /* EventDetailVC.m in Sources */,
 				A41B2A131ABCBE3F00F7CE44 /* SignUpTabVC.m in Sources */,
 				A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,

@@ -53,10 +53,11 @@
 //Labels
 @property (weak, nonatomic) IBOutlet UILabel *eventTitle;
 @property (weak, nonatomic) IBOutlet UILabel *creatorName;
-@property (weak, nonatomic) IBOutlet UILabel *eventDescription;
 @property (weak, nonatomic) IBOutlet UILabel *dateOfEventLabel;
 @property (strong, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 @property (strong, nonatomic) IBOutlet UILabel *standbyListTitle;
+@property (strong, nonatomic) IBOutlet UITextView *eventDescriptionTextView;
+
 
 //Images
 @property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
@@ -249,23 +250,19 @@
     //Configuring Basic Details
     ///////////////////////////
     
-    CGRect originalFrame = self.eventDescription.frame;
-    
     self.eventTitle.text = self.event.title;
     self.dateOfEventLabel.text = [self.event eventDateShortStyleAndVisible:YES];
     self.timeOfEventLabel.text = [self.event eventTimeShortStyeAndVisible:YES];
-    self.eventDescription.text = self.event.descriptionOfEvent;
-    self.eventDescription.textAlignment = NSTextAlignmentCenter;
-    self.eventDescription.numberOfLines = 0;
     
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    paragraphStyle.hyphenationFactor = 0.5f;
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-    NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:self.event.descriptionOfEvent attributes:@{ NSParagraphStyleAttributeName : paragraphStyle }];
-    self.eventDescription.attributedText = attributedString;
-    
-    CGRect resizedFrame = self.eventDescription.frame;
-    self.eventDescription.frame = CGRectMake(resizedFrame.origin.x, resizedFrame.origin.y, originalFrame.size.width, resizedFrame.size.height);
+    self.eventDescriptionTextView.editable = YES;
+    self.eventDescriptionTextView.editable = NO;
+    self.eventDescriptionTextView.backgroundColor = [UIColor clearColor];
+    self.eventDescriptionTextView.textColor = [UIColor whiteColor];
+    self.eventDescriptionTextView.text = nil;
+    self.eventDescriptionTextView.text = self.event.descriptionOfEvent;
+    self.eventDescriptionTextView.editable = YES;
+    self.eventDescriptionTextView.editable = NO;
+
     
     [self.event.coverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         
@@ -1095,7 +1092,7 @@
 - (void) completedEventEditing:(EventObject *)updatedEvent {
     
     self.eventTitle.text = updatedEvent.title;
-    self.eventDescription.text = updatedEvent.descriptionOfEvent;
+    self.eventDescriptionTextView.text = updatedEvent.descriptionOfEvent;
 
     //Update the Event Based on the Event Type - Currently just showing/hiding standby view and requerying for users
     if ([updatedEvent.typeOfEvent intValue] == PUBLIC_APPROVED_EVENT_TYPE) {
