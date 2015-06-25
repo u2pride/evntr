@@ -10,6 +10,7 @@
 
 @implementation EVNFacebookFriendCell
 
+#pragma mark - Initialization
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     
@@ -20,15 +21,15 @@
         
         _friendNameLabel = [[UILabel alloc] init];
         _friendNameLabel.font = [UIFont fontWithName:@"Lato-Regular" size:14.0];
-        _followButton = [[EVNButtonExtended alloc] init];
-        _followButton.titleText = @" View ";
-        _followButton.font = [UIFont fontWithName:@"Lato-Light" size:16.0];
+        _viewButton = [[EVNButtonExtended alloc] init];
+        _viewButton.titleText = @" View ";
+        _viewButton.font = [UIFont fontWithName:@"Lato-Light" size:16.0];
         
         _friendNameLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        _followButton.translatesAutoresizingMaskIntoConstraints = NO;
+        _viewButton.translatesAutoresizingMaskIntoConstraints = NO;
         
         [self.contentView addSubview:_friendNameLabel];
-        [self.contentView addSubview:_followButton];
+        [self.contentView addSubview:_viewButton];
         
     }
     
@@ -36,6 +37,12 @@
     
 }
 
+- (void)awakeFromNib {
+    // Initialization code
+}
+
+
+#pragma mark - Layout
 
 - (void) layoutSubviews {
     
@@ -44,7 +51,7 @@
     
     //Follow Button
     [self.contentView addConstraint:[NSLayoutConstraint
-                                     constraintWithItem:self.followButton
+                                     constraintWithItem:self.viewButton
                                      attribute:NSLayoutAttributeHeight
                                      relatedBy:NSLayoutRelationEqual
                                      toItem:self.contentView
@@ -53,7 +60,7 @@
                                      constant:0.0]];
     
     [self.contentView addConstraint:[NSLayoutConstraint
-                                     constraintWithItem:self.followButton
+                                     constraintWithItem:self.viewButton
                                      attribute:NSLayoutAttributeCenterY
                                      relatedBy:NSLayoutRelationEqual
                                      toItem:self.contentView
@@ -62,7 +69,7 @@
                                      constant:0.0]];
     
     [self.contentView addConstraint:[NSLayoutConstraint
-                                     constraintWithItem:self.followButton
+                                     constraintWithItem:self.viewButton
                                      attribute:NSLayoutAttributeRight
                                      relatedBy:NSLayoutRelationEqual
                                      toItem:self.contentView
@@ -74,7 +81,7 @@
                                                                                                                                     
     
     [self.contentView addConstraint:[NSLayoutConstraint
-                                     constraintWithItem:self.followButton
+                                     constraintWithItem:self.viewButton
                                      attribute:NSLayoutAttributeWidth
                                      relatedBy:NSLayoutRelationEqual
                                      toItem:self.contentView
@@ -114,7 +121,7 @@
                                      constraintWithItem:self.friendNameLabel
                                      attribute:NSLayoutAttributeRight
                                      relatedBy:NSLayoutRelationEqual
-                                     toItem:self.followButton
+                                     toItem:self.viewButton
                                      attribute:NSLayoutAttributeLeft
                                      multiplier:1.0
                                      constant:-20.0]];
@@ -124,11 +131,6 @@
     
 }
 
-
-
-- (void)awakeFromNib {
-    // Initialization code
-}
 
 
 @end

@@ -16,4 +16,6 @@
 @property (nonatomic, strong) NSString *subHeaderText;
 @property (nonatomic, strong) EVNButton *actionButton;
 
+@property (nonatomic) int offsetY;
+
 @end

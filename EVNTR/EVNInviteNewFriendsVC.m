@@ -6,15 +6,17 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNFacebookFriendCell.h"
 #import "EVNInviteNewFriendsVC.h"
 #import "EVNNoResultsView.h"
-#import "EVNFacebookFriendCell.h"
 #import "EVNUser.h"
+#import "EVNUtility.h"
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import <FacebookSDK/FacebookSDK.h>
+
 
 @interface EVNInviteNewFriendsVC ()
 
@@ -30,14 +32,13 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 @implementation EVNInviteNewFriendsVC
 
+#pragma mark - Initialization Methods
+
 - (id) initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        
-        self.title = @"Find Your Friends";
         _facebookFriends = [[NSMutableArray alloc] init];
-        
     }
     
     return self;
@@ -45,11 +46,12 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 }
 
 
+#pragma mark - Lifecycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self.navigationItem setBackBarButtonItem:backButtonItem];
+    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -58,11 +60,13 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     
     EVNNoResultsView *connectView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
-    connectView.backgroundColor = [UIColor clearColor];
+    connectView.offsetY = 100;
     connectView.headerText = @"Find Friends!";
-    connectView.subHeaderText = @"Press the button below to connect with your Facebook Friends that also use Evntr.";
-    connectView.actionButton.titleText = @"Connect";
+    connectView.subHeaderText = @"Connect with your Facebook Friends that are on Evntr.";
+    connectView.actionButton.titleText = @"Find Friends";
     [connectView.actionButton addTarget:self action:@selector(requestFriendPermission) forControlEvents:UIControlEventTouchUpInside];
+    //[connectView.actionButton addTarget:self action:@selector(sendInviteMessage) forControlEvents:UIControlEventTouchUpInside];
+    
     [self.view addSubview:connectView];
     
     
@@ -71,23 +75,30 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 }
 
 
-- (void) requestFriendPermission {
+
+#pragma mark - Helper Methods
+
+- (void) fadeInView:(UIView *)viewFade {
     
-    // Request Friends Permission
-    
-    [self.view bringSubviewToFront:self.tableView];
-    
-    [PFFacebookUtils linkUser:[PFUser currentUser] permissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            NSLog(@"User has friend access now!");
+    [UIView animateWithDuration:0.25 animations:^{
+        
+        self.view.alpha = 0.0;
+        
+    } completion:^(BOOL finished) {
+        
+        [self.view bringSubviewToFront:viewFade];
+        
+        [UIView animateWithDuration:0.5 animations:^{
             
-            [self additionalFriendsWithLimit:@5 andOffset:@0];
+            self.view.alpha = 1.0;
             
-        } else {
-            NSLog(@"failed with error: %@", error);
-        }
+        } completion:^(BOOL finished) {
+            
+            
+        }];
+        
     }];
-    
+
 }
 
 
@@ -128,78 +139,18 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 }
 
 
-- (void) requestMoreFriends {
-    
-    NSURL *urlMore = [NSURL URLWithString:self.moreFacebookFriendsURL];
-    
-    NSURLSession *session = [NSURLSession sharedSession];
-    [[session dataTaskWithURL:urlMore completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        
-        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-        
-        NSArray *moreFriends = [json objectForKey:@"data"];
-        
-        [self.facebookFriends addObjectsFromArray:moreFriends];
-        [self.tableView reloadData];
-        
-        
-    }] resume];
-    
-}
-
-/*
-- (void) followUserInEvntr:(id)sender {
-    
-    EVNButtonExtended *followButton = (EVNButtonExtended *)sender;
-    
-    NSString *facebookID = followButton.fbIdToFollow;
-    
-    //Possibly change to findUser (not plural) in background.
-    PFQuery *findUserWithFBID = [PFUser query];
-    [findUserWithFBID whereKey:@"facebookID" equalTo:facebookID];
-    [findUserWithFBID findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        
-        if (objects && !error) {
-            
-            EVNUser *userFollow = (EVNUser *)[objects firstObject];
-            
-            [[EVNUser currentUser] followUser:userFollow fromVC:self withButton:followButton withCompletion:^(BOOL success) {
-            
-                //never called - followUser method needs to call the completion block
-                
-            }];
-            
-        } else {
-            
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"User Not Found" message:@"Looks like this user has gone missing.  Make sure they've downloaded the latest version." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-            
-            [errorAlert show];
-            
-        }
-        
-    }];
-    
-}
-*/
-
-
 
 #pragma mark - UITableViewDelegate Methods
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     EVNFacebookFriendCell *cell = (EVNFacebookFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
     
     if (indexPath.row == self.facebookFriends.count) {
-        NSLog(@"clicked for more");
-        //[self requestMoreFriends];
-        
-
-        self.buttonWithRefresh = cell.followButton;
-        
-        [self additionalFriendsWithLimit:@5 andOffset:[NSNumber numberWithInteger:self.facebookFriends.count]];
+        self.buttonWithRefresh = cell.viewButton;
+        [self additionalFriendsWithLimit:@15 andOffset:[NSNumber numberWithInteger:self.facebookFriends.count]];
         
     } else {
-        
         
         [UIView animateWithDuration:0.3 animations:^{
             
@@ -218,7 +169,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             
         }];
         
-        [self viewProfile:cell.followButton];
+        [self viewProfile:cell.viewButton];
         
     }
     
@@ -232,30 +183,80 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     EVNFacebookFriendCell *theCell = (EVNFacebookFriendCell *)[tableView dequeueReusableCellWithIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    theCell.followButton.layer.borderWidth = 0;
+    theCell.viewButton.layer.borderWidth = 0;
     
     if (indexPath.row == self.facebookFriends.count) {
         theCell.friendNameLabel.text = @"More";
         theCell.friendNameLabel.textColor = [UIColor orangeThemeColor];
-        theCell.followButton.titleText = @"";
+        theCell.viewButton.titleText = @"";
     } else {
         theCell.friendNameLabel.text = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"name"];
         theCell.friendNameLabel.textColor = [UIColor blackColor];
-        theCell.followButton.titleText = @"View";
+        theCell.viewButton.titleText = @"View";
         
-        theCell.followButton.fbIdToFollow = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"id"];
+        theCell.viewButton.fbIdToFollow = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"id"];
         
-        [theCell.followButton addTarget:self action:@selector(viewProfile:) forControlEvents:UIControlEventTouchUpInside];
-        
-        //[theCell.followButton addTarget:self action:@selector(followUserInEvntr:) forControlEvents:UIControlEventTouchUpInside];
+        [theCell.viewButton addTarget:self action:@selector(viewProfile:) forControlEvents:UIControlEventTouchUpInside];
         
     }
-    
     
     return theCell;
     
 }
 
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+        
+    if (self.moreFacebookFriendsURL) {
+        return self.facebookFriends.count + 1;
+    } else {
+        return self.facebookFriends.count;
+    }
+    
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+
+#pragma mark - User Actions
+
+- (void) requestFriendPermission {
+    
+    [self fadeInView:self.tableView];
+    
+    [PFFacebookUtils linkUser:[EVNUser currentUser] permissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
+        if (succeeded) {
+            NSLog(@"User has friend access now!");
+            
+            //DO WE HAVE TO LOGIN WITH FACEBOOK FIRST??? OR CAN WE JUST DO THIS???
+            
+            [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+               
+                NSLog(@"Result - Need to store ID in Parse for Users Not Logged In with FB - %@", result);
+                
+                if (!error) {
+                    // Store the current user's Facebook ID on the user
+                    [[EVNUser currentUser] setObject:[result objectForKey:@"id"]
+                                             forKey:@"fbId"];
+                    [[EVNUser currentUser] saveInBackground];
+                }
+            
+            }];
+            
+            [self additionalFriendsWithLimit:@15 andOffset:@0];
+            
+        } else {
+            NSLog(@"failed with error: %@", error);
+        }
+    }];
+    
+}
+
+
+//Currrently:  Pulls back friends from facebook that use evntr (me/friends)
+//Future:  Links the friends pulled back with Parse accounts before displaying (and enable following from this screen).
 - (void) viewProfile:(id)sender {
     
     EVNButtonExtended *viewProfileButton = (EVNButtonExtended *)sender;
@@ -286,7 +287,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             
         } else {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Search Party" message:@"Looks like we can't find this user.  We're sending out a search party!" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"User Not Found" message:@"Looks like this user is no longer using Evntr." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
             
             [errorAlert show];
             
@@ -298,24 +299,6 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     
 }
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
-    NSLog(@"OURCOUNT: %lu", (unsigned long)self.facebookFriends.count);
-    
-    if (self.moreFacebookFriendsURL) {
-        return self.facebookFriends.count + 1;
-    } else {
-        return self.facebookFriends.count;
-    }
-    
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-
 
 
 @end

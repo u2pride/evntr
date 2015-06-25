@@ -28,6 +28,9 @@
 		A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7EA1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m */; };
 		A423F7EE1A9BC46600DF9ABE /* EVNButtonExtended.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7ED1A9BC46600DF9ABE /* EVNButtonExtended.m */; };
 		A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A423F7F11A9BFF0900DF9ABE /* SearchVC.m */; };
+		A424B3701B3C3822004562CA /* EVNInviteContainerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A424B36F1B3C3822004562CA /* EVNInviteContainerVC.m */; };
+		A424B3751B3C40CE004562CA /* EVNInviteContactsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A424B3741B3C40CE004562CA /* EVNInviteContactsVC.m */; };
+		A424B3781B3C6148004562CA /* EVNInviteContainerHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A424B3771B3C6148004562CA /* EVNInviteContainerHeaderView.m */; };
 		A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A430EE091AF264B30090ECB6 /* EVNUser.m */; };
 		A43454461B3AEDD00001A4AA /* EVNInviteNewFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A43454451B3AEDD00001A4AA /* EVNInviteNewFriendsVC.m */; };
 		A43454491B3B2DB30001A4AA /* EVNFacebookFriendCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A43454481B3B2DB30001A4AA /* EVNFacebookFriendCell.m */; };
@@ -157,6 +160,12 @@
 		A423F7ED1A9BC46600DF9ABE /* EVNButtonExtended.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNButtonExtended.m; sourceTree = "<group>"; };
 		A423F7F01A9BFF0900DF9ABE /* SearchVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchVC.h; sourceTree = "<group>"; };
 		A423F7F11A9BFF0900DF9ABE /* SearchVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SearchVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A424B36E1B3C3822004562CA /* EVNInviteContainerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNInviteContainerVC.h; sourceTree = "<group>"; };
+		A424B36F1B3C3822004562CA /* EVNInviteContainerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNInviteContainerVC.m; sourceTree = "<group>"; };
+		A424B3731B3C40CE004562CA /* EVNInviteContactsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNInviteContactsVC.h; sourceTree = "<group>"; };
+		A424B3741B3C40CE004562CA /* EVNInviteContactsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNInviteContactsVC.m; sourceTree = "<group>"; };
+		A424B3761B3C6148004562CA /* EVNInviteContainerHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNInviteContainerHeaderView.h; sourceTree = "<group>"; };
+		A424B3771B3C6148004562CA /* EVNInviteContainerHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNInviteContainerHeaderView.m; sourceTree = "<group>"; };
 		A430EE081AF264B30090ECB6 /* EVNUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNUser.h; sourceTree = "<group>"; };
 		A430EE091AF264B30090ECB6 /* EVNUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EVNUser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A43454441B3AEDD00001A4AA /* EVNInviteNewFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNInviteNewFriendsVC.h; sourceTree = "<group>"; };
@@ -330,12 +339,9 @@
 				A41562C91A767D3A00565BB6 /* AppDelegate.m */,
 				A48EEFEF1A799E5C007145E3 /* Main.storyboard */,
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
-				A43454441B3AEDD00001A4AA /* EVNInviteNewFriendsVC.h */,
-				A43454451B3AEDD00001A4AA /* EVNInviteNewFriendsVC.m */,
-				A43454471B3B2DB30001A4AA /* EVNFacebookFriendCell.h */,
-				A43454481B3B2DB30001A4AA /* EVNFacebookFriendCell.m */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Content */,
+				A424B3711B3C4072004562CA /* Invite */,
 				A4F2E9A61A7A806A00614412 /* Navigation - Utility */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
@@ -411,6 +417,31 @@
 				A423F7ED1A9BC46600DF9ABE /* EVNButtonExtended.m */,
 			);
 			name = "UI Elements";
+			sourceTree = "<group>";
+		};
+		A424B3711B3C4072004562CA /* Invite */ = {
+			isa = PBXGroup;
+			children = (
+				A424B36E1B3C3822004562CA /* EVNInviteContainerVC.h */,
+				A424B36F1B3C3822004562CA /* EVNInviteContainerVC.m */,
+				A43454441B3AEDD00001A4AA /* EVNInviteNewFriendsVC.h */,
+				A43454451B3AEDD00001A4AA /* EVNInviteNewFriendsVC.m */,
+				A424B3731B3C40CE004562CA /* EVNInviteContactsVC.h */,
+				A424B3741B3C40CE004562CA /* EVNInviteContactsVC.m */,
+				A424B3721B3C408C004562CA /* UIViews */,
+			);
+			name = Invite;
+			sourceTree = "<group>";
+		};
+		A424B3721B3C408C004562CA /* UIViews */ = {
+			isa = PBXGroup;
+			children = (
+				A43454471B3B2DB30001A4AA /* EVNFacebookFriendCell.h */,
+				A43454481B3B2DB30001A4AA /* EVNFacebookFriendCell.m */,
+				A424B3761B3C6148004562CA /* EVNInviteContainerHeaderView.h */,
+				A424B3771B3C6148004562CA /* EVNInviteContainerHeaderView.m */,
+			);
+			name = UIViews;
 			sourceTree = "<group>";
 		};
 		A425A1D11AE585DE00AF26E6 /* Global UI Elements */ = {
@@ -895,6 +926,7 @@
 				A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */,
 				A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */,
 				A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */,
+				A424B3751B3C40CE004562CA /* EVNInviteContactsVC.m in Sources */,
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
 				A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */,
@@ -909,6 +941,7 @@
 				A495B0D71B382FBF005C96E5 /* EventDetailVC.m in Sources */,
 				A41B2A131ABCBE3F00F7CE44 /* SignUpTabVC.m in Sources */,
 				A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */,
+				A424B3781B3C6148004562CA /* EVNInviteContainerHeaderView.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A4D72FB51AAA175E00488D8D /* IDTTransitionControllerTab.m in Sources */,
 				A4C2C1371ACEB4FB004C7F35 /* EventObject.m in Sources */,
@@ -924,6 +957,7 @@
 				A41352551A81B80200034222 /* ImageViewPFExtended.m in Sources */,
 				A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */,
 				A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */,
+				A424B3701B3C3822004562CA /* EVNInviteContainerVC.m in Sources */,
 				A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,

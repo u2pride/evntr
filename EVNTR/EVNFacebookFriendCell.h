@@ -12,6 +12,6 @@
 @interface EVNFacebookFriendCell : UITableViewCell
 
 @property (nonatomic, strong) UILabel *friendNameLabel;
-@property (nonatomic, strong) EVNButtonExtended *followButton;
+@property (nonatomic, strong) EVNButtonExtended *viewButton;
 
 @end

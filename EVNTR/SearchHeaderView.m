@@ -12,8 +12,6 @@
 
 @interface SearchHeaderView ()
 
-
-
 @end
 
 

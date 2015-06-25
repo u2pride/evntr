@@ -48,6 +48,8 @@
 
 - (void) setup {
     
+    _offsetY = 0;
+    
     _backgroundView = [[UIView alloc] init];
     _headerTextLabel = [[UILabel alloc] init];
     _subHeaderTextLabel = [[UILabel alloc] init];
@@ -83,6 +85,13 @@
     
 }
 
+
+- (void) setOffsetY:(int)offsetY {
+    
+    [self setNeedsDisplay];
+    
+    _offsetY = offsetY;
+}
 
 
 - (void) layoutSubviews {
@@ -160,7 +169,7 @@
                          toItem:self
                          attribute:NSLayoutAttributeCenterY
                          multiplier:1.0
-                         constant:-constantToMoveCenterY]];
+                         constant:(-constantToMoveCenterY - self.offsetY)]];
     
     //80% Width
     [self addConstraint:[NSLayoutConstraint
@@ -246,15 +255,16 @@
                          multiplier:1.0
                          constant:0.0]];
     
-    //Center Y
+    
+    //Top is Equal to Header Bottom
     [self addConstraint:[NSLayoutConstraint
                          constraintWithItem:self.actionButton
-                         attribute:NSLayoutAttributeCenterY
+                         attribute:NSLayoutAttributeTop
                          relatedBy:NSLayoutRelationEqual
-                         toItem:self
-                         attribute:NSLayoutAttributeCenterY
+                         toItem:self.subHeaderTextLabel
+                         attribute:NSLayoutAttributeBottom
                          multiplier:1.0
-                         constant:20.0]];
+                         constant:20]];
     
     
     //Width
