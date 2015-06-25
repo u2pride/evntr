@@ -49,6 +49,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *inviteButton;
 @property (strong, nonatomic) IBOutlet UILabel *viewAttending;
 @property (strong, nonatomic) IBOutlet UIImageView *flagEvent;
+@property (strong, nonatomic) IBOutlet UIImageView *inviteUsers;
 
 //Labels
 @property (weak, nonatomic) IBOutlet UILabel *eventTitle;
@@ -57,7 +58,6 @@
 @property (strong, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 @property (strong, nonatomic) IBOutlet UILabel *standbyListTitle;
 @property (strong, nonatomic) IBOutlet UITextView *eventDescriptionTextView;
-
 
 //Images
 @property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
@@ -262,7 +262,6 @@
     self.eventDescriptionTextView.text = self.event.descriptionOfEvent;
     self.eventDescriptionTextView.editable = YES;
     self.eventDescriptionTextView.editable = NO;
-
     
     [self.event.coverPhoto getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         
@@ -450,6 +449,12 @@
     UITapGestureRecognizer *flagGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(flagCurrentEvent)];
     [self.flagEvent addGestureRecognizer:flagGR];
     
+    //Setup Invite Button
+    self.inviteUsers.userInteractionEnabled = YES;
+    UITapGestureRecognizer *inviteGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inviteFriends:)];
+    [self.inviteUsers addGestureRecognizer:inviteGR];
+    self.inviteUsers.hidden = YES;
+
     //View Users Attending
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewEventAttenders)];
     tapgr.numberOfTapsRequired = 1;
@@ -617,6 +622,8 @@
 
     _isCurrentUserAttending = isCurrentUserAttending;
     
+    [self inviteUsersIconVisibilityCheck];
+    
 }
 
 - (void) setIsCurrentUsersEvent:(BOOL)isCurrentUsersEvent {
@@ -692,9 +699,25 @@
     
     [self.detailsLoadingView stopAnimating];
     
+    [self inviteUsersIconVisibilityCheck];
+    
     self.dateOfEventLabel.alpha = 1.0;
     self.timeOfEventLabel.alpha = 1.0;
     self.viewAttending.alpha = 1.0;
+    
+}
+
+
+#pragma mark - Helper Methods Other
+
+- (void) inviteUsersIconVisibilityCheck {
+    
+    if ([self.event.typeOfEvent intValue] == PUBLIC_EVENT_TYPE && self.isCurrentUserAttending && !self.isCurrentUsersEvent) {
+        self.inviteUsers.hidden = NO;
+    } else {
+        self.inviteUsers.hidden = YES;
+    }
+    
     
 }
 
@@ -796,6 +819,8 @@
 
 - (IBAction)inviteFriends:(id)sender {
     
+    NSLog(@"InviteFriends");
+    
     if (!self.isGuestUser) {
         
         self.shouldRestoreNavBar = NO;
@@ -853,6 +878,7 @@
     if (self.isCurrentUsersEvent) {
         
         allEventPictures.allowsAddingPictures = YES;
+        allEventPictures.allowsChoosingPictures = YES;
         
     } else {
         
@@ -861,6 +887,8 @@
         } else {
             allEventPictures.allowsAddingPictures = NO;
         }
+        
+        allEventPictures.allowsChoosingPictures = NO;
         
     }
 

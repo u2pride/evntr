@@ -35,6 +35,7 @@ static NSString * const reuseIdentifier = @"pictureCell";
     self = [super initWithCoder:aDecoder];
     if (self) {
         _allowsAddingPictures = NO;
+        _allowsChoosingPictures = NO;
         _eventImages = [[NSMutableArray alloc] init];
         _customTransitionDelegate = [[IDTTransitioningDelegate alloc] init];
     }
@@ -321,6 +322,52 @@ static NSString * const reuseIdentifier = @"pictureCell";
     
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [pictureOptionsMenu addAction:takePhoto];
+    }
+    
+    
+    
+    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.view.tintColor = [UIColor orangeThemeColor];
+        imagePicker.navigationBar.tintColor = [UIColor orangeThemeColor];
+        imagePicker.navigationController.navigationBar.tintColor = [UIColor orangeThemeColor];
+        
+        [self presentViewController:imagePicker animated:YES completion:^{
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+            
+        }];
+        
+    }];
+    
+    
+    if (self.allowsChoosingPictures) {
+        
+        UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            
+            UIImagePickerController *chooseImagePicker = [[UIImagePickerController alloc] init];
+            chooseImagePicker.delegate = self;
+            chooseImagePicker.allowsEditing = YES;
+            chooseImagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            chooseImagePicker.view.tintColor = [UIColor orangeThemeColor];
+            chooseImagePicker.navigationBar.tintColor = [UIColor orangeThemeColor];
+            chooseImagePicker.navigationController.navigationBar.tintColor = [UIColor orangeThemeColor];
+            
+            [self presentViewController:chooseImagePicker animated:YES completion:^{
+                
+                [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+                [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+                
+            }];
+            
+        }];
+        
+        [pictureOptionsMenu addAction:choosePhoto];
+        
     }
     
     [pictureOptionsMenu addAction:cancelAction];

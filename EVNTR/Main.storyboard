@@ -1272,13 +1272,13 @@ Click continue when you're ready.</string>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="lTc-N1-66M" id="0B4-kv-mku">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Hometown" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7a-4G-Sm6">
-                                                    <rect key="frame" x="30" y="11" width="84" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P7a-4G-Sm6">
+                                                    <rect key="frame" x="30" y="11" width="65" height="21"/>
                                                     <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="hometown" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z8W-SX-13R">
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="current location" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z8W-SX-13R">
                                                     <rect key="frame" x="133" y="8" width="234" height="27"/>
                                                     <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
@@ -1317,28 +1317,29 @@ Click continue when you're ready.</string>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="gsR-nb-DSz">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="88" id="gsR-nb-DSz">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gsR-nb-DSz" id="66y-Ar-IzV">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="bio" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="g00-ji-NSo">
-                                                    <rect key="frame" x="133" y="8" width="234" height="27"/>
-                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Bio" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o54-V1-x8F">
                                                     <rect key="frame" x="30" y="11" width="26" height="21"/>
                                                     <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gaD-ku-T3G">
+                                                    <rect key="frame" x="133" y="8" width="234" height="71"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="Lato-Regular" family="Lato" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                </textView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="g00-ji-NSo" firstAttribute="trailing" secondItem="66y-Ar-IzV" secondAttribute="trailingMargin" id="8rf-rk-Hp2"/>
-                                                <constraint firstItem="g00-ji-NSo" firstAttribute="top" secondItem="66y-Ar-IzV" secondAttribute="topMargin" id="D1T-bA-sTa"/>
-                                                <constraint firstItem="g00-ji-NSo" firstAttribute="leading" secondItem="66y-Ar-IzV" secondAttribute="leadingMargin" constant="125" id="Tkp-1J-zki"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="g00-ji-NSo" secondAttribute="bottom" id="cK7-Il-u7Y"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="gaD-ku-T3G" secondAttribute="trailing" id="Iex-GT-hQu"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="gaD-ku-T3G" secondAttribute="bottom" id="gmQ-Ev-ab3"/>
+                                                <constraint firstItem="gaD-ku-T3G" firstAttribute="top" secondItem="66y-Ar-IzV" secondAttribute="topMargin" id="j66-ty-EcY"/>
+                                                <constraint firstItem="gaD-ku-T3G" firstAttribute="leading" secondItem="66y-Ar-IzV" secondAttribute="leadingMargin" constant="125" id="zRN-2c-Ebq"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -1382,7 +1383,7 @@ Click continue when you're ready.</string>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="bioCell" destination="gsR-nb-DSz" id="0y4-pt-w1J"/>
-                        <outlet property="bioTextField" destination="g00-ji-NSo" id="KmU-6i-faa"/>
+                        <outlet property="bioTextView" destination="gaD-ku-T3G" id="23Q-Wt-pKh"/>
                         <outlet property="hometownCell" destination="lTc-N1-66M" id="xTt-JS-QJD"/>
                         <outlet property="hometownTextField" destination="Z8W-SX-13R" id="v3I-R8-vqB"/>
                         <outlet property="nameCell" destination="xNz-Od-FEU" id="mBu-Fe-Ldc"/>
@@ -2901,16 +2902,25 @@ Click continue when you're ready.</string>
                                     <constraint firstAttribute="height" constant="22" id="sjb-vG-g6p"/>
                                 </constraints>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inviteIcon" translatesAutoresizingMaskIntoConstraints="NO" id="dU3-y9-lWS">
+                                <rect key="frame" x="16" y="106" width="22" height="22"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="22" id="W4i-tr-uC4"/>
+                                    <constraint firstAttribute="height" constant="22" id="ueE-ik-6Ru"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="fXh-Of-N5Z" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leading" id="9bx-Ai-3cH"/>
                             <constraint firstAttribute="centerX" secondItem="WEQ-g4-QdZ" secondAttribute="centerX" id="Aks-EU-Nwl"/>
+                            <constraint firstItem="dU3-y9-lWS" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leadingMargin" id="Kvs-dB-roh"/>
                             <constraint firstItem="WEQ-g4-QdZ" firstAttribute="top" secondItem="3BY-zL-Tby" secondAttribute="topMargin" constant="24" id="NtH-Wy-VLC"/>
                             <constraint firstItem="caj-O3-lWl" firstAttribute="centerY" secondItem="6Qx-ag-yGE" secondAttribute="centerY" id="OIB-EI-5Of"/>
                             <constraint firstAttribute="centerX" secondItem="caj-O3-lWl" secondAttribute="centerX" id="PbI-Er-CcF"/>
                             <constraint firstItem="caj-O3-lWl" firstAttribute="top" secondItem="WEQ-g4-QdZ" secondAttribute="bottom" constant="8" id="Qc4-nd-x0W"/>
                             <constraint firstAttribute="trailing" secondItem="fXh-Of-N5Z" secondAttribute="trailing" id="RNQ-9R-Pnf"/>
+                            <constraint firstItem="dU3-y9-lWS" firstAttribute="centerY" secondItem="caj-O3-lWl" secondAttribute="centerY" id="Rt8-vM-1TY"/>
                             <constraint firstItem="6Qx-ag-yGE" firstAttribute="trailing" secondItem="3BY-zL-Tby" secondAttribute="trailingMargin" id="S9h-mc-PgR"/>
                             <constraint firstItem="U2K-8t-Wd7" firstAttribute="top" secondItem="WEQ-g4-QdZ" secondAttribute="bottom" constant="8" id="UN2-hl-Eza"/>
                             <constraint firstItem="WEQ-g4-QdZ" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leadingMargin" constant="32" id="Vow-hz-6fT"/>
@@ -2940,6 +2950,7 @@ Click continue when you're ready.</string>
                         <outlet property="eventTitle" destination="WEQ-g4-QdZ" id="66p-53-51R"/>
                         <outlet property="flagEvent" destination="6Qx-ag-yGE" id="x4h-up-QEj"/>
                         <outlet property="inviteButton" destination="U2K-8t-Wd7" id="P67-AV-EwZ"/>
+                        <outlet property="inviteUsers" destination="dU3-y9-lWS" id="G8b-8H-ozj"/>
                         <outlet property="numberOfPicturesLabel" destination="I7U-Tw-AXO" id="Hjx-kC-3Y6"/>
                         <outlet property="rsvpStatusButton" destination="caj-O3-lWl" id="yNl-PD-VXt"/>
                         <outlet property="standbyListTitle" destination="wof-6L-VbM" id="y7D-hx-VIk"/>
@@ -3679,6 +3690,7 @@ Click continue when you're ready.</string>
         <image name="SplashScreenSingle" width="640" height="960"/>
         <image name="WalkthroughBackground" width="640" height="960"/>
         <image name="flagEvent" width="22" height="22"/>
+        <image name="inviteIcon" width="25" height="25"/>
         <image name="mapIcon" width="9" height="12"/>
         <image name="tabActivity" width="25" height="25"/>
         <image name="tabAdd" width="25" height="25"/>

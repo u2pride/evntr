@@ -156,7 +156,7 @@
     
     [self blurViewDuringLoginWithMessage:@"Logging you in..."];
     
-    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location"];
+    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location", @"user_friends"];
     
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         

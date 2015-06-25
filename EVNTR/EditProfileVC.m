@@ -36,7 +36,7 @@ typedef enum {
 @property (weak, nonatomic) IBOutlet UITextField *realNameTextField;
 @property (weak, nonatomic) IBOutlet UITextField *hometownTextField;
 @property (weak, nonatomic) IBOutlet UITextField *usernameTextField;
-@property (weak, nonatomic) IBOutlet UITextField *bioTextField;
+@property (weak, nonatomic) IBOutlet UITextView *bioTextView;
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 
 @property (nonatomic) BOOL newProfilePictureChosen;
@@ -73,12 +73,11 @@ typedef enum {
     self.realNameTextField.text = self.realName;
     self.hometownTextField.text = self.hometown;
     self.usernameTextField.text = self.username;
-    self.bioTextField.text = self.bio;
+    self.bioTextView.text = self.bio;
     
     self.realNameTextField.delegate = self;
     self.hometownTextField.delegate = self;
     self.usernameTextField.delegate = self;
-    self.bioTextField.delegate = self;
 
 }
 
@@ -105,7 +104,7 @@ typedef enum {
 }
 
 
-#pragma mark - TextField Delegate Method to Dismiss Keyboard
+#pragma mark - TextField & TextView Delegate Method to Dismiss Keyboard
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     
@@ -216,7 +215,7 @@ typedef enum {
     
     pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
     
-    self.persistedUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
+    self.persistedUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextView.text, @"bio", nil];
     
     [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
     
@@ -290,7 +289,7 @@ typedef enum {
     
     NSString *submittedUsername = [self.usernameTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     NSString *submittedName = self.realNameTextField.text;
-    NSString *submittedBio = self.bioTextField.text;
+    NSString *submittedBio = self.bioTextView.text;
     NSString *submittedHometown = self.hometownTextField.text;
 
     if (submittedUsername.length >= MIN_USERNAME_LENGTH && submittedUsername.length <= MAX_USERNAME_LENGTH && submittedBio.length <= MAX_BIO_LENGTH && submittedName.length >= MIN_REALNAME_LENGTH && submittedName.length <= MAX_REALNAME_LENGTH && submittedHometown.length <= MAX_HOMETOWN_LENGTH && [self validUsername:submittedUsername]) {
@@ -393,12 +392,12 @@ typedef enum {
     [[EVNUser currentUser] setUsername:self.usernameTextField.text];
     [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
     [[EVNUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
-    [[EVNUser currentUser] setValue:self.bioTextField.text forKey:@"bio"];
+    [[EVNUser currentUser] setValue:self.bioTextView.text forKey:@"bio"];
     [[EVNUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {
             
-            NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextField.text, @"bio", nil];
+            NSDictionary *newUserValues = [NSDictionary dictionaryWithObjectsAndKeys:self.realNameTextField.text, @"realName", self.hometownTextField.text, @"hometown", self.usernameTextField.text, @"username", self.bioTextView.text, @"bio", nil];
             
             id<ProfileEditDelegate> strongDelegate = self.delegate;
             
@@ -463,7 +462,7 @@ typedef enum {
     self.usernameTextField.text = usernameStored;
     self.realNameTextField.text = realNameStored;
     self.hometownTextField.text = hometownStored;
-    self.bioTextField.text = bioStored;
+    self.bioTextView.text = bioStored;
     
 }
 

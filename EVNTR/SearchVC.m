@@ -7,6 +7,7 @@
 //
 
 #import "EVNConstants.h"
+#import "EVNInviteNewFriendsVC.h"
 #import "EVNUser.h"
 #import "EventDetailVC.h"
 #import "EventObject.h"
@@ -176,7 +177,14 @@
     
     if (self.searchResultsArray.count == 0) {
         
-        cell.textLabel.text = @"No Results";
+        if (indexPath.row == 0) {
+            
+            cell.textLabel.text = @"No Results";
+            
+        } else {
+            
+            cell.textLabel.text = @"Find Your Friends!";
+        }
         
     } else {
         
@@ -213,7 +221,7 @@
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (self.searchResultsArray.count == 0) {
-        return 1;
+        return 2;
     } else {
         return self.searchResultsArray.count;
     }
@@ -251,6 +259,16 @@
             
             [self.navigationController pushViewController:profileVC animated:YES];
             
+        }
+        
+    } else {
+        
+        if (selectedIndexPath.row == 1) {
+            
+            EVNInviteNewFriendsVC *inviteVC = [[EVNInviteNewFriendsVC alloc] init];
+            
+            [self.navigationController pushViewController:inviteVC animated:YES];
+                        
         }
         
     }

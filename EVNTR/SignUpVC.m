@@ -148,7 +148,7 @@ typedef enum {
     
     [self blurViewDuringLoginWithMessage:@"Signing Up..."];
     
-    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location"];
+    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location", @"user_friends"];
     
     [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
@@ -264,6 +264,9 @@ typedef enum {
                         
                     } else {
                         
+                        NSLog(@"%u", (TBParseError)error.code);
+                        NSLog(@"%@", error.userInfo);
+                        
                         switch ((TBParseError)error.code) {
                                 
                             case TBParseError_InvalidEmailAddress: {
@@ -315,10 +318,10 @@ typedef enum {
                                 break;
                             }
                             default: {
+                                                                
+                                NSString *errorMessage = [error.userInfo objectForKey:@"error"];
                                 
-                                [PFAnalytics trackEventInBackground:@"SignUpIssue_UnknownError" block:nil];
-                                
-                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Looks like there's a problem with the sign up process.  Try again and if it still doesn't work, send us a tweet @EvntrApp" delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:errorMessage delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                                 
                                 [failureAlert show];
                                 

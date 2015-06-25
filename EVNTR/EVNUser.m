@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNUser.h"
 #import "EVNConstants.h"
 #import <Parse/Parse.h>
@@ -37,8 +38,35 @@
     if (self.hometown.length != 0) {
         return self.hometown;
     } else {
+        if ([self.objectId isEqualToString:[EVNUser currentUser].objectId]) {
+            [self setInitialLocationForUser];
+        }
         return @"Unknown Location";
     }
+    
+}
+
+//Grab the Location of the User on First Profile Access if no location set already
+- (void) setInitialLocationForUser {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    CLLocation *currentLocation = [appDelegate.locationManagerGlobal location];
+    
+    CLGeocoder *reverseGeocoder = [[CLGeocoder alloc] init];
+    
+    [reverseGeocoder reverseGeocodeLocation:currentLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+        
+        if (!error && placemarks) {
+            
+            CLPlacemark *placemark = [placemarks firstObject];
+            NSString *locationForUser = [NSString stringWithFormat:@"%@, %@", placemark.locality, placemark.administrativeArea];
+            
+            self.hometown = locationForUser;
+            [self saveInBackground];
+            
+        }
+        
+    }];
     
 }
 

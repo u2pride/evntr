@@ -6,6 +6,9 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNInviteNewFriendsVC.h"
+
+
 #import "ActivityVC.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
@@ -78,8 +81,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
+        
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
@@ -633,7 +635,7 @@
 
          editProfileView.username = currentUser[@"username"];
          editProfileView.realName = currentUser[@"realName"];
-         editProfileView.hometown = currentUser[@"hometown"];
+         editProfileView.hometown = [self.profileUser hometownText];
          editProfileView.bio = currentUser[@"bio"];
          editProfileView.pictureData = UIImagePNGRepresentation(self.profileImageView.image);
          editProfileView.delegate = self;

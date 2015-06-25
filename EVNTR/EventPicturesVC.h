@@ -17,6 +17,7 @@
 @interface EventPicturesVC : UICollectionViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDelegateFlowLayout, PictureViewerDelegate>
 
 @property (nonatomic) BOOL allowsAddingPictures;
+@property (nonatomic) BOOL allowsChoosingPictures;
 
 @property (strong, nonatomic) EventObject *eventObject;
 @property (nonatomic, weak) id <EventPicturesProtocol> delegate;

@@ -14,6 +14,8 @@
 
 @interface EVNButtonExtended : EVNButton
 
+@property (nonatomic, strong) NSString *fbIdToFollow;
+
 @property (nonatomic, strong) EventObject *eventToView;
 @property (nonatomic, strong) EVNUser *personToFollow;
 
