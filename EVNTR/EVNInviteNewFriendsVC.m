@@ -61,7 +61,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     EVNNoResultsView *connectView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
     connectView.offsetY = 100;
-    connectView.headerText = @"Find Friends!";
+    connectView.headerText = @"Facebook Friends";
     connectView.subHeaderText = @"Connect with your Facebook Friends that are on Evntr.";
     connectView.actionButton.titleText = @"Find Friends";
     [connectView.actionButton addTarget:self action:@selector(requestFriendPermission) forControlEvents:UIControlEventTouchUpInside];
@@ -88,7 +88,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
         
         [self.view bringSubviewToFront:viewFade];
         
-        [UIView animateWithDuration:0.5 animations:^{
+        [UIView animateWithDuration:1.25 animations:^{
             
             self.view.alpha = 1.0;
             
@@ -185,20 +185,33 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     theCell.viewButton.layer.borderWidth = 0;
     
-    if (indexPath.row == self.facebookFriends.count) {
-        theCell.friendNameLabel.text = @"More";
-        theCell.friendNameLabel.textColor = [UIColor orangeThemeColor];
-        theCell.viewButton.titleText = @"";
+    NSLog(@"num facebook friends : %lu", (unsigned long)self.facebookFriends.count);
+    
+    if (self.facebookFriends.count == 0) {
+        
+        theCell.friendNameLabel.text = @"No Friends Found";
+        
     } else {
-        theCell.friendNameLabel.text = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"name"];
-        theCell.friendNameLabel.textColor = [UIColor blackColor];
-        theCell.viewButton.titleText = @"View";
         
-        theCell.viewButton.fbIdToFollow = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"id"];
-        
-        [theCell.viewButton addTarget:self action:@selector(viewProfile:) forControlEvents:UIControlEventTouchUpInside];
+        if (indexPath.row == self.facebookFriends.count) {
+            theCell.friendNameLabel.text = @"More";
+            theCell.friendNameLabel.textColor = [UIColor orangeThemeColor];
+            theCell.viewButton.titleText = @"";
+        } else {
+            theCell.friendNameLabel.text = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"name"];
+            theCell.friendNameLabel.textColor = [UIColor blackColor];
+            theCell.viewButton.titleText = @"View";
+            
+            theCell.viewButton.fbIdToFollow = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"id"];
+            
+            [theCell.viewButton addTarget:self action:@selector(viewProfile:) forControlEvents:UIControlEventTouchUpInside];
+            
+        }
         
     }
+    
+    
+
     
     return theCell;
     
@@ -206,13 +219,19 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-        
-    if (self.moreFacebookFriendsURL) {
-        return self.facebookFriends.count + 1;
-    } else {
-        return self.facebookFriends.count;
-    }
     
+    if (self.facebookFriends.count == 0) {
+        
+        return 1;
+        
+    } else {
+        
+        if (self.moreFacebookFriendsURL) {
+            return self.facebookFriends.count + 1;
+        } else {
+            return self.facebookFriends.count;
+        }
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

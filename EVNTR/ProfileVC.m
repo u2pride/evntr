@@ -96,6 +96,9 @@
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
     self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     self.scrollView.alwaysBounceVertical = YES;
+    
+    
+
 }
 
 
@@ -151,6 +154,7 @@
             self.numberEventsLabel.hidden = YES;
             self.numberFollowingLabel.hidden = YES;
             self.numberFollowersLabel.hidden = YES;
+            
             
             UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SettingsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(viewSettings)];
             self.navigationItem.rightBarButtonItem = settingsButton;
@@ -336,12 +340,13 @@
         self.numberFollowersLabel.text = @"0";
     }
     
+    
     if (self.profileUser.numFollowing) {
         self.numberFollowingLabel.text = [self.profileUser.numFollowing stringValue];
     } else {
         self.numberFollowingLabel.text = @"0";
     }
-
+    
 
 }
 

@@ -121,20 +121,12 @@
 
 - (void)displaySearchController {
     
-    
-    EVNInviteContainerVC *inviteContainer = [[EVNInviteContainerVC alloc] init];
-    inviteContainer.hidesBottomBarWhenPushed = YES;
-    
-    [self.navigationController pushViewController:inviteContainer animated:YES];
-    
-    
-    /*
     [PFAnalytics trackEventInBackground:@"SearchFeatureAccessed" block:nil];
     
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     
     [self.navigationController pushViewController:searchController animated:YES];
-     */
+    
     
 }
 
@@ -176,8 +168,6 @@
 
 - (void) updatedLocation:(NSNotification *)notification {
     
-    NSLog(@"Updated Location");
-    
     if (!self.currentUserLocation || self.currentUserLocation.latitude == 0.0) {
         
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
@@ -197,22 +187,9 @@
 
 - (PFQuery *)queryForTable {
     
-    NSString *one;
-    NSString *two;
-    NSString *three;
-    
-    
-    
-    one = [self.currentUserLocation description];
-    
     //One Way to Do It
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManagerGlobal.location];
-    
-    NSLog(@"2 queryForTable currentLocation: %@", self.currentUserLocation);
-    
-    two = [self.currentUserLocation description];
-
     
     //Ends up Grabbing the Last Location Stored if No Location in Location Manager
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -222,34 +199,11 @@
     NSNumber *longitude = [userLocationDictionary objectForKey:@"longitude"];
     
     if (userLocationDictionary && !self.currentUserLocation) {
-        NSLog(@"special location");
         self.currentUserLocation = [PFGeoPoint geoPointWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
     }
     
-    NSLog(@"3 queryForTable currentLocation: %@", self.currentUserLocation);
-
-    three = [self.currentUserLocation description];
-
-    UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Info" message:[NSString stringWithFormat:@"%@ - %@ - %@", one, two, three] delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
-    
-    [errorAlert show];
-    
     //Wait Until A Location Is Found
     if (!self.currentUserLocation || self.currentUserLocation.latitude == 0.0) {
-        
-        NSLog(@"no location in queryfortable");
-        
-        //[self performSelector:@selector(loadObjects) withObject:nil afterDelay:0.1];
-        
-        /*
-        if (!self.noResultsView) {
-            [self showNoResultsView];
-        }
-        
-        self.noResultsView.headerText = @"Where are you?";
-        self.noResultsView.subHeaderText = @"Looks like we can't find you.  Let me press a few buttons and see if that fixes it.  If not, go ahead and restart the app";
-        self.noResultsView.actionButton.hidden = YES;
-        */
         return nil;
     }
     
@@ -298,14 +252,6 @@
 
 #pragma mark - PFQueryTableView DataSource and Delegate Methods
 
-- (void)objectsWillLoad {
-    [super objectsWillLoad];
-    
-    NSLog(@"objectswillload");
-    
-}
-
-
 - (void)objectsDidLoad:(NSError *)error {
     [super objectsDidLoad:error];
     
@@ -315,8 +261,6 @@
         [self hideNoResultsView];
     }
     
-    NSLog(@"objectsdidload");
-
 }
 
 

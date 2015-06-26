@@ -999,7 +999,7 @@ Click continue when you're ready.</string>
                                                 </variation>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kmz-sb-2mR">
-                                                <rect key="frame" x="52" y="351" width="25" height="25"/>
+                                                <rect key="frame" x="16" y="351" width="96" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="1bq-wy-pvK"/>
                                                     <constraint firstAttribute="width" constant="25" id="BDu-0g-2zL"/>
@@ -1007,9 +1007,14 @@ Click continue when you're ready.</string>
                                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="21"/>
                                                 <color key="textColor" red="0.95294117647058818" green="0.44313725490196076" blue="0.19215686274509805" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="BDu-0g-2zL"/>
+                                                    </mask>
+                                                </variation>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fyz-kJ-guQ">
-                                                <rect key="frame" x="148" y="351" width="25" height="25"/>
+                                                <rect key="frame" x="112" y="351" width="96" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="T2F-q7-dYE"/>
                                                     <constraint firstAttribute="width" constant="25" id="kUI-qI-oLx"/>
@@ -1017,6 +1022,11 @@ Click continue when you're ready.</string>
                                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="21"/>
                                                 <color key="textColor" red="0.95294117647058818" green="0.44313725490196076" blue="0.19215686274509805" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="kUI-qI-oLx"/>
+                                                    </mask>
+                                                </variation>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vWi-da-iV5">
                                                 <rect key="frame" x="31" y="373" width="66" height="30"/>
@@ -1066,7 +1076,7 @@ Click continue when you're ready.</string>
                                                 </constraints>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLb-di-5zP">
-                                                <rect key="frame" x="244" y="351" width="25" height="25"/>
+                                                <rect key="frame" x="208" y="351" width="96" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="7df-Kd-GuC"/>
                                                     <constraint firstAttribute="width" constant="25" id="SRr-9C-Ww1"/>
@@ -1074,6 +1084,11 @@ Click continue when you're ready.</string>
                                                 <fontDescription key="fontDescription" name="Lato-Light" family="Lato" pointSize="21"/>
                                                 <color key="textColor" red="0.95294117647058818" green="0.44313725490196076" blue="0.19215686274509805" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="SRr-9C-Ww1"/>
+                                                    </mask>
+                                                </variation>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Plb-ES-X05">
                                                 <rect key="frame" x="127" y="373" width="66" height="30"/>
@@ -1101,7 +1116,9 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="Plb-ES-X05" firstAttribute="top" secondItem="xtJ-yI-KjY" secondAttribute="bottom" constant="12" id="EGK-tk-XZv"/>
                                             <constraint firstAttribute="centerX" secondItem="xtJ-yI-KjY" secondAttribute="centerX" id="H1e-bW-VsV"/>
                                             <constraint firstItem="vWi-da-iV5" firstAttribute="leading" secondItem="c9Y-dM-pqH" secondAttribute="leading" constant="33" id="HKS-mh-Lgj"/>
+                                            <constraint firstItem="cLb-di-5zP" firstAttribute="width" secondItem="c9Y-dM-pqH" secondAttribute="width" multiplier="0.3" id="JM1-NX-u7X"/>
                                             <constraint firstAttribute="centerY" secondItem="Plb-ES-X05" secondAttribute="centerY" constant="-150" id="JxN-dx-vsH"/>
+                                            <constraint firstAttribute="width" secondItem="Kmz-sb-2mR" secondAttribute="width" multiplier="0.3" id="Lwe-b8-8AK"/>
                                             <constraint firstAttribute="width" constant="300" id="Muk-av-BtG"/>
                                             <constraint firstAttribute="width" secondItem="c9Y-dM-pqH" secondAttribute="height" multiplier="64:95" id="O3p-nH-2Hc"/>
                                             <constraint firstAttribute="centerX" secondItem="Plb-ES-X05" secondAttribute="centerX" id="Pyh-Pz-eA7"/>
@@ -1109,8 +1126,10 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="Xhv-LT-Ngh" firstAttribute="top" secondItem="uxR-Cm-4af" secondAttribute="bottom" constant="20" id="RiQ-xK-Fle"/>
                                             <constraint firstAttribute="height" secondItem="uxR-Cm-4af" secondAttribute="height" multiplier="2" constant="-20" id="Trx-5q-b5b"/>
                                             <constraint firstAttribute="trailing" secondItem="UQf-Qn-dq8" secondAttribute="trailing" constant="34" id="VOp-QH-ytC"/>
+                                            <constraint firstItem="Fyz-kJ-guQ" firstAttribute="width" secondItem="c9Y-dM-pqH" secondAttribute="width" multiplier="0.3" id="YxA-WD-yk6"/>
                                             <constraint firstItem="Plb-ES-X05" firstAttribute="leading" secondItem="vWi-da-iV5" secondAttribute="trailing" constant="30" id="ZWg-eC-1mE"/>
                                             <constraint firstItem="xtJ-yI-KjY" firstAttribute="width" secondItem="Xhv-LT-Ngh" secondAttribute="width" id="aeo-bV-98l"/>
+                                            <constraint firstItem="Fyz-kJ-guQ" firstAttribute="width" secondItem="Kmz-sb-2mR" secondAttribute="width" id="c9X-1L-lgr"/>
                                             <constraint firstItem="Plb-ES-X05" firstAttribute="top" secondItem="Fyz-kJ-guQ" secondAttribute="bottom" constant="-3" id="dSk-0s-mZv"/>
                                             <constraint firstItem="cLb-di-5zP" firstAttribute="top" secondItem="UQf-Qn-dq8" secondAttribute="bottom" id="fYZ-fj-LzO"/>
                                             <constraint firstAttribute="trailing" secondItem="uxR-Cm-4af" secondAttribute="trailing" id="fsY-PD-mAd"/>
@@ -1126,6 +1145,7 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="Kmz-sb-2mR" firstAttribute="leading" secondItem="c9Y-dM-pqH" secondAttribute="leading" constant="46" id="uQq-bq-L1e"/>
                                             <constraint firstItem="Plb-ES-X05" firstAttribute="centerY" secondItem="UQf-Qn-dq8" secondAttribute="centerY" id="v9S-rq-fd6"/>
                                             <constraint firstAttribute="centerX" secondItem="Fyz-kJ-guQ" secondAttribute="centerX" id="wa6-ft-nB5"/>
+                                            <constraint firstItem="cLb-di-5zP" firstAttribute="width" secondItem="Fyz-kJ-guQ" secondAttribute="width" id="zST-4Y-aUC"/>
                                             <constraint firstItem="UQf-Qn-dq8" firstAttribute="leading" secondItem="Plb-ES-X05" secondAttribute="trailing" constant="30" id="zjE-bX-pj8"/>
                                         </constraints>
                                         <variation key="default">
@@ -1135,11 +1155,13 @@ Click continue when you're ready.</string>
                                                 <exclude reference="6qW-gJ-9VJ"/>
                                                 <exclude reference="Trx-5q-b5b"/>
                                                 <exclude reference="5HD-A9-3x5"/>
+                                                <exclude reference="Lwe-b8-8AK"/>
                                                 <exclude reference="sNm-hr-XwY"/>
                                                 <exclude reference="uQq-bq-L1e"/>
                                                 <exclude reference="HKS-mh-Lgj"/>
                                                 <exclude reference="k4Q-Dr-Rqb"/>
                                                 <exclude reference="EGK-tk-XZv"/>
+                                                <exclude reference="JM1-NX-u7X"/>
                                                 <exclude reference="fYZ-fj-LzO"/>
                                                 <exclude reference="i1d-XE-vh0"/>
                                                 <exclude reference="VOp-QH-ytC"/>

@@ -8,6 +8,7 @@
 
 #import "EVNConstants.h"
 #import "EVNNoResultsView.h"
+#import "EVNInviteContainerVC.h"
 #import "EVNUtility.h"
 #import "PeopleVC.h"
 #import "PersonCell.h"
@@ -27,6 +28,7 @@
 @property (nonatomic, strong) NSMutableArray *allInvitedUsers;
 
 @property (nonatomic, strong) UIActivityIndicatorView *activitySpinner;
+@property (nonatomic, strong) EVNNoResultsView *noResultsView;
 
 @end
 
@@ -59,6 +61,10 @@
         case VIEW_FOLLOWERS: {
             
             [self.navigationItem setTitle:@"Followers"];
+            
+            UIBarButtonItem *reloadIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(findUsersOnParse)];
+            self.navigationItem.rightBarButtonItem = reloadIcon;
+            
             self.collectionView.allowsMultipleSelection = NO;
             
             break;
@@ -66,6 +72,10 @@
         case VIEW_FOLLOWING: {
             
             [self.navigationItem setTitle:@"Following"];
+            
+            UIBarButtonItem *reloadIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(findUsersOnParse)];
+            self.navigationItem.rightBarButtonItem = reloadIcon;
+            
             self.collectionView.allowsMultipleSelection = NO;
             
             break;
@@ -151,17 +161,14 @@
                 
                 if (error || [usersFound count] == 0) {
                     
-                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-                    noResultsView.headerText = @"Hello?";
-                    noResultsView.subHeaderText = @"Whoa, it's really empty in here.  Know where everyone went?";
-                    noResultsView.actionButton.titleText = @"Refresh";
-                    
                     UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
-                    [noResultsView.actionButton addGestureRecognizer:tapReload];
                     
-                    [self.view addSubview:noResultsView];
+                    [self showNoResultsViewWithHeader:@"Hello?" withSubHeader:@"Whoa, it's really empty in here.  Know where everyone went?" withButtonTitle:@"Refresh" andGesture:tapReload];
                     
                 } else {
+                    
+                    [self hideNoResultsView];
+                    
                     self.usersArray = [[NSArray alloc] initWithArray:usersFound];
                     [self reloadCollectionView];
                 }
@@ -182,28 +189,18 @@
                 
                 if (error || [usersFound count] == 0) {
                     
-                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-                    
                     if ([self.userProfile.objectId isEqualToString:[EVNUser currentUser].objectId]) {
-                       
-                        noResultsView.headerText = @"No Followers";
-                        noResultsView.subHeaderText = @"This can't be right... who wouldn't want to follow you?";
-                        noResultsView.actionButton.titleText = @"Refresh";
-                        
-                    } else {
-                        
-                        noResultsView.headerText = @"No Followers";
-                        noResultsView.subHeaderText = @"Their cool-ness has not been discovered yet.";
-                        noResultsView.actionButton.titleText = @"Refresh";
-                        
-                    }
-                
-                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
-                    [noResultsView.actionButton addGestureRecognizer:tapReload];
+
+                        [self showNoResultsViewWithHeader:@"No Followers" withSubHeader:@"This can't be right... who wouldn't want to follow you?" withButtonTitle:nil andGesture:nil];
                     
-                    [self.view addSubview:noResultsView];
+                    } else {
+
+                        [self showNoResultsViewWithHeader:@"No Followers" withSubHeader:@"Their cool-ness has not been discovered yet." withButtonTitle:nil andGesture:nil];
+                    }
                     
                 } else {
+                    
+                    [self hideNoResultsView];
                     
                     for (PFObject *object in usersFound) {
                         [self.usersMutableArray addObject:object[@"userFrom"]];
@@ -220,32 +217,33 @@
         }
         case VIEW_FOLLOWING: {
             
+            NSLog(@"ViewFollowing");
+            
             [self queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
+                NSLog(@"ViewFollowing count- %lu and items: %@", (unsigned long)following.count, following);
+
                 if (following.count == 0) {
                     
-                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+                    //EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
                     if ([self.userProfile.objectId isEqualToString:[EVNUser currentUser].objectId]) {
 
-                        noResultsView.headerText = @"Following No Users";
-                        noResultsView.subHeaderText = @"Find users to follow by clicking on the search icon on the top right of the home screen.";
-                        noResultsView.actionButton.titleText = @"Refresh";
+                        UITapGestureRecognizer *tapFindFriends = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findFriends)];
+
+                        [self showNoResultsViewWithHeader:@"Following No Users" withSubHeader:@"We can help. Let's help you find some of your friends on Evntr." withButtonTitle:@"Find Your Friends!" andGesture:tapFindFriends];
                         
                     } else {
                         
-                        noResultsView.headerText = @"Following No Users";
-                        noResultsView.subHeaderText = @"They're not following anyone - no one has quite piqued their interest yet!";
-                        noResultsView.actionButton.titleText = @"Refresh";
+                        [self showNoResultsViewWithHeader:@"Following No Users" withSubHeader:@"They're not following anyone - no one has quite piqued their interest yet!" withButtonTitle:nil andGesture:nil];
                         
                     }
 
-                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
-                    [noResultsView.actionButton addGestureRecognizer:tapReload];
-                    
-                    [self.view addSubview:noResultsView];
+                    [self reloadCollectionView];
                     
                 } else {
+                    
+                    [self hideNoResultsView];
                     
                     self.usersArray = [NSArray arrayWithArray:following];
                     [self reloadCollectionView];
@@ -273,14 +271,11 @@
                 
                 if (following.count == 0) {
                     
-                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-                    noResultsView.headerText = @"No One to Invite";
-                    noResultsView.subHeaderText = @"Once you start to follow users, you will be able to invite them to events.";
-                    noResultsView.actionButton.hidden = YES;
-                    
-                    [self.view addSubview:noResultsView];
+                    [self showNoResultsViewWithHeader:@"No One to Invite" withSubHeader:@"Once you start to follow users, you will be able to invite them to events." withButtonTitle:nil andGesture:nil];
                     
                 } else {
+                    
+                    [self hideNoResultsView];
                     
                     self.usersArray = [NSArray arrayWithArray:following];
                     [self reloadCollectionView];
@@ -298,17 +293,11 @@
                 
                 if ([attenders count] == 0) {
                     
-                    EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
-                    noResultsView.headerText = @"No Attendees";
-                    noResultsView.subHeaderText = @"Looks like no one is attending this event yet. You could be the first.";
-                    noResultsView.actionButton.titleText = @"Refresh";
-                    
-                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
-                    [noResultsView.actionButton addGestureRecognizer:tapReload];
-                    
-                    [self.view addSubview:noResultsView];
+                    [self showNoResultsViewWithHeader:@"No Attendees" withSubHeader:@"Looks like no one is attending this event yet. You could be the first." withButtonTitle:nil andGesture:nil];
                     
                 } else {
+                    
+                    [self hideNoResultsView];
                     
                     self.usersArray = attenders;
                     [self reloadCollectionView];
@@ -333,6 +322,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    
     return [self.usersArray count];
 }
 
@@ -447,13 +437,56 @@
 
 
 
-#pragma mark - Helper Loading Methods
+#pragma mark - Helper Methods
+
+
+- (void) showNoResultsViewWithHeader:(NSString *)header withSubHeader:(NSString *)subHeader withButtonTitle:(NSString *)buttonTitle andGesture:(UITapGestureRecognizer *)gr {
+    
+    if (!self.noResultsView) {
+        
+        self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
+        self.noResultsView.headerText = header;
+        self.noResultsView.subHeaderText = subHeader;
+        
+        if (buttonTitle) {
+            self.noResultsView.actionButton.hidden = NO;
+            self.noResultsView.actionButton.titleText = buttonTitle;
+        } else {
+            self.noResultsView.actionButton.hidden = YES;
+        }
+        
+        if (gr) {
+            [self.noResultsView.actionButton addGestureRecognizer:gr];
+        }
+        
+        [self.view addSubview:self.noResultsView];
+    }
+    
+    self.noResultsView.hidden = NO;
+}
+
+- (void) hideNoResultsView {
+    
+    if (self.noResultsView) {
+        [self.noResultsView removeFromSuperview];
+        self.noResultsView = nil;
+    }
+
+}
 
 - (void) reloadCollectionView {
-    
+        
     [self.activitySpinner stopAnimating];
     
     [self.collectionView reloadData];
+    
+}
+
+- (void) findFriends {
+    
+    EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
+    
+    [self.navigationController pushViewController:inviteVC animated:YES];
     
 }
 

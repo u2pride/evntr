@@ -27,7 +27,7 @@
     self.messageFriendsView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
     self.messageFriendsView.offsetY = 100;
     self.messageFriendsView.headerText = @"Text A Friend";
-    self.messageFriendsView.subHeaderText = @"Click to text your friends a link to the Evntr App to download.";
+    self.messageFriendsView.subHeaderText = @"Click to text your friends an app store link for Evntr.";
     self.messageFriendsView.actionButton.titleText = @"Message";
     [self.messageFriendsView.actionButton addTarget:self action:@selector(sendInviteMessage) forControlEvents:UIControlEventTouchUpInside];
     
@@ -44,66 +44,26 @@
 }
 
 
-/*
-- (void) loadView {
-    
-    UIView *view = [UIView new];
-    
-    self.messageFriendsView = [EVNNoResultsView new];
-    self.messageFriendsView.headerText = @"Message Your Friends";
-    self.messageFriendsView.subHeaderText = @"Click to message your friends a link to the Evntr app on the app store.  This will open up iMessages.";
-    self.messageFriendsView.actionButton.titleText = @"Message";
-    [self.messageFriendsView.actionButton addTarget:self action:@selector(sendInviteMessage) forControlEvents:UIControlEventTouchUpInside];
-    self.messageFriendsView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [view addSubview:self.messageFriendsView];
-    
-    
-    self.view = view;
-}
-
-
-- (void) updateViewConstraints {
-    
-    [super updateViewConstraints];
-    
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.messageFriendsView
-                                                          attribute:NSLayoutAttributeHeight
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
-                                                          attribute:NSLayoutAttributeHeight
-                                                         multiplier:1.0
-                                                           constant:0]];
-
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.messageFriendsView
-                                                          attribute:NSLayoutAttributeWidth
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
-                                                          attribute:NSLayoutAttributeWidth
-                                                         multiplier:1.0
-                                                           constant:0]];
-
-    
-    
-    
-    
-}
- */
 
 
 #pragma mark - User Actions
 
 - (void) sendInviteMessage {
     
+    [self.messageFriendsView.actionButton startedTask];
+    
     if ([MFMessageComposeViewController canSendText]) {
         
         MFMessageComposeViewController *messageVC = [[MFMessageComposeViewController alloc] init];
         
-        messageVC.body = @"Rachel just discovered Evntr! \U0001F525 Check it out and get a live feed of what everyone is doing around you.  https://appsto.re/us/AFfm6.i";
+        messageVC.body = @"I just discovered Evntr! \U0001F525 Check it out and get a live feed of what everyone is doing around you.  https://appsto.re/us/AFfm6.i";
         messageVC.messageComposeDelegate = self;
         
-        [self presentViewController:messageVC animated:YES completion:nil];
+        [self presentViewController:messageVC animated:YES completion:^{
+            
+            [self.messageFriendsView.actionButton endedTask];
+            
+        }];
     
     }
     

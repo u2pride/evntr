@@ -7,6 +7,7 @@
 //
 
 #import "EVNInviteContainerHeaderView.h"
+#import "UIColor+EVNColors.h"
 
 @implementation EVNInviteContainerHeaderView
 
@@ -23,7 +24,6 @@
         
         [self setupButtons];
         [self setupConstraints];
-        
     }
     
     return self;
@@ -48,17 +48,18 @@
         _lineUnderContacts = [CAShapeLayer layer];
         UIBezierPath *linePath = [UIBezierPath bezierPath];
         
-        float yvalue = _contactsButton.frame.origin.y + _contactsButton.frame.size.height + 10;
+        float yvalue = self.frame.size.height;
+        //_contactsButton.frame.origin.y + _contactsButton.frame.size.height + 10;
         float startx = _contactsButton.frame.origin.x;
         float finalx = startx + _contactsButton.frame.size.width;
         
         [linePath moveToPoint:CGPointMake(startx, yvalue)];
         [linePath addLineToPoint:CGPointMake(finalx, yvalue)];
-        _lineUnderContacts.lineWidth = 3.0;
+        _lineUnderContacts.lineWidth = 5.0;
         _lineUnderContacts.path = linePath.CGPath;
         _lineUnderContacts.lineCap = kCALineCapRound;
-        _lineUnderContacts.fillColor = [UIColor purpleColor].CGColor;
-        _lineUnderContacts.strokeColor = [UIColor purpleColor].CGColor;
+        _lineUnderContacts.fillColor = [UIColor orangeThemeColor].CGColor;
+        _lineUnderContacts.strokeColor = [UIColor orangeThemeColor].CGColor;
         
         [[self layer] addSublayer:_lineUnderContacts];
         
@@ -75,17 +76,18 @@
         _lineUnderFacebook = [CAShapeLayer layer];
         UIBezierPath *linePath = [UIBezierPath bezierPath];
         
-        float yvalue = _facebookButton.frame.origin.y + _facebookButton.frame.size.height + 10;
+        float yvalue = self.frame.origin.y + self.frame.size.height;
+        //_facebookButton.frame.origin.y + _facebookButton.frame.size.height + 10;
         float startx = _facebookButton.frame.origin.x;
         float finalx = startx + _facebookButton.frame.size.width;
         
         [linePath moveToPoint:CGPointMake(startx, yvalue)];
         [linePath addLineToPoint:CGPointMake(finalx, yvalue)];
-        _lineUnderFacebook.lineWidth = 3.0;
+        _lineUnderFacebook.lineWidth = 5.0;
         _lineUnderFacebook.path = linePath.CGPath;
         _lineUnderFacebook.lineCap = kCALineCapRound;
-        _lineUnderFacebook.fillColor = [UIColor orangeColor].CGColor;
-        _lineUnderFacebook.strokeColor = [UIColor orangeColor].CGColor;
+        _lineUnderFacebook.fillColor = [UIColor orangeThemeColor].CGColor;
+        _lineUnderFacebook.strokeColor = [UIColor orangeThemeColor].CGColor;
         
         [[self layer] addSublayer:_lineUnderFacebook];
         
@@ -96,16 +98,43 @@
 }
 
 
+
+- (void) layoutSubviews {
+    
+    [super layoutSubviews];
+    
+    [self lineUnderIndex:0];
+    
+    CAShapeLayer *bottomShadow = [CAShapeLayer layer];
+    UIBezierPath *linePath = [UIBezierPath bezierPath];
+    
+    float yvalue = self.bounds.origin.y + self.bounds.size.height;
+    float startx = self.frame.origin.x;
+    float finalx = startx + self.frame.size.width;
+        
+    [linePath moveToPoint:CGPointMake(startx, yvalue)];
+    [linePath addLineToPoint:CGPointMake(finalx, yvalue)];
+    bottomShadow.lineWidth = 0.5;
+    bottomShadow.path = linePath.CGPath;
+    bottomShadow.lineCap = kCALineCapRound;
+    bottomShadow.fillColor = [UIColor blackColor].CGColor;
+    bottomShadow.strokeColor = [UIColor blackColor].CGColor;
+    
+    [[self layer] addSublayer:bottomShadow];
+    
+}
+
+
 #pragma mark - Helper Methods
 
 - (void) setupButtons {
     
-    UIImage *facebookImage = [[UIImage imageNamed:@"PersonDefaultAdd"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *facebookImage = [[UIImage imageNamed:@"inviteFacebook"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
     _facebookButton = [[UIImageView alloc] initWithImage:facebookImage];
     _facebookButton.userInteractionEnabled = YES;
     
-    UIImage *contactsImage = [[UIImage imageNamed:@"PersonDefault"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+    UIImage *contactsImage = [[UIImage imageNamed:@"inviteContacts"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
     _contactsButton = [[UIImageView alloc] initWithImage:contactsImage];
     _contactsButton.userInteractionEnabled = YES;
@@ -127,7 +156,7 @@
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:self
                                                      attribute:NSLayoutAttributeCenterX
-                                                    multiplier:0.5
+                                                    multiplier:0.55
                                                       constant:0.0]];
     
     
@@ -136,7 +165,7 @@
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:self
                                                      attribute:NSLayoutAttributeCenterX
-                                                    multiplier:1.5
+                                                    multiplier:1.45
                                                       constant:0.0]];
     
     
@@ -184,7 +213,7 @@
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:self
                                                      attribute:NSLayoutAttributeHeight
-                                                    multiplier:0.6
+                                                    multiplier:0.7
                                                       constant:0]];
     
     
@@ -193,7 +222,7 @@
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:self
                                                      attribute:NSLayoutAttributeHeight
-                                                    multiplier:0.6
+                                                    multiplier:0.7
                                                       constant:0]];
     
 }
@@ -203,7 +232,7 @@
     
     if (index == 0) {
         
-        self.facebookButton.tintColor = [UIColor orangeColor];
+        self.facebookButton.tintColor = [UIColor orangeThemeColor];
         self.contactsButton.tintColor = [UIColor grayColor];
         
         self.lineUnderFacebook.hidden = NO;
@@ -212,7 +241,7 @@
     } else {
         
         self.facebookButton.tintColor = [UIColor grayColor];
-        self.contactsButton.tintColor = [UIColor orangeColor];
+        self.contactsButton.tintColor = [UIColor orangeThemeColor];
         
         self.lineUnderFacebook.hidden = YES;
         self.lineUnderContacts.hidden = NO;

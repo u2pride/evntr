@@ -53,8 +53,9 @@
     [super viewWillAppear:animated];
     
     [self.view setNeedsUpdateConstraints];
-    
+        
 }
+
 
 #pragma mark - View Methods
 
@@ -73,6 +74,9 @@
     
     [view addSubview:self.controlView];
     [view addSubview:self.contentView];
+    
+    
+    
     
 
     self.view = view;

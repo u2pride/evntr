@@ -7,7 +7,7 @@
 //
 
 #import "EVNConstants.h"
-#import "EVNInviteNewFriendsVC.h"
+#import "EVNInviteContainerVC.h"
 #import "EVNUser.h"
 #import "EventDetailVC.h"
 #import "EventObject.h"
@@ -175,15 +175,35 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     }
     
+    cell.textLabel.font = [UIFont fontWithName:EVNFontRegular size:15];
+    cell.textLabel.textAlignment = NSTextAlignmentLeft;
+
     if (self.searchResultsArray.count == 0) {
         
-        if (indexPath.row == 0) {
+        if (self.isSearchingEvents) {
             
-            cell.textLabel.text = @"No Results";
+            if (indexPath.row == 0) {
+                
+                cell.textLabel.text = @"No Recent Events";
+                cell.textLabel.font = [UIFont fontWithName:EVNFontLight size:15];
+
+            }
             
         } else {
             
-            cell.textLabel.text = @"Find Your Friends!";
+            if (indexPath.row == 0) {
+                
+                cell.textLabel.text = @"No Results";
+                cell.textLabel.font = [UIFont fontWithName:EVNFontLight size:15];
+                
+            } else {
+                
+                cell.textLabel.text = @"Find Your Friends!";
+                cell.textLabel.font = [UIFont fontWithName:EVNFontBold size:16];
+                cell.textLabel.textAlignment = NSTextAlignmentCenter;
+
+            }
+            
         }
         
     } else {
@@ -210,7 +230,6 @@
     }
 
     
-    cell.textLabel.font = [UIFont fontWithName:EVNFontRegular size:15];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     
     return cell;
@@ -221,7 +240,13 @@
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (self.searchResultsArray.count == 0) {
-        return 2;
+        
+        if (self.isSearchingEvents) {
+            return 1;
+        } else {
+            return 2;
+        }
+    
     } else {
         return self.searchResultsArray.count;
     }
@@ -265,7 +290,7 @@
         
         if (selectedIndexPath.row == 1) {
             
-            EVNInviteNewFriendsVC *inviteVC = [[EVNInviteNewFriendsVC alloc] init];
+            EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
             
             [self.navigationController pushViewController:inviteVC animated:YES];
                         
