@@ -818,9 +818,7 @@
 
 
 - (IBAction)inviteFriends:(id)sender {
-    
-    NSLog(@"InviteFriends");
-    
+        
     if (!self.isGuestUser) {
         
         self.shouldRestoreNavBar = NO;

@@ -39,6 +39,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         _facebookFriends = [[NSMutableArray alloc] init];
+        
     }
     
     return self;
@@ -51,13 +52,13 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
-    
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.view addSubview:self.tableView];
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     
+    [self.tableView registerClass:[EVNFacebookFriendCell class] forCellReuseIdentifier:reuseIdentifier];
     
     EVNNoResultsView *connectView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
     connectView.offsetY = 100;
@@ -68,9 +69,47 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     //[connectView.actionButton addTarget:self action:@selector(sendInviteMessage) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:connectView];
+
     
+}
+
+
+- (void) updateViewConstraints {
     
-    [self.tableView registerClass:[EVNFacebookFriendCell class] forCellReuseIdentifier:reuseIdentifier];
+    [super updateViewConstraints];
+    
+
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView
+                                                          attribute:NSLayoutAttributeTop
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeTop
+                                                         multiplier:1.0
+                                                           constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView
+                                                          attribute:NSLayoutAttributeBottom
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeBottom
+                                                         multiplier:1.0
+                                                           constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView
+                                                          attribute:NSLayoutAttributeLeft
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeLeft
+                                                         multiplier:1.0
+                                                           constant:0]];
+    
+    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.tableView
+                                                          attribute:NSLayoutAttributeRight
+                                                          relatedBy:NSLayoutRelationEqual
+                                                             toItem:self.view
+                                                          attribute:NSLayoutAttributeRight
+                                                         multiplier:1.0
+                                                           constant:0]];
     
 }
 
@@ -144,35 +183,39 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    EVNFacebookFriendCell *cell = (EVNFacebookFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-    
-    if (indexPath.row == self.facebookFriends.count) {
-        self.buttonWithRefresh = cell.viewButton;
-        [self additionalFriendsWithLimit:@15 andOffset:[NSNumber numberWithInteger:self.facebookFriends.count]];
+    if (self.facebookFriends.count > 0) {
         
-    } else {
+        EVNFacebookFriendCell *cell = (EVNFacebookFriendCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         
-        [UIView animateWithDuration:0.3 animations:^{
+        if (indexPath.row == self.facebookFriends.count) {
+            self.buttonWithRefresh = cell.viewButton;
+            [self additionalFriendsWithLimit:@15 andOffset:[NSNumber numberWithInteger:self.facebookFriends.count]];
             
-            cell.friendNameLabel.alpha = 0.25;
+        } else {
             
-        } completion:^(BOOL finished) {
-           
             [UIView animateWithDuration:0.3 animations:^{
                 
-                cell.friendNameLabel.alpha = 1.0;
+                cell.friendNameLabel.alpha = 0.25;
                 
             } completion:^(BOOL finished) {
                 
+                [UIView animateWithDuration:0.3 animations:^{
+                    
+                    cell.friendNameLabel.alpha = 1.0;
+                    
+                } completion:^(BOOL finished) {
+                    
+                    
+                }];
                 
             }];
             
-        }];
-        
-        [self viewProfile:cell.viewButton];
+            [self viewProfile:cell.viewButton];
+            
+        }
         
     }
-    
+
 }
 
 
@@ -185,11 +228,11 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     theCell.viewButton.layer.borderWidth = 0;
     
-    NSLog(@"num facebook friends : %lu", (unsigned long)self.facebookFriends.count);
     
     if (self.facebookFriends.count == 0) {
         
         theCell.friendNameLabel.text = @"No Friends Found";
+        theCell.viewButton.titleText = @"";
         
     } else {
         
@@ -210,9 +253,6 @@ static NSString *reuseIdentifier = @"CellIdentifier";
         
     }
     
-    
-
-    
     return theCell;
     
 }
@@ -220,7 +260,11 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
-    if (self.facebookFriends.count == 0) {
+    if (!self.facebookFriends) {
+        
+        return 0;
+        
+    } else if (self.facebookFriends.count == 0) {
         
         return 1;
         
@@ -232,6 +276,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             return self.facebookFriends.count;
         }
     }
+
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -247,18 +292,13 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     [PFFacebookUtils linkUser:[EVNUser currentUser] permissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
         if (succeeded) {
-            NSLog(@"User has friend access now!");
-            
-            //DO WE HAVE TO LOGIN WITH FACEBOOK FIRST??? OR CAN WE JUST DO THIS???
             
             [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
                
-                NSLog(@"Result - Need to store ID in Parse for Users Not Logged In with FB - %@", result);
-                
                 if (!error) {
+                    
                     // Store the current user's Facebook ID on the user
-                    [[EVNUser currentUser] setObject:[result objectForKey:@"id"]
-                                             forKey:@"fbId"];
+                    [[EVNUser currentUser] setObject:[result objectForKey:@"id"] forKey:@"facebookID"];
                     [[EVNUser currentUser] saveInBackground];
                 }
             
@@ -267,7 +307,11 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             [self additionalFriendsWithLimit:@15 andOffset:@0];
             
         } else {
-            NSLog(@"failed with error: %@", error);
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like we can't connect with your Facebook account.  Connect us from the Settings page for help." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
         }
     }];
     
@@ -289,9 +333,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     [findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         
         if (!error) {
-            
-            NSLog(@"object: %@", object);
-            
+                        
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
 
             ProfileVC *userProfile = [storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];

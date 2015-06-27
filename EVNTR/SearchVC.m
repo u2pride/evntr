@@ -198,7 +198,7 @@
                 
             } else {
                 
-                cell.textLabel.text = @"Find Your Friends!";
+                cell.textLabel.text = @"Click here to Find your Friends!";
                 cell.textLabel.font = [UIFont fontWithName:EVNFontBold size:16];
                 cell.textLabel.textAlignment = NSTextAlignmentCenter;
 

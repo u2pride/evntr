@@ -24,39 +24,6 @@
 
 @implementation EVNInviteContainerVC
 
-#pragma mark - Lifecycle Methods
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.title = @"Find & Invite Friends";
-    
-    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
-    
-    self.facebookVC = [EVNInviteNewFriendsVC new];
-    [self addChildViewController:self.facebookVC];
-    [self.contentView addSubview:self.facebookVC.view];
-    [self.facebookVC didMoveToParentViewController:self];
-    
-    UITapGestureRecognizer *facebookGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapVCs2)];
-    UITapGestureRecognizer *contactsGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapVCs)];
-    
-    [self.controlView.facebookButton addGestureRecognizer:facebookGR];
-    [self.controlView.contactsButton addGestureRecognizer:contactsGR];
-    
-    self.contactsVC = [EVNInviteContactsVC new];
-    
-}
-
-- (void) viewWillAppear:(BOOL)animated {
-    
-    [super viewWillAppear:animated];
-    
-    [self.view setNeedsUpdateConstraints];
-        
-}
-
-
 #pragma mark - View Methods
 
 - (void)loadView {
@@ -77,9 +44,41 @@
     
     
     
-    
-
     self.view = view;
+    
+}
+
+
+#pragma mark - Lifecycle Methods
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.title = @"Find & Invite Friends";
+    
+    [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
+    
+    self.facebookVC = [[EVNInviteNewFriendsVC alloc] init];
+    self.facebookVC.view.frame = self.contentView.bounds;
+    [self addChildViewController:self.facebookVC];
+    [self.contentView addSubview:self.facebookVC.view];
+    [self.facebookVC didMoveToParentViewController:self];
+    
+    UITapGestureRecognizer *facebookGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapVCs2)];
+    UITapGestureRecognizer *contactsGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapVCs)];
+    
+    [self.controlView.facebookButton addGestureRecognizer:facebookGR];
+    [self.controlView.contactsButton addGestureRecognizer:contactsGR];
+    
+    self.contactsVC = [EVNInviteContactsVC new];
+    
+}
+
+- (void) viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    
+    [self.view setNeedsUpdateConstraints];
     
 }
 
@@ -124,6 +123,7 @@
                                                            constant:0]];
     
     //Content View
+
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.contentView
                                                           attribute:NSLayoutAttributeBottom
                                                           relatedBy:NSLayoutRelationEqual

@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "Edit-event.png"
+      "filename" : "editEvent.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "Edit-event@2x.png"
+      "filename" : "editEvent@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "Edit-event@3x.png"
+      "filename" : "editEvent@3x.png"
     }
   ],
   "info" : {

@@ -2918,14 +2918,14 @@ Click continue when you're ready.</string>
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="flagEvent" translatesAutoresizingMaskIntoConstraints="NO" id="6Qx-ag-yGE">
-                                <rect key="frame" x="282" y="106" width="22" height="22"/>
+                                <rect key="frame" x="274" y="106" width="22" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="22" id="Tvg-wT-eDO"/>
                                     <constraint firstAttribute="height" constant="22" id="sjb-vG-g6p"/>
                                 </constraints>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="inviteIcon" translatesAutoresizingMaskIntoConstraints="NO" id="dU3-y9-lWS">
-                                <rect key="frame" x="16" y="106" width="22" height="22"/>
+                                <rect key="frame" x="24" y="106" width="22" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="22" id="W4i-tr-uC4"/>
                                     <constraint firstAttribute="height" constant="22" id="ueE-ik-6Ru"/>
@@ -2936,14 +2936,14 @@ Click continue when you're ready.</string>
                         <constraints>
                             <constraint firstItem="fXh-Of-N5Z" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leading" id="9bx-Ai-3cH"/>
                             <constraint firstAttribute="centerX" secondItem="WEQ-g4-QdZ" secondAttribute="centerX" id="Aks-EU-Nwl"/>
-                            <constraint firstItem="dU3-y9-lWS" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leadingMargin" id="Kvs-dB-roh"/>
+                            <constraint firstItem="dU3-y9-lWS" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leadingMargin" constant="8" id="Kvs-dB-roh"/>
                             <constraint firstItem="WEQ-g4-QdZ" firstAttribute="top" secondItem="3BY-zL-Tby" secondAttribute="topMargin" constant="24" id="NtH-Wy-VLC"/>
                             <constraint firstItem="caj-O3-lWl" firstAttribute="centerY" secondItem="6Qx-ag-yGE" secondAttribute="centerY" id="OIB-EI-5Of"/>
                             <constraint firstAttribute="centerX" secondItem="caj-O3-lWl" secondAttribute="centerX" id="PbI-Er-CcF"/>
                             <constraint firstItem="caj-O3-lWl" firstAttribute="top" secondItem="WEQ-g4-QdZ" secondAttribute="bottom" constant="8" id="Qc4-nd-x0W"/>
                             <constraint firstAttribute="trailing" secondItem="fXh-Of-N5Z" secondAttribute="trailing" id="RNQ-9R-Pnf"/>
                             <constraint firstItem="dU3-y9-lWS" firstAttribute="centerY" secondItem="caj-O3-lWl" secondAttribute="centerY" id="Rt8-vM-1TY"/>
-                            <constraint firstItem="6Qx-ag-yGE" firstAttribute="trailing" secondItem="3BY-zL-Tby" secondAttribute="trailingMargin" id="S9h-mc-PgR"/>
+                            <constraint firstItem="6Qx-ag-yGE" firstAttribute="trailing" secondItem="3BY-zL-Tby" secondAttribute="trailingMargin" constant="-8" id="S9h-mc-PgR"/>
                             <constraint firstItem="U2K-8t-Wd7" firstAttribute="top" secondItem="WEQ-g4-QdZ" secondAttribute="bottom" constant="8" id="UN2-hl-Eza"/>
                             <constraint firstItem="WEQ-g4-QdZ" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leadingMargin" constant="32" id="Vow-hz-6fT"/>
                             <constraint firstAttribute="centerX" secondItem="U2K-8t-Wd7" secondAttribute="centerX" id="aIE-lR-dz3"/>
@@ -3712,7 +3712,7 @@ Click continue when you're ready.</string>
         <image name="SplashScreenSingle" width="640" height="960"/>
         <image name="WalkthroughBackground" width="640" height="960"/>
         <image name="flagEvent" width="22" height="22"/>
-        <image name="inviteIcon" width="25" height="25"/>
+        <image name="inviteIcon" width="22" height="22"/>
         <image name="mapIcon" width="9" height="12"/>
         <image name="tabActivity" width="25" height="25"/>
         <image name="tabAdd" width="25" height="25"/>

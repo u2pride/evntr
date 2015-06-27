@@ -217,12 +217,8 @@
         }
         case VIEW_FOLLOWING: {
             
-            NSLog(@"ViewFollowing");
-            
             [self queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
-                NSLog(@"ViewFollowing count- %lu and items: %@", (unsigned long)following.count, following);
-
                 if (following.count == 0) {
                     
                     //EVNNoResultsView *noResultsView = [[EVNNoResultsView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];

@@ -348,8 +348,6 @@
 
 - (void) showNoResultsView {
     
-    NSLog(@"Show No Results View");
-    
     if (!self.noResultsView) {
         self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
     }
@@ -376,7 +374,7 @@
         }
         case OTHER_USER_EVENTS: {
             self.noResultsView.headerText = @"No Events";
-            self.noResultsView.subHeaderText = @"Looks like they haven't created any events yet.";
+            self.noResultsView.subHeaderText = @"Looks like they haven't created any public events yet.";
             self.noResultsView.actionButton.hidden = YES;
             
             break;
@@ -392,9 +390,8 @@
 
 - (void) hideNoResultsView {
     
-    NSLog(@"Hide No Results View");
-    
     [self.noResultsView removeFromSuperview];
+    self.noResultsView = nil;
     
 }
 
