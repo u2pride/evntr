@@ -143,14 +143,22 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 - (void) additionalFriendsWithLimit:(NSNumber *)limit andOffset:(NSNumber *)offset {
     
-    [self.buttonWithRefresh startedTask];
     
-    FBRequest *friendsRequest = [FBRequest requestForMyFriends];
     
-    [friendsRequest.parameters setObject:limit forKey:@"limit"];
-    [friendsRequest.parameters setObject:offset forKey:@"offset"];
-    NSLog(@"friendsRequest params - %@", friendsRequest.parameters);
     
+    //[friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,NSDictionary* result,NSError *error) {
+    //    NSArray* friends = [result objectForKey:@"data"];
+    
+    
+    
+    
+    
+    //[self.buttonWithRefresh startedTask];
+    
+
+        
+        
+    /*
     FBRequestConnection *newRequestConnection = [[FBRequestConnection alloc] init];
     [newRequestConnection addRequest:friendsRequest completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         
@@ -174,7 +182,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     }];
     
     [newRequestConnection start];
-    
+    */
 }
 
 
@@ -285,9 +293,66 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 
 #pragma mark - User Actions
+//ALEX - 15
 
 - (void) requestFriendPermission {
     
+    FBRequest *friendsRequest = [FBRequest requestForMyFriends];
+    
+    [friendsRequest.parameters setObject:@15 forKey:@"limit"];
+    [friendsRequest.parameters setObject:@5 forKey:@"offset"];
+    NSLog(@"friendsRequest params - %@", friendsRequest.parameters);
+    
+    
+    [friendsRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        NSLog(@"Result: %@", result);
+        
+        
+    }];
+    
+    FBRequest *requestTry = [FBRequest alloc] initwithgr
+    
+    /*
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
+    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            // result is a dictionary with the user's Facebook data
+            NSDictionary *userData = (NSDictionary *)result;
+            
+            NSLog(@"Result: %@", userData);
+            
+            // Now add the data to the UI elements
+            // ...
+        }
+    }];
+    */
+    
+    // For more complex open graph stories, use `FBSDKShareAPI`
+    // with `FBSDKShareOpenGraphContent`
+    /* make the API call */
+    
+    //FBSession *session = [[FBSession alloc] initWithPermissions:@{ @"user_friends"}];
+    //FBRequest *requestOne = [[FBRequest alloc] initWithSession:nil graphPath:@"/" parameters:nil HTTPMethod:@"GET"];
+    
+    //[requestOne startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        
+        
+    
+    //}];
+    
+    
+    /*FBRequest *request = [[FBRequest alloc]
+                                  initWithGraphPath:@"/{user-id}"
+                                  parameters:params
+                                  HTTPMethod:@"GET"];
+    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+                                          id result,
+                                          NSError *error) {
+        // Handle the result
+    }];
+    */
+    /*
     [self fadeInView:self.tableView];
     
     [PFFacebookUtils linkUser:[EVNUser currentUser] permissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
@@ -304,7 +369,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             
             }];
             
-            [self additionalFriendsWithLimit:@15 andOffset:@0];
+            [self additionalFriendsWithLimit:@50 andOffset:@0];
             
         } else {
             
@@ -314,7 +379,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             
         }
     }];
-    
+    */
 }
 
 
