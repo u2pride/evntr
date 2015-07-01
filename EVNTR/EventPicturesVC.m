@@ -325,26 +325,6 @@ static NSString * const reuseIdentifier = @"pictureCell";
     }
     
     
-    
-    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        imagePicker.view.tintColor = [UIColor orangeThemeColor];
-        imagePicker.navigationBar.tintColor = [UIColor orangeThemeColor];
-        imagePicker.navigationController.navigationBar.tintColor = [UIColor orangeThemeColor];
-        
-        [self presentViewController:imagePicker animated:YES completion:^{
-            
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-            
-        }];
-        
-    }];
-    
-    
     if (self.allowsChoosingPictures) {
         
         UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {

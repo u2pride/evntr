@@ -16,8 +16,7 @@
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
 
-#import <FacebookSDK/FacebookSDK.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
 @interface TabNavigationVC ()
 
@@ -38,7 +37,7 @@
     [super viewDidLoad];
     
     self.delegate = self;
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
     self.transitionController = [[IDTTransitionControllerTab alloc] init];
     
     //UI Updates to Tab & Navigation Bar

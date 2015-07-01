@@ -24,9 +24,9 @@
 #import "UIImageEffects.h"
 #import "UIColor+EVNColors.h"
 
-#import <FacebookSDK/FacebookSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <Parse/Parse.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import <ParseUI/ParseUI.h>
 
 @interface HomeScreenVC ()

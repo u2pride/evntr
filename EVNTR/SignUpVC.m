@@ -16,9 +16,9 @@
 #import "UIColor+EVNColors.h"
 #import "UIImage+EVNEffects.h"
 
-#import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 
 typedef enum {
@@ -150,8 +150,10 @@ typedef enum {
     
     NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location", @"user_friends"];
     
-    [PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
-        
+    //[PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
+    
+    [PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
+    
         if (!user) {
 
             [self cleanUpBeforeTransition];
@@ -159,20 +161,13 @@ typedef enum {
             // Handles cases like Facebook password change or unverified Facebook accounts.
             NSString *alertMessage, *alertTitle;
             
-            if ([FBErrorUtility shouldNotifyUserForError:error]) {
-                alertTitle = [FBErrorUtility userTitleForError:error];
-                alertMessage = [FBErrorUtility userMessageForError:error];
-                
-            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryAuthenticationReopenSession) {
-                alertTitle = @"Session Error";
-                alertMessage = @"Your current session is no longer valid. Please log in again.";
-                
-            } else if ([FBErrorUtility errorCategoryForError:error] == FBErrorCategoryUserCancelled) {
-                //@"user cancelled login"
+            if ([error.userInfo objectForKey:FBSDKErrorLocalizedTitleKey]) {
+                alertMessage = [error.userInfo objectForKey:FBSDKErrorLocalizedDescriptionKey];
+                alertTitle = [error.userInfo objectForKey:FBSDKErrorLocalizedTitleKey];
                 
             } else {
-                alertTitle  = @"Something went wrong";
-                alertMessage = @"Please try again later.";
+                alertTitle = @"Facebook Error";
+                alertMessage = @"Sorry about this.  Looks like we can't log you in.  Try logging in again.";
             }
             
             if (alertMessage) {
@@ -406,9 +401,14 @@ typedef enum {
     [self.view addSubview:activityIndicator];
     [activityIndicator startAnimating];
     
-    FBRequest *request = [FBRequest requestForMe];
-    [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        
+    //FBRequest *request = [FBRequest requestForMe];
+    //[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+    
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
+    FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
+
+    [connection addRequest:request completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+    
         if (!error) {
                         
             [activityIndicator stopAnimating];

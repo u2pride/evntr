@@ -12,10 +12,12 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <Bolts/Bolts.h>
-#import <FacebookSDK/FacebookSDK.h>
 #import <Parse/Parse.h>
 #import <ParseCrashReporting/ParseCrashReporting.h>
-#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import <FBSDKCoreKit/FBSDKApplicationDelegate.h>
+#import <FBSDKCoreKit/FBSDKAppEvents.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+
 
 @interface AppDelegate ()
 
@@ -48,7 +50,7 @@
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
     //Initializing the Parse FB Utility
-    [PFFacebookUtils initializeFacebook];
+    [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
     
     //Audio Session - Continue Playing Background Music
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -76,11 +78,12 @@
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:0];
     
-    [FBAppCall handleDidBecomeActiveWithSession:[PFFacebookUtils session]];
+    [FBSDKAppEvents activateApp];
     
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 3.0 * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -91,11 +94,12 @@
     
 }
 
+/*
 - (void)applicationWillTerminate:(UIApplication *)application {
     
     [[PFFacebookUtils session] close];
-    
 }
+*/
 
 
 
@@ -332,9 +336,10 @@
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation {
-    return [FBAppCall handleOpenURL:url
-                  sourceApplication:sourceApplication
-                        withSession:[PFFacebookUtils session]];
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                          openURL:url
+                                                sourceApplication:sourceApplication
+                                                       annotation:annotation];
 }
 
 

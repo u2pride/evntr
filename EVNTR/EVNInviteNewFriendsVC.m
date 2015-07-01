@@ -14,8 +14,8 @@
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
-#import <ParseFacebookUtils/PFFacebookUtils.h>
-#import <FacebookSDK/FacebookSDK.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 
 @interface EVNInviteNewFriendsVC ()
@@ -143,24 +143,18 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 - (void) additionalFriendsWithLimit:(NSNumber *)limit andOffset:(NSNumber *)offset {
     
+    [self.buttonWithRefresh startedTask];
     
+    NSArray *objectsRequest = [NSArray arrayWithObjects:limit, offset, nil];
+    NSArray *keysRequest = [NSArray arrayWithObjects:@"limit", @"offset", nil];
     
+    NSDictionary *facebookParameters = [NSDictionary dictionaryWithObjects:objectsRequest forKeys:keysRequest];
     
-    //[friendsRequest startWithCompletionHandler: ^(FBRequestConnection *connection,NSDictionary* result,NSError *error) {
-    //    NSArray* friends = [result objectForKey:@"data"];
+    FBSDKGraphRequest *friendsRequest = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/friends" parameters:facebookParameters];
     
+    FBSDKGraphRequestConnection *friendRequestConnection = [[FBSDKGraphRequestConnection alloc] init];
     
-    
-    
-    
-    //[self.buttonWithRefresh startedTask];
-    
-
-        
-        
-    /*
-    FBRequestConnection *newRequestConnection = [[FBRequestConnection alloc] init];
-    [newRequestConnection addRequest:friendsRequest completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+    [friendRequestConnection addRequest:friendsRequest completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
         
         NSLog(@"Connection: %@", connection);
         NSLog(@"Results: %@", result);
@@ -181,8 +175,8 @@ static NSString *reuseIdentifier = @"CellIdentifier";
         
     }];
     
-    [newRequestConnection start];
-    */
+    [friendRequestConnection start];
+
 }
 
 
@@ -197,7 +191,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
         
         if (indexPath.row == self.facebookFriends.count) {
             self.buttonWithRefresh = cell.viewButton;
-            [self additionalFriendsWithLimit:@15 andOffset:[NSNumber numberWithInteger:self.facebookFriends.count]];
+            [self additionalFriendsWithLimit:@5 andOffset:[NSNumber numberWithInteger:self.facebookFriends.count]];
             
         } else {
             
@@ -244,10 +238,13 @@ static NSString *reuseIdentifier = @"CellIdentifier";
         
     } else {
         
+        //Last Row - More Button
         if (indexPath.row == self.facebookFriends.count) {
             theCell.friendNameLabel.text = @"More";
             theCell.friendNameLabel.textColor = [UIColor orangeThemeColor];
             theCell.viewButton.titleText = @"";
+        
+        //Row With Friend - Attach FB Id to Button
         } else {
             theCell.friendNameLabel.text = (NSString *)[[self.facebookFriends objectAtIndex:indexPath.row] objectForKey:@"name"];
             theCell.friendNameLabel.textColor = [UIColor blackColor];
@@ -293,84 +290,37 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 
 #pragma mark - User Actions
-//ALEX - 15
 
 - (void) requestFriendPermission {
     
-    FBRequest *friendsRequest = [FBRequest requestForMyFriends];
-    
-    [friendsRequest.parameters setObject:@15 forKey:@"limit"];
-    [friendsRequest.parameters setObject:@5 forKey:@"offset"];
-    NSLog(@"friendsRequest params - %@", friendsRequest.parameters);
-    
-    
-    [friendsRequest startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        
-        NSLog(@"Result: %@", result);
-        
-        
-    }];
-    
-    FBRequest *requestTry = [FBRequest alloc] initwithgr
-    
-    /*
-    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
-    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-        if (!error) {
-            // result is a dictionary with the user's Facebook data
-            NSDictionary *userData = (NSDictionary *)result;
-            
-            NSLog(@"Result: %@", userData);
-            
-            // Now add the data to the UI elements
-            // ...
-        }
-    }];
-    */
-    
-    // For more complex open graph stories, use `FBSDKShareAPI`
-    // with `FBSDKShareOpenGraphContent`
-    /* make the API call */
-    
-    //FBSession *session = [[FBSession alloc] initWithPermissions:@{ @"user_friends"}];
-    //FBRequest *requestOne = [[FBRequest alloc] initWithSession:nil graphPath:@"/" parameters:nil HTTPMethod:@"GET"];
-    
-    //[requestOne startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-        
-        
-    
-    //}];
-    
-    
-    /*FBRequest *request = [[FBRequest alloc]
-                                  initWithGraphPath:@"/{user-id}"
-                                  parameters:params
-                                  HTTPMethod:@"GET"];
-    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
-                                          id result,
-                                          NSError *error) {
-        // Handle the result
-    }];
-    */
-    /*
     [self fadeInView:self.tableView];
     
-    [PFFacebookUtils linkUser:[EVNUser currentUser] permissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
+    
+    [PFFacebookUtils linkUserInBackground:[EVNUser currentUser] withReadPermissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
+        
         if (succeeded) {
             
-            [FBRequestConnection startForMeWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-               
+            FBSDKGraphRequest *meRequest = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
+            
+            FBSDKGraphRequestConnection *meRequestConnection = [[FBSDKGraphRequestConnection alloc] init];
+            
+            [meRequestConnection addRequest:meRequest completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+            
+                NSLog(@"Result From Me Request: %@", result);
+                
                 if (!error) {
-                    
-                    // Store the current user's Facebook ID on the user
+                    //Store the current user's Facebook ID on the user
                     [[EVNUser currentUser] setObject:[result objectForKey:@"id"] forKey:@"facebookID"];
                     [[EVNUser currentUser] saveInBackground];
                 }
+                
+                [self additionalFriendsWithLimit:@5 andOffset:@0];
+
+           }];
             
-            }];
+        [meRequestConnection start];
             
-            [self additionalFriendsWithLimit:@50 andOffset:@0];
-            
+    
         } else {
             
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like we can't connect with your Facebook account.  Connect us from the Settings page for help." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
@@ -378,8 +328,9 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             [errorAlert show];
             
         }
+        
     }];
-    */
+    
 }
 
 
@@ -393,7 +344,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     NSString *facebookID = viewProfileButton.fbIdToFollow;
     
-    PFQuery *findUserQuery = [PFUser query];
+    PFQuery *findUserQuery = [EVNUser query];
     [findUserQuery whereKey:@"facebookID" equalTo:facebookID];
     [findUserQuery getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
         

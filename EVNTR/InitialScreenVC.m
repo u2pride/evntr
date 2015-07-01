@@ -221,7 +221,7 @@
 
 - (IBAction) logOutUnwindSegue:(UIStoryboardSegue *)unwindSegue {
     
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
     
     [self checkAppVersion];
     
