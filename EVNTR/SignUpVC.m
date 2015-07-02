@@ -410,7 +410,7 @@ typedef enum {
     [connection addRequest:request completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
     
         if (!error) {
-                        
+                                    
             [activityIndicator stopAnimating];
             
             NSDictionary *userData = (NSDictionary *)result;
@@ -459,6 +459,8 @@ typedef enum {
                 newUser[@"facebookID"] = userData[@"id"];
             }
             
+            NSLog(@"userdata: %@", userData);
+            
             [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
                 id<NewUserFacebookSignUpDelegate> strongDelegate = self.delegate;
@@ -479,6 +481,8 @@ typedef enum {
         }
         
     }];
+    
+    [connection start];
     
 }
 

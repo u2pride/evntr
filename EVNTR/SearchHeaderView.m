@@ -51,7 +51,7 @@
     
     self.eventLabel = [[UILabel alloc] init];
     self.eventLabel.text = @"EVENTS";
-    self.eventLabel.font = [UIFont fontWithName:EVNFontRegular size:16];
+    self.eventLabel.font = [UIFont fontWithName:EVNFontBold size:16];
     self.eventLabel.textColor = [UIColor orangeThemeColor];
     self.eventLabel.textAlignment = NSTextAlignmentCenter;
     
@@ -60,8 +60,8 @@
     
     self.peopleLabel = [[UILabel alloc] init];
     self.peopleLabel.text = @"PEOPLE";
-    self.peopleLabel.font = [UIFont fontWithName:EVNFontRegular size:16];
-    self.peopleLabel.textColor = [UIColor blackColor];
+    self.peopleLabel.font = [UIFont fontWithName:EVNFontBold size:16];
+    self.peopleLabel.textColor = [UIColor darkGrayColor];
     self.peopleLabel.textAlignment = NSTextAlignmentCenter;
     
     [self.peopleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];

@@ -156,12 +156,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     [friendRequestConnection addRequest:friendsRequest completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
         
-        NSLog(@"Connection: %@", connection);
-        NSLog(@"Results: %@", result);
-        NSLog(@"Error: %@", error);
-        
         if ([result objectForKey:@"paging"]) {
-            NSLog(@"Next URL - %@", [result objectForKey:@"paging"]);
             self.moreFacebookFriendsURL = (NSString *)[[result objectForKey:@"paging"] objectForKey:@"next"];
         } else {
             self.moreFacebookFriendsURL = nil;
@@ -305,8 +300,6 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             FBSDKGraphRequestConnection *meRequestConnection = [[FBSDKGraphRequestConnection alloc] init];
             
             [meRequestConnection addRequest:meRequest completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-            
-                NSLog(@"Result From Me Request: %@", result);
                 
                 if (!error) {
                     //Store the current user's Facebook ID on the user

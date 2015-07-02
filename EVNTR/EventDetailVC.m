@@ -449,7 +449,7 @@
     UITapGestureRecognizer *flagGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(flagCurrentEvent)];
     [self.flagEvent addGestureRecognizer:flagGR];
     
-    //Setup Invite Button
+    //Setup Invite Button for Attenders
     self.inviteUsers.userInteractionEnabled = YES;
     UITapGestureRecognizer *inviteGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(inviteFriends:)];
     [self.inviteUsers addGestureRecognizer:inviteGR];

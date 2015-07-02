@@ -319,6 +319,8 @@
         
     }];
     
+    [connection start];
+    
     /*
     [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         if (!error) {

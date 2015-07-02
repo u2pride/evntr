@@ -103,11 +103,11 @@
     if (senderLabel == self.searchTypeSelectionView.eventLabel) {
         self.isSearchingEvents = YES;
         self.searchTypeSelectionView.eventLabel.textColor = [UIColor orangeThemeColor];
-        self.searchTypeSelectionView.peopleLabel.textColor = [UIColor blackColor];
+        self.searchTypeSelectionView.peopleLabel.textColor = [UIColor darkGrayColor];
 
     } else {
         self.isSearchingEvents = NO;
-        self.searchTypeSelectionView.eventLabel.textColor = [UIColor blackColor];
+        self.searchTypeSelectionView.eventLabel.textColor = [UIColor darkGrayColor];
         self.searchTypeSelectionView.peopleLabel.textColor = [UIColor orangeThemeColor];
 
     }

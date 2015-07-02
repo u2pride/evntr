@@ -355,7 +355,7 @@
     switch (self.typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
             self.noResultsView.headerText = @"This Is Awkward...";
-            self.noResultsView.subHeaderText = @"Looks like there aren't any public events near you. Maybe increase your search radius.";
+            self.noResultsView.subHeaderText = @"Looks like there aren't any public events near you. Maybe increase your search radius or create your own event!";
             self.noResultsView.actionButton.titleText = @"Increase Your Search Radius";
             
             UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(displayFilterView)];
