@@ -914,6 +914,9 @@ Click continue when you're ready.</string>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uxR-Cm-4af">
                                                 <rect key="frame" x="0.0" y="64" width="320" height="199"/>
                                                 <subviews>
+                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="WhiteHexagon" translatesAutoresizingMaskIntoConstraints="NO" id="jyb-8H-fr8">
+                                                        <rect key="frame" x="103" y="2" width="116" height="116"/>
+                                                    </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Zyc-PW-6UR" customClass="PFImageView">
                                                         <rect key="frame" x="105" y="4" width="111" height="111"/>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -976,15 +979,19 @@ Click continue when you're ready.</string>
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.069948539540806834" green="0.4181750926134184" blue="0.93036872148513794" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
+                                                    <constraint firstItem="jyb-8H-fr8" firstAttribute="width" secondItem="Zyc-PW-6UR" secondAttribute="width" multiplier="1.05" id="2eO-gb-hZ1"/>
                                                     <constraint firstAttribute="centerY" secondItem="Zyc-PW-6UR" secondAttribute="centerY" constant="27.5" id="3pk-yN-5X1"/>
                                                     <constraint firstItem="9r6-zM-w9m" firstAttribute="top" secondItem="Zyc-PW-6UR" secondAttribute="bottom" constant="80" id="FhE-uk-EVo"/>
                                                     <constraint firstAttribute="bottom" secondItem="Z6n-2g-g1q" secondAttribute="bottom" constant="16" id="O1M-LB-U8j"/>
                                                     <constraint firstAttribute="centerX" secondItem="Zyc-PW-6UR" secondAttribute="centerX" id="Of4-5R-nC2"/>
+                                                    <constraint firstItem="jyb-8H-fr8" firstAttribute="centerX" secondItem="Zyc-PW-6UR" secondAttribute="centerX" id="PDx-DW-grj"/>
                                                     <constraint firstAttribute="trailing" secondItem="Z6n-2g-g1q" secondAttribute="trailing" constant="14" id="S2E-Dy-chY"/>
                                                     <constraint firstItem="Z6n-2g-g1q" firstAttribute="leading" secondItem="uxR-Cm-4af" secondAttribute="leading" constant="14" id="Wnb-Q4-8Sf"/>
                                                     <constraint firstItem="Z6n-2g-g1q" firstAttribute="top" secondItem="1ah-qv-EHV" secondAttribute="bottom" constant="8" id="ZbB-1l-gT8"/>
                                                     <constraint firstItem="Zyc-PW-6UR" firstAttribute="top" secondItem="uxR-Cm-4af" secondAttribute="top" constant="84" id="awb-5x-HHA"/>
+                                                    <constraint firstItem="jyb-8H-fr8" firstAttribute="centerY" secondItem="Zyc-PW-6UR" secondAttribute="centerY" id="bRG-00-D2e"/>
                                                     <constraint firstItem="9r6-zM-w9m" firstAttribute="top" secondItem="Zyc-PW-6UR" secondAttribute="bottom" priority="999" constant="4" id="csZ-jV-Fls"/>
+                                                    <constraint firstItem="jyb-8H-fr8" firstAttribute="height" secondItem="Zyc-PW-6UR" secondAttribute="height" multiplier="1.05" id="e1t-hx-OYh"/>
                                                     <constraint firstAttribute="centerX" secondItem="1ah-qv-EHV" secondAttribute="centerX" id="mzs-p9-tDp"/>
                                                     <constraint firstItem="1ah-qv-EHV" firstAttribute="top" secondItem="9r6-zM-w9m" secondAttribute="bottom" constant="4" id="oQd-NE-hpE"/>
                                                     <constraint firstAttribute="centerX" secondItem="9r6-zM-w9m" secondAttribute="centerX" id="ud1-6B-mvZ"/>
@@ -998,7 +1005,7 @@ Click continue when you're ready.</string>
                                                     </mask>
                                                 </variation>
                                             </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kmz-sb-2mR">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kmz-sb-2mR" customClass="UICountingLabel">
                                                 <rect key="frame" x="16" y="351" width="96" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="1bq-wy-pvK"/>
@@ -1013,7 +1020,7 @@ Click continue when you're ready.</string>
                                                     </mask>
                                                 </variation>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fyz-kJ-guQ">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fyz-kJ-guQ" customClass="UICountingLabel">
                                                 <rect key="frame" x="112" y="351" width="96" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="T2F-q7-dYE"/>
@@ -1075,7 +1082,7 @@ Click continue when you're ready.</string>
                                                     <constraint firstAttribute="width" constant="200" id="wtA-cd-O8e"/>
                                                 </constraints>
                                             </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLb-di-5zP">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLb-di-5zP" customClass="UICountingLabel">
                                                 <rect key="frame" x="208" y="351" width="96" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="7df-Kd-GuC"/>
@@ -1158,8 +1165,8 @@ Click continue when you're ready.</string>
                                                 <exclude reference="Lwe-b8-8AK"/>
                                                 <exclude reference="sNm-hr-XwY"/>
                                                 <exclude reference="uQq-bq-L1e"/>
-                                                <exclude reference="HKS-mh-Lgj"/>
                                                 <exclude reference="k4Q-Dr-Rqb"/>
+                                                <exclude reference="HKS-mh-Lgj"/>
                                                 <exclude reference="EGK-tk-XZv"/>
                                                 <exclude reference="JM1-NX-u7X"/>
                                                 <exclude reference="fYZ-fj-LzO"/>
@@ -3711,6 +3718,7 @@ Click continue when you're ready.</string>
         <image name="SplashScreenEmptyMiddle" width="640" height="960"/>
         <image name="SplashScreenSingle" width="640" height="960"/>
         <image name="WalkthroughBackground" width="640" height="960"/>
+        <image name="WhiteHexagon" width="150" height="150"/>
         <image name="flagEvent" width="22" height="22"/>
         <image name="inviteIcon" width="22" height="22"/>
         <image name="mapIcon" width="9" height="12"/>

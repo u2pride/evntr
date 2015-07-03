@@ -17,6 +17,9 @@
 #import "TabNavigationVC.h"
 #import "UIColor+EVNColors.h"
 
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+
+
 #import <Parse/Parse.h>
 @import MediaPlayer;
 @import QuartzCore;
@@ -107,6 +110,7 @@
     [super viewWillAppear:animated];
     
     [self checkAppVersion];
+        
 }
 
 

@@ -6,19 +6,14 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EVNInviteContactsVC.h"
 #import "EVNInviteContainerHeaderView.h"
 #import "EVNInviteContainerVC.h"
-#import "EVNInviteNewFriendsVC.h"
 #import "EVNUtility.h"
 
 @interface EVNInviteContainerVC ()
 
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) EVNInviteContainerHeaderView *controlView;
-
-@property (nonatomic, strong) EVNInviteNewFriendsVC *facebookVC;
-@property (nonatomic, strong) EVNInviteContactsVC *contactsVC;
 
 @end
 
@@ -58,11 +53,11 @@
     
     [EVNUtility setupNavigationBarWithController:self.navigationController andItem:self.navigationItem];
     
-    self.facebookVC = [[EVNInviteNewFriendsVC alloc] init];
-    self.facebookVC.view.frame = self.contentView.bounds;
-    [self addChildViewController:self.facebookVC];
-    [self.contentView addSubview:self.facebookVC.view];
-    [self.facebookVC didMoveToParentViewController:self];
+    //self.viewControllerOne = [[EVNInviteNewFriendsVC alloc] init];
+    self.viewControllerOne.view.frame = self.contentView.bounds;
+    [self addChildViewController:self.viewControllerOne];
+    [self.contentView addSubview:self.viewControllerOne.view];
+    [self.viewControllerOne didMoveToParentViewController:self];
     
     UITapGestureRecognizer *facebookGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapVCs2)];
     UITapGestureRecognizer *contactsGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(swapVCs)];
@@ -70,7 +65,7 @@
     [self.controlView.facebookButton addGestureRecognizer:facebookGR];
     [self.controlView.contactsButton addGestureRecognizer:contactsGR];
     
-    self.contactsVC = [EVNInviteContactsVC new];
+    //self.viewControllerTwo = [EVNInviteContactsVC new];
     
 }
 
@@ -165,7 +160,7 @@
 
 - (void) swapVCs {
     
-    [self moveFromVC:self.facebookVC toVC:self.contactsVC];
+    [self moveFromVC:self.viewControllerOne toVC:self.viewControllerTwo];
     
     [self.controlView lineUnderIndex:1];
     
@@ -173,7 +168,7 @@
 
 - (void) swapVCs2 {
     
-    [self moveFromVC:self.contactsVC toVC:self.facebookVC];
+    [self moveFromVC:self.viewControllerTwo toVC:self.viewControllerOne];
 
     [self.controlView lineUnderIndex:0];
 

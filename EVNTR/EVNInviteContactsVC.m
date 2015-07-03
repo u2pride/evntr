@@ -7,7 +7,6 @@
 //
 
 #import "EVNInviteContactsVC.h"
-#import "EVNNoResultsView.h"
 
 @interface EVNInviteContactsVC ()
 
@@ -22,13 +21,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.messageFriendsView.frame = self.view.bounds;
+    //self.messageFriendsView = [self.delegate messageViewToDisplay];
     
     self.messageFriendsView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
-    self.messageFriendsView.offsetY = 100;
     self.messageFriendsView.headerText = @"Text A Friend";
     self.messageFriendsView.subHeaderText = @"Click to text your friends an app store link for Evntr.";
     self.messageFriendsView.actionButton.titleText = @"Message";
+    
+    self.messageFriendsView.offsetY = 100;
+
     [self.messageFriendsView.actionButton addTarget:self action:@selector(sendInviteMessage) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:self.messageFriendsView];

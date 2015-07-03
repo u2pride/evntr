@@ -104,7 +104,7 @@ static NSString * const reuseIdentifier = @"pictureCell";
     
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
     
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"EventDefault"]];
+    cell.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"PictureDefault"]];
     
     PFFile *fileForPhoto = [[self.eventImages objectAtIndex:indexPath.row] objectForKey:@"pictureFile"];
     

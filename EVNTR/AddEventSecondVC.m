@@ -74,7 +74,20 @@
         
     } else {
         
-        self.event.dateOfEvent = [NSDate date];
+        NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+        NSDateComponents *components = [calendar components:(NSCalendarUnitSecond | NSCalendarUnitMinute) fromDate:today];
+        
+        NSInteger minutes = [components minute];
+        NSInteger seconds = [components second];
+        
+        float totalSeconds = (60 * minutes) + seconds;
+        float thirtyMinuteResult = totalSeconds / 1800.0f;
+        float roundedThirty = ceilf(thirtyMinuteResult);
+        float addedSeconds = (roundedThirty * 1800.0f) - totalSeconds;
+        
+        NSDate *newDate = [today dateByAddingTimeInterval:addedSeconds];
+
+        self.event.dateOfEvent = newDate;
         self.eventDescriptionText.text = @"Add details about your event...";
         
     }

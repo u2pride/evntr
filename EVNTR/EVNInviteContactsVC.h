@@ -7,9 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EVNNoResultsView.h"
 
 @import MessageUI;
 
+//@protocol EVNContactInviteProtocol;
+
 @interface EVNInviteContactsVC : UIViewController <MFMessageComposeViewControllerDelegate>
 
+//@property (nonatomic, strong) id <EVNContactInviteProtocol> delegate;
+
 @end
+
+//@protocol EVNContactInviteProtocol <NSObject>
+
+//- (EVNNoResultsView *) messageViewToDisplay;
+
+//@end

@@ -8,6 +8,8 @@
 
 #import "EVNConstants.h"
 #import "EVNInviteContainerVC.h"
+#import "EVNInviteNewFriendsVC.h"
+#import "EVNInviteContactsVC.h"
 #import "EVNUser.h"
 #import "EventDetailVC.h"
 #import "EventObject.h"
@@ -291,6 +293,9 @@
         if (selectedIndexPath.row == 1) {
             
             EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
+            
+            inviteVC.viewControllerOne = [EVNInviteNewFriendsVC new];
+            inviteVC.viewControllerTwo = [EVNInviteContactsVC new];
             
             [self.navigationController pushViewController:inviteVC animated:YES];
                         

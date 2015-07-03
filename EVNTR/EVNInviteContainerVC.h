@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EVNInviteNewFriendsVC.h"
+#import "EVNInviteContactsVC.h"
 
 @interface EVNInviteContainerVC : UIViewController
+
+@property (nonatomic, strong) UIViewController *viewControllerOne;
+@property (nonatomic, strong) UIViewController *viewControllerTwo;
 
 @end

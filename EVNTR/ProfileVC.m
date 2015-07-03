@@ -6,14 +6,13 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EVNInviteNewFriendsVC.h"
-
-
 #import "ActivityVC.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
 #import "EVNUtility.h"
+#import "EVNInviteContainerVC.h"
+#import "EVNInviteFacebookVC.h"
 #import "EditProfileVC.h"
 #import "HomeScreenVC.h"
 #import "LogInVC.h"
@@ -41,11 +40,11 @@
 @property (strong, nonatomic) IBOutlet PFImageView *profileImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 @property (strong, nonatomic) IBOutlet UIButton *eventsHeaderButton;
-@property (strong, nonatomic) IBOutlet UILabel *numberEventsLabel;
+@property (strong, nonatomic) IBOutlet UICountingLabel *numberEventsLabel;
 @property (strong, nonatomic) IBOutlet UIButton *followersHeaderButton;
-@property (strong, nonatomic) IBOutlet UILabel *numberFollowersLabel;
+@property (strong, nonatomic) IBOutlet UICountingLabel *numberFollowersLabel;
 @property (strong, nonatomic) IBOutlet UIButton *followingHeaderButton;
-@property (strong, nonatomic) IBOutlet UILabel *numberFollowingLabel;
+@property (strong, nonatomic) IBOutlet UICountingLabel *numberFollowingLabel;
 @property (strong, nonatomic) IBOutlet UILabel *userHometownLabel;
 
 //Buttons For Actions On Profile
@@ -115,6 +114,9 @@
     [navigationBar setShadowImage:[UIImage new]];
     self.navigationController.navigationBar.translucent = NO;
     
+    self.navigationItem.rightBarButtonItems = nil;
+    self.navigationItem.leftBarButtonItems = nil;
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     PFQuery *usernameQuery = [EVNUser query];
@@ -134,6 +136,13 @@
                 
                 UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SettingsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(viewSettings)];
                 self.navigationItem.rightBarButtonItem = settingsButton;
+                                
+                if (self.navigationController.viewControllers.count == 1) {
+                    
+                    UIBarButtonItem *inviteToApp = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"inviteIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(showInviteScreen)];
+                 
+                    self.navigationItem.leftBarButtonItem = inviteToApp;
+                }
                 
             } else {
                 self.profileType = OTHER_USER_PROFILE;
@@ -329,20 +338,23 @@
 
     //Counts on Events, Followers, Following
     if (self.profileUser.numEvents) {
-        self.numberEventsLabel.text = [self.profileUser.numEvents stringValue];
+        self.numberEventsLabel.format = @"%d";
+        [self.numberEventsLabel countFromZeroTo:[self.profileUser.numEvents doubleValue] withDuration:1.0f];
     } else {
         self.numberEventsLabel.text = @"0";
     }
     
     if (self.profileUser.numFollowers) {
-        self.numberFollowersLabel.text = [self.profileUser.numFollowers stringValue];
+        self.numberFollowersLabel.format = @"%d";
+        [self.numberFollowersLabel countFromZeroTo:[self.profileUser.numFollowers doubleValue] withDuration:1.0f];
     } else {
         self.numberFollowersLabel.text = @"0";
     }
     
     
     if (self.profileUser.numFollowing) {
-        self.numberFollowingLabel.text = [self.profileUser.numFollowing stringValue];
+        self.numberFollowingLabel.format = @"%d";
+        [self.numberFollowingLabel countFromZeroTo:[self.profileUser.numFollowing doubleValue] withDuration:1.0f];
     } else {
         self.numberFollowingLabel.text = @"0";
     }
@@ -486,6 +498,34 @@
     
 }
 
+- (void) showInviteScreen {
+    
+    //TODO: Add analaytics.
+
+    EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
+    
+    inviteVC.viewControllerOne = [EVNInviteFacebookVC new];
+    inviteVC.viewControllerTwo = [EVNInviteContactsVC new];
+    
+    [self.navigationController pushViewController:inviteVC animated:YES];
+
+    
+}
+
+
+#pragma mark - Delegate Methods
+
+- (void) appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didCompleteWithResults:(NSDictionary *)results {
+    
+    NSLog(@"Success");
+    
+}
+
+- (void) appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didFailWithError:(NSError *)error {
+    
+    NSLog(@"Failure");
+    
+}
 
 
 
