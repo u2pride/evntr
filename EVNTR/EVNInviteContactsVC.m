@@ -23,6 +23,7 @@
     
     //self.messageFriendsView = [self.delegate messageViewToDisplay];
     
+    /*
     self.messageFriendsView = [[EVNNoResultsView alloc] initWithFrame:self.view.bounds];
     self.messageFriendsView.headerText = @"Text A Friend";
     self.messageFriendsView.subHeaderText = @"Click to text your friends an app store link for Evntr.";
@@ -33,6 +34,12 @@
     [self.messageFriendsView.actionButton addTarget:self action:@selector(sendInviteMessage) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:self.messageFriendsView];
+    */
+    
+    self.messageFriendsView = [self.delegate messageViewWithSelector:@selector(sendInviteMessage) andSender:self];
+    
+    [self.view addSubview:self.messageFriendsView];
+    
     
 }
 
@@ -84,7 +91,7 @@
             
             [self presentViewController:sentVerification animated:YES completion:^{
                 
-                double delayInSeconds = 1;
+                double delayInSeconds = 0.75;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                     
@@ -101,7 +108,7 @@
             
             [self presentViewController:sentFailure animated:YES completion:^{
                 
-                double delayInSeconds = 1;
+                double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                     

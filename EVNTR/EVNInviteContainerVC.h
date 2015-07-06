@@ -7,12 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EVNInviteNewFriendsVC.h"
+#import "EVNConnectFBFriendsVC.h"
 #import "EVNInviteContactsVC.h"
+#import "EVNNoResultsView.h"
 
-@interface EVNInviteContainerVC : UIViewController
+@protocol EVNInviteProtocol;
+
+@interface EVNInviteContainerVC : UIViewController <EVNContactInviteProtocol>
 
 @property (nonatomic, strong) UIViewController *viewControllerOne;
-@property (nonatomic, strong) UIViewController *viewControllerTwo;
+@property (nonatomic, strong) EVNInviteContactsVC *viewControllerTwo;
+
+@property (nonatomic, strong) id <EVNInviteProtocol> delegate;
+
+@end
+
+@protocol EVNInviteProtocol <NSObject>
+
+- (EVNNoResultsView *) contactsInviteMessageWithSelector:(SEL) selector andSender:(id)sender;
 
 @end

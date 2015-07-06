@@ -7,6 +7,7 @@
 //
 
 #import "EditProfileVC.h"
+#import "EVNInviteContainerVC.h"
 #import "UICountingLabel.h"
 
 #import <Parse/Parse.h>
@@ -15,7 +16,7 @@
 
 //TODO REMOVE FB DELEGATE
 
-@interface ProfileVC : UIViewController <UINavigationControllerDelegate, ProfileEditDelegate, FBSDKAppInviteDialogDelegate>
+@interface ProfileVC : UIViewController <UINavigationControllerDelegate, ProfileEditDelegate, FBSDKAppInviteDialogDelegate, EVNInviteProtocol>
 
 @property (strong, nonatomic) NSString *userObjectID;
 

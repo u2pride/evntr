@@ -11,8 +11,7 @@
 #import "EVNConstants.h"
 #import "EVNUser.h"
 #import "EVNUtility.h"
-#import "EVNInviteContainerVC.h"
-#import "EVNInviteFacebookVC.h"
+#import "EVNInviteFBFriendsVC.h"
 #import "EditProfileVC.h"
 #import "HomeScreenVC.h"
 #import "LogInVC.h"
@@ -339,6 +338,7 @@
     //Counts on Events, Followers, Following
     if (self.profileUser.numEvents) {
         self.numberEventsLabel.format = @"%d";
+        self.numberEventsLabel.method = UILabelCountingMethodEaseOut;
         [self.numberEventsLabel countFromZeroTo:[self.profileUser.numEvents doubleValue] withDuration:1.0f];
     } else {
         self.numberEventsLabel.text = @"0";
@@ -346,6 +346,7 @@
     
     if (self.profileUser.numFollowers) {
         self.numberFollowersLabel.format = @"%d";
+        self.numberFollowersLabel.method = UILabelCountingMethodEaseOut;
         [self.numberFollowersLabel countFromZeroTo:[self.profileUser.numFollowers doubleValue] withDuration:1.0f];
     } else {
         self.numberFollowersLabel.text = @"0";
@@ -354,6 +355,7 @@
     
     if (self.profileUser.numFollowing) {
         self.numberFollowingLabel.format = @"%d";
+        self.numberFollowingLabel.method = UILabelCountingMethodEaseOut;
         [self.numberFollowingLabel countFromZeroTo:[self.profileUser.numFollowing doubleValue] withDuration:1.0f];
     } else {
         self.numberFollowingLabel.text = @"0";
@@ -504,8 +506,9 @@
 
     EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
     
-    inviteVC.viewControllerOne = [EVNInviteFacebookVC new];
+    inviteVC.viewControllerOne = [EVNInviteFBFriendsVC new];
     inviteVC.viewControllerTwo = [EVNInviteContactsVC new];
+    inviteVC.delegate = self;
     
     [self.navigationController pushViewController:inviteVC animated:YES];
 
@@ -659,8 +662,29 @@
 
 }
 
-#pragma mark - Navigation
 
+#pragma mark - EVNInvite Protocol
+
+- (EVNNoResultsView *) contactsInviteMessageWithSelector:(SEL)selector andSender:(id)sender {
+
+    EVNInviteContactsVC *inviteContactsVC = (EVNInviteContactsVC *)sender;
+    
+    EVNNoResultsView *messageForContactsVC = [[EVNNoResultsView alloc] initWithFrame:inviteContactsVC.view.bounds];
+    messageForContactsVC.headerText = @"Text A Friend";
+    messageForContactsVC.subHeaderText = @"Click to text your friends an app store link for Evntr.";
+    messageForContactsVC.actionButton.titleText = @"Message";
+    
+    messageForContactsVC.offsetY = 100;
+    
+    [messageForContactsVC.actionButton addTarget:inviteContactsVC action:selector forControlEvents:UIControlEventTouchUpInside];
+    
+    return messageForContactsVC;
+    
+}
+
+
+
+#pragma mark - Navigation
 
 - (void) editUserProfile {
     

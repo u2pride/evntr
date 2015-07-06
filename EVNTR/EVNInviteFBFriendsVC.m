@@ -6,16 +6,16 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
-#import "EVNInviteFacebookVC.h"
+#import "EVNInviteFBFriendsVC.h"
 #import "EVNNoResultsView.h"
 
-@interface EVNInviteFacebookVC ()
+@interface EVNInviteFBFriendsVC ()
 
 @property (nonatomic, strong) EVNNoResultsView *inviteFacebookFriendsView;
 
 @end
 
-@implementation EVNInviteFacebookVC
+@implementation EVNInviteFBFriendsVC
 
 #pragma mark - Lifecycle Methods
 
@@ -60,13 +60,11 @@
 
 - (void) appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didCompleteWithResults:(NSDictionary *)results {
     
-    NSLog(@"Success");
-    
     UIAlertController *successVerification = [UIAlertController alertControllerWithTitle:@"Invites Sent" message:nil preferredStyle:UIAlertControllerStyleAlert];
     
     [self presentViewController:successVerification animated:YES completion:^{
         
-        double delayInSeconds = 1;
+        double delayInSeconds = 0.75;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             
@@ -79,8 +77,6 @@
 }
 
 - (void) appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog didFailWithError:(NSError *)error {
-    
-    NSLog(@"Failure");
     
     UIAlertController *failureVerification = [UIAlertController alertControllerWithTitle:@"Invites Failed to Send" message:nil preferredStyle:UIAlertControllerStyleAlert];
     

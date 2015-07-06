@@ -65,8 +65,8 @@
     [self.controlView.facebookButton addGestureRecognizer:facebookGR];
     [self.controlView.contactsButton addGestureRecognizer:contactsGR];
     
-    //self.viewControllerTwo = [EVNInviteContactsVC new];
-    
+    self.viewControllerTwo.delegate = self;
+        
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -189,6 +189,16 @@
     [toVC didMoveToParentViewController:self];
     
 }
+
+
+#pragma mark - Contact Invite Protocol Delegate Methods
+
+- (EVNNoResultsView *) messageViewWithSelector:(SEL)selector andSender:(id)sender {
+    
+    return [self.delegate contactsInviteMessageWithSelector:selector andSender:sender];
+    
+}
+
 
 
 @end

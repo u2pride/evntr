@@ -11,16 +11,16 @@
 
 @import MessageUI;
 
-//@protocol EVNContactInviteProtocol;
+@protocol EVNContactInviteProtocol;
 
 @interface EVNInviteContactsVC : UIViewController <MFMessageComposeViewControllerDelegate>
 
-//@property (nonatomic, strong) id <EVNContactInviteProtocol> delegate;
+@property (nonatomic, strong) id <EVNContactInviteProtocol> delegate;
 
 @end
 
-//@protocol EVNContactInviteProtocol <NSObject>
+@protocol EVNContactInviteProtocol <NSObject>
 
-//- (EVNNoResultsView *) messageViewToDisplay;
+- (EVNNoResultsView *) messageViewWithSelector:(SEL) selector andSender:(id)sender;
 
-//@end
+@end

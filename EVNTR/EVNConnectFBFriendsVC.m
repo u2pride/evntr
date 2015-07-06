@@ -7,7 +7,7 @@
 //
 
 #import "EVNFacebookFriendCell.h"
-#import "EVNInviteNewFriendsVC.h"
+#import "EVNConnectFBFriendsVC.h"
 #import "EVNNoResultsView.h"
 #import "EVNUser.h"
 #import "EVNUtility.h"
@@ -18,7 +18,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 
-@interface EVNInviteNewFriendsVC ()
+@interface EVNConnectFBFriendsVC ()
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *facebookFriends;
@@ -30,7 +30,7 @@
 
 static NSString *reuseIdentifier = @"CellIdentifier";
 
-@implementation EVNInviteNewFriendsVC
+@implementation EVNConnectFBFriendsVC
 
 #pragma mark - Initialization Methods
 

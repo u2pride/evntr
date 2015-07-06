@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EVNInviteNewFriendsVC : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@interface EVNConnectFBFriendsVC : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @end

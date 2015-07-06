@@ -8,7 +8,7 @@
 
 #import "EVNConstants.h"
 #import "EVNInviteContainerVC.h"
-#import "EVNInviteNewFriendsVC.h"
+#import "EVNConnectFBFriendsVC.h"
 #import "EVNInviteContactsVC.h"
 #import "EVNUser.h"
 #import "EventDetailVC.h"
@@ -294,8 +294,9 @@
             
             EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
             
-            inviteVC.viewControllerOne = [EVNInviteNewFriendsVC new];
+            inviteVC.viewControllerOne = [EVNConnectFBFriendsVC new];
             inviteVC.viewControllerTwo = [EVNInviteContactsVC new];
+            inviteVC.delegate = self;
             
             [self.navigationController pushViewController:inviteVC animated:YES];
                         
@@ -324,6 +325,25 @@
     [self.searchController.searchBar sizeToFit];
 }
 
+
+#pragma mark - EVNInvite Protocol
+
+- (EVNNoResultsView *) contactsInviteMessageWithSelector:(SEL)selector andSender:(id)sender {
+    
+    EVNInviteContactsVC *inviteContactsVC = (EVNInviteContactsVC *)sender;
+    
+    EVNNoResultsView *messageForContactsVC = [[EVNNoResultsView alloc] initWithFrame:inviteContactsVC.view.bounds];
+    messageForContactsVC.headerText = @"Can't Find A Friend?";
+    messageForContactsVC.subHeaderText = @"Text them a link to the app, so they can join you on Evntr!";
+    messageForContactsVC.actionButton.titleText = @"Message";
+    
+    messageForContactsVC.offsetY = 100;
+    
+    [messageForContactsVC.actionButton addTarget:inviteContactsVC action:selector forControlEvents:UIControlEventTouchUpInside];
+    
+    return messageForContactsVC;
+    
+}
 
 
 @end

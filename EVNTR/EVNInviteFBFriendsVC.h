@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface EVNInviteFacebookVC : UIViewController <FBSDKAppInviteDialogDelegate>
+@interface EVNInviteFBFriendsVC : UIViewController <FBSDKAppInviteDialogDelegate>
 
 @end
