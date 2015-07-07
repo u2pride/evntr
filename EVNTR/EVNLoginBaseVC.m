@@ -9,9 +9,10 @@
 #import "EVNLoginBaseVC.h"
 #import "EVNConstants.h"
 #import "FBShimmeringView.h"
+#import "UIColor+EVNColors.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
 @interface EVNLoginBaseVC ()
 
@@ -19,15 +20,18 @@
 @property (nonatomic, strong) UILabel *blurMessage;
 @property (nonatomic, strong) FBShimmeringView *shimmerView;
 
-
 @end
 
 @implementation EVNLoginBaseVC
 
+#pragma mark - View Controller Lifecycle Methods
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    self.viewIsPulledUpForTextInput = NO;
+
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -43,7 +47,6 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     
-    
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -54,16 +57,197 @@
     
 }
 
-/*
+
+#pragma mark - User Actions
+
+- (void) loginThruFacebook {
+    
+    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location", @"user_friends"];
+    
+    [PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
+        
+        if (!user) {
+            
+            [self cleanUpBeforeTransition];
+            
+            // Handles cases like Facebook password change or unverified Facebook accounts.
+            NSString *alertMessage, *alertTitle;
+            
+            if ([error.userInfo objectForKey:FBSDKErrorLocalizedTitleKey]) {
+                alertMessage = [error.userInfo objectForKey:FBSDKErrorLocalizedDescriptionKey];
+                alertTitle = [error.userInfo objectForKey:FBSDKErrorLocalizedTitleKey];
+                
+            } else {
+                alertTitle = @"Facebook Error";
+                alertMessage = @"Sorry about this.  Looks like we can't log you in.  Try logging in again.";
+            }
+            
+            if (alertMessage) {
+                
+                [[[UIAlertView alloc] initWithTitle:alertTitle
+                                            message:alertMessage
+                                           delegate:nil
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil] show];
+            }
+            
+            [PFAnalytics trackEventInBackground:@"SignUpIssue_Facebook" block:nil];
+            
+        } else {
+            
+            if (user.isNew) {
+                
+                double delayInSeconds = 0.5;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self grabUserDetailsFromFacebookWithUser:(EVNUser *)user];
+                    [self cleanUpBeforeTransition];
+                    
+                });
+                
+            } else {
+                
+                NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+                [standardDefaults setBool:NO forKey:kIsGuest];
+                [standardDefaults synchronize];
+                
+                double delayInSeconds = 0.5;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self performSegueWithIdentifier:@"SegueToHomeView" sender:self];
+                    [self cleanUpBeforeTransition];
+                    
+                });
+                
+                
+            }
+            
+        }
+        
+        
+        
+    }];
+    
+}
+
+
+#pragma mark - Keyboard Notifications
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    
+    CGRect screenRect;
+    CGRect windowRect;
+    CGRect viewRect;
+    
+    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect = [self.view        convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (!self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsUp:YES withKeyboardSize:movement];
+        
+    }
+    
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    
+    CGRect screenRect;
+    CGRect windowRect;
+    CGRect viewRect;
+    
+    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
+    viewRect = [self.view convertRect:windowRect fromView:nil];
+    
+    int movement = viewRect.size.height * 0.8;
+    
+    if (self.viewIsPulledUpForTextInput) {
+        [self moveLoginFieldsUp:NO withKeyboardSize:movement];
+        
+    }
+    
+}
+
+
+#pragma mark - UIImagePicker Presentation And Delegate Methods
+
+- (void) presentImagePicker {
+    
+    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        
+        [self presentViewController:imagePicker animated:YES completion:nil];
+    }];
+    
+    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.allowsEditing = YES;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.view.tintColor = [UIColor orangeThemeColor];
+        
+        [self presentViewController:imagePicker animated:YES completion:^{
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+            
+        }];
+        
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [pictureOptionsMenu addAction:takePhoto];
+    }
+    
+    [pictureOptionsMenu addAction:choosePhoto];
+    [pictureOptionsMenu addAction:cancelAction];
+    
+    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
+    
+    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
+    
+}
+
+
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    }];
+    
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    }];
+    
+}
+
+
+#pragma mark - Helper Methods
+
 - (void) grabUserDetailsFromFacebookWithUser:(EVNUser *)newUser {
     
     UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     activityIndicator.hidesWhenStopped = YES;
     [self.view addSubview:activityIndicator];
     [activityIndicator startAnimating];
-    
-    //FBRequest *request = [FBRequest requestForMe];
-    //[request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
     
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
     FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
@@ -120,22 +304,20 @@
                 newUser[@"facebookID"] = userData[@"id"];
             }
             
-            NSLog(@"userdata: %@", userData);
-            
             [newUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 
-                id<NewUserFacebookSignUpDelegate> strongDelegate = self.delegate;
+                id<NewUserFacebookDelegate> strongDelegate = self.delegate;
                 
-                if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetailsFromSignUp:)]) {
+                if ([strongDelegate respondsToSelector:@selector(createFBRegisterVCWithDetails:)]) {
                     
-                    [strongDelegate createFBRegisterVCWithDetailsFromSignUp:[NSDictionary dictionaryWithDictionary:userDetailsForFBRegistration]];
+                    [strongDelegate createFBRegisterVCWithDetails:[NSDictionary dictionaryWithDictionary:userDetailsForFBRegistration]];
                 }
                 
             }];
             
         } else {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hmmmm" message:@"Looks like we had trouble retrieving your Facebook details.  Send us a tweet at 'EvntrApp' if you continue to have issues." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Hmmmm" message:@"Looks like we had trouble retrieving your Facebook details.  Send us a tweet at @EvntrApp if you continue to have issues." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
             
             [errorAlert show];
             
@@ -147,47 +329,6 @@
     
 }
 
-*/
-
-
-- (void)keyboardWillShow:(NSNotification *)notification {
-    
-    CGRect screenRect;
-    CGRect windowRect;
-    CGRect viewRect;
-    
-    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
-    viewRect = [self.view        convertRect:windowRect fromView:nil];
-    
-    int movement = viewRect.size.height * 0.8;
-    
-    if (!self.viewIsPulledUpForTextInput) {
-        [self moveLoginFieldsUp:YES withKeyboardSize:movement];
-        
-    }
-    
-}
-
-
-- (void)keyboardWillHide:(NSNotification *)notification {
-    
-    CGRect screenRect;
-    CGRect windowRect;
-    CGRect viewRect;
-    
-    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
-    viewRect = [self.view convertRect:windowRect fromView:nil];
-    
-    int movement = viewRect.size.height * 0.8;
-    
-    if (self.viewIsPulledUpForTextInput) {
-        [self moveLoginFieldsUp:NO withKeyboardSize:movement];
-        
-    }
-    
-}
 
 //Subclasses Should Override this method to hide/show necessary views.
 - (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
@@ -204,6 +345,17 @@
     
 }
 
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    //TODO: Call super implementation? stack overflow iphone-what-does-super-touchesbegan-moved-ended-do
+    //Tap Dismisses Keyboard
+    
+    if (self.viewIsPulledUpForTextInput) {
+        [self.view endEditing:YES];
+    }
+    
+}
 
 
 - (void) blurViewDuringLoginWithMessage:(NSString *)message {

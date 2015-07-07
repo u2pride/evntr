@@ -294,11 +294,10 @@
 
 #pragma mark - Facebook Delegate Methods
 
-- (void) createFBRegisterVCWithDetails:(NSDictionary *) userDetailsFromFB {
+- (void)createFBRegisterVCWithDetails:(NSDictionary *)userDetailsFromFB {
     
     [self dismissViewControllerAnimated:YES completion:^{
         
-        //Pass FB Details
         self.detailsFromFBRegistration = [NSDictionary dictionaryWithDictionary:userDetailsFromFB];
         
         [self leavingTransitionAnimations];
@@ -310,27 +309,6 @@
         
         [self presentViewController:destVC animated:YES completion:nil];
         //[self performSegueWithIdentifier:@"NewUserFacebook" sender:self];
-        
-    }];
-    
-}
-
-
-- (void) createFBRegisterVCWithDetailsFromSignUp:(NSDictionary *)userDetailsFromFB {
-    
-    [self dismissViewControllerAnimated:YES completion:^{
-        
-        self.detailsFromFBRegistration = [NSDictionary dictionaryWithDictionary:userDetailsFromFB];
-        
-        [self leavingTransitionAnimations];
-
-        NewUserFacebookVC *destVC = (NewUserFacebookVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"NewUserFacebookViewController"];
-        destVC.transitioningDelegate = self.customTransitionDelegate;
-        destVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-        destVC.informationFromFB = self.detailsFromFBRegistration;
-        
-        [self presentViewController:destVC animated:YES completion:nil];
-        //[self performSegueWithIdentifier:@"NewUserFacebook" sender:nil];
         
     }];
     

@@ -44,11 +44,6 @@ typedef enum {
 @property (strong, nonatomic) NSString *firstName;
 @property (strong, nonatomic) NSString *location;
 
-@property (strong, nonatomic) UIVisualEffectView *blurOutLogInScreen;
-@property (nonatomic, strong) UILabel *blurMessage;
-@property (nonatomic, strong) FBShimmeringView *shimmerView;
-
-@property (nonatomic) BOOL viewIsPulledUpForTextInput;
 @property (nonatomic) BOOL userIsAddingCustomPicture;
 
 - (IBAction)registerWithFBInfo:(id)sender;
@@ -64,7 +59,6 @@ typedef enum {
     
     //Initialization
     self.profileImageView.image = [UIImage imageNamed:@"PersonDefault"];
-    self.viewIsPulledUpForTextInput = NO;
     self.userIsAddingCustomPicture = NO;
     
     //Delegates
@@ -83,7 +77,7 @@ typedef enum {
     self.nameField.textColor = [UIColor blackColor];
     
     //Actions
-    UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePhoto)];
+    UITapGestureRecognizer *tapToAddPhoto = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentImagePicker)];
     tapToAddPhoto.delegate = self;
     self.profileImageView.userInteractionEnabled = YES;
     [self.profileImageView addGestureRecognizer:tapToAddPhoto];
@@ -94,15 +88,6 @@ typedef enum {
 - (void) viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
     
     //Prepopulate with Facebook Data
     self.usernameField.text = ([self.informationFromFB objectForKey:@"firstName"]) ? (NSString *)[self.informationFromFB objectForKey:@"firstName"] : @"";
@@ -117,6 +102,7 @@ typedef enum {
 
 
 - (void) viewDidAppear:(BOOL)animated {
+    
     [super viewDidAppear:animated];
     
     //Grab Facebook Profile Picture
@@ -144,15 +130,6 @@ typedef enum {
                                }];
         
     }
-}
-
-
-- (void) viewWillDisappear:(BOOL)animated {
-    
-    [super viewWillDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
 }
 
 
@@ -326,50 +303,11 @@ typedef enum {
 
 #pragma mark - User Actions
 
-- (void) changePhoto {
+- (void) presentImagePicker {
+    
+    [super presentImagePicker];
     
     self.userIsAddingCustomPicture = YES;
-    
-    UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        
-        [self presentViewController:imagePicker animated:YES completion:nil];
-    }];
-    
-    UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-        imagePicker.delegate = self;
-        imagePicker.allowsEditing = YES;
-        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        imagePicker.view.tintColor = [UIColor orangeThemeColor];
-        
-        [self presentViewController:imagePicker animated:YES completion:^{
-            
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
-            
-        }];
-        
-    }];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [pictureOptionsMenu addAction:takePhoto];
-    }
-    
-    [pictureOptionsMenu addAction:choosePhoto];
-    [pictureOptionsMenu addAction:cancelAction];
-    
-    pictureOptionsMenu.view.tintColor = [UIColor orangeThemeColor];
-    
-    [self presentViewController:pictureOptionsMenu animated:YES completion:nil];
-    
 }
 
 
@@ -378,11 +316,7 @@ typedef enum {
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
-    [picker dismissViewControllerAnimated:YES completion:^{
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-        
-    }];
+    [super imagePickerController:picker didFinishPickingMediaWithInfo:info];
     
     self.profileImageView.backgroundColor = [UIColor clearColor];
     
@@ -391,17 +325,6 @@ typedef enum {
     [EVNUtility maskImage:chosenPicture withMask:[UIImage imageNamed:@"MaskImage"] withCompletion:^(UIImage *maskedFullyImage) {
         
         self.profileImageView.image = maskedFullyImage;
-        
-    }];
-    
-}
-
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    
-    [picker dismissViewControllerAnimated:YES completion:^{
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
         
     }];
     
@@ -419,132 +342,30 @@ typedef enum {
 }
 
 
-- (void)keyboardWillShow:(NSNotification *)notification {
-
-    CGRect screenRect;
-    CGRect windowRect;
-    CGRect viewRect;
-    
-    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
-    viewRect = [self.view        convertRect:windowRect fromView:nil];
-    
-    int movement = viewRect.size.height * 0.8;
-    
-    if (!self.viewIsPulledUpForTextInput && self.nameField.isFirstResponder) {
-        [self moveLoginFieldsUp:YES withKeyboardSize:movement];
-        
-    }
-    
-}
-
-
-- (void)keyboardWillHide:(NSNotification *)notification {
-    
-    CGRect screenRect;
-    CGRect windowRect;
-    CGRect viewRect;
-    
-    screenRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    windowRect = [self.view.window convertRect:screenRect fromWindow:nil];
-    viewRect = [self.view convertRect:windowRect fromView:nil];
-    
-    int movement = viewRect.size.height * 0.8;
-    
-    if (self.viewIsPulledUpForTextInput && self.nameField.isFirstResponder) {
-        [self moveLoginFieldsUp:NO withKeyboardSize:movement];
-        
-    }
-    
-}
-
-
-//Tap Dismisses Keyboard
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
-    /*
-    if (self.viewIsPulledUpForTextInput) {
-        [self.usernameField resignFirstResponder];
-        [self.emailField resignFirstResponder];
-        [self.nameField resignFirstResponder];
-    }
-     */
-    
-    [self.view endEditing:YES];
-}
-
-
 
 #pragma mark - Helper Methods
 
 - (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
     
-    int movement = (up ? -distance : distance);
-    
-    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+    if (self.nameField.isFirstResponder) {
         
-        self.view.frame = CGRectOffset(self.view.frame, 0, movement);
-        self.usernameField.hidden = (up ? 1 : 0);
-        self.emailField.hidden = (up ? 1 : 0);
-        self.usernameLabel.hidden = (up ? 1 : 0);
-        self.emailLabel.hidden = (up ? 1 : 0);
+        [super moveLoginFieldsUp:up withKeyboardSize:distance];
         
-    } completion:^(BOOL finished) {
-        self.viewIsPulledUpForTextInput = (up ? YES : NO);
-    }];
+        [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
+            
+            self.usernameField.hidden = (up ? 1 : 0);
+            self.emailField.hidden = (up ? 1 : 0);
+            self.usernameLabel.hidden = (up ? 1 : 0);
+            self.emailLabel.hidden = (up ? 1 : 0);
+            
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }
     
 }
 
-- (void) blurViewDuringLoginWithMessage:(NSString *)message {
-    
-    UIBlurEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    self.blurOutLogInScreen = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-    self.blurOutLogInScreen.alpha = 0;
-    self.blurOutLogInScreen.frame = self.view.bounds;
-    [self.view addSubview:self.blurOutLogInScreen];
-    
-    self.blurMessage = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 50)];
-    self.blurMessage.alpha = 0;
-    self.blurMessage.text = message;
-    self.blurMessage.font = [UIFont fontWithName:EVNFontRegular size:24];
-    self.blurMessage.textAlignment = NSTextAlignmentCenter;
-    self.blurMessage.textColor = [UIColor whiteColor];
-    self.blurMessage.center = self.view.center;
-    
-    self.shimmerView = [[FBShimmeringView alloc] initWithFrame:self.view.bounds];
-    [self.view addSubview:self.shimmerView];
-    
-    self.shimmerView.contentView = self.blurMessage;
-    self.shimmerView.shimmering = YES;
-    
-    [UIView animateWithDuration:0.8 animations:^{
-    
-        self.blurOutLogInScreen.alpha = 1;
-        self.blurMessage.alpha = 1;
-    
-    } completion:nil];
-    
-}
-
-
-- (void) cleanUpBeforeTransition {
-    
-    [UIView animateWithDuration:1.0 animations:^{
-        
-        self.blurMessage.alpha = 0;
-        self.blurOutLogInScreen.alpha = 0;
-        self.shimmerView.alpha = 0;
-        
-    } completion:^(BOOL finished) {
-        
-        [self.blurMessage removeFromSuperview];
-        [self.blurOutLogInScreen removeFromSuperview];
-        [self.shimmerView removeFromSuperview];
-        
-    }];
-    
-    
-}
 
 
 @end

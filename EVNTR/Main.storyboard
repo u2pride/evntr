@@ -797,7 +797,7 @@ Click continue when you're ready.</string>
                         <outlet property="separatorLineRight" destination="pbd-qx-IKv" id="hfb-ep-QGl"/>
                         <outlet property="textSeparator" destination="OSt-mn-S5x" id="F6K-EL-i8y"/>
                         <outlet property="usernameField" destination="oaP-f5-UpO" id="grq-ay-EOY"/>
-                        <segue destination="Hoa-x5-Et8" kind="presentation" identifier="LoginToHomeView" id="hsO-YW-5Lp"/>
+                        <segue destination="Hoa-x5-Et8" kind="presentation" identifier="SegueToHomeView" id="hsO-YW-5Lp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j5a-Eo-i9X" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1856,7 +1856,7 @@ Click continue when you're ready.</string>
                         <outlet property="profileImageView" destination="ip8-o7-UOQ" id="H2z-IM-Dnn"/>
                         <outlet property="registerButton" destination="9Zk-uV-KDu" id="Wi1-TV-dWr"/>
                         <outlet property="usernameField" destination="Upj-CP-rjA" id="JQ4-m6-wFR"/>
-                        <segue destination="Hoa-x5-Et8" kind="presentation" identifier="SignUpToHomeView" id="vng-gU-3GQ"/>
+                        <segue destination="Hoa-x5-Et8" kind="presentation" identifier="SegueToHomeView" id="vng-gU-3GQ"/>
                         <segue destination="GZv-fo-dSy" kind="show" identifier="SignUpToOnBoard" id="BOp-e6-wrB"/>
                     </connections>
                 </viewController>
@@ -3730,8 +3730,8 @@ Click continue when you're ready.</string>
         <image name="takePicture" width="250" height="250"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="0HK-TD-lr3"/>
-        <segue reference="5Up-I2-E1D"/>
+        <segue reference="hsO-YW-5Lp"/>
+        <segue reference="BOp-e6-wrB"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.99607843139999996" green="0.43921568630000002" blue="0.25098039220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

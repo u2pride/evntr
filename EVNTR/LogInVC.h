@@ -11,11 +11,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol NewUserFacebookDelegate;
-
 @interface LogInVC : EVNLoginBaseVC <ResetPasswordDelegate, UITextFieldDelegate, UIAlertViewDelegate>
-
-@property (nonatomic, weak) id<NewUserFacebookDelegate> delegate;
 
 @property (nonatomic, strong) IBOutlet UITextField *usernameField;
 @property (nonatomic, strong) IBOutlet UITextField *passwordField;
@@ -26,9 +22,5 @@
 @end
 
 
-@protocol NewUserFacebookDelegate <NSObject>
 
-- (void) createFBRegisterVCWithDetails:(NSDictionary *) userDetailsFromFB;
-
-@end
 
