@@ -37,9 +37,9 @@
 @property (weak, nonatomic) IBOutlet UIView *separatorLineLeft;
 @property (weak, nonatomic) IBOutlet UIView *separatorLineRight;
 
-@property (nonatomic, strong) UIVisualEffectView *blurOutLogInScreen;
-@property (nonatomic, strong) UILabel *blurMessage;
-@property (nonatomic, strong) FBShimmeringView *shimmerView;
+//@property (nonatomic, strong) UIVisualEffectView *blurOutLogInScreen;
+//@property (nonatomic, strong) UILabel *blurMessage;
+//@property (nonatomic, strong) FBShimmeringView *shimmerView;
 @property (nonatomic, strong) MBProgressHUD *HUD;
 
 @property (nonatomic) BOOL isNewUserFromFacebook;
@@ -89,14 +89,16 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
+    [super viewWillAppear:animated];
+    
+    //[[NSNotificationCenter defaultCenter] addObserver:self
+    //                                         selector:@selector(keyboardWillShow:)
+    //                                             name:UIKeyboardWillShowNotification
+    //                                           object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self
+    //                                         selector:@selector(keyboardWillHide:)
+    //                                             name:UIKeyboardWillHideNotification
+    //                                           object:nil];
     
     if ([self.passwordField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.passwordField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.passwordField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
@@ -105,13 +107,6 @@
     if ([self.usernameField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         self.usernameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.usernameField.placeholder attributes:@{ NSForegroundColorAttributeName : [UIColor colorWithWhite:0.6 alpha:0.6] }];
     }
-    
-}
-
-
-- (void) viewWillDisappear:(BOOL)animated {
-    
-    [super viewWillDisappear:animated];
     
 }
 
@@ -221,9 +216,6 @@
         
         
     }];
-    
-    //[PFFacebookUtils logInWithPermissions:permissionsArray block:^(PFUser *user, NSError *error) {}];
-    
     
 }
 
@@ -441,6 +433,7 @@
 }
 
 
+/* EVNLoginBase
 - (void) keyboardWillShow:(NSNotification *)notification {
     
     CGRect    screenRect;
@@ -475,6 +468,7 @@
         [self moveLoginFieldsUp:NO withKeyboardSize:movement];
     }
 }
+ */
  
 
 //Tap To Dismiss Keyboard
@@ -519,6 +513,17 @@
 
 - (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
     
+    [super moveLoginFieldsUp:up withKeyboardSize:distance];
+    
+    NSLog(@"MoveLoginFieldsUp called from the super.");
+    
+    
+}
+
+
+/* EVNLoginBase
+- (void) moveLoginFieldsUp:(BOOL)up withKeyboardSize:(int)distance {
+    
     int movement = (up ? -distance : distance);
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState animations:^{
@@ -536,6 +541,7 @@
     }];
     
 }
+
 
 - (void) blurViewDuringLoginWithMessage:(NSString *)message {
     
@@ -586,6 +592,7 @@
         
     }];
 }
+*/
 
 
 #pragma mark - Clean Up

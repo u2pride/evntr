@@ -14,6 +14,8 @@
 + (UIColor *) darkOrangeThemeColor;
 + (UIColor *) lightOrangeThemeColor;
 
++ (UIColor *)redOrangeColor;
+
 - (UIColor *)lighterColor;
 - (UIColor *)darkerColor;
 

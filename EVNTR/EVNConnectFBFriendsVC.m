@@ -11,6 +11,7 @@
 #import "EVNNoResultsView.h"
 #import "EVNUser.h"
 #import "EVNUtility.h"
+#import "MBProgressHUD.h"
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
@@ -23,6 +24,7 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *facebookFriends;
 @property (nonatomic, strong) NSString *moreFacebookFriendsURL;
+@property (nonatomic, strong) MBProgressHUD *loadingIndicator;
 
 @property (nonatomic, strong) EVNButtonExtended *buttonWithRefresh;
 
@@ -141,9 +143,38 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 }
 
 
+- (void) startLoadingIndicator {
+    
+    if (!self.loadingIndicator) {
+        
+        self.loadingIndicator = [[MBProgressHUD alloc] init];
+        self.loadingIndicator.removeFromSuperViewOnHide = YES;
+        self.loadingIndicator.center = self.view.center;
+        self.loadingIndicator.dimBackground = NO;
+        [self.tableView addSubview:self.loadingIndicator];
+        
+    }
+    
+    [self.loadingIndicator show:YES];
+    
+}
+
+- (void) stopLoadingIndicator {
+    
+    if (self.loadingIndicator) {
+        [self.loadingIndicator hide:YES];
+    }
+    
+}
+
+
 - (void) additionalFriendsWithLimit:(NSNumber *)limit andOffset:(NSNumber *)offset {
     
-    [self.buttonWithRefresh startedTask];
+    if (self.buttonWithRefresh){
+        [self.buttonWithRefresh startedTask];
+    }
+    
+    [self startLoadingIndicator];
     
     NSArray *objectsRequest = [NSArray arrayWithObjects:limit, offset, nil];
     NSArray *keysRequest = [NSArray arrayWithObjects:@"limit", @"offset", nil];
@@ -167,6 +198,8 @@ static NSString *reuseIdentifier = @"CellIdentifier";
         [self.buttonWithRefresh endedTask];
         
         [self.tableView reloadData];
+        
+        [self stopLoadingIndicator];
         
     }];
     
@@ -316,7 +349,9 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
         } else {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like we can't connect with your Facebook account.  Connect us from the Settings page for help." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
+            NSLog(@"Error with FB Connection:  %@", error);
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Whoops" message:@"Looks like we can't connect with your Facebook account.  Contact us from the Settings page for help." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles: nil];
             
             [errorAlert show];
             

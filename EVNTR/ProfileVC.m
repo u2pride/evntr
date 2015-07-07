@@ -20,6 +20,8 @@
 #import "ProfileVC.h"
 #import "UIColor+EVNColors.h"
 
+#import "EVNGradientView.h"
+
 #import <QuartzCore/QuartzCore.h>
 
 
@@ -31,6 +33,7 @@
 //Structure Related Views
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIView *colorBackgroundView;
+@property (strong, nonatomic) EVNGradientView *gradientView;
 @property (strong, nonatomic) NSLayoutConstraint *bioConstraint;
 @property (strong, nonatomic) IBOutlet NSLayoutConstraint *pictureBottomConstraint;
 
@@ -45,6 +48,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *followingHeaderButton;
 @property (strong, nonatomic) IBOutlet UICountingLabel *numberFollowingLabel;
 @property (strong, nonatomic) IBOutlet UILabel *userHometownLabel;
+
 
 //Buttons For Actions On Profile
 @property (strong, nonatomic) IBOutlet EVNButton *followButton;
@@ -84,8 +88,25 @@
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:EVNFontRegular size:kFontSize], NSFontAttributeName, [UIColor whiteColor], NSForegroundColorAttributeName, nil];
+        
+    self.gradientView = [[EVNGradientView alloc] initWithFrame:self.colorBackgroundView.bounds];
+    self.gradientView.autoresizingMask =  UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.gradientView.layer.colors = [NSArray arrayWithObjects:
+                                     (id)[UIColor orangeThemeColor].CGColor,
+                                     (id)[UIColor orangeThemeColor].CGColor,
+                                     (id)[UIColor darkOrangeThemeColor].CGColor,
+                                     nil];
     
-    self.colorBackgroundView.backgroundColor = [UIColor orangeThemeColor];
+    self.gradientView.layer.locations = [NSArray arrayWithObjects:
+                                         [NSNumber numberWithFloat:0.0f],
+                                         [NSNumber numberWithFloat:0.2f],
+                                         [NSNumber numberWithFloat:1.0f],
+                                         nil];
+    
+    [self.colorBackgroundView addSubview:self.gradientView];
+    
+    [self.colorBackgroundView sendSubviewToBack:self.gradientView];
+    
     
     [self setupButtons];
     [self wireUpTapRecognizers];
@@ -95,9 +116,8 @@
     self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
     self.scrollView.alwaysBounceVertical = YES;
     
-    
-
 }
+
 
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -227,12 +247,12 @@
 
 - (void) setupButtons {
     
-    self.followButton.buttonColor = [UIColor orangeThemeColor];
+    self.followButton.buttonColor = [UIColor darkOrangeThemeColor];
     self.followButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
     self.followButton.isRounded = YES;
     self.followButton.hasBorder = YES;
     
-    self.editProfileButton.buttonColor = [UIColor orangeThemeColor];
+    self.editProfileButton.buttonColor = [UIColor darkOrangeThemeColor];
     self.editProfileButton.font = [UIFont fontWithName:@"Lato-Regular" size:21];
     self.editProfileButton.isRounded = YES;
     self.editProfileButton.hasBorder = YES;
