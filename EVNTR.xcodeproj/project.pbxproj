@@ -364,8 +364,6 @@
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
-				A465A91F1B4AC3AB00700F1C /* EVNGradientView.h */,
-				A465A9201B4AC3AB00700F1C /* EVNGradientView.m */,
 			);
 			path = EVNTR;
 			sourceTree = "<group>";
@@ -493,6 +491,8 @@
 		A425A1D31AE5865600AF26E6 /* UI Elements */ = {
 			isa = PBXGroup;
 			children = (
+				A465A91F1B4AC3AB00700F1C /* EVNGradientView.h */,
+				A465A9201B4AC3AB00700F1C /* EVNGradientView.m */,
 				A4F2E9B01A7ABDF400614412 /* PersonCell.h */,
 				A4F2E9B11A7ABDF400614412 /* PersonCell.m */,
 			);

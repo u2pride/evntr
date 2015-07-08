@@ -332,7 +332,7 @@
     self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
     self.tapToDismissView.backgroundColor = [UIColor clearColor];
     
-    [self.view addSubview:self.tapToDismissView];
+    //[self.view addSubview:self.tapToDismissView];
     
     //Gesture Recognizer to Dismiss Keyboard on Tap in View
     UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
