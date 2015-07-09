@@ -109,20 +109,42 @@
     [self.timerForAutomaticUpdates invalidate];
     [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
     self.userScrolledUp = NO;
+    //todo remove above?? userScrolledUp
+    
+    NSLog(@"Visible Cells VWA: %@", self.tableView.visibleCells);
+    [self checkHighlightingForCells:self.tableView.visibleCells];
     
     [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
 }
 
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    NSLog(@"Visible Cells VDA: %@", self.tableView.visibleCells);
+    
+}
+
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    NSLog(@"UpdateRefreshTimeStamp As Leaving");
+    [self updateRefreshTimestampWithDate:[NSDate date]];
     
     //Start Background Timer for Updates
     self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
     
 }
 
+
+- (void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    NSLog(@"UpdateRefreshTimeStamp As Left");
+    [self updateRefreshTimestampWithDate:[NSDate date]];
+    
+}
 
 #pragma mark - Custom Getters
 
@@ -424,6 +446,29 @@
     self.scrollViewOffset = newScrollOffset;
     
 }
+
+
+//TEST what if the uitableview is scrolled down some.. when coming back to it?
+- (void) checkHighlightingForCells:(NSArray *)cells {
+    
+    for (ActivityTableCell *cell in cells) {
+        
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        
+        int row = (int)indexPath.row;
+        
+        PFObject *object = [self.objects objectAtIndex:row];
+        
+        NSComparisonResult dateCompare = [object.createdAt compare:self.secondaryUpdateTimestamp];
+        if (dateCompare == NSOrderedDescending) {
+            [cell highlightCellForNewNotification];
+        } else {
+            [cell resetHighlighting];
+        }
+        
+    }
+    
+}
     
 
 #pragma mark - UITableView Datasource Methods
@@ -439,6 +484,8 @@
     NSDate *createdAtDate = object.createdAt;
     activityCell.timestampActivity.text = [createdAtDate formattedAsTimeAgo];
     activityCell.separatorInset = UIEdgeInsetsMake(0, 15, 0, 15);
+    
+    [self checkHighlightingForCells:[NSArray arrayWithObject:activityCell]];
     
     //Determine if Cell Should be Highlighted as a New Notification
     NSComparisonResult dateCompare = [createdAtDate compare:self.secondaryUpdateTimestamp];
@@ -541,6 +588,7 @@
                 activityCell.actionButton.titleText = @"View";
                 activityCell.actionButton.eventToView = eventInvitedTo;
                 [activityCell.actionButton setIsSelected:NO];
+                activityCell.actionButton.isForCommentActivity = NO;
                 [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
                 
                 [activityCell.actionButton endedTask];
@@ -575,6 +623,7 @@
                     activityCell.actionButton.eventToView = eventToAccess;
                     activityCell.actionButton.titleText = @"View";
                     [activityCell.actionButton setIsSelected:NO];
+                    activityCell.actionButton.isForCommentActivity = NO;
                     [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
                     
                     [activityCell.actionButton endedTask];
@@ -686,7 +735,7 @@
                 activityCell.actionButton.titleText = @"View";
                 activityCell.actionButton.eventToView = eventToAttend;
                 [activityCell.actionButton setIsSelected:NO];
-                
+                activityCell.actionButton.isForCommentActivity = NO;
                 [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
                 [activityCell.actionButton endedTask];
                 
@@ -717,7 +766,7 @@
                 activityCell.actionButton.titleText = @"View";
                 activityCell.actionButton.eventToView = eventGrantedAccess;
                 [activityCell.actionButton setIsSelected:NO];
-                
+                activityCell.actionButton.isForCommentActivity = NO;
                 [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
                 [activityCell.actionButton endedTask];
 
@@ -725,13 +774,45 @@
         
             break;
         }
+        case COMMENT_ACTIVITY: {
+            
+            NSLog(@"Comment Activity! at indexrow: %ld with object: %@", (long)indexPath.row, object);
+            
+            EVNUser *userThatCommented = (EVNUser *) object[@"userFrom"];
+            EventObject *eventCommentedOn = (EventObject *) object[@"activityContent"];
+            
+            //Left Side Thumbnail
+            activityCell.leftSideImageView.file = userThatCommented[@"profilePicture"];
+            [activityCell.leftSideImageView loadInBackground];
+            
+            activityCell.leftSideImageView.userInteractionEnabled = YES;
+            activityCell.leftSideImageView.objectForImageView = userThatCommented;
+            UITapGestureRecognizer *tapProfileImage = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewProfile:)];
+            [activityCell.leftSideImageView addGestureRecognizer:tapProfileImage];
+            
+            //Main Text Message
+            activityCell.activityContentTextLabel.text = [NSString stringWithFormat:@"%@ commented on %@", userThatCommented.username, eventCommentedOn.title];
+            
+            //Right Action Button
+            activityCell.actionButton.titleText = @"View";
+            activityCell.actionButton.eventToView = eventCommentedOn;
+            [activityCell.actionButton setIsSelected:NO];
+            activityCell.actionButton.isForCommentActivity = YES;
+            [activityCell.actionButton addTarget:self action:@selector(viewEvent:) forControlEvents:UIControlEventTouchUpInside];
+            [activityCell.actionButton endedTask];
+            
+            break;
+        }
         default: {
             
             //Unrecognized Activity Cell Type
+            NSLog(@"Unknwon Activity! at indexrow: %ld with object: %@", (long)indexPath.row, object);
+
             
             activityCell.activityContentTextLabel.text = @"Unknown Type";
             activityCell.actionButton.titleText = @"...";
             [activityCell.actionButton setIsSelected:NO];
+            [activityCell.actionButton endedTaskWithButtonEnabled:NO];
 
 
             break;
@@ -831,6 +912,7 @@
     EventDetailVC *eventDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventDetailViewController"];
     
     eventDetailsVC.event = object;
+    eventDetailsVC.shouldScrollToComments = viewButton.isForCommentActivity;
     
     [self.navigationController pushViewController:eventDetailsVC animated:YES];
     

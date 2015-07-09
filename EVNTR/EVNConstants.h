@@ -71,6 +71,7 @@ extern NSString *const kIsGuest;
 #define REQUEST_ACCESS_ACTIVITY 3
 #define ATTENDING_ACTIVITY 4
 #define ACCESS_GRANTED_ACTIVITY 5
+#define COMMENT_ACTIVITY 6
 
 #pragma mark - Event Types
 

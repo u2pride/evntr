@@ -2352,7 +2352,7 @@ Click continue when you're ready.</string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fXh-Of-N5Z">
-                                <rect key="frame" x="0.0" y="150" width="320" height="1350"/>
+                                <rect key="frame" x="0.0" y="144" width="320" height="1356"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9B5-qw-1QG">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="1500"/>
@@ -2738,6 +2738,7 @@ Click continue when you're ready.</string>
                                             <constraint firstItem="fZP-1x-ybf" firstAttribute="top" secondItem="PHv-2y-ZBG" secondAttribute="bottom" constant="22" id="qQO-QO-OfV"/>
                                             <constraint firstItem="OEQ-GB-dJ2" firstAttribute="centerX" secondItem="5hW-kd-qt7" secondAttribute="centerX" id="r9S-ss-Hok"/>
                                             <constraint firstItem="TcM-9I-PvE" firstAttribute="top" secondItem="OEQ-GB-dJ2" secondAttribute="bottom" constant="20" id="rHQ-uj-rqq"/>
+                                            <constraint firstItem="fZP-1x-ybf" firstAttribute="top" secondItem="9B5-qw-1QG" secondAttribute="top" constant="818" id="rbs-82-vZX"/>
                                             <constraint firstItem="8cT-rR-tW8" firstAttribute="top" secondItem="9B5-qw-1QG" secondAttribute="top" constant="8" id="sEP-vZ-mP6"/>
                                             <constraint firstItem="OEQ-GB-dJ2" firstAttribute="centerX" secondItem="ToF-am-HsN" secondAttribute="centerX" id="shU-CD-kZf"/>
                                             <constraint firstAttribute="trailing" secondItem="OEQ-GB-dJ2" secondAttribute="trailing" constant="24" id="skY-sm-eah"/>
@@ -2961,7 +2962,7 @@ Click continue when you're ready.</string>
                             <constraint firstItem="WEQ-g4-QdZ" firstAttribute="leading" secondItem="3BY-zL-Tby" secondAttribute="leadingMargin" constant="32" id="Vow-hz-6fT"/>
                             <constraint firstAttribute="centerX" secondItem="U2K-8t-Wd7" secondAttribute="centerX" id="aIE-lR-dz3"/>
                             <constraint firstAttribute="bottom" secondItem="fXh-Of-N5Z" secondAttribute="bottom" id="kVw-PW-Iu5"/>
-                            <constraint firstItem="fXh-Of-N5Z" firstAttribute="top" secondItem="3BY-zL-Tby" secondAttribute="top" constant="150" id="saB-35-Gic"/>
+                            <constraint firstItem="fXh-Of-N5Z" firstAttribute="top" secondItem="3BY-zL-Tby" secondAttribute="top" constant="144" id="saB-35-Gic"/>
                             <constraint firstAttribute="trailingMargin" secondItem="WEQ-g4-QdZ" secondAttribute="trailing" constant="32" id="v5g-Y9-hB3"/>
                             <constraint firstItem="caj-O3-lWl" firstAttribute="top" secondItem="WEQ-g4-QdZ" secondAttribute="bottom" constant="-18" id="vyM-ru-thX"/>
                         </constraints>
@@ -2974,6 +2975,7 @@ Click continue when you're ready.</string>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="1500"/>
                     <connections>
+                        <outlet property="commentsLabel" destination="jYO-wn-FiG" id="CdW-Y5-p3n"/>
                         <outlet property="commentsTable" destination="UAo-w8-gAK" id="m0D-cw-ZBJ"/>
                         <outlet property="commentsTopVerticalConstraint" destination="qFN-j9-qb2" id="faY-V2-tns"/>
                         <outlet property="creatorName" destination="CeH-mV-5d8" id="EBV-Q4-ER9"/>
@@ -2988,6 +2990,7 @@ Click continue when you're ready.</string>
                         <outlet property="inviteUsers" destination="dU3-y9-lWS" id="G8b-8H-ozj"/>
                         <outlet property="numberOfPicturesLabel" destination="I7U-Tw-AXO" id="Hjx-kC-3Y6"/>
                         <outlet property="rsvpStatusButton" destination="caj-O3-lWl" id="yNl-PD-VXt"/>
+                        <outlet property="scrollView" destination="fXh-Of-N5Z" id="jwA-g5-7zW"/>
                         <outlet property="standbyListTitle" destination="wof-6L-VbM" id="y7D-hx-VIk"/>
                         <outlet property="standbyUsersCollectionView" destination="Bfu-kw-HWs" id="SI2-jp-zLx"/>
                         <outlet property="timeOfEventLabel" destination="Dsc-U7-Dxb" id="bLZ-PV-AaA"/>

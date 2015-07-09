@@ -20,8 +20,6 @@
 @property (strong, nonatomic) IBOutlet EVNButton *createButton;
 @property (strong, nonatomic) IBOutlet EVNButton *setLocationButton;
 
-@property (nonatomic, strong) UIView *tapToDismissView;
-
 - (IBAction)createEvent:(id)sender;
 - (IBAction)setEventLocation:(id)sender;
 
@@ -329,46 +327,12 @@
         textView.textColor = [UIColor blackColor];
     }
     
-    self.tapToDismissView = [[UIView alloc] initWithFrame:self.view.frame];
-    self.tapToDismissView.backgroundColor = [UIColor clearColor];
-    
-    //[self.view addSubview:self.tapToDismissView];
-    
-    //Gesture Recognizer to Dismiss Keyboard on Tap in View
-    UITapGestureRecognizer *tapToDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
-    tapToDismiss.cancelsTouchesInView = YES;
-    
-    UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
-    swipeUp.direction = UISwipeGestureRecognizerDirectionDown;
-    swipeUp.cancelsTouchesInView = YES;
-    
-    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
-    swipeDown.direction = UISwipeGestureRecognizerDirectionUp;
-    swipeDown.cancelsTouchesInView = YES;
-    
-    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
-    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-    swipeLeft.cancelsTouchesInView = YES;
-    
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(tapToDismissKeyboard)];
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    swipeRight.cancelsTouchesInView = YES;
-    
-    //TODO: Move Gesture Recognizers to TapToDismissView Class
-    [self.tapToDismissView addGestureRecognizer:tapToDismiss];
-    [self.tapToDismissView addGestureRecognizer:swipeUp];
-    [self.tapToDismissView addGestureRecognizer:swipeDown];
-    [self.tapToDismissView addGestureRecognizer:swipeLeft];
-    [self.tapToDismissView addGestureRecognizer:swipeRight];
-    
     [textView becomeFirstResponder];
     
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
     
-    [self.tapToDismissView removeFromSuperview];
-
     if ([textView.text isEqualToString:@""]) {
         textView.text = @"Add details about your event...";
         textView.textColor = [UIColor lightGrayColor]; //optional
@@ -421,6 +385,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
+}
+
+#pragma mark - Tableview UIScrollView Delegate Methods
+
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    [self.view endEditing:YES];
+    
 }
 
 

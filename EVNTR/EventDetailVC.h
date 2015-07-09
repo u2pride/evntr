@@ -27,6 +27,8 @@
 @property (nonatomic, strong) EventObject *event;
 @property (nonatomic, weak) id <EventDetailProtocol> delegate;
 
+@property (nonatomic) BOOL shouldScrollToComments;
+
 @end
 
 

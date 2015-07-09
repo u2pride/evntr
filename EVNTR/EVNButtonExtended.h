@@ -22,4 +22,6 @@
 @property (nonatomic, strong) EVNUser *personToGrantAccess;
 @property (nonatomic, strong) EventObject *eventToGrantAccess;
 
+@property (nonatomic) BOOL isForCommentActivity;
+
 @end

@@ -221,6 +221,12 @@
     
     if (!self.bioConstraint) {
         
+        float heightConstant = anotherSize.height;
+        
+        if (heightConstant == 0) {
+            heightConstant = 34;
+        }
+        
         self.bioConstraint = [NSLayoutConstraint constraintWithItem:self.bioLabel
                                                           attribute:NSLayoutAttributeHeight
                                                           relatedBy:NSLayoutRelationEqual
@@ -229,15 +235,18 @@
                                                          multiplier:1.0
                                                            constant:anotherSize.height];
         
-        
-        
         [self.view addConstraint:self.bioConstraint];
+        
         
     } else {
         
         self.bioConstraint.constant = anotherSize.height;
         
     }
+    
+    
+    NSLog(@"Bio Constraint - %@", self.bioConstraint);
+
     
 
     

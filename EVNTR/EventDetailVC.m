@@ -43,6 +43,7 @@
 
 //UIViews
 @property (strong, nonatomic) IBOutlet UIView *detailsBackgroundView;
+@property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 
 //Buttons
 @property (strong, nonatomic) IBOutlet EVNButtonExtended *rsvpStatusButton;
@@ -58,6 +59,7 @@
 @property (strong, nonatomic) IBOutlet UILabel *timeOfEventLabel;
 @property (strong, nonatomic) IBOutlet UILabel *standbyListTitle;
 @property (strong, nonatomic) IBOutlet UITextView *eventDescriptionTextView;
+@property (strong, nonatomic) IBOutlet UILabel *commentsLabel;
 
 //Images
 @property (weak, nonatomic) IBOutlet PFImageView *creatorPhoto;
@@ -115,6 +117,7 @@
         numNetworkCallsComplete = 0;
         _needsInfoUpdate = YES;
         _shouldRestoreNavBar = YES;
+        _shouldScrollToComments = NO;
     }
     
     return self;
@@ -234,6 +237,18 @@
         }
         
     }];
+        
+    if (self.shouldScrollToComments) {
+        
+        CGRect commentsTableRect = self.commentsTable.frame;
+        CGRect topCommentsRect = CGRectMake(commentsTableRect.origin.x, self.commentsTable.frame.origin.y - 8, commentsTableRect.size.width, commentsTableRect.size.height);
+        
+        [self.scrollView scrollRectToVisible:topCommentsRect animated:YES];
+        self.scrollView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.05];
+        
+        self.shouldScrollToComments = NO;
+        
+    }
     
 }
 
