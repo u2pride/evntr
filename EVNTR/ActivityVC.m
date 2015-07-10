@@ -22,8 +22,6 @@
 @interface ActivityVC ()
 
 @property (nonatomic) EVNNoResultsView *noResultsView;
-@property (nonatomic) CGPoint scrollViewOffset;
-@property (nonatomic) BOOL userScrolledUp;
 @property (nonatomic, strong) NSTimer *timerForAutomaticUpdates;
 
 @property (nonatomic, strong) NSDate *primaryUpdateTimestamp;
@@ -49,7 +47,6 @@
         self.userForActivities = [EVNUser currentUser];
         self.objectsPerPage = 15;
         _typeOfActivityView = ACTIVITIES_ALL;
-        _userScrolledUp = NO;
         _backgroundUpdateOccurred = NO;
     }
     
@@ -66,7 +63,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellsDueToUnfollow:) name:kNewUnfollow object:nil];
 
     
-    self.scrollViewOffset = self.tableView.contentOffset;
     self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:15 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
     self.refreshControl.tintColor = [UIColor orangeThemeColor];
     
@@ -108,40 +104,21 @@
     
     [self.timerForAutomaticUpdates invalidate];
     [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
-    self.userScrolledUp = NO;
-    //todo remove above?? userScrolledUp
     
-    NSLog(@"Visible Cells VWA: %@", self.tableView.visibleCells);
     [self checkHighlightingForCells:self.tableView.visibleCells];
     
+    //Scroll to Top on Opening
     [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
-}
-
-
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    NSLog(@"Visible Cells VDA: %@", self.tableView.visibleCells);
-    
 }
 
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    NSLog(@"UpdateRefreshTimeStamp As Leaving");
-    [self updateRefreshTimestampWithDate:[NSDate date]];
-    
     //Start Background Timer for Updates
     self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
     
-}
-
-
-- (void) viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    
-    NSLog(@"UpdateRefreshTimeStamp As Left");
+    NSLog(@"UpdateRefreshTimeStamp As Leaving");
     [self updateRefreshTimestampWithDate:[NSDate date]];
     
 }
@@ -428,22 +405,6 @@
     [userDefaults setObject:self.secondaryUpdateTimestamp forKey:kSecondaryUpdateTimestamp];
     
     [userDefaults synchronize];
-    
-}
-
-- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-    CGPoint newScrollOffset = scrollView.contentOffset;
-    
-    if (newScrollOffset.y > self.scrollViewOffset.y) {
-        //empty
-    } else {
-        self.userScrolledUp = YES;
-        //[self updateRefreshTimestampWithDate:[NSDate date]];
-        
-    }
-    
-    self.scrollViewOffset = newScrollOffset;
     
 }
 

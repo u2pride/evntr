@@ -14,6 +14,7 @@
 @interface EVNUser : PFUser <PFSubclassing>
 
 @property (nonatomic, strong) NSString *username;
+@property (nonatomic, strong) NSString *canonicalUsername;
 @property (nonatomic, strong) PFFile *profilePicture;
 
 @property (nonatomic, strong) NSString *hometown;

@@ -134,6 +134,7 @@ typedef enum {
     
     EVNUser *newUser = (EVNUser *)[EVNUser object];
     newUser.username = self.usernameField.text;
+    newUser.canonicalUsername = self.usernameField.text.lowercaseString;
     newUser.password = self.passwordField.text;
     newUser.email = self.emailField.text;
     
@@ -207,7 +208,7 @@ typedef enum {
                             }
                             case TBParseError_UsernameTaken: {
                                 
-                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please choose another username." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Already taken. Please choose another username." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                                 
                                 [failureAlert show];
                                 
@@ -284,7 +285,7 @@ typedef enum {
             
             self.usernameField.text = correctedUsername;
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Let us help you out some.  We've removed the spaces in your username.  Go ahead and click register again."] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Invalid Username" message:[NSString stringWithFormat:@"Let us help you out some.  We've removed the spaces in your username.  Go ahead and click register again."] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             

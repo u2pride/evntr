@@ -154,13 +154,15 @@
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventCount) name:kUserCreatedNewEvent object:nil];
                 
                 UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"SettingsIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(viewSettings)];
-                self.navigationItem.rightBarButtonItem = settingsButton;
+                
+                [self.navigationItem setRightBarButtonItem:settingsButton animated:YES];
                                 
                 if (self.navigationController.viewControllers.count == 1) {
                     
                     UIBarButtonItem *inviteToApp = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"inviteIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(showInviteScreen)];
                  
-                    self.navigationItem.leftBarButtonItem = inviteToApp;
+                    [self.navigationItem setLeftBarButtonItem:inviteToApp animated:YES];
+                    
                 }
                 
             } else {
@@ -233,7 +235,7 @@
                                                              toItem:nil
                                                           attribute:NSLayoutAttributeNotAnAttribute
                                                          multiplier:1.0
-                                                           constant:anotherSize.height];
+                                                           constant:heightConstant];
         
         [self.view addConstraint:self.bioConstraint];
         
@@ -243,12 +245,6 @@
         self.bioConstraint.constant = anotherSize.height;
         
     }
-    
-    
-    NSLog(@"Bio Constraint - %@", self.bioConstraint);
-
-    
-
     
 }
 
@@ -325,8 +321,9 @@
             //self.followButton.hidden = NO;
             //self.editProfileButton.hidden = YES;
             
-            self.navigationItem.title = [@"@" stringByAppendingString:self.profileUser.username];
-            
+            //self.navigationItem.title = [@"@" stringByAppendingString:self.profileUser.username];
+            self.navigationItem.title = [self.profileUser nameText];
+
             [[EVNUser currentUser] isCurrentUserFollowingProfile:self.profileUser completion:^(BOOL isFollowing, BOOL success) {
                 
                 if (success) {
@@ -441,8 +438,6 @@
     
     if (self.nameLabel.alpha == 0.0) {
         
-        self.navigationItem.title = [self.profileUser nameText];
-
         [self.view layoutIfNeeded];
         
         self.pictureBottomConstraint.constant = 4;
@@ -590,10 +585,10 @@
 
 -(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData {
     
-    NSString *realName = [stringDictionary objectForKey:@"realName"];
+    NSString *username = [stringDictionary objectForKey:@"username"];
     
     self.profileImageView.image = [UIImage imageWithData:imageData];
-    self.nameLabel.text = realName;
+    self.nameLabel.text = [@"@" stringByAppendingString:username];;
     self.userObjectID = [EVNUser currentUser].objectId;
     self.profileUser = [EVNUser currentUser];
     

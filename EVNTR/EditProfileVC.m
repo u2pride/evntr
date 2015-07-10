@@ -367,7 +367,7 @@ typedef enum {
             
             self.usernameTextField.text = correctedUsername;
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:[NSString stringWithFormat:@"Let us help you out some.  We've removed the spaces in your username.  Go ahead and click register again."] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Invalid Username" message:[NSString stringWithFormat:@"Let us help you out some.  We've removed the spaces in your username.  Go ahead and click register again."] delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
             
             [errorAlert show];
             
@@ -389,7 +389,14 @@ typedef enum {
 
 - (void) saveProfileDetails {
     
-    [[EVNUser currentUser] setUsername:self.usernameTextField.text];
+    //Only Update Username if Changed by User - Necessary for afterSave Handle to Run Correctly.
+    //Changing the username will make the "username" field dirty and force a validation check
+    //to ensure the username is unique.
+    if (![self.usernameTextField.text isEqualToString:[EVNUser currentUser].username]) {
+        [[EVNUser currentUser] setUsername:self.usernameTextField.text];
+        [[EVNUser currentUser] setCanonicalUsername:self.usernameTextField.text.lowercaseString];
+    }
+    
     [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
     [[EVNUser currentUser] setValue:self.hometownTextField.text forKey:@"hometown"];
     [[EVNUser currentUser] setValue:self.bioTextView.text forKey:@"bio"];
@@ -420,7 +427,7 @@ typedef enum {
                 }
                 case TBParseError_UsernameTaken: {
                     
-                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Please choose another username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
+                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Username" message:@"Already taken. Please choose another username." delegate:self cancelButtonTitle:@"Got it" otherButtonTitles: nil];
                     
                     [failureAlert show];
                     
@@ -436,10 +443,18 @@ typedef enum {
                 }
                 default: {
                     
-                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Error Saving User" message:@"Try again and if it continues, press cancel and then logout and log back in." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
-                   
+                    NSString *errorMessage;
+                    
+                    if ([error.userInfo objectForKey:@"error"]) {
+                        errorMessage = [error.userInfo objectForKey:@"error"];
+                    } else {
+                        errorMessage = @"Whoops.  Looks like we are having trouble editing your profile.  Try again later.";
+                    }
+                    
+                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:errorMessage delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                    
                     [failureAlert show];
-
+                    
                     break;
                 }
             }
