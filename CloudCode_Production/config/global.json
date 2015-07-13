@@ -1,0 +1,14 @@
+{
+  "global": {
+    "parseVersion": "1.4.2"
+  },
+  "applications": {
+    "EvntrApp": {
+      "applicationId": "pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs",
+      "masterKey": "rVq3Ua0PxeOd7diviC3SkpUvYNaxcR64oaxXG10q"
+    },
+    "_default": {
+      "link": "EvntrApp"
+    }
+  }
+}
