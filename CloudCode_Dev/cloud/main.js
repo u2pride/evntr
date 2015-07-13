@@ -393,7 +393,7 @@ In an afterSave handler, use existed. Immediately after the first time an object
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     Parse.Cloud.useMasterKey();
     
-    var lowercaseUsernameSubmitted = request.object.get("canonicalUsername");
+    var lowercaseUsernameSubmitted = request.object.get("username").toLowerCase();
     
     console.log("username being checked in beforeSave Handler - " + lowercaseUsernameSubmitted);
     
