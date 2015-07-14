@@ -770,7 +770,7 @@
             NSLog(@"Unknwon Activity! at indexrow: %ld with object: %@", (long)indexPath.row, object);
 
             
-            activityCell.activityContentTextLabel.text = @"Unknown Type";
+            activityCell.activityContentTextLabel.text = @"New Notification Type... Update Evntr on the App Store to See It.";
             activityCell.actionButton.titleText = @"...";
             [activityCell.actionButton setIsSelected:NO];
             [activityCell.actionButton endedTaskWithButtonEnabled:NO];
