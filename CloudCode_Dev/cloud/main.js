@@ -15,36 +15,30 @@ Parse.Cloud.define("checkVersion", function(request, response) {
     var currentMajor = parseInt(request.params.majorVersion);
     var currentMinor = parseInt(request.params.minorVersion);
     
-    console.log("UserMajor: " + currentMajor + "UserMinor: " + currentMinor);
-    
-    if (currentMajor < minMajor) {
+    if (currentMajor > minMajor) {
       
-      console.log("Accepted");
       response.success("true");
      
     } else if (currentMajor == minMajor) {
       
       if (currentMinor >= minMinor) {
         
-        console.log("Accepted");
         response.success("true");
         
       } else {
         
-        console.log("Rejected");
         response.success("false");
         
       }
     
     } else {
       
-      console.log("Rejected");
       response.success("false");
       
     }
     
     }, function(error) {
-        console.log("Error");
+      
         response.error("Failed to retrieve config");
     });
 
@@ -425,30 +419,5 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
         console.log("username not changed. return.")
         response.success();
       }
-  
-});
-
-
-Parse.Cloud.afterSave(Parse.User, function(request, response) {
-    
-    /*
-    Parse.Cloud.useMasterKey();
-    
-    console.log("parse user aftersave run");
-    
-    var lowercaseUsernameSubmitted = request.object.get("username").toLowerCase();
-        
-    request.object.set("canonicalUsername", lowercaseUsernameSubmitted);
-    
-    request.object.save(null, {
-      success: function(savedActivity) {
-
-      },
-      error: function(savedActivity, error) {
-        console.error("Error Saving a User Canonical Field " + error.code + " : " + error.message);
-      }
-      });
-      
-      */
   
 });
