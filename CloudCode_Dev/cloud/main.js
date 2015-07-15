@@ -392,7 +392,7 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     console.log("username being checked in beforeSave Handler - " + lowercaseUsernameSubmitted);
     
     //If Username Field Has Been Updated
-    if (request.object.dirty("username")) {
+    if (request.object.dirty("username") && request.object.get("username").toLowerCase() != request.object.get("canonicalUsername")) {
         console.log("username has been changed... run validation.");
         
         var query = new Parse.Query(Parse.User);
@@ -405,7 +405,14 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
             
             } else {
               console.log("username doesn't already exist, allow save");
-              response.success();
+
+              console.log("object username: " + request.object.get("username") + "object canonical: " + request.object.get("canonicalUsername"));
+              
+              //if (request.object.get("username") != request.object.get("canonicalUsername")) {
+                console.log("Update the Canonical Username");
+                request.object.set("canonicalUsername", lowercaseUsernameSubmitted);
+                response.success();
+              //}
 
             }
           },
@@ -431,9 +438,9 @@ Parse.Cloud.afterSave(Parse.User, function(request, response) {
     console.log("username is clean in afterSave");
   }
   
-  var currentUser = request.object;
+  //var currentUser = request.object;
   
-  currentUser.set("canonicalUsername", currentUser.get("username").toLowerCase());
-  currentUser.save();
+  //currentUser.set("canonicalUsername", currentUser.get("username").toLowerCase());
+  //currentUser.save();
   
 });
