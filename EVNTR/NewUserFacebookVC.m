@@ -96,6 +96,7 @@ typedef enum {
     
     self.facebookID = ([self.informationFromFB objectForKey:@"ID"]) ? (NSString *)[self.informationFromFB objectForKey:@"ID"] : @"";
     self.firstName = ([self.informationFromFB objectForKey:@"firstName"]) ? (NSString *)[self.informationFromFB objectForKey:@"firstName"] : @"";
+    //TODO: Remove
     self.location = ([self.informationFromFB objectForKey:@"location"]) ? (NSString *)[self.informationFromFB objectForKey:@"location"] : @"";
         
 }
@@ -231,10 +232,17 @@ typedef enum {
                             }
                             default: {
                                 
-                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:@"Please check your username and email." delegate:self cancelButtonTitle:@"done" otherButtonTitles: nil];
+                                NSString *errorMessage;
+                                
+                                if ([error.userInfo objectForKey:@"error"]) {
+                                    errorMessage = [error.userInfo objectForKey:@"error"];
+                                } else {
+                                    errorMessage = @"Please check your signup details to make sure they are all correct.";
+                                }
+                                
+                                UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:errorMessage delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                                 
                                 [failureAlert show];
-                                
                                 
                                 break;
                             }

@@ -72,7 +72,7 @@
     
     self.navigationItem.titleView = self.searchController.searchBar;
     
-    self.searchTypeSelectionView = [[SearchHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
+    self.searchTypeSelectionView = [[SearchHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     
     self.searchResultsTable.tableHeaderView = self.searchTypeSelectionView;
     

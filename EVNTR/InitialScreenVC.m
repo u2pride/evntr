@@ -288,6 +288,13 @@
         if (buttonIndex == 1) {
             [self checkAppVersion];
         }
+    } else if (alertView.tag == 3) {
+        
+        if (buttonIndex == 1) {
+            NSString *iTunesLink = @"itms://itunes.apple.com/us/app/evntr/id976246746?mt=8";
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:iTunesLink]];
+        }
+        
     }
     
 }
@@ -401,7 +408,7 @@
         
         if (error) {
             
-            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Try Again" message:@"We're having trouble connecting to the internet." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Try Again" message:@"We're having trouble connecting to the internet to verify your version." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
             errorAlert.tag = 2;
             
@@ -445,7 +452,11 @@
             
             } else if ([result isEqualToString:@"false"]) {
                 
-                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Update Required" message:@"Looks like you are running an old version of the app, head over to the app store to grab the latest update." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Update Required" message:@"Looks like you are running an old version of the app, head over to the app store to grab the latest update." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles: nil];
+                
+                errorAlert.tag = 3;
+                
+                [errorAlert addButtonWithTitle:@"Go to App Store"];
                 
                 [errorAlert show];
                 

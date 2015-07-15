@@ -62,7 +62,10 @@
 
 - (void) loginThruFacebook {
     
-    NSArray *permissionsArray = @[@"user_about_me", @"email", @"user_location", @"user_friends"];
+    //TODO: Remove User_About_Me and User_Location - https://developers.facebook.com/docs/facebook-login/permissions/v2.4
+    //ensure removal from subsequent view controllers - ensure no more dependent on this.  location we got no problem.
+    
+    NSArray *permissionsArray = @[ @"email", @"user_friends"];
     
     [PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
         
@@ -73,13 +76,13 @@
             // Handles cases like Facebook password change or unverified Facebook accounts.
             NSString *alertMessage, *alertTitle;
             
-            if ([error.userInfo objectForKey:FBSDKErrorLocalizedTitleKey]) {
+            if ([error.userInfo objectForKey:FBSDKErrorLocalizedDescriptionKey]) {
                 alertMessage = [error.userInfo objectForKey:FBSDKErrorLocalizedDescriptionKey];
                 alertTitle = [error.userInfo objectForKey:FBSDKErrorLocalizedTitleKey];
                 
             } else {
-                alertTitle = @"Facebook Error";
-                alertMessage = @"Sorry about this.  Looks like we can't log you in.  Try logging in again.";
+                alertTitle = @"Facebook Issue";
+                alertMessage = @"Sorry about this.  Looks like Facebook is having problems logging you in.  Restarting Evntr (double-click the home button and swipe up on Evntr to stop it) should fix this.";
             }
             
             if (alertMessage) {
@@ -87,13 +90,15 @@
                 [[[UIAlertView alloc] initWithTitle:alertTitle
                                             message:alertMessage
                                            delegate:nil
-                                  cancelButtonTitle:@"OK"
+                                  cancelButtonTitle:@"Ok"
                                   otherButtonTitles:nil] show];
             }
             
             [PFAnalytics trackEventInBackground:@"SignUpIssue_Facebook" block:nil];
             
         } else {
+            
+            NSLog(@"User Details: %@", user);
             
             if (user.isNew) {
                 
@@ -249,6 +254,8 @@
     [self.view addSubview:activityIndicator];
     [activityIndicator startAnimating];
     
+    newUser[@"username"] = @"Evntr User";
+    
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
     FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
     
@@ -261,6 +268,8 @@
             NSDictionary *userData = (NSDictionary *)result;
             NSMutableDictionary *userDetailsForFBRegistration = [[NSMutableDictionary alloc] init];
             
+            NSLog(@"UserData: %@", userData);
+            
             if (userData[@"id"]) {
                 [userDetailsForFBRegistration setObject:userData[@"id"] forKey:@"ID"];
             }
@@ -269,6 +278,7 @@
                 [userDetailsForFBRegistration setObject:userData[@"name"] forKey:@"realName"];
             }
             
+            //TOOD:  Remove
             if (userData[@"location"][@"name"]) {
                 [userDetailsForFBRegistration setObject:userData[@"location"][@"name"] forKey:@"location"];
             }

@@ -17,7 +17,7 @@ Parse.Cloud.define("checkVersion", function(request, response) {
     
     console.log("UserMajor: " + currentMajor + "UserMinor: " + currentMinor);
     
-    if (currentMajor > minMajor) {
+    if (currentMajor < minMajor) {
       
       console.log("Accepted");
       response.success("true");

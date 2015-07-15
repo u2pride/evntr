@@ -341,14 +341,18 @@
     
     if ([parsedURL appLinkData]) {
         
-        NSURL *targetURL = [parsedURL targetURL];
+        //NSLog(@"url: %@", url);
+
+        //NSURL *targetURL = [parsedURL targetURL];
         
-        [[[UIAlertView alloc] initWithTitle:@"Link" message:[targetURL absoluteString] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        //[[[UIAlertView alloc] initWithTitle:@"Link" message:[targetURL absoluteString] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
         
         return NO;
         
     } else {
      
+        //NSLog(@"url: %@", url);
+        
         return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                               openURL:url
                                                     sourceApplication:sourceApplication

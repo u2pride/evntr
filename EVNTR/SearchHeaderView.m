@@ -114,6 +114,25 @@
                                                     multiplier:1.0
                                                       constant:0]];
     
+    //Same Height as Self
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.eventLabel
+                                                     attribute:NSLayoutAttributeHeight
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeHeight
+                                                    multiplier:1.0
+                                                      constant:0]];
+    
+    
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:self.peopleLabel
+                                                     attribute:NSLayoutAttributeHeight
+                                                     relatedBy:NSLayoutRelationEqual
+                                                        toItem:self
+                                                     attribute:NSLayoutAttributeHeight
+                                                    multiplier:1.0
+                                                      constant:0]];
+    
+    
 
 }
 
