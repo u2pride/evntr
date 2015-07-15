@@ -421,3 +421,19 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
       }
   
 });
+
+
+Parse.Cloud.afterSave(Parse.User, function(request, response) {
+    
+  if (request.object.dirty("username")) {
+    console.log("username is dirty in afterSave");
+  } else {
+    console.log("username is clean in afterSave");
+  }
+  
+  var currentUser = request.object;
+  
+  currentUser.set("canonicalUsername", currentUser.get("username").toLowerCase());
+  currentUser.save();
+  
+});
