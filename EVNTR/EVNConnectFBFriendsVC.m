@@ -323,6 +323,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     
     [self fadeInView:self.tableView];
     
+    [PFAnalytics trackEventInBackground:@"ConnectedWithFBFriends" block:nil];
     
     [PFFacebookUtils linkUserInBackground:[EVNUser currentUser] withReadPermissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
         

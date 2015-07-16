@@ -178,7 +178,7 @@ typedef enum {
                         
                     } else {
                         
-                        NSLog(@"Error Found: %@", error);
+                        //NSLog(@"Error Found: %@", error);
                         
                         switch ((TBParseError)error.code) {
                                 

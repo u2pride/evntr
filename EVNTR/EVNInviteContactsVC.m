@@ -7,6 +7,7 @@
 //
 
 #import "EVNInviteContactsVC.h"
+#import <Parse/Parse.h>
 
 @interface EVNInviteContactsVC ()
 
@@ -59,6 +60,8 @@
 - (void) sendInviteMessage {
     
     [self.messageFriendsView.actionButton startedTask];
+    
+    [PFAnalytics trackEventInBackground:@"SendingTextMessage" block:nil];
     
     if ([MFMessageComposeViewController canSendText]) {
         

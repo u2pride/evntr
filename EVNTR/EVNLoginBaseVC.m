@@ -62,9 +62,6 @@
 
 - (void) loginThruFacebook {
     
-    //TODO: Remove User_About_Me and User_Location - https://developers.facebook.com/docs/facebook-login/permissions/v2.4
-    //ensure removal from subsequent view controllers - ensure no more dependent on this.  location we got no problem.
-    
     NSArray *permissionsArray = @[ @"email", @"user_friends"];
     
     [PFFacebookUtils logInInBackgroundWithReadPermissions:permissionsArray block:^(PFUser *user, NSError *error) {
@@ -98,7 +95,7 @@
             
         } else {
             
-            NSLog(@"User Details: %@", user);
+            //NSLog(@"User Details: %@", user);
             
             if (user.isNew) {
                 
@@ -268,7 +265,7 @@
             NSDictionary *userData = (NSDictionary *)result;
             NSMutableDictionary *userDetailsForFBRegistration = [[NSMutableDictionary alloc] init];
             
-            NSLog(@"UserData: %@", userData);
+            //NSLog(@"UserData: %@", userData);
             
             if (userData[@"id"]) {
                 [userDetailsForFBRegistration setObject:userData[@"id"] forKey:@"ID"];

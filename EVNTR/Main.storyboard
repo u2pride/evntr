@@ -2070,6 +2070,7 @@ Click continue when you're ready.</string>
                         <outlet property="distance6Button" destination="J84-WQ-SVh" id="XUu-BV-EEF"/>
                         <outlet property="distance7Button" destination="Krf-9H-186" id="FY4-Sw-lil"/>
                         <outlet property="distance8Button" destination="je7-RV-7pX" id="lHe-gm-sqt"/>
+                        <outlet property="distanceFilterHeaderLabel" destination="7nK-kf-IGh" id="Kb8-d9-9xO"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nRN-Ge-TaW" userLabel="First Responder" sceneMemberID="firstResponder"/>

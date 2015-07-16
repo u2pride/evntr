@@ -118,7 +118,7 @@
     //Start Background Timer for Updates
     self.timerForAutomaticUpdates = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(backgroundActivityUpdate) userInfo:nil repeats:YES];
     
-    NSLog(@"UpdateRefreshTimeStamp As Leaving");
+    //NSLog(@"UpdateRefreshTimeStamp As Leaving");
     [self updateRefreshTimestampWithDate:[NSDate date]];
     
 }
@@ -418,14 +418,18 @@
         
         int row = (int)indexPath.row;
         
-        PFObject *object = [self.objects objectAtIndex:row];
-        
-        NSComparisonResult dateCompare = [object.createdAt compare:self.secondaryUpdateTimestamp];
-        if (dateCompare == NSOrderedDescending) {
-            [cell highlightCellForNewNotification];
-        } else {
-            [cell resetHighlighting];
-        }
+        if (row < self.objects.count) {
+            
+            PFObject *object = [self.objects objectAtIndex:row];
+            
+            NSComparisonResult dateCompare = [object.createdAt compare:self.secondaryUpdateTimestamp];
+            if (dateCompare == NSOrderedDescending) {
+                [cell highlightCellForNewNotification];
+            } else {
+                [cell resetHighlighting];
+            }
+            
+        } 
         
     }
     
@@ -737,7 +741,7 @@
         }
         case COMMENT_ACTIVITY: {
             
-            NSLog(@"Comment Activity! at indexrow: %ld with object: %@", (long)indexPath.row, object);
+            //NSLog(@"Comment Activity! at indexrow: %ld with object: %@", (long)indexPath.row, object);
             
             EVNUser *userThatCommented = (EVNUser *) object[@"userFrom"];
             EventObject *eventCommentedOn = (EventObject *) object[@"activityContent"];
@@ -767,7 +771,7 @@
         default: {
             
             //Unrecognized Activity Cell Type
-            NSLog(@"Unknwon Activity! at indexrow: %ld with object: %@", (long)indexPath.row, object);
+            //NSLog(@"Unknwon Activity! at indexrow: %ld with object: %@", (long)indexPath.row, object);
 
             
             activityCell.activityContentTextLabel.text = @"New Notification Type... Update Evntr on the App Store to See It.";

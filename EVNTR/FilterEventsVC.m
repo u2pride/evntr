@@ -10,7 +10,11 @@
 #import "QuartzCore/QuartzCore.h"
 #import "UIColor+EVNColors.h"
 
+#import <Parse/Parse.h>
+
 @interface FilterEventsVC ()
+
+@property (strong, nonatomic) IBOutlet UILabel *distanceFilterHeaderLabel;
 
 @property (strong, nonatomic) IBOutlet UIButton *distance1Button;
 @property (strong, nonatomic) IBOutlet UIButton *distance2Button;
@@ -37,6 +41,11 @@
 #pragma mark - Lifecycle Methods
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showEasterEggMessage)];
+    tapGesture.numberOfTapsRequired = 3;
+    self.distanceFilterHeaderLabel.userInteractionEnabled = YES;
+    [self.distanceFilterHeaderLabel addGestureRecognizer:tapGesture];
     
     self.distance1Button.tintColor = [UIColor orangeThemeColor];
     self.distance2Button.tintColor = [UIColor orangeThemeColor];
@@ -235,6 +244,22 @@
         
         [strongDelegate completedFiltering:30];
     }
+    
+}
+
+- (void) showEasterEggMessage {
+    
+    [PFConfig getConfigInBackgroundWithBlock:^(PFConfig *config, NSError *error) {
+       
+        NSString *message = config[@"easterEggMessage"];
+        NSString *title = config[@"easterEggTitle"];
+        
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"dismiss" otherButtonTitles: nil];
+        
+        [errorAlert show];
+        
+    }];
+    
     
 }
 

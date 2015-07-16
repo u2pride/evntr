@@ -8,6 +8,7 @@
 
 #import "EVNInviteFBFriendsVC.h"
 #import "EVNNoResultsView.h"
+#import <Parse/Parse.h>
 
 @interface EVNInviteFBFriendsVC ()
 
@@ -45,6 +46,8 @@
 
 
 - (void) openFacebookInvite {
+    
+    [PFAnalytics trackEventInBackground:@"SendFacebookInvites" block:nil];
     
     FBSDKAppInviteContent *fbInviteContent = [[FBSDKAppInviteContent alloc] init];
     

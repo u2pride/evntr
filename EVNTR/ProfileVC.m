@@ -526,8 +526,6 @@
 
 - (void) showInviteScreen {
     
-    //TODO: Add analaytics.
-
     EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
     
     inviteVC.viewControllerOne = [EVNInviteFBFriendsVC new];

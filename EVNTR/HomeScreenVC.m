@@ -55,6 +55,8 @@
         self.title = @"Events";
         self.parseClassName = @"Events";
         self.pullToRefreshEnabled = YES;
+        self.paginationEnabled = NO;
+        self.objectsPerPage = 50;
         _typeOfEventTableView = ALL_PUBLIC_EVENTS;
         self.tabBarController.hidesBottomBarWhenPushed = YES;
         
