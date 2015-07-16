@@ -134,7 +134,7 @@ typedef enum {
     
     EVNUser *newUser = (EVNUser *)[EVNUser object];
     newUser.username = self.usernameField.text;
-    newUser.canonicalUsername = self.usernameField.text.lowercaseString;
+    //newUser.canonicalUsername = self.usernameField.text.lowercaseString;
     newUser.password = self.passwordField.text;
     newUser.email = self.emailField.text;
     

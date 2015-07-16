@@ -14,7 +14,7 @@
 
 @implementation EVNUser
 
-@dynamic profilePicture, hometown, realName, bio, username, canonicalUsername, email, numEvents, numFollowers, numFollowing;
+@dynamic profilePicture, hometown, realName, bio, username, email, numEvents, numFollowers, numFollowing;
 
 #pragma mark - Required for Subclassing Parse PFUser
 

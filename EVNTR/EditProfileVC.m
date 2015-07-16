@@ -389,12 +389,12 @@ typedef enum {
 
 - (void) saveProfileDetails {
     
-    //Only Update Username if Changed by User - Necessary for afterSave Handle to Run Correctly.
+    //Only Update Username if Changed by User - Necessary for beforeSave Handle to Run Correctly.
     //Changing the username will make the "username" field dirty and force a validation check
     //to ensure the username is unique.
     if (![self.usernameTextField.text isEqualToString:[EVNUser currentUser].username]) {
         [[EVNUser currentUser] setUsername:self.usernameTextField.text];
-        [[EVNUser currentUser] setCanonicalUsername:self.usernameTextField.text.lowercaseString];
+        //[[EVNUser currentUser] setCanonicalUsername:self.usernameTextField.text.lowercaseString];
     }
     
     [[EVNUser currentUser] setValue:self.realNameTextField.text forKey:@"realName"];
@@ -451,7 +451,7 @@ typedef enum {
                         errorMessage = @"Whoops.  Looks like we are having trouble editing your profile.  Try again later.";
                     }
                     
-                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Sign Up Error" message:errorMessage delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+                    UIAlertView *failureAlert = [[UIAlertView alloc] initWithTitle:@"Profile Error" message:errorMessage delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                     
                     [failureAlert show];
                     
