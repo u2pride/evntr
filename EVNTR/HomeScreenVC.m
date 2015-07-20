@@ -97,6 +97,10 @@
         case ALL_PUBLIC_EVENTS: {
             [self.navigationItem setTitle:@"Public Events"];
             
+            UISegmentedControl *segmentControl = [[UISegmentedControl alloc] initWithItems:@[@" Public ", @" Friends "]];
+            
+            [self.navigationItem setTitleView:segmentControl];
+            
             break;
         }
         case CURRENT_USER_EVENTS: {

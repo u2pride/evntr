@@ -359,7 +359,7 @@
 				A41562D31A767D3A00565BB6 /* LaunchScreen.xib */,
 				A4F2E9A71A7A811C00614412 /* Login Flow */,
 				A49A9E2A1AAE456C00358D65 /* Main Content */,
-				A424B3711B3C4072004562CA /* Invite */,
+				A424B3711B3C4072004562CA /* Connect & Invite */,
 				A4F2E9A61A7A806A00614412 /* Navigation - Utility */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
@@ -439,7 +439,7 @@
 			name = "UI Elements";
 			sourceTree = "<group>";
 		};
-		A424B3711B3C4072004562CA /* Invite */ = {
+		A424B3711B3C4072004562CA /* Connect & Invite */ = {
 			isa = PBXGroup;
 			children = (
 				A424B36E1B3C3822004562CA /* EVNInviteContainerVC.h */,
@@ -452,7 +452,7 @@
 				A4ABFFEC1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.m */,
 				A424B3721B3C408C004562CA /* UIViews */,
 			);
-			name = Invite;
+			name = "Connect & Invite";
 			sourceTree = "<group>";
 		};
 		A424B3721B3C408C004562CA /* UIViews */ = {
@@ -807,7 +807,6 @@
 				A41562BD1A767D3A00565BB6 /* Sources */,
 				A41562BE1A767D3A00565BB6 /* Frameworks */,
 				A41562BF1A767D3A00565BB6 /* Resources */,
-				A45534981B1DEC90001F8C34 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -904,22 +903,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		A45534981B1DEC90001F8C34 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export PATH=/usr/local/bin:$PATH\ncd /Users/U2Pride/Documents/iOS\\ Development/Evntr/EVNTR/CloudCode_Production\n\nparse symbols -p \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A41562BD1A767D3A00565BB6 /* Sources */ = {

@@ -155,7 +155,6 @@
         case VIEW_ALL_PEOPLE: {
             
             PFQuery *query = [EVNUser query];
-            [query orderByAscending:@"username"];
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
@@ -182,8 +181,8 @@
             PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
             [query whereKey:@"userTo" equalTo:self.userProfile];
             [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [query orderByAscending:@"createdAt"];
-            [query selectKeys:@[@"userFrom"]];
+            [query setLimit:250];
+            [query includeKey:@"userFrom"];
             
             [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
                 
@@ -203,7 +202,10 @@
                     [self hideNoResultsView];
                     
                     for (PFObject *object in usersFound) {
-                        [self.usersMutableArray addObject:object[@"userFrom"]];
+                        
+                        EVNUser *user = (EVNUser *)object[@"userFrom"];
+                                                
+                        [self.usersMutableArray addObject:user];
                     }
                     
                     self.usersArray = self.usersMutableArray;
@@ -435,7 +437,6 @@
 
 #pragma mark - Helper Methods
 
-
 - (void) showNoResultsViewWithHeader:(NSString *)header withSubHeader:(NSString *)subHeader withButtonTitle:(NSString *)buttonTitle andGesture:(UITapGestureRecognizer *)gr {
     
     if (!self.noResultsView) {
@@ -474,6 +475,8 @@
         
     [self.activitySpinner stopAnimating];
     
+    [self sortPeopleByUsername];
+    
     [self.collectionView reloadData];
     
 }
@@ -483,6 +486,37 @@
     EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
     
     [self.navigationController pushViewController:inviteVC animated:YES];
+    
+}
+
+- (void) sortPeopleByUsername {
+    
+    NSMutableArray *sortedUsers = [[NSMutableArray alloc] init];
+    
+    for (EVNUser *firstUser in self.usersArray) {
+        
+        int i = 0;
+        
+        for (EVNUser *secondUser in sortedUsers) {
+            
+            NSString *lowerCaseOne = [firstUser[@"username"] lowercaseString];
+            NSString *lowerCaseTwo = [secondUser[@"username"] lowercaseString];
+            
+            NSComparisonResult result = [lowerCaseOne compare:lowerCaseTwo];
+            
+            if (result == NSOrderedDescending || NSOrderedSame) {
+                
+                i++;
+                
+            }
+            
+        }
+        
+        [sortedUsers insertObject:firstUser atIndex:i];
+        
+    }
+    
+    self.usersArray = [NSArray arrayWithArray:sortedUsers];
     
 }
 
@@ -591,6 +625,7 @@
     [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [query includeKey:@"userTo"];
     [query orderByAscending:@"createdAt"];
+    [query setLimit:250];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
         

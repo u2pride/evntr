@@ -361,8 +361,6 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     //If Username Field Has Been Updated
     if (request.object.dirty("username") && request.object.get("username").toLowerCase() != request.object.get("canonicalUsername")) {
         
-        console.log("inside if statement");
-        
         var query = new Parse.Query(Parse.User);
         query.equalTo("canonicalUsername", lowercaseUsernameSubmitted);
         query.first({
