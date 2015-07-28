@@ -52,7 +52,7 @@
     FBSDKAppInviteContent *fbInviteContent = [[FBSDKAppInviteContent alloc] init];
     
     fbInviteContent.appLinkURL = [NSURL URLWithString:@"https://fb.me/1079180432111102"];
-    fbInviteContent.appInvitePreviewImageURL = [NSURL URLWithString:@"https://runningforthewind.files.wordpress.com/2013/07/partii-opener.jpg"];
+    fbInviteContent.appInvitePreviewImageURL = [NSURL URLWithString:@"http://evntr.co/wp-content/uploads/2015/07/evntrfacebookinvitepreviewimage_1024.png"];
     
     [FBSDKAppInviteDialog showWithContent:fbInviteContent delegate:self];
     

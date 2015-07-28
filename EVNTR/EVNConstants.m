@@ -20,6 +20,8 @@ NSString *const kFirstLoginNewBuild = @"FIRST_LOGIN_NEW_BUILD";
 NSString *const kUserCreatedNewEvent = @"EventCreated";
 NSString *const kNewFollow = @"UserFollowedNewProfile";
 NSString *const kNewUnfollow = @"UserUnfollowedProfile";
+NSString *const kFilterRadiusUpdate = @"FilterRadiusUpdate";
+NSString *const kUserLocationUpdate = @"LocationUpdate";
 
 
 #pragma mark - String Constants for Event Detail View

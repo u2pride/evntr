@@ -45,8 +45,6 @@ Parse.Cloud.define("checkVersion", function(request, response) {
 });
 
 
-
-
 //After Delete Hooks
 //Decrement Num Pictures on Event after Piture Delete
 Parse.Cloud.afterDelete("Pictures", function(request) {
@@ -64,6 +62,43 @@ Parse.Cloud.afterDelete("Pictures", function(request) {
   });
   
 });
+
+//Decrement Num Comments on Event after Comment Delete
+Parse.Cloud.afterDelete("Comments", function(request) {
+  Parse.Cloud.useMasterKey();
+  
+  var event = new Parse.Object("Events");
+  event.id = request.object.get("commentEvent").id;
+  event.increment("numComments", -1);
+  event.save(null, {
+    success: function(event) {
+    },
+    error: function(event, error) {
+      console.error("Error Decrementing Comments Count " + error.code + " : " + error.message);
+    }
+  });
+  
+});
+
+//Decrement Num Events on User after Event Delete
+Parse.Cloud.afterDelete("Events", function(request) {
+  Parse.Cloud.useMasterKey();
+  
+    console.log("loggggging " + request.object.get("parent"));
+    
+  var user = request.object.get("parent");
+  user.increment("numEvents", -1);
+  user.save(null, {
+    success: function(user) {
+    },
+    error: function(user, error) {
+      console.error("Error Decrementing Users Num Events Count " + error.code + " : " + error.message);
+    }
+  });
+  
+});
+
+
 
 //Decrement Num Followers and Following Counts on Unfollow Activity
 Parse.Cloud.afterDelete("Activities", function(request) {
@@ -85,7 +120,8 @@ Parse.Cloud.afterDelete("Activities", function(request) {
        });
        
        
-       var userFollowing = request.user;
+       var userFollowing = new Parse.User;
+       userFollowing.id = request.object.get("userFrom").id;
        userFollowing.increment("numFollowing", -1);
        userFollowing.save(null, {
          success: function(event) {

@@ -10,6 +10,7 @@
 #import "AppDelegate.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
+#import "EVNHomeContainerVC.h"
 #import "HomeScreenVC.h"
 #import "IDTTransitionControllerTab.h"
 #import "ProfileVC.h"
@@ -59,7 +60,8 @@
 
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
     self.isGuestUser = [standardDefaults boolForKey:kIsGuest];
-        
+    
+    //Guest Users - Change Profile Tab to Sign Up & Disable the Create and Notifications Tabs
     if (self.isGuestUser) {
         
         NSMutableArray *viewControllersTab = [NSMutableArray arrayWithArray:[self viewControllers]];
@@ -98,11 +100,12 @@
     //Events View Controller
     if (viewController == [self.viewControllers objectAtIndex:0]) {
         
-        UINavigationController *navVC = (UINavigationController *) self.viewControllers.firstObject;
-        HomeScreenVC *eventsView = navVC.childViewControllers.firstObject;
+        //TODO - Container Work - Don't need this anymore?
+        //UINavigationController *navVC = (UINavigationController *) self.viewControllers.firstObject;
+        //HomeScreenVC *eventsView = navVC.childViewControllers.firstObject;
         
-        eventsView.typeOfEventTableView = ALL_PUBLIC_EVENTS;
-        eventsView.userForEventsQuery = [EVNUser currentUser];
+        //eventsView.typeOfEventTableView = ALL_PUBLIC_EVENTS;
+        //eventsView.userForEventsQuery = [EVNUser currentUser];
         
 
     //Add Event VC
@@ -222,7 +225,12 @@
     
     //Scroll TableView to Top and Refresh Results to Show Most Recently Created Event
     UINavigationController *navController = (UINavigationController *) [self.viewControllers objectAtIndex:TAB_HOME];
-    HomeScreenVC *allEventsVC = (HomeScreenVC *) navController.childViewControllers.firstObject;
+    //HomeScreenVC *allEventsVC = (HomeScreenVC *) navController.childViewControllers.firstObject;
+    
+    //Get a Reference to the Home Screen VC and Switch the Container to that Tab
+    EVNHomeContainerVC *homeContainer = (EVNHomeContainerVC *) navController.childViewControllers.firstObject;
+    [homeContainer swapVCToIndex:0];
+    HomeScreenVC *allEventsVC = homeContainer.allEventsViewController;
     
     [navController popToRootViewControllerAnimated:YES];
     

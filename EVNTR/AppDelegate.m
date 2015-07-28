@@ -122,7 +122,7 @@
         [userDefaults setObject:userLocationDictionary forKey:kLocationCurrent];
         [userDefaults synchronize];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"newLocationNotif" object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kUserLocationUpdate object:self userInfo:[NSDictionary dictionaryWithObject:newLocation forKey:@"newLocationResult"]];
         
         [self.locationManagerGlobal stopUpdatingLocation];
         

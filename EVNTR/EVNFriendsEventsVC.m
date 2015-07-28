@@ -1,14 +1,14 @@
 //
-//  HomeScreenVC.m
+//  EVNFriendsEventsVC.m
 //  EVNTR
 //
-//  Created by Alex Ryan on 1/26/15.
+//  Created by Alex Ryan on 7/21/15.
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "EVNFriendsEventsVC.h"
 #import "EVNInviteContainerVC.h"
 #import "EVNHomeContainerVC.h"
-
 
 #import "AppDelegate.h"
 #import "EVNConstants.h"
@@ -17,24 +17,26 @@
 #import "EventObject.h"
 #import "EventTableCell.h"
 #import "EVNUtility.h"
+#import "EVNUser.h"
 #import "FilterEventsVC.h"
 #import "HomeScreenVC.h"
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
-#import "SearchVC.h"
 #import "TabNavigationVC.h"
 #import "UIImageEffects.h"
 #import "UIColor+EVNColors.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
-@interface HomeScreenVC ()
+@interface EVNFriendsEventsVC ()
 
 @property BOOL isGuestUser;
 
-@property (nonatomic, strong) PFGeoPoint *currentUserLocation;
 @property (nonatomic) float searchRadius;
+
+@property (nonatomic, strong) PFGeoPoint *currentUserLocation;
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
 
 @property (nonatomic, strong) NSIndexPath *indexPathOfEventInDetailView;
@@ -43,7 +45,7 @@
 
 @end
 
-@implementation HomeScreenVC
+@implementation EVNFriendsEventsVC
 
 #pragma mark - Initialization Methods
 
@@ -51,7 +53,7 @@
     
     self = [super initWithCoder:aDecoder];
     if (self) {
-
+        
         [self initialSetup];
         
     }
@@ -62,13 +64,11 @@
 
 - (void) initialSetup {
     
-    self.title = @"Events";
+    self.title = @"Friend's Events";
     self.parseClassName = @"Events";
     self.pullToRefreshEnabled = YES;
     self.paginationEnabled = NO;
     self.objectsPerPage = 50;
-    _typeOfEventTableView = ALL_PUBLIC_EVENTS;
-    _userForEventsQuery = [EVNUser currentUser];
     self.tabBarController.hidesBottomBarWhenPushed = YES;
     
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -89,34 +89,24 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedLocation:) name:kUserLocationUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWithNewRadius:) name:kFilterRadiusUpdate object:nil];
     
-    switch (self.typeOfEventTableView) {
-        case ALL_PUBLIC_EVENTS: {
-            [self.navigationItem setTitle:@"Public Events"];
-            
-            break;
-        }
-        case CURRENT_USER_EVENTS: {
-            [self.navigationItem setTitle:@"My Events"];
-            self.navigationItem.rightBarButtonItems = nil;
-            self.navigationItem.leftBarButtonItems = nil;
-
-            break;
-        }
-        case OTHER_USER_EVENTS: {
-            [self.navigationItem setTitle:@"User's Public Events"];
-            self.navigationItem.rightBarButtonItems = nil;
-            self.navigationItem.leftBarButtonItems = nil;
-            
-            break;
-        }
-        default:
-            break;
-    }
-
 }
 
 
-#pragma mark - EVNHomeContainerDelegate 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    UINavigationBar *navigationBar = self.navigationController.navigationBar;
+    [navigationBar setBackgroundImage:[UIImage new]
+                       forBarPosition:UIBarPositionAny
+                           barMetrics:UIBarMetricsDefault];
+    
+    [navigationBar setShadowImage:[UIImage new]];
+    self.navigationController.navigationBar.translucent = NO;
+ 
+}
+
+
+#pragma mark - EVNHomeContainerDelegate
 
 - (void) updateWithNewRadius:(NSNotification *)notification {
     
@@ -135,6 +125,7 @@
 
 - (void) updatedLocation:(NSNotification *)notification {
     
+    //Determine if this is Our First Real Location Update and If So, Reload Table
     if (!self.currentUserLocation || self.currentUserLocation.latitude == 0.0) {
         
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
@@ -145,7 +136,7 @@
         
         CLLocation *newUserLocation = (CLLocation *)[[notification userInfo] objectForKey:@"newLocationResult"];
         self.currentUserLocation = [PFGeoPoint geoPointWithLocation:newUserLocation];
-        //[self loadObjects];
+
     }
 }
 
@@ -153,6 +144,8 @@
 #pragma mark - Building Query
 
 - (PFQuery *)queryForTable {
+    
+    NSLog(@"QueryForTable called");
     
     //One Way to Do It
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
@@ -174,46 +167,25 @@
         return nil;
     }
     
-    PFQuery *eventsQuery = [PFQuery queryWithClassName:@"Events"];
+    //Working Following Query -
+    PFQuery *followingQuery = [PFQuery queryWithClassName:@"Activities"];
+    [followingQuery whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
+    [followingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     
-    switch (self.typeOfEventTableView) {
-        case ALL_PUBLIC_EVENTS: {
-
-            NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
-
-            [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
-            [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:[self.delegate currentRadiusFilter]];
-            
-            NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
-            [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
-            [eventsQuery orderByDescending:@"dateOfEvent"];
-            
-            break;
-        }
-        case CURRENT_USER_EVENTS: {
-            
-            [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
-            [eventsQuery orderByDescending:@"dateOfEvent"];
-            
-            break;
-        }
-        case OTHER_USER_EVENTS: {
-
-            [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
-            NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
-            [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
-            [eventsQuery orderByDescending:@"dateOfEvent"];
-            
-            break;
-        }
-            
-        default:
-            break;
-    }
     
-    eventsQuery.limit = 50;
+    NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
+    NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
+
     
-    return eventsQuery;
+    PFQuery *followingEventsQuery = [PFQuery queryWithClassName:@"Events"];
+    [followingEventsQuery whereKey:@"parent" matchesKey:@"userTo" inQuery:followingQuery];
+    [followingEventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
+    [followingEventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:[self.delegate currentRadiusFilter]];
+    [followingEventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay];
+    [followingEventsQuery orderByDescending:@"dateOfEvent"];
+    
+    
+    return followingEventsQuery;
 }
 
 
@@ -246,13 +218,13 @@
     
     if (cell) {
         
-        //Flagging
+        //TODO - Move flagging to RefreshUI
         for (UIGestureRecognizer *recognizer in cell.flagButton.gestureRecognizers) {
             [cell.flagButton removeGestureRecognizer:recognizer];
         }
         
         cell.flagButton.tag = indexPath.row;
-
+        
         UITapGestureRecognizer *flagGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(flagEvent:)];
         [cell.flagButton addGestureRecognizer:flagGR];
         
@@ -280,7 +252,7 @@
         
         
     }];
-     
+    
 }
 
 #pragma mark - No Results View and Helper Methods
@@ -319,37 +291,9 @@
         self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
     }
     
-    switch (self.typeOfEventTableView) {
-        case ALL_PUBLIC_EVENTS: {
-            self.noResultsView.headerText = @"This Is Awkward...";
-            self.noResultsView.subHeaderText = @"Looks like there aren't any public events near you. Maybe increase your search radius or create your own event!";
-            self.noResultsView.actionButton.titleText = @"Increase Your Search Radius";
-            
-            UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self.delegate action:@selector(presentFilterView)];
-            [self.noResultsView.actionButton addGestureRecognizer:tapgr];
-            
-            break;
-        }
-        case CURRENT_USER_EVENTS: {
-            self.noResultsView.headerText = @"No Events";
-            self.noResultsView.subHeaderText = @"Looks like you haven't created any events yet.  Want to create your first?";
-            self.noResultsView.actionButton.titleText = @"Create An Event";
-            
-            [self.noResultsView.actionButton addTarget:self action:@selector(switchToCreateTab) forControlEvents:UIControlEventTouchUpInside];
-            
-            break;
-        }
-        case OTHER_USER_EVENTS: {
-            self.noResultsView.headerText = @"No Events";
-            self.noResultsView.subHeaderText = @"Looks like they haven't created any public events yet.";
-            self.noResultsView.actionButton.hidden = YES;
-            
-            break;
-        }
-        default:
-            break;
-    }
-    
+    self.noResultsView.headerText = @"No Events";
+    self.noResultsView.subHeaderText = @"Looks like they haven't created any public events yet.";
+    self.noResultsView.actionButton.hidden = YES;
     
     [self.view addSubview:self.noResultsView];
     
@@ -365,7 +309,7 @@
 - (void) switchToCreateTab {
     
     TabNavigationVC *tabController = (TabNavigationVC *) self.tabBarController;
-
+    
     [tabController selectCreateTab];
     
     self.noResultsView.actionButton.isSelected = NO;
@@ -380,8 +324,9 @@
     EventObject *eventToFlag = (EventObject *) [self.objects objectAtIndex:flagButton.tag];
     
     [eventToFlag flagEventFromVC:self];
-
+    
 }
+
 
 #pragma mark - Event Details Delegate Methods
 
@@ -397,12 +342,12 @@
 - (void) rsvpStatusUpdatedToGoing:(BOOL) rsvp {
     
     EventTableCell *cellToUpdate = (EventTableCell *) [self.tableView cellForRowAtIndexPath:self.indexPathOfEventInDetailView];
-
+    
     if (rsvp) {
         NSString *currentCount = cellToUpdate.attendersCountLabel.text;
         int newCount = [currentCount intValue] + 1;
         cellToUpdate.attendersCountLabel.text = [NSString stringWithFormat:@"%d", newCount];
-
+        
     } else {
         NSString *currentCount = cellToUpdate.attendersCountLabel.text;
         int newCount = [currentCount intValue] - 1;
@@ -469,12 +414,12 @@
     });
 }
 
-
 #pragma mark - Clean Up
 
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
 
 
 

@@ -27,6 +27,10 @@
 
 + (EVNUser *) currentUser;
 
++ (void) queryForUsersFollowing:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock;
++ (void) queryForUsersFollowers:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock;
+
+
 - (NSString *) hometownText;
 - (NSString *) nameText;
 - (NSString *) bioText;
@@ -34,5 +38,6 @@
 - (void) followUser:(EVNUser *)userToFollow fromVC:(UIViewController *)activeVC withButton:(EVNButton *)followButton withCompletion:(void (^)(BOOL))completionBlock;
 
 - (void) isCurrentUserFollowingProfile:(EVNUser *)user completion:(void (^)(BOOL isFollowing, BOOL success))completionBlock;
+
 
 @end

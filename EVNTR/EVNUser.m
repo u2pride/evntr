@@ -30,6 +30,81 @@
     return (EVNUser *) [PFUser currentUser];
 }
 
+#pragma mark - Finding Followers and Following
+
++ (void) queryForUsersFollowing:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+    [query whereKey:@"userFrom" equalTo:user];
+    [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [query includeKey:@"userTo"];
+    [query orderByAscending:@"createdAt"];
+    [query setLimit:250];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+        
+        NSMutableArray *finalResults = [[NSMutableArray alloc] init];
+        
+        if (!error) {
+            for (PFObject *object in usersFound) {
+                
+                EVNUser *userFollowing = object[@"userTo"];
+                
+                if (![finalResults containsObject:userFollowing]) {
+                    
+                    if (userFollowing) {
+                        [finalResults addObject:userFollowing];
+                    }
+                    
+                } else {
+                    //Duplicate Attendee Found
+                }
+            }
+        }
+        
+        completionBlock(finalResults);
+        
+    }];
+    
+}
+
+
++ (void) queryForUsersFollowers:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock {
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+    [query whereKey:@"userTo" equalTo:user];
+    [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
+    [query includeKey:@"userFrom"];
+    [query orderByAscending:@"createdAt"];
+    [query setLimit:250];
+    
+    [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+        
+        NSMutableArray *finalResults = [[NSMutableArray alloc] init];
+        
+        if (!error) {
+            for (PFObject *object in usersFound) {
+                
+                EVNUser *userFollower = object[@"userFrom"];
+                
+                if (![finalResults containsObject:userFollower]) {
+                    
+                    if (userFollower) {
+                        [finalResults addObject:userFollower];
+                    }
+                    
+                } else {
+                    //Duplicate Attendee Found
+                }
+            }
+        }
+        
+        completionBlock(finalResults);
+        
+    }];
+    
+}
+
 
 #pragma mark - Helper Methods
 
@@ -224,6 +299,10 @@
     
     
 }
+
+
+
+
 
 
 

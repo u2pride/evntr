@@ -14,12 +14,22 @@
 #import <ParseUI/ParseUI.h>
 #import <UIKit/UIKit.h>
 
+@protocol HomeScreenProtocol;
 
-@interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate, EVNFilterProtocol, EventDetailProtocol, PeopleVCDelegate>
+@interface HomeScreenVC : PFQueryTableViewController <UIScrollViewDelegate, EventDetailProtocol, PeopleVCDelegate>
 
 @property (nonatomic, assign) int typeOfEventTableView;
 @property (nonatomic, strong) EVNUser *userForEventsQuery;
+@property (nonatomic, weak) id <HomeScreenProtocol> delegate;
 
 - (void) inviteUsersToEvent:(EventObject *)event;
+
+@end
+
+
+@protocol HomeScreenProtocol <NSObject>
+
+- (float) currentRadiusFilter;
+- (void) presentFilterView;
 
 @end

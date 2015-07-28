@@ -45,7 +45,6 @@
 		A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A415632F1A7688E900565BB6 /* Security.framework */; };
 		A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563311A7688F000565BB6 /* StoreKit.framework */; };
 		A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A41563331A7688F800565BB6 /* SystemConfiguration.framework */; };
-		A44DAF861B45B46600475F1D /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A44DAF851B45B46600475F1D /* FBSDKShareKit.framework */; };
 		A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C61AB9B8AB009D3BCC /* MapForEventView.m */; };
 		A45638CA1ABA2122009D3BCC /* EventPicturesVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638C91ABA2122009D3BCC /* EventPicturesVC.m */; };
 		A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */ = {isa = PBXBuildFile; fileRef = A45638CC1ABB4693009D3BCC /* EVNNoResultsView.m */; };
@@ -61,14 +60,15 @@
 		A47584321ADBF4310065196D /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A47584311ADBF4310065196D /* libstdc++.6.dylib */; };
 		A47B7FE81B4577340061447A /* UICountingLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = A47B7FE71B4577340061447A /* UICountingLabel.m */; };
 		A47DC07A1AF7D19C00D245A8 /* EVNNotifcationsTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */; };
+		A480EF5B1B5E7EB900C0CA7B /* EVNHomeContainerVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A480EF5A1B5E7EB900C0CA7B /* EVNHomeContainerVC.m */; };
+		A480EF5E1B5EDE3600C0CA7B /* EVNFriendsEventsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A480EF5D1B5EDE3600C0CA7B /* EVNFriendsEventsVC.m */; };
 		A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A488B35B1A801FE800738B4F /* MapKit.framework */; };
+		A48C93081B626D950070AD10 /* EVNHomeScreenBaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A48C93071B626D950070AD10 /* EVNHomeScreenBaseVC.m */; };
 		A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A48EEFEF1A799E5C007145E3 /* Main.storyboard */; };
 		A495B0D71B382FBF005C96E5 /* EventDetailVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A495B0D61B382FBF005C96E5 /* EventDetailVC.m */; };
 		A499CCEE1B4C3DF1000A7271 /* EVNLoginBaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A499CCED1B4C3DF1000A7271 /* EVNLoginBaseVC.m */; };
 		A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */; };
-		A49B7E141B418EC400379354 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A49B7E131B418EC400379354 /* FBSDKCoreKit.framework */; };
 		A49B7E161B41939400379354 /* ParseFacebookUtilsV4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A49B7E151B41939400379354 /* ParseFacebookUtilsV4.framework */; };
-		A49B7E181B41A03C00379354 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A49B7E171B41A03C00379354 /* FBSDKLoginKit.framework */; };
 		A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */; };
 		A4ABFFED1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4ABFFEC1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
@@ -78,6 +78,9 @@
 		A4B6FB1E1AB365C80033A3A1 /* SearchHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B6FB1D1AB365C80033A3A1 /* SearchHeaderView.m */; };
 		A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */; };
 		A4BEB5FD1AA931AC0024D731 /* AddEventSecondVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */; };
+		A4C2170B1B5DC30A00CB90B0 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C217081B5DC30A00CB90B0 /* FBSDKCoreKit.framework */; };
+		A4C2170C1B5DC30A00CB90B0 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C217091B5DC30A00CB90B0 /* FBSDKLoginKit.framework */; };
+		A4C2170D1B5DC30A00CB90B0 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4C2170A1B5DC30A00CB90B0 /* FBSDKShareKit.framework */; };
 		A4C2C1371ACEB4FB004C7F35 /* EventObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C2C1361ACEB4FB004C7F35 /* EventObject.m */; };
 		A4C4EDC51A94E85D000BC3AD /* IDTTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC21A94E85D000BC3AD /* IDTTransitionController.m */; };
 		A4C4EDC61A94E85D000BC3AD /* IDTTransitioningDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4C4EDC41A94E85D000BC3AD /* IDTTransitioningDelegate.m */; };
@@ -182,7 +185,6 @@
 		A43C57931AF15B48008E8EA2 /* SplashScreenVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplashScreenVC.m; sourceTree = "<group>"; };
 		A44661141AA7589C00E6C3C6 /* AddEventPrimaryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventPrimaryVC.h; sourceTree = "<group>"; };
 		A44661151AA7589C00E6C3C6 /* AddEventPrimaryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddEventPrimaryVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		A44DAF851B45B46600475F1D /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../../FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		A45638C51AB9B8AB009D3BCC /* MapForEventView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapForEventView.h; sourceTree = "<group>"; };
 		A45638C61AB9B8AB009D3BCC /* MapForEventView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapForEventView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A45638C81ABA2122009D3BCC /* EventPicturesVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPicturesVC.h; sourceTree = "<group>"; };
@@ -209,7 +211,13 @@
 		A47B7FE71B4577340061447A /* UICountingLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UICountingLabel.m; path = FBShimmering/UICountingLabel.m; sourceTree = "<group>"; };
 		A47DC0781AF7D19C00D245A8 /* EVNNotifcationsTitleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNNotifcationsTitleView.h; sourceTree = "<group>"; };
 		A47DC0791AF7D19C00D245A8 /* EVNNotifcationsTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNNotifcationsTitleView.m; sourceTree = "<group>"; };
+		A480EF591B5E7EB900C0CA7B /* EVNHomeContainerVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNHomeContainerVC.h; sourceTree = "<group>"; };
+		A480EF5A1B5E7EB900C0CA7B /* EVNHomeContainerVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNHomeContainerVC.m; sourceTree = "<group>"; };
+		A480EF5C1B5EDE3600C0CA7B /* EVNFriendsEventsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNFriendsEventsVC.h; sourceTree = "<group>"; };
+		A480EF5D1B5EDE3600C0CA7B /* EVNFriendsEventsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNFriendsEventsVC.m; sourceTree = "<group>"; };
 		A488B35B1A801FE800738B4F /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A48C93061B626D950070AD10 /* EVNHomeScreenBaseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNHomeScreenBaseVC.h; sourceTree = "<group>"; };
+		A48C93071B626D950070AD10 /* EVNHomeScreenBaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNHomeScreenBaseVC.m; sourceTree = "<group>"; };
 		A48EEFEC1A797B82007145E3 /* EventDetailVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventDetailVC.h; sourceTree = "<group>"; };
 		A48EEFEF1A799E5C007145E3 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		A495B0D61B382FBF005C96E5 /* EventDetailVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDetailVC.m; sourceTree = "<group>"; };
@@ -217,9 +225,7 @@
 		A499CCED1B4C3DF1000A7271 /* EVNLoginBaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNLoginBaseVC.m; sourceTree = "<group>"; };
 		A49A9E271AAE26D900358D65 /* StandbyCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StandbyCollectionViewCell.h; sourceTree = "<group>"; };
 		A49A9E281AAE26D900358D65 /* StandbyCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StandbyCollectionViewCell.m; sourceTree = "<group>"; };
-		A49B7E131B418EC400379354 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A49B7E151B41939400379354 /* ParseFacebookUtilsV4.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtilsV4.framework; sourceTree = "<group>"; };
-		A49B7E171B41A03C00379354 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		A4A1850A1AE91DC00009AC43 /* UIImage+EVNEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+EVNEffects.h"; sourceTree = "<group>"; };
 		A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EVNEffects.m"; sourceTree = "<group>"; };
 		A4ABFFEB1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNInviteFBFriendsVC.h; sourceTree = "<group>"; };
@@ -238,6 +244,9 @@
 		A4BB74F11A965095005E9CCA /* UIColor+EVNColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+EVNColors.m"; sourceTree = "<group>"; };
 		A4BEB5FB1AA931AC0024D731 /* AddEventSecondVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddEventSecondVC.h; sourceTree = "<group>"; };
 		A4BEB5FC1AA931AC0024D731 /* AddEventSecondVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddEventSecondVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		A4C217081B5DC30A00CB90B0 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../Libraries/Full/FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		A4C217091B5DC30A00CB90B0 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../Libraries/Full/FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		A4C2170A1B5DC30A00CB90B0 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../Libraries/Full/FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		A4C2C1351ACEB4FB004C7F35 /* EventObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EventObject.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		A4C2C1361ACEB4FB004C7F35 /* EventObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = EventObject.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4C4EDC11A94E85D000BC3AD /* IDTTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IDTTransitionController.h; sourceTree = "<group>"; };
@@ -298,17 +307,17 @@
 			files = (
 				A47584321ADBF4310065196D /* libstdc++.6.dylib in Frameworks */,
 				A4F612D51A8E5A9600D52B88 /* AddressBookUI.framework in Frameworks */,
-				A49B7E141B418EC400379354 /* FBSDKCoreKit.framework in Frameworks */,
 				A488B35C1A801FE800738B4F /* MapKit.framework in Frameworks */,
 				A44BB89E1A78334700735C93 /* SystemConfiguration.framework in Frameworks */,
 				A44BB89D1A78333F00735C93 /* StoreKit.framework in Frameworks */,
-				A44DAF861B45B46600475F1D /* FBSDKShareKit.framework in Frameworks */,
+				A4C2170B1B5DC30A00CB90B0 /* FBSDKCoreKit.framework in Frameworks */,
+				A4C2170D1B5DC30A00CB90B0 /* FBSDKShareKit.framework in Frameworks */,
 				A4035FD51A78534400DB67E4 /* ParseUI.framework in Frameworks */,
 				A44BB89C1A78333A00735C93 /* Security.framework in Frameworks */,
 				A44BB89B1A78333400735C93 /* QuartzCore.framework in Frameworks */,
 				A44BB89A1A78332F00735C93 /* MobileCoreServices.framework in Frameworks */,
 				A47584301ADBF3E50065196D /* ParseCrashReporting.framework in Frameworks */,
-				A49B7E181B41A03C00379354 /* FBSDKLoginKit.framework in Frameworks */,
+				A4C2170C1B5DC30A00CB90B0 /* FBSDKLoginKit.framework in Frameworks */,
 				A44BB8991A78332800735C93 /* CFNetwork.framework in Frameworks */,
 				A44BB8981A78331E00735C93 /* CoreGraphics.framework in Frameworks */,
 				A44BB8971A7832F600735C93 /* CoreLocation.framework in Frameworks */,
@@ -398,11 +407,11 @@
 			isa = PBXGroup;
 			children = (
 				A47584311ADBF4310065196D /* libstdc++.6.dylib */,
+				A4C217081B5DC30A00CB90B0 /* FBSDKCoreKit.framework */,
+				A4C217091B5DC30A00CB90B0 /* FBSDKLoginKit.framework */,
+				A4C2170A1B5DC30A00CB90B0 /* FBSDKShareKit.framework */,
 				A475842F1ADBF3E50065196D /* ParseCrashReporting.framework */,
-				A49B7E131B418EC400379354 /* FBSDKCoreKit.framework */,
-				A49B7E171B41A03C00379354 /* FBSDKLoginKit.framework */,
 				A4F612D41A8E5A9600D52B88 /* AddressBookUI.framework */,
-				A44DAF851B45B46600475F1D /* FBSDKShareKit.framework */,
 				A49B7E151B41939400379354 /* ParseFacebookUtilsV4.framework */,
 				A488B35B1A801FE800738B4F /* MapKit.framework */,
 				A4035FD41A78534400DB67E4 /* ParseUI.framework */,
@@ -701,8 +710,14 @@
 		A49A9E301AAE48CF00358D65 /* All Events */ = {
 			isa = PBXGroup;
 			children = (
+				A480EF591B5E7EB900C0CA7B /* EVNHomeContainerVC.h */,
+				A480EF5A1B5E7EB900C0CA7B /* EVNHomeContainerVC.m */,
 				A415633A1A768B9700565BB6 /* HomeScreenVC.h */,
 				A415633B1A768B9700565BB6 /* HomeScreenVC.m */,
+				A480EF5C1B5EDE3600C0CA7B /* EVNFriendsEventsVC.h */,
+				A480EF5D1B5EDE3600C0CA7B /* EVNFriendsEventsVC.m */,
+				A48C93061B626D950070AD10 /* EVNHomeScreenBaseVC.h */,
+				A48C93071B626D950070AD10 /* EVNHomeScreenBaseVC.m */,
 				A4547E641B0E43CD008A6C5B /* Search Feature */,
 				A4547E651B0E43D7008A6C5B /* Filter Feature */,
 				A4035FD61A786ACF00DB67E4 /* EventTableCell.h */,
@@ -807,6 +822,7 @@
 				A41562BD1A767D3A00565BB6 /* Sources */,
 				A41562BE1A767D3A00565BB6 /* Frameworks */,
 				A41562BF1A767D3A00565BB6 /* Resources */,
+				A48C93091B62731E0070AD10 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -904,6 +920,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A48C93091B62731E0070AD10 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=/usr/local/bin:$PATH\ncd /Users/U2Pride/Documents/iOS\\ Development/Evntr/EVNTR/CloudCode_Production\n\nparse symbols -p \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A41562BD1A767D3A00565BB6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -913,6 +945,7 @@
 				A43454491B3B2DB30001A4AA /* EVNFacebookFriendCell.m in Sources */,
 				A43C57941AF15B48008E8EA2 /* SplashScreenVC.m in Sources */,
 				A4F2E9B21A7ABDF400614412 /* PersonCell.m in Sources */,
+				A48C93081B626D950070AD10 /* EVNHomeScreenBaseVC.m in Sources */,
 				A415634C1A76EF3A00565BB6 /* ProfileVC.m in Sources */,
 				A4035FD81A786ACF00DB67E4 /* EventTableCell.m in Sources */,
 				A418129B1AA0BFA200317B0C /* GuestWelcomeVC.m in Sources */,
@@ -942,6 +975,7 @@
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
 				A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */,
+				A480EF5B1B5E7EB900C0CA7B /* EVNHomeContainerVC.m in Sources */,
 				A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
 				A4F2B5F61B31C2F00006A82F /* EVNFullWebViewController.m in Sources */,
@@ -974,6 +1008,7 @@
 				A424B3701B3C3822004562CA /* EVNInviteContainerVC.m in Sources */,
 				A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */,
 				A499CCEE1B4C3DF1000A7271 /* EVNLoginBaseVC.m in Sources */,
+				A480EF5E1B5EDE3600C0CA7B /* EVNFriendsEventsVC.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
 			);
@@ -1095,7 +1130,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
-					/Users/U2Pride/Documents/FacebookSDK,
+					"/Users/U2Pride/Documents/\"iOS Development\"/Libraries/Full/FacebookSDK",
 				);
 				INFOPLIST_FILE = EVNTR/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1115,7 +1150,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/EVNTR",
-					/Users/U2Pride/Documents/FacebookSDK,
+					"/Users/U2Pride/Documents/\"iOS Development\"/Libraries/Full/FacebookSDK",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = EVNTR/Info.plist;

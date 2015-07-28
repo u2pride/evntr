@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EVNInviteContainerVC.h"
 
 @interface SearchVC : UIViewController <UISearchControllerDelegate, UISearchResultsUpdating, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, EventDetailProtocol, EVNInviteProtocol>
 

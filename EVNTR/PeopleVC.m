@@ -30,10 +30,31 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activitySpinner;
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
 
+@property (nonatomic, strong) NSNumber *limit;
+@property (nonatomic, strong) NSNumber *skip;
+
 @end
 
 
 @implementation PeopleVC
+
+#pragma mark - Initialization
+
+- (id)initWithCoder:(NSCoder*)aDecoder {
+    
+    self = [super initWithCoder:aDecoder];
+    
+    if (self) {
+        NSLog(@"Check - now remove");
+        
+        _previouslyInvitedUsers = [[NSMutableArray alloc] init];
+        _allInvitedUsers = [[NSMutableArray alloc] init];
+        _limit = 0;
+        _skip = 0;
+    }
+    
+    return self;
+}
 
 #pragma mark - Lifecycle Methods
 
@@ -86,6 +107,7 @@
             
             // 2 - {from} invited {to} to {activityContent}
 
+            //TODO - should this be refreshed every ViewWillAppear?
             
             //Disable interaction until users are loaded.
             self.collectionView.userInteractionEnabled = NO;
@@ -178,15 +200,9 @@
         }
         case VIEW_FOLLOWERS: {
             
-            PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-            [query whereKey:@"userTo" equalTo:self.userProfile];
-            [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-            [query setLimit:250];
-            [query includeKey:@"userFrom"];
-            
-            [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
+            [EVNUser queryForUsersFollowers:self.userProfile completion:^(NSArray *followers) {
                 
-                if (error || [usersFound count] == 0) {
+                if (followers.count == 0) {
                     
                     if ([self.userProfile.objectId isEqualToString:[EVNUser currentUser].objectId]) {
 
@@ -201,14 +217,16 @@
                     
                     [self hideNoResultsView];
                     
-                    for (PFObject *object in usersFound) {
+                    //for (PFObject *object in followers) {
                         
-                        EVNUser *user = (EVNUser *)object[@"userFrom"];
+                    //    EVNUser *user = (EVNUser *)object[@"userFrom"];
                                                 
-                        [self.usersMutableArray addObject:user];
-                    }
+                    //    [self.usersMutableArray addObject:user];
+                    //}
                     
-                    self.usersArray = self.usersMutableArray;
+                    //self.usersArray = self.usersMutableArray;
+                    
+                    self.usersArray = [NSArray arrayWithArray:followers];
                     
                     [self reloadCollectionView];
 
@@ -219,7 +237,7 @@
         }
         case VIEW_FOLLOWING: {
             
-            [self queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
+            [EVNUser queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -265,7 +283,7 @@
                                                                            nil]
                                                                  forState:UIControlStateNormal];
             
-            [self queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
+            [EVNUser queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -475,7 +493,7 @@
         
     [self.activitySpinner stopAnimating];
     
-    [self sortPeopleByUsername];
+    //[self sortPeopleByUsername];
     
     [self.collectionView reloadData];
     
@@ -615,45 +633,6 @@
     
     
 }
-
-
-
-- (void) queryForUsersFollowing:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock {
-    
-    PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
-    [query whereKey:@"userFrom" equalTo:user];
-    [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
-    [query includeKey:@"userTo"];
-    [query orderByAscending:@"createdAt"];
-    [query setLimit:250];
-    
-    [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
-        
-        NSMutableArray *finalResults = [[NSMutableArray alloc] init];
-        
-        if (!error) {
-            for (PFObject *object in usersFound) {
-                
-                EVNUser *userFollowing = object[@"userTo"];
-                
-                if (![finalResults containsObject:userFollowing]) {
-                    
-                    if (userFollowing) {
-                        [finalResults addObject:userFollowing];
-                    }
-                    
-                } else {
-                    //Duplicate Attendee Found
-                }
-            }
-        }
-        
-        completionBlock(finalResults);
-        
-    }];
-    
-}
-
 
 
 #pragma mark - EventAddVCDelegate Methods

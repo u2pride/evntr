@@ -27,6 +27,8 @@ extern NSString *const kLocationCurrent;
 extern NSString *const kUserCreatedNewEvent;
 extern NSString *const kNewFollow;
 extern NSString *const kNewUnfollow;
+extern NSString *const kFilterRadiusUpdate;
+extern NSString *const kUserLocationUpdate;
 
 
 #pragma mark - User Management
