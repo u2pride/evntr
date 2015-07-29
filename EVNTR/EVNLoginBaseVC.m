@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNLoginBaseVC.h"
 #import "EVNConstants.h"
 #import "FBShimmeringView.h"
@@ -92,10 +93,15 @@
             }
             
             [PFAnalytics trackEventInBackground:@"SignUpIssue_Facebook" block:nil];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"SignUpIssue_Facebook"];
             
         } else {
             
             //NSLog(@"User Details: %@", user);
+            
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance setUserId:user.objectId];
             
             if (user.isNew) {
                 

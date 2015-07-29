@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNHomeContainerVC.h"
 #import "EVNUtility.h"
 #import "SearchVC.h"
@@ -140,6 +141,8 @@
 - (void) displaySearchController {
     
     [PFAnalytics trackEventInBackground:@"SearchFeatureAccessed" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"SearchFeatureAccessed"];
     
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     
@@ -150,6 +153,8 @@
 - (void) displayFilterView {
     
     [PFAnalytics trackEventInBackground:@"FilterFeatureAccessed" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"FilterFeatureAccessed"];
     
     FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;

@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
@@ -99,6 +100,9 @@
     [EVNUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         
         if (user) {
+            
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance setUserId:user.objectId];
             
             NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
             [standardDefaults setBool:NO forKey:kIsGuest];

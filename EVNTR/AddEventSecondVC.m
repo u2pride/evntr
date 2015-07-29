@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "AddEventSecondVC.h"
 #import "EVNButton.h"
 #import "EVNLocationSearchVC.h"
@@ -99,6 +100,8 @@
     
     NSDictionary *dimensions = @{ @"UserID": [EVNUser currentUser].objectId};
     [PFAnalytics trackEventInBackground:@"EventCreatedByUser" dimensions:dimensions block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"EventCreatedByUser"];
     
     if (self.event.descriptionOfEvent && self.event.nameOfLocation) {
         

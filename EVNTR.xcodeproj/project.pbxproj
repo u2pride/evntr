@@ -71,6 +71,19 @@
 		A49B7E161B41939400379354 /* ParseFacebookUtilsV4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A49B7E151B41939400379354 /* ParseFacebookUtilsV4.framework */; };
 		A4A1850C1AE91DC00009AC43 /* UIImage+EVNEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */; };
 		A4ABFFED1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4ABFFEC1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.m */; };
+		A4AD15FE1B680B3F00254358 /* AMPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15E71B680B3F00254358 /* AMPConstants.m */; };
+		A4AD15FF1B680B3F00254358 /* AMPDeviceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15E91B680B3F00254358 /* AMPDeviceInfo.m */; };
+		A4AD16001B680B3F00254358 /* Amplitude.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15EC1B680B3F00254358 /* Amplitude.m */; };
+		A4AD16011B680B3F00254358 /* AMPLocationManagerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15EE1B680B3F00254358 /* AMPLocationManagerDelegate.m */; };
+		A4AD16021B680B3F00254358 /* AMPURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15F01B680B3F00254358 /* AMPURLConnection.m */; };
+		A4AD16031B680B3F00254358 /* api.amplitude.com.der in Resources */ = {isa = PBXBuildFile; fileRef = A4AD15F11B680B3F00254358 /* api.amplitude.com.der */; };
+		A4AD16041B680B3F00254358 /* CHANGELOG.md in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15F21B680B3F00254358 /* CHANGELOG.md */; };
+		A4AD16051B680B3F00254358 /* ComodoCaLimitedRsaCertificationAuthority.der in Resources */ = {isa = PBXBuildFile; fileRef = A4AD15F31B680B3F00254358 /* ComodoCaLimitedRsaCertificationAuthority.der */; };
+		A4AD16061B680B3F00254358 /* ComodoRsaCA.der in Resources */ = {isa = PBXBuildFile; fileRef = A4AD15F41B680B3F00254358 /* ComodoRsaCA.der */; };
+		A4AD16071B680B3F00254358 /* ComodoRsaDomainValidationCA.der in Resources */ = {isa = PBXBuildFile; fileRef = A4AD15F51B680B3F00254358 /* ComodoRsaDomainValidationCA.der */; };
+		A4AD16081B680B3F00254358 /* ISPCertificatePinning.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15F81B680B3F00254358 /* ISPCertificatePinning.m */; };
+		A4AD16091B680B3F00254358 /* ISPPinnedNSURLConnectionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15FA1B680B3F00254358 /* ISPPinnedNSURLConnectionDelegate.m */; };
+		A4AD160A1B680B3F00254358 /* ISPPinnedNSURLSessionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4AD15FC1B680B3F00254358 /* ISPPinnedNSURLSessionDelegate.m */; };
 		A4B24D441A7709D200B4C3A6 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B24D431A7709D200B4C3A6 /* SettingsVC.m */; };
 		A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B2BC5E1AB870370004B084 /* EVNButton.m */; };
 		A4B68BC41AEE7F4D003EB822 /* WalkthroughScreensPVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B68BC31AEE7F4D003EB822 /* WalkthroughScreensPVC.m */; };
@@ -230,6 +243,30 @@
 		A4A1850B1AE91DC00009AC43 /* UIImage+EVNEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+EVNEffects.m"; sourceTree = "<group>"; };
 		A4ABFFEB1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNInviteFBFriendsVC.h; sourceTree = "<group>"; };
 		A4ABFFEC1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EVNInviteFBFriendsVC.m; sourceTree = "<group>"; };
+		A4AD15E51B680B3F00254358 /* AMPARCMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPARCMacros.h; sourceTree = "<group>"; };
+		A4AD15E61B680B3F00254358 /* AMPConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPConstants.h; sourceTree = "<group>"; };
+		A4AD15E71B680B3F00254358 /* AMPConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPConstants.m; sourceTree = "<group>"; };
+		A4AD15E81B680B3F00254358 /* AMPDeviceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPDeviceInfo.h; sourceTree = "<group>"; };
+		A4AD15E91B680B3F00254358 /* AMPDeviceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPDeviceInfo.m; sourceTree = "<group>"; };
+		A4AD15EA1B680B3F00254358 /* Amplitude+SSLPinning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Amplitude+SSLPinning.h"; sourceTree = "<group>"; };
+		A4AD15EB1B680B3F00254358 /* Amplitude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Amplitude.h; sourceTree = "<group>"; };
+		A4AD15EC1B680B3F00254358 /* Amplitude.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Amplitude.m; sourceTree = "<group>"; };
+		A4AD15ED1B680B3F00254358 /* AMPLocationManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPLocationManagerDelegate.h; sourceTree = "<group>"; };
+		A4AD15EE1B680B3F00254358 /* AMPLocationManagerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPLocationManagerDelegate.m; sourceTree = "<group>"; };
+		A4AD15EF1B680B3F00254358 /* AMPURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMPURLConnection.h; sourceTree = "<group>"; };
+		A4AD15F01B680B3F00254358 /* AMPURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMPURLConnection.m; sourceTree = "<group>"; };
+		A4AD15F11B680B3F00254358 /* api.amplitude.com.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = api.amplitude.com.der; sourceTree = "<group>"; };
+		A4AD15F21B680B3F00254358 /* CHANGELOG.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
+		A4AD15F31B680B3F00254358 /* ComodoCaLimitedRsaCertificationAuthority.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = ComodoCaLimitedRsaCertificationAuthority.der; sourceTree = "<group>"; };
+		A4AD15F41B680B3F00254358 /* ComodoRsaCA.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = ComodoRsaCA.der; sourceTree = "<group>"; };
+		A4AD15F51B680B3F00254358 /* ComodoRsaDomainValidationCA.der */ = {isa = PBXFileReference; lastKnownFileType = file; path = ComodoRsaDomainValidationCA.der; sourceTree = "<group>"; };
+		A4AD15F71B680B3F00254358 /* ISPCertificatePinning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISPCertificatePinning.h; sourceTree = "<group>"; };
+		A4AD15F81B680B3F00254358 /* ISPCertificatePinning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISPCertificatePinning.m; sourceTree = "<group>"; };
+		A4AD15F91B680B3F00254358 /* ISPPinnedNSURLConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISPPinnedNSURLConnectionDelegate.h; sourceTree = "<group>"; };
+		A4AD15FA1B680B3F00254358 /* ISPPinnedNSURLConnectionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISPPinnedNSURLConnectionDelegate.m; sourceTree = "<group>"; };
+		A4AD15FB1B680B3F00254358 /* ISPPinnedNSURLSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISPPinnedNSURLSessionDelegate.h; sourceTree = "<group>"; };
+		A4AD15FC1B680B3F00254358 /* ISPPinnedNSURLSessionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISPPinnedNSURLSessionDelegate.m; sourceTree = "<group>"; };
+		A4AD15FD1B680B3F00254358 /* SSLCertificatePinning-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SSLCertificatePinning-Prefix.pch"; sourceTree = "<group>"; };
 		A4B24D421A7709D200B4C3A6 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
 		A4B24D431A7709D200B4C3A6 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SettingsVC.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		A4B2BC5D1AB870370004B084 /* EVNButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EVNButton.h; sourceTree = "<group>"; };
@@ -370,6 +407,7 @@
 				A49A9E2A1AAE456C00358D65 /* Main Content */,
 				A424B3711B3C4072004562CA /* Connect & Invite */,
 				A4F2E9A61A7A806A00614412 /* Navigation - Utility */,
+				A4AD15E41B680B3F00254358 /* Amplitude */,
 				A41562D11A767D3A00565BB6 /* Images.xcassets */,
 				A4C4EDD31A95119C000BC3AD /* Resources */,
 				A41562C41A767D3A00565BB6 /* Supporting Files */,
@@ -735,6 +773,45 @@
 			name = "UI Elements";
 			sourceTree = "<group>";
 		};
+		A4AD15E41B680B3F00254358 /* Amplitude */ = {
+			isa = PBXGroup;
+			children = (
+				A4AD15E51B680B3F00254358 /* AMPARCMacros.h */,
+				A4AD15E61B680B3F00254358 /* AMPConstants.h */,
+				A4AD15E71B680B3F00254358 /* AMPConstants.m */,
+				A4AD15E81B680B3F00254358 /* AMPDeviceInfo.h */,
+				A4AD15E91B680B3F00254358 /* AMPDeviceInfo.m */,
+				A4AD15EA1B680B3F00254358 /* Amplitude+SSLPinning.h */,
+				A4AD15EB1B680B3F00254358 /* Amplitude.h */,
+				A4AD15EC1B680B3F00254358 /* Amplitude.m */,
+				A4AD15ED1B680B3F00254358 /* AMPLocationManagerDelegate.h */,
+				A4AD15EE1B680B3F00254358 /* AMPLocationManagerDelegate.m */,
+				A4AD15EF1B680B3F00254358 /* AMPURLConnection.h */,
+				A4AD15F01B680B3F00254358 /* AMPURLConnection.m */,
+				A4AD15F11B680B3F00254358 /* api.amplitude.com.der */,
+				A4AD15F21B680B3F00254358 /* CHANGELOG.md */,
+				A4AD15F31B680B3F00254358 /* ComodoCaLimitedRsaCertificationAuthority.der */,
+				A4AD15F41B680B3F00254358 /* ComodoRsaCA.der */,
+				A4AD15F51B680B3F00254358 /* ComodoRsaDomainValidationCA.der */,
+				A4AD15F61B680B3F00254358 /* SSLCertificatePinning */,
+			);
+			path = Amplitude;
+			sourceTree = "<group>";
+		};
+		A4AD15F61B680B3F00254358 /* SSLCertificatePinning */ = {
+			isa = PBXGroup;
+			children = (
+				A4AD15F71B680B3F00254358 /* ISPCertificatePinning.h */,
+				A4AD15F81B680B3F00254358 /* ISPCertificatePinning.m */,
+				A4AD15F91B680B3F00254358 /* ISPPinnedNSURLConnectionDelegate.h */,
+				A4AD15FA1B680B3F00254358 /* ISPPinnedNSURLConnectionDelegate.m */,
+				A4AD15FB1B680B3F00254358 /* ISPPinnedNSURLSessionDelegate.h */,
+				A4AD15FC1B680B3F00254358 /* ISPPinnedNSURLSessionDelegate.m */,
+				A4AD15FD1B680B3F00254358 /* SSLCertificatePinning-Prefix.pch */,
+			);
+			path = SSLCertificatePinning;
+			sourceTree = "<group>";
+		};
 		A4C4EDC71A94E862000BC3AD /* Transitioning Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -905,9 +982,13 @@
 				A45ACFF61B1BE76100BA8AF3 /* evntrBackground.mov in Resources */,
 				A48EEFF01A799E5C007145E3 /* Main.storyboard in Resources */,
 				A4C4EDD11A95118C000BC3AD /* Lato-Regular.ttf in Resources */,
+				A4AD16031B680B3F00254358 /* api.amplitude.com.der in Resources */,
+				A4AD16071B680B3F00254358 /* ComodoRsaDomainValidationCA.der in Resources */,
+				A4AD16061B680B3F00254358 /* ComodoRsaCA.der in Resources */,
 				A4E130491ADFDD41002E0862 /* EVNCommentsTableCell.xib in Resources */,
 				A41562D21A767D3A00565BB6 /* Images.xcassets in Resources */,
 				A4C4EDD01A95118C000BC3AD /* Lato-Light.ttf in Resources */,
+				A4AD16051B680B3F00254358 /* ComodoCaLimitedRsaCertificationAuthority.der in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -932,7 +1013,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=/usr/local/bin:$PATH\ncd /Users/U2Pride/Documents/iOS\\ Development/Evntr/EVNTR/CloudCode_Production\n\nparse symbols -p \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"";
+			shellScript = "export PATH=/usr/local/bin:$PATH\ncd /Users/U2Pride/Documents/iOS\\ Development/Evntr/EVNTR/CloudCode_Dev\n\nparse symbols -p \"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -953,6 +1034,7 @@
 				A4E130481ADFDD41002E0862 /* EVNCommentsTableCell.m in Sources */,
 				A4ABFFED1B46C8CA00B2FDBB /* EVNInviteFBFriendsVC.m in Sources */,
 				A49A9E291AAE26D900358D65 /* StandbyCollectionViewCell.m in Sources */,
+				A4AD15FF1B680B3F00254358 /* AMPDeviceInfo.m in Sources */,
 				A4B2BC5F1AB870370004B084 /* EVNButton.m in Sources */,
 				A4F2E9B51A7AF5CF00614412 /* EVNUtility.m in Sources */,
 				A459AE161B14E5C800EB6FEF /* InitialScreenVC.m in Sources */,
@@ -965,21 +1047,25 @@
 				A4BB74F21A965095005E9CCA /* UIColor+EVNColors.m in Sources */,
 				A4F6C4C11AA6317C001C68BA /* PictureFullScreenVC.m in Sources */,
 				A4E436BD1A9EAC3B002EAAB0 /* NewUserFacebookVC.m in Sources */,
+				A4AD160A1B680B3F00254358 /* ISPPinnedNSURLSessionDelegate.m in Sources */,
 				A4628CFA1AB77C4B00EBD959 /* FullMapVC.m in Sources */,
 				A47430671A81556C00CF3B8F /* ActivityVC.m in Sources */,
 				A4C4EDC61A94E85D000BC3AD /* IDTTransitioningDelegate.m in Sources */,
 				A4E4B6B41ADEE01B00D38358 /* EVNAddCommentVC.m in Sources */,
 				A423F7F21A9BFF0900DF9ABE /* SearchVC.m in Sources */,
 				A423F7EB1A9B8DC100DF9ABE /* NSDate+NVTimeAgo.m in Sources */,
+				A4AD16021B680B3F00254358 /* AMPURLConnection.m in Sources */,
 				A424B3751B3C40CE004562CA /* EVNInviteContactsVC.m in Sources */,
 				A4C4EDCA1A94EB0E000BC3AD /* ResetPasswordModalVC.m in Sources */,
 				A41562CA1A767D3A00565BB6 /* AppDelegate.m in Sources */,
+				A4AD16011B680B3F00254358 /* AMPLocationManagerDelegate.m in Sources */,
 				A45638CD1ABB4693009D3BCC /* EVNNoResultsView.m in Sources */,
 				A480EF5B1B5E7EB900C0CA7B /* EVNHomeContainerVC.m in Sources */,
 				A4B6FB1B1AB349950033A3A1 /* FilterEventsVC.m in Sources */,
 				A4CB0A421A92BB9F00E88E4C /* EditProfileVC.m in Sources */,
 				A4F2B5F61B31C2F00006A82F /* EVNFullWebViewController.m in Sources */,
 				A45638C71AB9B8AB009D3BCC /* MapForEventView.m in Sources */,
+				A4AD16091B680B3F00254358 /* ISPPinnedNSURLConnectionDelegate.m in Sources */,
 				A41563421A76ACC000565BB6 /* LogInVC.m in Sources */,
 				A465A9211B4AC3AB00700F1C /* EVNGradientView.m in Sources */,
 				A46DB25C1AAE7B0500208973 /* MBProgressHUD.m in Sources */,
@@ -989,13 +1075,16 @@
 				A41B2A131ABCBE3F00F7CE44 /* SignUpTabVC.m in Sources */,
 				A430EE0A1AF264B30090ECB6 /* EVNUser.m in Sources */,
 				A424B3781B3C6148004562CA /* EVNInviteContainerHeaderView.m in Sources */,
+				A4AD16001B680B3F00254358 /* Amplitude.m in Sources */,
 				A415633F1A769FDE00565BB6 /* SignUpVC.m in Sources */,
 				A4D72FB51AAA175E00488D8D /* IDTTransitionControllerTab.m in Sources */,
 				A4C2C1371ACEB4FB004C7F35 /* EventObject.m in Sources */,
 				A4CEF7591AB1DB11002F02C8 /* FBShimmeringLayer.m in Sources */,
 				A4B68BC41AEE7F4D003EB822 /* WalkthroughScreensPVC.m in Sources */,
 				A47B7FE81B4577340061447A /* UICountingLabel.m in Sources */,
+				A4AD16081B680B3F00254358 /* ISPCertificatePinning.m in Sources */,
 				A4E4B6B11ADEB60F00D38358 /* CommentsTableSource.m in Sources */,
+				A4AD16041B680B3F00254358 /* CHANGELOG.md in Sources */,
 				A41562C71A767D3A00565BB6 /* main.m in Sources */,
 				A4B6FB1E1AB365C80033A3A1 /* SearchHeaderView.m in Sources */,
 				A463633C1A9D00F100AD461D /* UIImageEffects.m in Sources */,
@@ -1011,6 +1100,7 @@
 				A480EF5E1B5EDE3600C0CA7B /* EVNFriendsEventsVC.m in Sources */,
 				A4CEF75A1AB1DB11002F02C8 /* FBShimmeringView.m in Sources */,
 				A415633C1A768B9700565BB6 /* HomeScreenVC.m in Sources */,
+				A4AD15FE1B680B3F00254358 /* AMPConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNInviteFBFriendsVC.h"
 #import "EVNNoResultsView.h"
 #import <Parse/Parse.h>
@@ -48,6 +49,8 @@
 - (void) openFacebookInvite {
     
     [PFAnalytics trackEventInBackground:@"SendFacebookInvites" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"SendFacebookInvites"];
     
     FBSDKAppInviteContent *fbInviteContent = [[FBSDKAppInviteContent alloc] init];
     

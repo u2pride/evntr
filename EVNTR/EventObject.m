@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EventObject.h"
 #import "EVNConstants.h"
 #import <Parse/PFObject+Subclass.h>
@@ -383,6 +384,8 @@
         
         if (!succeeded) {
             [PFAnalytics trackEventInBackground:@"RequestAccessIssue" block:nil];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"RequestAccessIssue"];
         }
         
         completionBlock(succeeded);
@@ -403,6 +406,8 @@
         
         if (!succeeded) {
             [PFAnalytics trackEventInBackground:@"RSVPUserIssue" block:nil];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"RSVPUserIssue"];
         }
         
         completionBlock(succeeded);
@@ -459,6 +464,8 @@
                 savesCompleted++;
             } else {
                 [PFAnalytics trackEventInBackground:@"InviteUsersIssue" block:nil];
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate.amplitudeInstance logEvent:@"InviteUsersIssue"];
                 completionBlock(NO);
             }
             

@@ -21,8 +21,7 @@
 
 @interface PeopleVC ()
 
-@property (nonatomic, strong) NSMutableArray *usersMutableArray;
-@property (nonatomic, strong) NSArray *usersArray;
+@property (nonatomic, strong) NSMutableArray *usersArray;
 
 @property (nonatomic, strong) NSMutableArray *previouslyInvitedUsers;
 @property (nonatomic, strong) NSMutableArray *allInvitedUsers;
@@ -30,8 +29,8 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activitySpinner;
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
 
-@property (nonatomic, strong) NSNumber *limit;
-@property (nonatomic, strong) NSNumber *skip;
+@property (nonatomic) int limit;
+@property (nonatomic) int skip;
 
 @end
 
@@ -49,8 +48,9 @@
         
         _previouslyInvitedUsers = [[NSMutableArray alloc] init];
         _allInvitedUsers = [[NSMutableArray alloc] init];
-        _limit = 0;
+        _limit = 20;
         _skip = 0;
+        _usersArray = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -170,11 +170,12 @@
     
     [self.activitySpinner startAnimating];
     
-    self.usersArray = [[NSArray alloc] init];
-    self.usersMutableArray = [[NSMutableArray alloc] init];
+    //self.usersArray = [[NSArray alloc] init];
     
     switch (self.typeOfUsers) {
         case VIEW_ALL_PEOPLE: {
+            
+            //TOOD:  Add support for limit/skip.
             
             PFQuery *query = [EVNUser query];
             
@@ -190,7 +191,8 @@
                     
                     [self hideNoResultsView];
                     
-                    self.usersArray = [[NSArray alloc] initWithArray:usersFound];
+                    [self.usersArray addObjectsFromArray:usersFound];
+
                     [self reloadCollectionView];
                 }
             
@@ -200,7 +202,7 @@
         }
         case VIEW_FOLLOWERS: {
             
-            [EVNUser queryForUsersFollowers:self.userProfile completion:^(NSArray *followers) {
+            [EVNUser queryForUsersFollowers:self.userProfile withLimit:self.limit withSkip:self.skip completion:^(NSArray *followers) {
                 
                 if (followers.count == 0) {
                     
@@ -217,16 +219,7 @@
                     
                     [self hideNoResultsView];
                     
-                    //for (PFObject *object in followers) {
-                        
-                    //    EVNUser *user = (EVNUser *)object[@"userFrom"];
-                                                
-                    //    [self.usersMutableArray addObject:user];
-                    //}
-                    
-                    //self.usersArray = self.usersMutableArray;
-                    
-                    self.usersArray = [NSArray arrayWithArray:followers];
+                    [self.usersArray addObjectsFromArray:followers];
                     
                     [self reloadCollectionView];
 
@@ -237,7 +230,7 @@
         }
         case VIEW_FOLLOWING: {
             
-            [EVNUser queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
+            [EVNUser queryForUsersFollowing:self.userProfile withLimit:self.limit withSkip:self.skip completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -261,7 +254,8 @@
                     
                     [self hideNoResultsView];
                     
-                    self.usersArray = [NSArray arrayWithArray:following];
+                    [self.usersArray addObjectsFromArray:following];
+
                     [self reloadCollectionView];
                 }
                 
@@ -283,7 +277,7 @@
                                                                            nil]
                                                                  forState:UIControlStateNormal];
             
-            [EVNUser queryForUsersFollowing:self.userProfile completion:^(NSArray *following) {
+            [EVNUser queryForUsersFollowing:self.userProfile withLimit:self.limit withSkip:self.skip completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -293,7 +287,8 @@
                     
                     [self hideNoResultsView];
                     
-                    self.usersArray = [NSArray arrayWithArray:following];
+                    [self.usersArray addObjectsFromArray:following];
+                    
                     [self reloadCollectionView];
                 }
                 
@@ -305,6 +300,7 @@
         
         case VIEW_EVENT_ATTENDERS: {
             
+            //TOOD - add limit and skip functionality/load more
             [self.eventToViewAttenders queryForAttendersWithCompletion:^(NSArray *attenders) {
                 
                 if ([attenders count] == 0) {
@@ -315,7 +311,7 @@
                     
                     [self hideNoResultsView];
                     
-                    self.usersArray = attenders;
+                    self.usersArray = [NSMutableArray arrayWithArray:attenders];
                     [self reloadCollectionView];
                 }
                 
@@ -339,7 +335,14 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [self.usersArray count];
+    if (self.usersArray.count == self.limit + self.skip) {
+        NSLog(@"numItems: %lu", self.usersArray.count + 1);
+        return [self.usersArray count] + 1;
+    } else {
+        NSLog(@"numItems: %lu", (unsigned long)self.usersArray.count);
+        return [self.usersArray count];
+    }
+    
 }
 
 
@@ -348,52 +351,62 @@
     static NSString *cellIdentifier = @"personCell";
     
     PersonCell *cell = (PersonCell *)[collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-
-    EVNUser *currentUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
     
-    cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
-    
-    if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
+    if (indexPath.row == self.limit + self.skip) {
         
-        [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-            
-            if (!error){
-                
-                PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
-                
-                cell.personTitle.text = object[@"username"];
-                cell.profileImage.file = profilePictureData;
-                [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
-                    
-                    [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
-                        
-                        cell.profileImage.image = maskedImage;
-                        
-                    }];
-                    
-                }];
-                
-            }
-            
-        }];
+        NSLog(@"On the Load More Cell");
+        cell.profileImage.image = [UIImage imageNamed:@"LoadMore"];
+        cell.personTitle.text = @"";
         
     } else {
         
-        [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-
-            if (!error) {
+        EVNUser *currentUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
+        
+        cell.profileImage.image = [UIImage imageNamed:@"PersonDefault"];
+        
+        if ([self isUser:currentUser alreadyInArray:self.allInvitedUsers]) {
+            
+            [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 
-                cell.profileImage.file = (PFFile *)object[@"profilePicture"];
-                cell.personTitle.text = object[@"username"];
+                if (!error){
+                    
+                    PFFile *profilePictureData = (PFFile *) object[@"profilePicture"];
+                    
+                    cell.personTitle.text = object[@"username"];
+                    cell.profileImage.file = profilePictureData;
+                    [cell.profileImage loadInBackground:^(UIImage *image, NSError *error) {
+                        
+                        [EVNUtility maskImage:image withMask:[UIImage imageNamed:@"checkMarkMask"] withCompletion:^(UIImage *maskedImage) {
+                            
+                            cell.profileImage.image = maskedImage;
+                            
+                        }];
+                        
+                    }];
+                    
+                }
                 
-                [cell.profileImage loadInBackground];
+            }];
+            
+        } else {
+            
+            [currentUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 
-            }
-
-        }];
+                if (!error) {
+                    
+                    cell.profileImage.file = (PFFile *)object[@"profilePicture"];
+                    cell.personTitle.text = object[@"username"];
+                    
+                    [cell.profileImage loadInBackground];
+                    
+                }
+                
+            }];
+            
+        }
         
     }
-        
+    
     return cell;
 }
 
@@ -402,28 +415,39 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
-
-        [self determineSelectionStateForIndexPath:indexPath];
+    if (indexPath.row == self.limit + self.skip) {
+        
+        NSLog(@"Selected Load More Cell");
+        self.skip = self.skip + self.limit;
+        [self findUsersOnParse];
         
     } else {
-        
-        EVNUser *selectedUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
-        
-        [selectedUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+       
+        if (self.typeOfUsers == VIEW_FOLLOWING_TO_INVITE) {
             
-            if (!error) {
+            [self determineSelectionStateForIndexPath:indexPath];
+            
+        } else {
+            
+            EVNUser *selectedUser = (EVNUser *)[self.usersArray objectAtIndex:indexPath.row];
+            
+            [selectedUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                 
-                ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
-                viewUserProfileVC.userObjectID = selectedUser.objectId;
-                viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+                if (!error) {
+                    
+                    ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
+                    viewUserProfileVC.userObjectID = selectedUser.objectId;
+                    viewUserProfileVC.hidesBottomBarWhenPushed = YES;
+                    
+                    [self.navigationController pushViewController:viewUserProfileVC animated:YES];
+                    
+                }
                 
-                [self.navigationController pushViewController:viewUserProfileVC animated:YES];
-                
-            }
-
-        }];
+            }];
+        }
+        
     }
+    
 }
 
 
@@ -493,7 +517,7 @@
         
     [self.activitySpinner stopAnimating];
     
-    //[self sortPeopleByUsername];
+    [self sortPeopleByUsername];
     
     [self.collectionView reloadData];
     
@@ -534,7 +558,7 @@
         
     }
     
-    self.usersArray = [NSArray arrayWithArray:sortedUsers];
+    self.usersArray = [NSMutableArray arrayWithArray:sortedUsers];
     
 }
 

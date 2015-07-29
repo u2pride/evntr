@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "ActivityVC.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
@@ -177,6 +178,8 @@
         } else {
             
             [PFAnalytics trackEventInBackground:@"ProfileNotFound" block:nil];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"ProfileNotFound"];
 
             self.eventsHeaderButton.hidden = YES;
             self.followingHeaderButton.hidden = YES;

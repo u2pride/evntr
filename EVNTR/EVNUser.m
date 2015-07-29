@@ -32,14 +32,15 @@
 
 #pragma mark - Finding Followers and Following
 
-+ (void) queryForUsersFollowing:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock {
++ (void) queryForUsersFollowing:(EVNUser *)user withLimit:(int)limit withSkip:(int)skip completion:(void (^)(NSArray *))completionBlock {
     
     PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+    [query setSkip:skip];
+    [query setLimit:limit];
     [query whereKey:@"userFrom" equalTo:user];
     [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [query includeKey:@"userTo"];
     [query orderByAscending:@"createdAt"];
-    [query setLimit:250];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
         
@@ -69,9 +70,11 @@
 }
 
 
-+ (void) queryForUsersFollowers:(EVNUser *)user completion:(void (^)(NSArray *))completionBlock {
++ (void) queryForUsersFollowers:(EVNUser *)user withLimit:(int)limit withSkip:(int)skip completion:(void (^)(NSArray *))completionBlock {
     
     PFQuery *query = [PFQuery queryWithClassName:@"Activities"];
+    [query setSkip:skip];
+    [query setLimit:limit];
     [query whereKey:@"userTo" equalTo:user];
     [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [query includeKey:@"userFrom"];
@@ -189,6 +192,8 @@
             } else {
                 
                 [PFAnalytics trackEventInBackground:@"FollowUserError" block:nil];
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate.amplitudeInstance logEvent:@"FollowUserError"];
                 
                 UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to Follow" message:@"If you continue to get this error, send us a tweet or email from Settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                 [errorAlert show];

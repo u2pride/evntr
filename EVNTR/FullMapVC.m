@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "FullMapVC.h"
 #import <Parse/Parse.h>
 #import <MapKit/MapKit.h>
@@ -51,6 +52,8 @@
 - (void) getDirectionsToEvent {
     
     [PFAnalytics trackEventInBackground:@"GetDirectionsToEventAccessed" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"GetDirectionsToEventAccessed"];
     
     CLLocation *fromLocation = self.locationOfEvent;
     

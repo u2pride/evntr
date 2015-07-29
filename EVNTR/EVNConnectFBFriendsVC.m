@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNFacebookFriendCell.h"
 #import "EVNConnectFBFriendsVC.h"
 #import "EVNNoResultsView.h"
@@ -324,6 +325,8 @@ static NSString *reuseIdentifier = @"CellIdentifier";
     [self fadeInView:self.tableView];
     
     [PFAnalytics trackEventInBackground:@"ConnectedWithFBFriends" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"ConnectedWithFBFriends"];
     
     [PFFacebookUtils linkUserInBackground:[EVNUser currentUser] withReadPermissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
         

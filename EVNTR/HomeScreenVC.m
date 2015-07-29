@@ -186,14 +186,14 @@
             
             NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
             [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
-            [eventsQuery orderByDescending:@"dateOfEvent"];
+            [eventsQuery orderByAscending:@"dateOfEvent"];
             
             break;
         }
         case CURRENT_USER_EVENTS: {
             
             [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
-            [eventsQuery orderByDescending:@"dateOfEvent"];
+            [eventsQuery orderByAscending:@"dateOfEvent"];
             
             break;
         }
@@ -202,7 +202,7 @@
             [eventsQuery whereKey:@"parent" equalTo:self.userForEventsQuery];
             NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
             [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
-            [eventsQuery orderByDescending:@"dateOfEvent"];
+            [eventsQuery orderByAscending:@"dateOfEvent"];
             
             break;
         }

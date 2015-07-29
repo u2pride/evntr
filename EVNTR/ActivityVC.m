@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "ActivityTableCell.h"
 #import "ActivityVC.h"
 #import "EVNConstants.h"
@@ -954,7 +955,9 @@
             } else {
                 
                 [PFAnalytics trackEventInBackground:@"GrantAccessIssue" block:nil];
-
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate.amplitudeInstance logEvent:@"GrantAccessIssue"];
+                
                 grantButton.alpha = 0.3;
                 [grantButton endedTaskWithButtonEnabled:NO];
             }

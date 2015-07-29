@@ -201,6 +201,8 @@
                                  };
     
     [PFAnalytics trackEventInBackground:@"NavigationPatterns" dimensions:dimensions block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"NavigationPatterns" withEventProperties:dimensions];
     
     if (toVCIndex == TAB_CREATE) {
         self.transitionController.isPresenting = YES;

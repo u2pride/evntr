@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
@@ -163,6 +164,9 @@ typedef enum {
                 [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     
                     if (succeeded) {
+                        
+                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                        [appDelegate.amplitudeInstance setUserId:newUser.objectId];
                         
                         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                         [standardDefaults setBool:NO forKey:kIsGuest];

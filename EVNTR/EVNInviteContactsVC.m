@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNInviteContactsVC.h"
 #import <Parse/Parse.h>
 
@@ -62,6 +63,8 @@
     [self.messageFriendsView.actionButton startedTask];
     
     [PFAnalytics trackEventInBackground:@"SendingTextMessage" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"SendingTextMessage"];
     
     if ([MFMessageComposeViewController canSendText]) {
         

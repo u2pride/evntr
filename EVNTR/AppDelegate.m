@@ -42,12 +42,21 @@
     [ParseCrashReporting enable];
     
     //parse init - DEVELOPMENT
-    //[Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
+    [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
 
     //parse init - PRODUCTION
-    [Parse setApplicationId:@"pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs" clientKey:@"3s0PDgQzp01DLs588gDqPqaEVepbHaoYmfkcAlXJ"];
+    //[Parse setApplicationId:@"pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs" clientKey:@"3s0PDgQzp01DLs588gDqPqaEVepbHaoYmfkcAlXJ"];
 
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    self.amplitudeInstance = [Amplitude instance];
+    
+    //Amplitude - DEVELOPMENT
+    [self.amplitudeInstance initializeApiKey:@"89f6dca54cfef2ceaf118d71a1275b23"];
+    
+    //Amplitude - PRODUCTION
+    //[self.amplitudeInstance initializeApiKey:@"8e2b64fe1f3ba9be70e1e4cf39f28bd7"];
+
     
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
@@ -164,6 +173,8 @@
         case kCLAuthorizationStatusDenied: {
             
             [PFAnalytics trackEventInBackground:@"LocationManagerDisabled" block:nil];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"LocationManagerDisabled"];
             
             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Location Updates Disabled" message:@"Evntr can’t access your current location.\n\nTo enable, please turn on location access in the Settings app under Location Services." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
             
@@ -250,6 +261,9 @@
             
             if (error) {
                 [PFAnalytics trackEvent:@"BackgroundFetchFailed"];
+                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate.amplitudeInstance logEvent:@"BackgroundFetchFailed"];
+                
                 completionHandler(UIBackgroundFetchResultFailed);
             } else {
                 NSUInteger numberOfNewInvites = objects.count;

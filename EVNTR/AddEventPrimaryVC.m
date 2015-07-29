@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "AddEventPrimaryVC.h"
 #import "AddEventSecondVC.h"
 #import "EVNButton.h"
@@ -176,6 +177,8 @@
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
         [PFAnalytics trackEventInBackground:@"CreateEvent_CameraUsed" block:nil];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"CreateEvent_CameraUsed"];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -190,6 +193,8 @@
     UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
         [PFAnalytics trackEventInBackground:@"CreateEvent_PhotoPickerUsed" block:nil];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"CreateEvent_PhotoPickerUsed"];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -211,6 +216,8 @@
     UIAlertAction *lastPhoto = [UIAlertAction actionWithTitle:@"Use Last Photo Taken" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
        
         [PFAnalytics trackEventInBackground:@"CreateEvent_LastPhotoUsed" block:nil];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"CreateEvent_LastPhotoUsed"];
         
         PHFetchOptions *fetchOptions = [PHFetchOptions new];
         fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], ];

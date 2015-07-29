@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
@@ -131,6 +132,8 @@
         [self leavingTransitionAnimations];
         
         [PFAnalytics trackEventInBackground:@"SkipForNow" block:nil];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"SkipForNow"];
         
         //Set isGuest Object
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -428,6 +431,9 @@
                     [[EVNUser currentUser] fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                         
                         if (!error){
+                            
+                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                            [appDelegate.amplitudeInstance setUserId:[EVNUser currentUser].objectId];
                             
                             NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                             [standardDefaults setBool:NO forKey:kIsGuest];

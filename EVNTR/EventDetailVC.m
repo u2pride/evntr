@@ -156,6 +156,8 @@
     [super viewWillAppear:animated];
     
     [PFAnalytics trackEventInBackground:@"ViewEvent" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"ViewEvent"];
     
     if (!self.shouldRestoreNavBar) {
         self.shouldRestoreNavBar = YES;
@@ -544,6 +546,8 @@
         currentLocation = [[CLLocation alloc] initWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
         
         [PFAnalytics trackEvent:@"CurrentLocationNil"];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"CurrentLocationNil"];
     }
 
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
@@ -822,6 +826,8 @@
 - (void) editEvent {
     
     [PFAnalytics trackEventInBackground:@"EventEditAccessed" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"EventEditAccessed"];
     
     AddEventPrimaryVC *editEventVC = (AddEventPrimaryVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"CreateEventFirstStep"];
     editEventVC.delegate = self;
@@ -839,6 +845,8 @@
         self.shouldRestoreNavBar = NO;
         
         [PFAnalytics trackEventInBackground:@"InviteUsersFromEventPage" block:nil];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"InviteUsersFromEventPage"];
         
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
@@ -876,6 +884,8 @@
 - (IBAction)viewEventPictures:(id)sender {
     
     [PFAnalytics trackEventInBackground:@"ViewEventPhotos" block:nil];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"ViewEventPhotos"];
     
     UICollectionViewFlowLayout* flowLayout = [[UICollectionViewFlowLayout alloc]init];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
