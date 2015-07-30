@@ -48,7 +48,7 @@
     
     self = [super initWithCoder:aDecoder];
     if (self) {
-        
+                
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
         _isGuestUser = [standardDefaults boolForKey:kIsGuest];
         _searchRadius = 20.0;
@@ -140,9 +140,8 @@
 
 - (void) displaySearchController {
     
-    [PFAnalytics trackEventInBackground:@"SearchFeatureAccessed" block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"SearchFeatureAccessed"];
+    [appDelegate.amplitudeInstance logEvent:@"Searched"];
     
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     
@@ -151,10 +150,6 @@
 }
 
 - (void) displayFilterView {
-    
-    [PFAnalytics trackEventInBackground:@"FilterFeatureAccessed" block:nil];
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"FilterFeatureAccessed"];
     
     FilterEventsVC *filterVC = (FilterEventsVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"FilterViewController"];
     filterVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
@@ -171,6 +166,10 @@
 - (void) completedFiltering:(float)radius {
     
     [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
+    
+    NSDictionary *props = @{@"Starting Radius": [NSNumber numberWithFloat:self.searchRadius], @"Chosen Radius": [NSNumber numberWithFloat:radius]};
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Filtered" withEventProperties:props];
     
     self.searchRadius = radius;
     

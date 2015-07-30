@@ -383,9 +383,8 @@
     [requestAccessActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (!succeeded) {
-            [PFAnalytics trackEventInBackground:@"RequestAccessIssue" block:nil];
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"RequestAccessIssue"];
+            [appDelegate.amplitudeInstance logEvent:@"Request Access Error"];
         }
         
         completionBlock(succeeded);
@@ -405,9 +404,8 @@
     [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (!succeeded) {
-            [PFAnalytics trackEventInBackground:@"RSVPUserIssue" block:nil];
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"RSVPUserIssue"];
+            [appDelegate.amplitudeInstance logEvent:@"RSVP Error"];
         }
         
         completionBlock(succeeded);
@@ -463,9 +461,8 @@
             if (succeeded) {
                 savesCompleted++;
             } else {
-                [PFAnalytics trackEventInBackground:@"InviteUsersIssue" block:nil];
                 AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate.amplitudeInstance logEvent:@"InviteUsersIssue"];
+                [appDelegate.amplitudeInstance logEvent:@"Invite Users Error"];
                 completionBlock(NO);
             }
             

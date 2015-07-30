@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "PictureFullScreenVC.h"
 
 @interface PictureFullScreenVC ()
@@ -50,6 +51,14 @@
     UITapGestureRecognizer *tapgr = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backToEvent:)];
     [self.eventPhotoView.superview addGestureRecognizer:tapgr];
     
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    NSDictionary *props = [NSDictionary dictionaryWithObject:self.eventPictureObject.objectId forKey:@"Photo"];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Full Photo" withEventProperties:props];
 }
 
 
@@ -120,7 +129,6 @@
 #pragma mark - User Actions
 
 - (void) removePhotoFromEvent {
-    
     
     UIAlertController *removePhotoVerifySheet = [UIAlertController alertControllerWithTitle:@"Are you sure?" message:nil preferredStyle:UIAlertControllerStyleAlert];
     

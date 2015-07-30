@@ -155,9 +155,9 @@
     
     [super viewWillAppear:animated];
     
-    [PFAnalytics trackEventInBackground:@"ViewEvent" block:nil];
+    NSDictionary *props = [NSDictionary dictionaryWithObject:self.event.objectId forKey:@"Event"];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"ViewEvent"];
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Event" withEventProperties:props];
     
     if (!self.shouldRestoreNavBar) {
         self.shouldRestoreNavBar = YES;
@@ -545,9 +545,8 @@
         
         currentLocation = [[CLLocation alloc] initWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
         
-        [PFAnalytics trackEvent:@"CurrentLocationNil"];
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"CurrentLocationNil"];
+        [appDelegate.amplitudeInstance logEvent:@"Current Location Unknown"];
     }
 
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
@@ -799,6 +798,9 @@
 
 - (void) touchedMap {
     
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Map"];
+    
     FullMapVC *mapViewController = [[FullMapVC alloc] init];
     
     mapViewController.locationPlacemark = self.locationPlacemark;
@@ -813,6 +815,10 @@
 - (void) viewCreatorProfile {
     
     if (!self.isGuestUser) {
+        
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed Event Creator"];
+        
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
         viewUserProfileVC.userObjectID = self.event.parent.objectId;
         viewUserProfileVC.hidesBottomBarWhenPushed = YES;
@@ -825,9 +831,8 @@
 //TODO:  Must present this similarly to the way an add event modal is presented.
 - (void) editEvent {
     
-    [PFAnalytics trackEventInBackground:@"EventEditAccessed" block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"EventEditAccessed"];
+    [appDelegate.amplitudeInstance logEvent:@"Edited Event"];
     
     AddEventPrimaryVC *editEventVC = (AddEventPrimaryVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"CreateEventFirstStep"];
     editEventVC.delegate = self;
@@ -844,9 +849,8 @@
         
         self.shouldRestoreNavBar = NO;
         
-        [PFAnalytics trackEventInBackground:@"InviteUsersFromEventPage" block:nil];
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"InviteUsersFromEventPage"];
+        [appDelegate.amplitudeInstance logEvent:@"Clicked Invite Users"];
         
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
@@ -870,6 +874,9 @@
         
     } else {
         
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed Event Attenders"];
+        
         PeopleVC *viewAttendees = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         
         viewAttendees.typeOfUsers = VIEW_EVENT_ATTENDERS;
@@ -883,9 +890,8 @@
 
 - (IBAction)viewEventPictures:(id)sender {
     
-    [PFAnalytics trackEventInBackground:@"ViewEventPhotos" block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"ViewEventPhotos"];
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Event Photos"];
     
     UICollectionViewFlowLayout* flowLayout = [[UICollectionViewFlowLayout alloc]init];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
@@ -924,6 +930,9 @@
     if (self.isCurrentUserAttending || self.isCurrentUsersEvent) {
         
         self.shouldRestoreNavBar = NO;
+        
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Added Comment"];
         
         EVNAddCommentVC *newCommentVC = [[EVNAddCommentVC alloc] init];
         newCommentVC.delegate = self;

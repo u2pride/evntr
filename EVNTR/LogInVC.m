@@ -103,6 +103,7 @@
             
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate.amplitudeInstance setUserId:user.objectId];
+            [appDelegate.amplitudeInstance logEvent:@"Logged In"];
             
             NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
             [standardDefaults setBool:NO forKey:kIsGuest];
@@ -142,6 +143,9 @@
 #pragma mark - User Actions
 
 - (IBAction)resetUserPassword:(id)sender {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Reset Password"];
     
     ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
     resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;

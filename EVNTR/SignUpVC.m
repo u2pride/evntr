@@ -167,6 +167,7 @@ typedef enum {
                         
                         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                         [appDelegate.amplitudeInstance setUserId:newUser.objectId];
+                        [appDelegate.amplitudeInstance logEvent:@"Signed Up"];
                         
                         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                         [standardDefaults setBool:NO forKey:kIsGuest];

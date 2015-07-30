@@ -51,9 +51,8 @@
 
 - (void) getDirectionsToEvent {
     
-    [PFAnalytics trackEventInBackground:@"GetDirectionsToEventAccessed" block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"GetDirectionsToEventAccessed"];
+    [appDelegate.amplitudeInstance logEvent:@"Accessed Event Directions"];
     
     CLLocation *fromLocation = self.locationOfEvent;
     

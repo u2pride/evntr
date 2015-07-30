@@ -60,11 +60,10 @@
 
 - (void) sendInviteMessage {
     
-    [self.messageFriendsView.actionButton startedTask];
-    
-    [PFAnalytics trackEventInBackground:@"SendingTextMessage" block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"SendingTextMessage"];
+    [appDelegate.amplitudeInstance logEvent:@"Clicked Send Invite Text"];
+    
+    [self.messageFriendsView.actionButton startedTask];
     
     if ([MFMessageComposeViewController canSendText]) {
         
@@ -93,6 +92,9 @@
         
         if (result == MessageComposeResultSent) {
             
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"Sent Invite Text"];
+            
             UIAlertController *sentVerification = [UIAlertController alertControllerWithTitle:@"Message Sent" message:nil preferredStyle:UIAlertControllerStyleAlert];
             
             [self presentViewController:sentVerification animated:YES completion:^{
@@ -109,6 +111,8 @@
             
         } else if (result == MessageComposeResultCancelled) {
             
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"Cancelled Invite Text"];
             
             UIAlertController *sentFailure = [UIAlertController alertControllerWithTitle:@"Message Cancelled" message:nil preferredStyle:UIAlertControllerStyleAlert];
             
@@ -125,6 +129,9 @@
             }];
             
         } else {
+            
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"Failed Invite Text"];
             
             UIAlertController *sentFailure = [UIAlertController alertControllerWithTitle:@"Failed To Send Message" message:@"Try Again" preferredStyle:UIAlertControllerStyleAlert];
             

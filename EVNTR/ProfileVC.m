@@ -177,9 +177,8 @@
             
         } else {
             
-            [PFAnalytics trackEventInBackground:@"ProfileNotFound" block:nil];
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"ProfileNotFound"];
+            [appDelegate.amplitudeInstance logEvent:@"Profile Not Found"];
 
             self.eventsHeaderButton.hidden = YES;
             self.followingHeaderButton.hidden = YES;
@@ -460,6 +459,8 @@
         
     } else {
         
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Expanded Profile Image"];
         
         [self.view layoutIfNeeded];
         
@@ -488,9 +489,15 @@
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed My Events"];
+        
         eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
         eventVC.userForEventsQuery = [EVNUser currentUser];
     } else {
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed Others Events"];
+        
         eventVC.typeOfEventTableView = OTHER_USER_EVENTS;
         eventVC.userForEventsQuery = self.profileUser;
     }
@@ -500,6 +507,14 @@
 }
 
 - (void) viewFollowers {
+    
+    if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed My Followers"];
+    } else {
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed Others Followers"];
+    }
     
     PeopleVC *viewFollowersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
@@ -512,6 +527,14 @@
 
 - (void) viewFollowing {
     
+    if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed My Following"];
+    } else {
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Viewed Others Following"];
+    }
+    
     PeopleVC *viewFollowingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
     
     viewFollowingVC.typeOfUsers = VIEW_FOLLOWING;
@@ -523,11 +546,17 @@
 
 - (void) viewSettings {
     
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Settings"];
+    
     [self performSegueWithIdentifier:@"profileToSettings" sender:nil];
     
 }
 
 - (void) showInviteScreen {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Invite Screen"];
     
     EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
     
@@ -560,7 +589,7 @@
 #pragma mark - Follow User
 
 - (IBAction)followUser:(id)sender {
-
+    
     if (self.followButton.titleText.length == 0) {
         
         UIAlertView *error = [[UIAlertView alloc] initWithTitle:@"Well..." message:@"Looks like we can't figure out if you're following this user or not yet... you should probably send us an angry email.  Just go to your profile and tap Settings." delegate:self cancelButtonTitle:@"Okay" otherButtonTitles:nil];
@@ -579,12 +608,18 @@
 
 - (void)canceledEditingProfile {
     
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Cancel Editing Profile"];
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 
 }
 
 
 -(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Saved Edited Profile"];
     
     NSString *username = [stringDictionary objectForKey:@"username"];
     
@@ -712,6 +747,9 @@
 #pragma mark - Navigation
 
 - (void) editUserProfile {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Clicked Edit Profile"];
     
     [self performSegueWithIdentifier:@"profileToEditProfile" sender:nil];
     

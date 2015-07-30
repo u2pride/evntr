@@ -92,18 +92,17 @@
                                   otherButtonTitles:nil] show];
             }
             
-            [PFAnalytics trackEventInBackground:@"SignUpIssue_Facebook" block:nil];
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"SignUpIssue_Facebook"];
+            [appDelegate.amplitudeInstance logEvent:@"Facebook Sign Up Issue"];
             
         } else {
-            
-            //NSLog(@"User Details: %@", user);
             
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate.amplitudeInstance setUserId:user.objectId];
             
             if (user.isNew) {
+                
+                [appDelegate.amplitudeInstance logEvent:@"Facebook Sign Up"];
                 
                 double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -114,6 +113,8 @@
                 });
                 
             } else {
+                
+                [appDelegate.amplitudeInstance logEvent:@"Facebook Log In"];
                 
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];

@@ -322,12 +322,11 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 - (void) requestFriendPermission {
     
-    [self fadeInView:self.tableView];
-    
-    [PFAnalytics trackEventInBackground:@"ConnectedWithFBFriends" block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"ConnectedWithFBFriends"];
+    [appDelegate.amplitudeInstance logEvent:@"Connected FB Friends"];
     
+    [self fadeInView:self.tableView];
+        
     [PFFacebookUtils linkUserInBackground:[EVNUser currentUser] withReadPermissions:@[ @"user_friends" ] block:^(BOOL succeeded, NSError *error) {
         
         if (succeeded) {

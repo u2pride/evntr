@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 U2PrideLabs. All rights reserved.
 //
 
+#import "AppDelegate.h"
 #import "EVNFullWebViewController.h"
 #import "EVNUser.h"
 #import "ProfileVC.h"
@@ -39,6 +40,9 @@
 
 - (IBAction)logOut:(id)sender {
     
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Logged Out"];
+    
     [EVNUser logOut];
     
     //Disable Background Fetch - User Logged Out
@@ -48,6 +52,9 @@
 }
 
 - (IBAction)tweetEvntr:(id)sender {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Selected Tweet"];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
         
@@ -69,6 +76,9 @@
 
 - (IBAction)emailEvntr:(id)sender {
     
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Selected Email"];
+    
     [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
     
     MFMailComposeViewController *mailVC = [[MFMailComposeViewController alloc] init];
@@ -87,6 +97,9 @@
 }
 
 - (IBAction)viewTerms:(id)sender {
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Selected Terms"];
     
     EVNFullWebViewController *termsWeb = [[EVNFullWebViewController alloc] init];
     

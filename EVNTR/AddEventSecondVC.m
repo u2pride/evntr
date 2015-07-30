@@ -98,10 +98,8 @@
 
 - (IBAction)createEvent:(id)sender {
     
-    NSDictionary *dimensions = @{ @"UserID": [EVNUser currentUser].objectId};
-    [PFAnalytics trackEventInBackground:@"EventCreatedByUser" dimensions:dimensions block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"EventCreatedByUser"];
+    [appDelegate.amplitudeInstance logEvent:@"Event Created"];
     
     if (self.event.descriptionOfEvent && self.event.nameOfLocation) {
         

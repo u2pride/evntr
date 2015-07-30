@@ -115,6 +115,36 @@
 
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    /*
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+      already tracking this from the profile screen.
+    switch (self.typeOfEventTableView) {
+        case ALL_PUBLIC_EVENTS: {
+            [appDelegate.amplitudeInstance logEvent:@"Viewed All Events"];
+            
+            break;
+        }
+        case CURRENT_USER_EVENTS: {
+            [appDelegate.amplitudeInstance logEvent:@"Viewed My Events"];
+            
+            break;
+        }
+        case OTHER_USER_EVENTS: {
+            [appDelegate.amplitudeInstance logEvent:@"Viewed Anothers Events"];
+            
+            break;
+        }
+        default:
+            break;
+    }
+     */
+    
+}
+
 
 #pragma mark - EVNHomeContainerDelegate 
 
@@ -182,7 +212,13 @@
             NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
 
             [eventsQuery whereKey:@"typeOfEvent" containedIn:eventTypes];
-            [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:[self.delegate currentRadiusFilter]];
+            
+            //When QueryForTable is First Called - the Delegate is Nil
+            if (self.delegate) {
+                [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:[self.delegate currentRadiusFilter]];
+            } else {
+                [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:20.0f];
+            }
             
             NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
             [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */

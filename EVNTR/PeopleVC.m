@@ -335,8 +335,10 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
+    NSNumber *num = [NSNumber numberWithInteger:(self.usersArray.count + 1)];
+    
     if (self.usersArray.count == self.limit + self.skip) {
-        NSLog(@"numItems: %lu", self.usersArray.count + 1);
+        NSLog(@"numItems: %@", num);
         return [self.usersArray count] + 1;
     } else {
         NSLog(@"numItems: %lu", (unsigned long)self.usersArray.count);

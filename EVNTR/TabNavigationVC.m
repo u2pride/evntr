@@ -196,13 +196,12 @@
     NSString *toVCName = [self viewControllerNameForIndex:(int)toVCIndex];
     
     NSDictionary *dimensions = @{
-                                 @"InitialTab": fromVCName,
-                                 @"FinalTab": toVCName,
+                                 @"Initial Tab": fromVCName,
+                                 @"Final Tab": toVCName,
                                  };
     
-    [PFAnalytics trackEventInBackground:@"NavigationPatterns" dimensions:dimensions block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"NavigationPatterns" withEventProperties:dimensions];
+    [appDelegate.amplitudeInstance logEvent:@"Navigated Tabs" withEventProperties:dimensions];
     
     if (toVCIndex == TAB_CREATE) {
         self.transitionController.isPresenting = YES;

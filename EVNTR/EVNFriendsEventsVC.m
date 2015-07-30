@@ -89,6 +89,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatedLocation:) name:kUserLocationUpdate object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateWithNewRadius:) name:kFilterRadiusUpdate object:nil];
     
+    [self loadObjects];
+    
 }
 
 
@@ -102,7 +104,7 @@
     
     [navigationBar setShadowImage:[UIImage new]];
     self.navigationController.navigationBar.translucent = NO;
- 
+    
 }
 
 
@@ -145,8 +147,6 @@
 
 - (PFQuery *)queryForTable {
     
-    NSLog(@"QueryForTable called");
-    
     //One Way to Do It
     AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     self.currentUserLocation = [PFGeoPoint geoPointWithLocation:appDelegate.locationManagerGlobal.location];
@@ -183,7 +183,7 @@
     [followingEventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:[self.delegate currentRadiusFilter]];
     [followingEventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay];
     [followingEventsQuery orderByAscending:@"dateOfEvent"];
-    
+        
     
     return followingEventsQuery;
 }
@@ -291,11 +291,13 @@
         self.noResultsView = [[EVNNoResultsView alloc] initWithFrame:self.view.frame];
     }
     
+    self.noResultsView.backgroundColor = [UIColor whiteColor];
     self.noResultsView.headerText = @"No Events";
     self.noResultsView.subHeaderText = @"Looks like they haven't created any public events yet.";
     self.noResultsView.actionButton.hidden = YES;
     
     [self.view addSubview:self.noResultsView];
+    [self.view bringSubviewToFront:self.noResultsView];
     
 }
 

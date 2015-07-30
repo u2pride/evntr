@@ -176,9 +176,8 @@
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
-        [PFAnalytics trackEventInBackground:@"CreateEvent_CameraUsed" block:nil];
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"CreateEvent_CameraUsed"];
+        [appDelegate.amplitudeInstance logEvent:@"Create Flow Took Photo"];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -192,9 +191,8 @@
     
     UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
         
-        [PFAnalytics trackEventInBackground:@"CreateEvent_PhotoPickerUsed" block:nil];
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"CreateEvent_PhotoPickerUsed"];
+        [appDelegate.amplitudeInstance logEvent:@"Create Flow Chose Photo"];
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -215,9 +213,8 @@
     
     UIAlertAction *lastPhoto = [UIAlertAction actionWithTitle:@"Use Last Photo Taken" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
        
-        [PFAnalytics trackEventInBackground:@"CreateEvent_LastPhotoUsed" block:nil];
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"CreateEvent_LastPhotoUsed"];
+        [appDelegate.amplitudeInstance logEvent:@"Create Flow Used Last Photo"];
         
         PHFetchOptions *fetchOptions = [PHFetchOptions new];
         fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], ];

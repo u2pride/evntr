@@ -131,9 +131,8 @@
         
         [self leavingTransitionAnimations];
         
-        [PFAnalytics trackEventInBackground:@"SkipForNow" block:nil];
         AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"SkipForNow"];
+        [appDelegate.amplitudeInstance logEvent:@"Skipped Login"];
         
         //Set isGuest Object
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];

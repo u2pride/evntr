@@ -48,9 +48,8 @@
 
 - (void) openFacebookInvite {
     
-    [PFAnalytics trackEventInBackground:@"SendFacebookInvites" block:nil];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"SendFacebookInvites"];
+    [appDelegate.amplitudeInstance logEvent:@"Sent Facebook Invites"];
     
     FBSDKAppInviteContent *fbInviteContent = [[FBSDKAppInviteContent alloc] init];
     
