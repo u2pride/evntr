@@ -41,6 +41,12 @@
 @property (nonatomic) BOOL isPublicApproved;
 @property (nonatomic) BOOL isCurrentUsersEvent;
 
+//Amplitude Analytics
+@property (nonatomic, strong) NSDate *startStopwatchDate;
+@property (nonatomic) BOOL scrolledToDescription;
+@property (nonatomic) BOOL scrolledToPictures;
+@property (nonatomic) BOOL scrolledToComments;
+
 //UIViews
 @property (strong, nonatomic) IBOutlet UIView *detailsBackgroundView;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -155,9 +161,11 @@
     
     [super viewWillAppear:animated];
     
-    NSDictionary *props = [NSDictionary dictionaryWithObject:self.event.objectId forKey:@"Event"];
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Event" withEventProperties:props];
+    //Set the StartStopwatchDate to Current Date/Time - Used in ViewWillDisappear to Determine Time Spent Viewing Event
+    self.startStopwatchDate = [NSDate date];
+    self.scrolledToDescription = NO;
+    self.scrolledToPictures = NO;
+    self.scrolledToComments = NO;
     
     if (!self.shouldRestoreNavBar) {
         self.shouldRestoreNavBar = YES;
@@ -201,6 +209,22 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    
+    //Amplitude Analytics
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:self.startStopwatchDate];    
+    int intTime = (int) round(time);
+    
+    NSMutableDictionary *eventProps = [NSMutableDictionary new];
+    [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
+    [eventProps setObject:self.event.objectId forKey:@"Event"];
+    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToDescription] forKey:@"Scrolled to Description"];
+    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToPictures] forKey:@"Scrolled to Pictures"];
+    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToComments] forKey:@"Scrolled to Comments"];
+
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Event" withEventProperties:eventProps];
+    
     
     if (self.shouldRestoreNavBar) {
     
@@ -792,7 +816,17 @@
 
 - (void) flagCurrentEvent {
     
-    [self.event flagEventFromVC:self];
+    if (self.isGuestUser) {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Flagging Unavailable" message:@"Sign up in order to flag events.  You just like pressing a lot of buttons don't you?" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+        
+        [alert show];
+        
+    } else {
+        
+        [self.event flagEventFromVC:self];
+    
+    }
     
 }
 
@@ -1143,6 +1177,26 @@
         
     }
 
+}
+
+
+#pragma mark - Scroll View Delegate
+
+//Used for Amplitude Analytics - Properties on Viewed Event event.
+- (void) scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    if (CGRectIntersectsRect(self.scrollView.bounds, self.numberOfPicturesLabel.frame) && _scrolledToDescription == NO) {
+        _scrolledToDescription = YES;
+    }
+    
+    if (CGRectIntersectsRect(self.scrollView.bounds, self.creatorPhoto.frame) && _scrolledToPictures == NO) {
+        _scrolledToPictures = YES;
+    }
+    
+    if (CGRectIntersectsRect(self.scrollView.bounds, self.commentsTable.frame) && _scrolledToComments == NO) {
+        _scrolledToComments = YES;
+    }
+    
 }
 
 

@@ -406,6 +406,12 @@
         if (!succeeded) {
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate.amplitudeInstance logEvent:@"RSVP Error"];
+        } else {
+            NSDictionary *props = [NSDictionary dictionaryWithObject:self.objectId forKey:@"EventID"];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"RSVP" withEventProperties:props];
+            
+            NSDictionary *userprops = [NSDictionary dictionaryWithObject:@"" forKey:@"Events Attended"];
         }
         
         completionBlock(succeeded);

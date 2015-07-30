@@ -33,6 +33,11 @@
 
 @property BOOL isGuestUser;
 
+//Amplitude Analytics
+@property (nonatomic, strong) NSDate *startStopwatchDate;
+@property (nonatomic) NSNumber *numEventsScrolled;
+@property (nonatomic) BOOL scrolledToBottom;
+
 @property (nonatomic, strong) PFGeoPoint *currentUserLocation;
 @property (nonatomic) float searchRadius;
 @property (nonatomic, strong) EVNNoResultsView *noResultsView;
@@ -118,6 +123,11 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    //Set the StartStopwatchDate to Current Date/Time - Used in ViewWillDisappear to Determine Time Spent Viewing Event
+    self.startStopwatchDate = [NSDate date];
+    self.numEventsScrolled = @0;
+    self.scrolledToBottom = NO;
+    
     /*
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     
@@ -145,6 +155,42 @@
     
 }
 
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    //Amplitude Analytics
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:self.startStopwatchDate];
+    int intTime = (int) round(time);
+
+    NSMutableDictionary *eventProps = [NSMutableDictionary new];
+    [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
+    [eventProps setObject:self.numEventsScrolled forKey:@"Events Scrolled"];
+    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToBottom] forKey:@"Scrolled to Bottom"];
+
+    
+    switch (self.typeOfEventTableView) {
+        case ALL_PUBLIC_EVENTS: {
+            [appDelegate.amplitudeInstance logEvent:@"Viewed Public Events" withEventProperties:eventProps];
+            
+            break;
+        }
+        case CURRENT_USER_EVENTS: {
+            [appDelegate.amplitudeInstance logEvent:@"Viewed My Events" withEventProperties:eventProps];
+            
+            break;
+        }
+        case OTHER_USER_EVENTS: {
+            [appDelegate.amplitudeInstance logEvent:@"Viewed Others Events" withEventProperties:eventProps];
+            
+            break;
+        }
+        default:
+            break;
+    }
+    
+}
+
 
 #pragma mark - EVNHomeContainerDelegate 
 
@@ -152,7 +198,6 @@
     
     NSNumber *radius = (NSNumber *) [[notification userInfo] objectForKey:@"radius"];
     
-    NSLog(@"New Radius for Home Screen - %f", [radius floatValue]);
     self.searchRadius = [radius floatValue];
     
     //Reload Table
@@ -296,6 +341,17 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
         [self refreshUIForCell:cell withEvent:event];
+        
+        if ((indexPath.row + 1) > [self.numEventsScrolled intValue]) {
+            
+            NSInteger numberEvents = indexPath.row + 1;
+            self.numEventsScrolled = [NSNumber numberWithInteger:numberEvents];
+        }
+        
+        if ((indexPath.row + 1) == [self.objects count]) {
+            self.scrolledToBottom = YES;
+        }
+        
     }
     
     return cell;
@@ -411,11 +467,21 @@
 
 - (void) flagEvent:(UIGestureRecognizer *)sender {
     
-    UIImageView *flagButton = (UIImageView *)sender.view;
-    
-    EventObject *eventToFlag = (EventObject *) [self.objects objectAtIndex:flagButton.tag];
-    
-    [eventToFlag flagEventFromVC:self];
+    if (self.isGuestUser) {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Flagging Unavailable" message:@"Sign up in order to flag events.  You just like pressing a lot of buttons don't you?" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+        
+        [alert show];
+        
+    } else {
+        
+        UIImageView *flagButton = (UIImageView *)sender.view;
+        
+        EventObject *eventToFlag = (EventObject *) [self.objects objectAtIndex:flagButton.tag];
+        
+        [eventToFlag flagEventFromVC:self];
+        
+    }
 
 }
 
@@ -458,8 +524,6 @@
         NSIndexPath *indexPathOfSelectedItem = [self.tableView indexPathForSelectedRow];
         EventDetailVC *eventDetailVC = segue.destinationViewController;
         self.indexPathOfEventInDetailView = indexPathOfSelectedItem;
-        
-        NSLog(@"Passing Event: %@", (EventObject *)[self.objects objectAtIndex:self.indexPathOfEventInDetailView.row]);
         
         eventDetailVC.event = (EventObject *)[self.objects objectAtIndex:self.indexPathOfEventInDetailView.row];
         eventDetailVC.delegate = self;

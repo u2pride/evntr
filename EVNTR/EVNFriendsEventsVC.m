@@ -34,6 +34,11 @@
 
 @property BOOL isGuestUser;
 
+//Amplitude Analytics
+@property (nonatomic, strong) NSDate *startStopwatchDate;
+@property (nonatomic) NSNumber *numEventsScrolled;
+@property (nonatomic) BOOL scrolledToBottom;
+
 @property (nonatomic) float searchRadius;
 
 @property (nonatomic, strong) PFGeoPoint *currentUserLocation;
@@ -97,6 +102,11 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    //Set the StartStopwatchDate to Current Date/Time - Used in ViewWillDisappear to Determine Time Spent Viewing Event
+    self.startStopwatchDate = [NSDate date];
+    self.numEventsScrolled = @0;
+    self.scrolledToBottom = NO;
+    
     UINavigationBar *navigationBar = self.navigationController.navigationBar;
     [navigationBar setBackgroundImage:[UIImage new]
                        forBarPosition:UIBarPositionAny
@@ -107,6 +117,22 @@
     
 }
 
+- (void) viewWillDisappear:(BOOL)animated {
+    
+    //Amplitude Analytics
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:self.startStopwatchDate];
+    int intTime = (int) round(time);
+
+    NSMutableDictionary *eventProps = [NSMutableDictionary new];
+    [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
+    [eventProps setObject:self.numEventsScrolled forKey:@"Events Scrolled"];
+    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToBottom] forKey:@"Scrolled to Bottom"];
+
+    [appDelegate.amplitudeInstance logEvent:@"Viewed Following Events" withEventProperties:eventProps];
+    
+}
+
 
 #pragma mark - EVNHomeContainerDelegate
 
@@ -114,7 +140,6 @@
     
     NSNumber *radius = (NSNumber *) [[notification userInfo] objectForKey:@"radius"];
     
-    NSLog(@"New Radius for Home Screen - %f", [radius floatValue]);
     self.searchRadius = [radius floatValue];
     
     //Reload Table
@@ -232,6 +257,16 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
         [self refreshUIForCell:cell withEvent:event];
+        
+        if ((indexPath.row + 1) > [self.numEventsScrolled intValue]) {
+            
+            NSInteger numberEvents = indexPath.row + 1;
+            self.numEventsScrolled = [NSNumber numberWithInteger:numberEvents];
+        }
+        
+        if ((indexPath.row + 1) == [self.objects count]) {
+            self.scrolledToBottom = YES;
+        }
     }
     
     return cell;
@@ -293,7 +328,7 @@
     
     self.noResultsView.backgroundColor = [UIColor whiteColor];
     self.noResultsView.headerText = @"No Events";
-    self.noResultsView.subHeaderText = @"Looks like they haven't created any public events yet.";
+    self.noResultsView.subHeaderText = @"Looks like no one you're following has made any public events yet! Try finding more people to follow to personalize what events you see here.";
     self.noResultsView.actionButton.hidden = YES;
     
     [self.view addSubview:self.noResultsView];
@@ -369,8 +404,6 @@
         NSIndexPath *indexPathOfSelectedItem = [self.tableView indexPathForSelectedRow];
         EventDetailVC *eventDetailVC = segue.destinationViewController;
         self.indexPathOfEventInDetailView = indexPathOfSelectedItem;
-        
-        NSLog(@"Passing Event: %@", (EventObject *)[self.objects objectAtIndex:self.indexPathOfEventInDetailView.row]);
         
         eventDetailVC.event = (EventObject *)[self.objects objectAtIndex:self.indexPathOfEventInDetailView.row];
         eventDetailVC.delegate = self;

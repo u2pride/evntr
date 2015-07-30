@@ -71,7 +71,7 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"StopMoviePlayer" object:nil];
     
     //Add Segmented Control to Navigation Bar
-    self.segmentControl = [[UISegmentedControl alloc] initWithItems:@[@"New", @"Following"]];
+    self.segmentControl = [[UISegmentedControl alloc] initWithItems:@[@"All", @"Following"]];
     self.segmentControl.selectedSegmentIndex = 0;
     [self.segmentControl addTarget:self action:@selector(switchHomeTabs) forControlEvents:UIControlEventValueChanged];
     [self.navigationItem setTitleView:self.segmentControl];

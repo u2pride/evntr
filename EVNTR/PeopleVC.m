@@ -44,11 +44,9 @@
     self = [super initWithCoder:aDecoder];
     
     if (self) {
-        NSLog(@"Check - now remove");
-        
         _previouslyInvitedUsers = [[NSMutableArray alloc] init];
         _allInvitedUsers = [[NSMutableArray alloc] init];
-        _limit = 20;
+        _limit = 250;
         _skip = 0;
         _usersArray = [[NSMutableArray alloc] init];
     }
@@ -83,7 +81,7 @@
             
             [self.navigationItem setTitle:@"Followers"];
             
-            UIBarButtonItem *reloadIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(findUsersOnParse)];
+            UIBarButtonItem *reloadIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshUsers)];
             self.navigationItem.rightBarButtonItem = reloadIcon;
             
             self.collectionView.allowsMultipleSelection = NO;
@@ -94,7 +92,7 @@
             
             [self.navigationItem setTitle:@"Following"];
             
-            UIBarButtonItem *reloadIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(findUsersOnParse)];
+            UIBarButtonItem *reloadIcon = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshUsers)];
             self.navigationItem.rightBarButtonItem = reloadIcon;
             
             self.collectionView.allowsMultipleSelection = NO;
@@ -160,13 +158,13 @@
         }
     }
     
-    [self findUsersOnParse];
+    [self findUsersOnParse:NO];
 
 }
 
 
 
-- (void)findUsersOnParse {
+- (void)findUsersOnParse:(BOOL) appendUsers {
     
     [self.activitySpinner startAnimating];
     
@@ -183,7 +181,7 @@
                 
                 if (error || [usersFound count] == 0) {
                     
-                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findUsersOnParse)];
+                    UITapGestureRecognizer *tapReload = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(refreshUsers)];
                     
                     [self showNoResultsViewWithHeader:@"Hello?" withSubHeader:@"Whoa, it's really empty in here.  Know where everyone went?" withButtonTitle:@"Refresh" andGesture:tapReload];
                     
@@ -191,7 +189,12 @@
                     
                     [self hideNoResultsView];
                     
-                    [self.usersArray addObjectsFromArray:usersFound];
+                    if (appendUsers) {
+                        self.usersArray = [NSMutableArray arrayWithArray:usersFound];
+                    } else {
+                        self.usersArray = [NSMutableArray arrayWithArray:usersFound];
+                    }
+                    
 
                     [self reloadCollectionView];
                 }
@@ -202,7 +205,20 @@
         }
         case VIEW_FOLLOWERS: {
             
-            [EVNUser queryForUsersFollowers:self.userProfile withLimit:self.limit withSkip:self.skip completion:^(NSArray *followers) {
+            int limit;
+            int skip;
+            
+            if (!appendUsers) {
+                limit = MAX(self.limit, (int)self.usersArray.count);
+                skip = 0;
+                
+            } else {
+                limit = self.limit;
+                skip = self.skip;
+                
+            }
+            
+            [EVNUser queryForUsersFollowers:self.userProfile withLimit:limit withSkip:skip completion:^(NSArray *followers) {
                 
                 if (followers.count == 0) {
                     
@@ -219,7 +235,11 @@
                     
                     [self hideNoResultsView];
                     
-                    [self.usersArray addObjectsFromArray:followers];
+                    if (appendUsers) {
+                        [self.usersArray addObjectsFromArray:followers];
+                    } else {
+                        self.usersArray = [NSMutableArray arrayWithArray:followers];
+                    }
                     
                     [self reloadCollectionView];
 
@@ -230,7 +250,20 @@
         }
         case VIEW_FOLLOWING: {
             
-            [EVNUser queryForUsersFollowing:self.userProfile withLimit:self.limit withSkip:self.skip completion:^(NSArray *following) {
+            int limit;
+            int skip;
+            
+            if (!appendUsers) {
+                limit = MAX(self.limit, (int)self.usersArray.count);
+                skip = 0;
+
+            } else {
+                limit = self.limit;
+                skip = self.skip;
+
+            }
+            
+            [EVNUser queryForUsersFollowing:self.userProfile withLimit:limit withSkip:skip completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -254,7 +287,12 @@
                     
                     [self hideNoResultsView];
                     
-                    [self.usersArray addObjectsFromArray:following];
+                    if (appendUsers) {
+                        [self.usersArray addObjectsFromArray:following];
+                    } else {
+                        self.usersArray = [NSMutableArray arrayWithArray:following];
+                    }
+                    
 
                     [self reloadCollectionView];
                 }
@@ -276,8 +314,20 @@
                                                                            [UIColor whiteColor], NSForegroundColorAttributeName,
                                                                            nil]
                                                                  forState:UIControlStateNormal];
+            int limit;
+            int skip;
             
-            [EVNUser queryForUsersFollowing:self.userProfile withLimit:self.limit withSkip:self.skip completion:^(NSArray *following) {
+            if (!appendUsers) {
+                limit = MAX(self.limit, (int)self.usersArray.count);
+                skip = 0;
+                
+            } else {
+                limit = self.limit;
+                skip = self.skip;
+                
+            }
+            
+            [EVNUser queryForUsersFollowing:self.userProfile withLimit:limit withSkip:skip completion:^(NSArray *following) {
                 
                 if (following.count == 0) {
                     
@@ -287,7 +337,12 @@
                     
                     [self hideNoResultsView];
                     
-                    [self.usersArray addObjectsFromArray:following];
+                    if (appendUsers) {
+                        [self.usersArray addObjectsFromArray:following];
+                    } else {
+                        self.usersArray = [NSMutableArray arrayWithArray:following];
+                    }
+                    
                     
                     [self reloadCollectionView];
                 }
@@ -311,7 +366,12 @@
                     
                     [self hideNoResultsView];
                     
-                    self.usersArray = [NSMutableArray arrayWithArray:attenders];
+                    if (appendUsers) {
+                        self.usersArray = [NSMutableArray arrayWithArray:attenders];
+                    } else {
+                        self.usersArray = [NSMutableArray arrayWithArray:attenders];
+                    }
+                    
                     [self reloadCollectionView];
                 }
                 
@@ -338,10 +398,10 @@
     NSNumber *num = [NSNumber numberWithInteger:(self.usersArray.count + 1)];
     
     if (self.usersArray.count == self.limit + self.skip) {
-        NSLog(@"numItems: %@", num);
+        NSLog(@"adding load more cell numItems: %@", num);
         return [self.usersArray count] + 1;
     } else {
-        NSLog(@"numItems: %lu", (unsigned long)self.usersArray.count);
+        NSLog(@"no load more cell numItems: %lu", (unsigned long)self.usersArray.count);
         return [self.usersArray count];
     }
     
@@ -421,7 +481,7 @@
         
         NSLog(@"Selected Load More Cell");
         self.skip = self.skip + self.limit;
-        [self findUsersOnParse];
+        [self findUsersOnParse:YES];
         
     } else {
        
@@ -467,7 +527,7 @@
     cell.alpha = 0;
     cell.transform = CGAffineTransformMakeScale(0.2, 0.2);
     
-    [UIView animateWithDuration:0.4 delay:0.0 usingSpringWithDamping:0.85 initialSpringVelocity:1 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction animations:^{
+    [UIView animateWithDuration:0.6 delay:0.05 usingSpringWithDamping:0.85 initialSpringVelocity:0.75 options:UIViewAnimationOptionCurveEaseOut|UIViewAnimationOptionAllowUserInteraction animations:^{
         
         cell.alpha = 1;
         cell.transform = CGAffineTransformIdentity;
@@ -480,6 +540,15 @@
 
 
 #pragma mark - Helper Methods
+
+- (void) refreshUsers {
+    
+    NSLog(@"Refresh Users");
+    
+    //Reload Buttons - Refresh Entire User Array
+    [self findUsersOnParse:NO];
+    
+}
 
 - (void) showNoResultsViewWithHeader:(NSString *)header withSubHeader:(NSString *)subHeader withButtonTitle:(NSString *)buttonTitle andGesture:(UITapGestureRecognizer *)gr {
     

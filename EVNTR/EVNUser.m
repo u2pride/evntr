@@ -79,7 +79,6 @@
     [query whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     [query includeKey:@"userFrom"];
     [query orderByAscending:@"createdAt"];
-    [query setLimit:250];
     
     [query findObjectsInBackgroundWithBlock:^(NSArray *usersFound, NSError *error) {
         
@@ -172,6 +171,13 @@
 - (void) followUser:(EVNUser *)userToFollow fromVC:(UIViewController *)activeVC withButton:(EVNButton *)followButton withCompletion:(void (^)(BOOL))completionBlock {
     
     [followButton startedTask];
+    
+    NSMutableDictionary *props = [NSMutableDictionary new];
+    [props setObject:self.numFollowers forKey:@"Total Followers"];
+    [props setObject:self.numFollowing forKey:@"Total Following"];
+
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.amplitudeInstance setUserProperties:props replace:YES];
     
     if ([followButton.titleText isEqualToString:kFollowString]) {
         
