@@ -19,6 +19,7 @@
 #import "EVNUtility.h"
 #import "FilterEventsVC.h"
 #import "HomeScreenVC.h"
+#import "MBProgressHUD.h"
 #import "NSDate+NVTimeAgo.h"
 #import "ProfileVC.h"
 #import "SearchVC.h"
@@ -45,6 +46,7 @@
 @property (nonatomic, strong) NSIndexPath *indexPathOfEventInDetailView;
 @property (nonatomic, strong) EventObject *eventForInvites;
 
+@property (nonatomic, strong) MBProgressHUD *loadingIndicator;
 
 @end
 
@@ -104,10 +106,6 @@
             [self.navigationItem setTitle:@"My Events"];
             self.navigationItem.rightBarButtonItems = nil;
             self.navigationItem.leftBarButtonItems = nil;
-            
-            UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(enterEditingMode)];
-            
-            [self.navigationItem setRightBarButtonItem:editButton];
 
             break;
         }
@@ -131,6 +129,12 @@
     self.startStopwatchDate = [NSDate date];
     self.numEventsScrolled = @0;
     self.scrolledToBottom = NO;
+    
+    if (self.typeOfEventTableView == CURRENT_USER_EVENTS) {
+        UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(enterEditingMode)];
+        
+        [self.navigationItem setRightBarButtonItem:editButton];
+    }
     
 }
 
@@ -304,10 +308,88 @@
 - (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     EventObject *eventToDelete = (EventObject *) [self.objects objectAtIndex:indexPath.row];
+ 
+    //NSLog(@"NEXT");
+
+    //[self startLoadingIndicator];
+    
+    //EXAMPLE CODE
+    /*
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        // Do something...
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+        });
+    });
+    */
+    
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+
+    
+    NSLog(@"0");
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+
+        NSLog(@"1");
+
+        __block NSMutableArray *pfobjects = [NSMutableArray new];
+        
+        NSLog(@"2");
+        
+        PFQuery *picturesQuery = [PFQuery queryWithClassName:@"Pictures"];
+        [picturesQuery whereKey:@"eventParent" equalTo:eventToDelete];
+        
+        NSArray *pictures = [picturesQuery findObjects];
+        
+        NSLog(@"3");
+
+        PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
+        [commentsQuery whereKey:@"commentEvent" equalTo:eventToDelete];
+
+        NSArray *comments = [commentsQuery findObjects];
+        
+        NSLog(@"4");
+
+        PFQuery *activitiesQuery = [PFQuery queryWithClassName:@"Activities"];
+        [activitiesQuery whereKey:@"activityContent" equalTo:eventToDelete];
+        
+        NSArray *activities = [activitiesQuery findObjects];
+    
+        NSLog(@"5");
+
+        [pfobjects addObjectsFromArray:activities];
+        [pfobjects addObjectsFromArray:pictures];
+        [pfobjects addObjectsFromArray:comments];
+        
+        [PFObject deleteAll:pfobjects];
+        
+        NSLog(@"6");
+
+        [eventToDelete delete];
+        
+        NSLog(@"7");
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"8");
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [self.tableView setEditing:NO animated:YES];
+            [self loadObjects];
+        });
+        
+    
+    });
+    
+    
+    /*
+    
+    NSLog(@"NEXT");
     
     PFQuery *picturesQuery = [PFQuery queryWithClassName:@"Pictures"];
     [picturesQuery whereKey:@"eventParent" equalTo:eventToDelete];
     [picturesQuery findObjectsInBackgroundWithBlock:^(NSArray *pictures, NSError *error) {
+        
+        __block BOOL success = YES;
         
         for (PFObject *pic in pictures) {
             
@@ -315,15 +397,32 @@
                 
                 if (succeeded) {
                     NSLog(@"Deleted Pictures");
+                    
                 } else {
+                    
+                    success = NO;
+                    
                 }
                 
             }];
             
         }
         
+        [self stopLoadingIndicator];
+        
+        //Error Message
+        UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+        
+        [issue show];
+        
+        NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
+        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
+        
         
     }];
+    
+
     
     PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
     [commentsQuery whereKey:@"commentEvent" equalTo:eventToDelete];
@@ -335,7 +434,21 @@
                 
                 if (succeeded) {
                     NSLog(@"Deleted Comments");
+                
+                    
                 } else {
+                    
+                    [self stopLoadingIndicator];
+                    
+                    //Error Message
+                    UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issue show];
+                    
+                    NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
+                    
                 }
                 
             }];
@@ -344,6 +457,7 @@
         
     }];
     
+
     PFQuery *activitiesQuery = [PFQuery queryWithClassName:@"Activities"];
     [activitiesQuery whereKey:@"activityContent" equalTo:eventToDelete];
     [activitiesQuery findObjectsInBackgroundWithBlock:^(NSArray *activities, NSError *error) {
@@ -354,10 +468,21 @@
                 
                 if (succeeded) {
                     NSLog(@"Deleted Activities");
+                    
+                    
+                    
                 } else {
                     
-                    UIAlertView *issueDeleting = [[UIAlertView alloc] initWithTitle:@"Delete Error" message:[NSString stringWithFormat:@"can't delete activities: %@", error] delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-                    [issueDeleting show];
+                    [self stopLoadingIndicator];
+                    
+                    //Error Message
+                    UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issue show];
+                    
+                    NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
                     
                 }
                 
@@ -367,35 +492,79 @@
         
     }];
     
+    
+    [eventToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        
+        if (succeeded) {
+            
+            [self stopLoadingIndicator];
+            
+            //Error Message
+            UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+            
+            [issue show];
+            
+            [self.tableView setEditing:NO animated:YES];
+            
+            [self loadObjects];
+            
+        } else {
+            
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            
+            //Error Message
+            UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+            
+            [issue show];
+            
+            NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
+            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+            [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
+            
+        }
+        
+    }];
+
+    
+    
     //TODO - Remove Delay Perform After Other Deletes
     //double delayInSeconds = 2.0;
     //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        
-        [eventToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            if (succeeded) {
-                
-                //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                [self.tableView setEditing:NO animated:YES];
+    
 
-                [self loadObjects];
-                
-            } else {
-                
-                UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Error Deleting" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-                
-                [issue show];
-                
-            }
-            
-        }];
-        
+    
     //});
 
+     */
     
     
     
+    
+}
+
+
+- (void) startLoadingIndicator {
+    
+    if (!self.loadingIndicator) {
+        
+        self.loadingIndicator = [[MBProgressHUD alloc] init];
+        self.loadingIndicator.removeFromSuperViewOnHide = YES;
+        self.loadingIndicator.center = self.view.center;
+        self.loadingIndicator.dimBackground = NO;
+        [self.view addSubview:self.loadingIndicator];
+        
+    }
+    
+    [self.loadingIndicator show:YES];
+    
+}
+
+- (void) stopLoadingIndicator {
+    
+    if (self.loadingIndicator) {
+        [self.loadingIndicator hide:YES];
+    }
     
 }
 
