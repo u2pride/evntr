@@ -107,7 +107,7 @@
             
             UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(enterEditingMode)];
             
-            self.navigationItem.rightBarButtonItem = editButton;
+            [self.navigationItem setRightBarButtonItem:editButton];
 
             break;
         }
@@ -132,35 +132,6 @@
     self.numEventsScrolled = @0;
     self.scrolledToBottom = NO;
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-
-    NSLog(@"Amplitude UserID: %@", [appDelegate.amplitudeInstance userId]);
-    
-    /*
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-      already tracking this from the profile screen.
-    switch (self.typeOfEventTableView) {
-        case ALL_PUBLIC_EVENTS: {
-            [appDelegate.amplitudeInstance logEvent:@"Viewed All Events"];
-            
-            break;
-        }
-        case CURRENT_USER_EVENTS: {
-            [appDelegate.amplitudeInstance logEvent:@"Viewed My Events"];
-            
-            break;
-        }
-        case OTHER_USER_EVENTS: {
-            [appDelegate.amplitudeInstance logEvent:@"Viewed Anothers Events"];
-            
-            break;
-        }
-        default:
-            break;
-    }
-     */
-    
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -184,6 +155,8 @@
             break;
         }
         case CURRENT_USER_EVENTS: {
+            self.navigationItem.rightBarButtonItems = nil;
+
             [appDelegate.amplitudeInstance logEvent:@"Viewed My Events" withEventProperties:eventProps];
             
             break;
@@ -318,6 +291,16 @@
     
 }
 
+- (BOOL) tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if (self.typeOfEventTableView == CURRENT_USER_EVENTS) {
+        return YES;
+    } else {
+        return NO;
+    }
+    
+}
+
 - (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     EventObject *eventToDelete = (EventObject *) [self.objects objectAtIndex:indexPath.row];
@@ -372,6 +355,10 @@
                 if (succeeded) {
                     NSLog(@"Deleted Activities");
                 } else {
+                    
+                    UIAlertView *issueDeleting = [[UIAlertView alloc] initWithTitle:@"Delete Error" message:[NSString stringWithFormat:@"can't delete activities: %@", error] delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    [issueDeleting show];
+                    
                 }
                 
             }];
