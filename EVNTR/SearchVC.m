@@ -132,7 +132,7 @@
         
         if (self.isSearchingEvents) {
             
-            NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
+            NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:TWELVE_HOURS];
             
             PFQuery *searchQuery = [PFQuery queryWithClassName:@"Events"];
             [searchQuery whereKey:@"title" matchesRegex:self.searchController.searchBar.text modifiers:@"i"];

@@ -120,6 +120,7 @@ extern NSString *const kSecondaryUpdateTimestamp;
 #define MAX_COMMENT_LENGTH 120
 
 #define SEARCH_RADIUS_DEFAULT 10
+#define TWELVE_HOURS -43200
 
 
 

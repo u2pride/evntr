@@ -192,15 +192,12 @@
         return nil;
     }
     
-    //Working Following Query -
     PFQuery *followingQuery = [PFQuery queryWithClassName:@"Activities"];
     [followingQuery whereKey:@"userFrom" equalTo:[EVNUser currentUser]];
     [followingQuery whereKey:@"type" equalTo:[NSNumber numberWithInt:FOLLOW_ACTIVITY]];
     
-    
     NSArray *eventTypes = [NSArray arrayWithObjects:[NSNumber numberWithInt:PUBLIC_EVENT_TYPE], [NSNumber numberWithInt:PUBLIC_APPROVED_EVENT_TYPE], nil];
-    NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
-
+    NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:TWELVE_HOURS];
     
     PFQuery *followingEventsQuery = [PFQuery queryWithClassName:@"Events"];
     [followingEventsQuery whereKey:@"parent" matchesKey:@"userTo" inQuery:followingQuery];

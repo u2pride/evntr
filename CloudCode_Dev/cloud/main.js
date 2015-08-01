@@ -422,3 +422,67 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
       }
   
 });
+
+
+Parse.Cloud.afterSave("Reports", function(request, response) {
+    Parse.Cloud.useMasterKey();
+    
+    var Mailgun = require('mailgun');
+    Mailgun.initialize('sandbox4c4a9ed8e70f4100b14c2a3b9141c2a8.mailgun.org', 'key-3467e49ce851dd08391802eaf5e0e156');
+    
+    request.object.get('flaggedEvent').fetch ({
+        success: function(eventFlagged) {
+            // The object was retrieved successfully.
+        
+            request.object.get('userFrom').fetch ({
+                success: function(userFrom) {
+
+                
+                    eventFlagged.get('parent').fetch ({
+                        success: function(eventHost) {
+                            
+                            var message = "Type of Flag: " + request.object.get('flagType') + "\nMessage From User: " + request.object.get('flagDescription') + "\nFlagged Event Name: " + eventFlagged.get('title') + "\nEvent ObjectID: " + eventFlagged.id + "\nFlagged By User: " + userFrom.get('username') + "\nEvent Host: " + eventHost.get('username');
+    
+                            Mailgun.sendEmail({
+                                to: "mfisher390@gmail.com",
+                                from: "Evntr Reporting <postmaster@sandbox4c4a9ed8e70f4100b14c2a3b9141c2a8.mailgun.org>",
+                                subject: "Evntr - New Report by User",
+                                text: message
+                            }, {
+                                success: function(httpResponse) {
+                                    console.log(httpResponse);
+                                    //response.success("Email sent!");
+                            },
+                                error: function(httpResponse) {
+                                console.error(httpResponse);
+                                //response.error("Uh oh, something went wrong");
+                                }
+                            });
+                        
+                        },
+                        error: function(object, error) {
+                        }
+                    });
+                
+                },
+                error: function(object, error) {
+                }
+            });
+        
+        
+    },
+    error: function(object, error) {
+        // The object was not retrieved successfully.
+        // error is a Parse.Error with an error code and message.
+    }
+    });
+    
+
+    
+    
+
+    
+    
+
+
+});

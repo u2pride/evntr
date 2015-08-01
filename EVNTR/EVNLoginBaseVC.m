@@ -99,7 +99,7 @@
             
             AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
             [appDelegate.amplitudeInstance setUserId:user.objectId];
-            
+                        
             if (user.isNew) {
                 
                 [appDelegate.amplitudeInstance logEvent:@"Facebook Sign Up"];

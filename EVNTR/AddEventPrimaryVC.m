@@ -36,6 +36,9 @@
 @property (nonatomic, strong) PFFile *coverPhotoFile;
 @property (nonatomic) int selectedEventType;
 
+//Amplitude
+@property (nonatomic, strong) NSString *typeOfPhoto;
+
 - (IBAction)nextButtonPressed:(id)sender;
 - (IBAction)canceledEventCreation:(id)sender;
 
@@ -55,6 +58,7 @@
     [super viewDidLoad];
     
     isEditingEvent = NO;
+    self.typeOfPhoto = @"None";
     self.selectedEventType = PUBLIC_EVENT_TYPE;
     self.eventTitleField.delegate = self;
     
@@ -175,9 +179,8 @@
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     
     UIAlertAction *takePhoto = [UIAlertAction actionWithTitle:@"Take Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-        
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Create Flow Took Photo"];
+
+        self.typeOfPhoto = @"Took Photo";
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -190,9 +193,8 @@
     
     
     UIAlertAction *choosePhoto = [UIAlertAction actionWithTitle:@"Choose Photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action){
-        
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Create Flow Chose Photo"];
+
+        self.typeOfPhoto = @"Chose Photo";
         
         UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
         imagePicker.delegate = self;
@@ -212,10 +214,9 @@
     }];
     
     UIAlertAction *lastPhoto = [UIAlertAction actionWithTitle:@"Use Last Photo Taken" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-       
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Create Flow Used Last Photo"];
         
+        self.typeOfPhoto = @"Last Photo";
+
         PHFetchOptions *fetchOptions = [PHFetchOptions new];
         fetchOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO], ];
     
@@ -461,6 +462,7 @@
         
         nextStepVC.event = newEvent;
         nextStepVC.isEditingEvent = NO;
+        nextStepVC.typeOfPhotoUsed = self.typeOfPhoto;
         
     }
     

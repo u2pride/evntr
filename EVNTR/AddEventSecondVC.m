@@ -98,9 +98,6 @@
 
 - (IBAction)createEvent:(id)sender {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Event Created"];
-    
     if (self.event.descriptionOfEvent && self.event.nameOfLocation) {
         
         if (self.isEditingEvent) {
@@ -169,9 +166,9 @@
                     
                     id<EventCreationCompleted> strongDelegate = self.delegate;
                     
-                    if ([strongDelegate respondsToSelector:@selector(eventCreationCanceled)]) {
+                    if ([strongDelegate respondsToSelector:@selector(eventEditingCanceled)]) {
                         
-                        [strongDelegate eventCreationCanceled];
+                        [strongDelegate eventEditingCanceled];
                     }
                 }
             }];
@@ -213,6 +210,16 @@
                         [self.event saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                             
                             if (succeeded) {
+                                
+                                NSTimeInterval daysOut = [self.event.dateOfEvent timeIntervalSinceDate:[NSDate date]];
+                                int days = round( daysOut/ 86400 );
+                                
+                                NSMutableDictionary *eventprops = [NSMutableDictionary new];
+                                [eventprops setObject:self.typeOfPhotoUsed forKey:@"Picture Type"];
+                                [eventprops setObject:self.event.typeOfEvent forKey:@"Event Type"];
+                                [eventprops setObject:[NSNumber numberWithInt:days] forKey:@"Days Out"];
+                                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                                [appDelegate.amplitudeInstance logEvent:@"Event Created" withEventProperties:eventprops];
                                 
                                 [[NSNotificationCenter defaultCenter] postNotificationName:kUserCreatedNewEvent object:nil userInfo:nil];
                                 

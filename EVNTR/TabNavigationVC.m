@@ -107,6 +107,9 @@
         //eventsView.typeOfEventTableView = ALL_PUBLIC_EVENTS;
         //eventsView.userForEventsQuery = [EVNUser currentUser];
         
+        UINavigationController *navVC = (UINavigationController *) viewController;
+        [navVC popToRootViewControllerAnimated:NO];
+        
 
     //Add Event VC
     } else if (viewController == [self.viewControllers objectAtIndex:1] && !self.isGuestUser) {
@@ -224,7 +227,10 @@
     self.darkBlur = darkBlur;
     [self.darkBlur removeFromSuperview];
     
-    NSDictionary *props = [NSDictionary dictionaryWithObject:[EVNUser currentUser].numEvents forKey:@"Events Created"];
+    NSNumber *currentNumEvents = [EVNUser currentUser].numEvents;
+    NSNumber *updatedNumEvents = [NSNumber numberWithInt:[currentNumEvents intValue] + 1];
+    
+    NSDictionary *props = [NSDictionary dictionaryWithObject:updatedNumEvents forKey:@"Events Created"];
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.amplitudeInstance setUserProperties:props replace:YES];
     

@@ -395,13 +395,9 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSNumber *num = [NSNumber numberWithInteger:(self.usersArray.count + 1)];
-    
     if (self.usersArray.count == self.limit + self.skip) {
-        NSLog(@"adding load more cell numItems: %@", num);
         return [self.usersArray count] + 1;
     } else {
-        NSLog(@"no load more cell numItems: %lu", (unsigned long)self.usersArray.count);
         return [self.usersArray count];
     }
     
@@ -416,7 +412,6 @@
     
     if (indexPath.row == self.limit + self.skip) {
         
-        NSLog(@"On the Load More Cell");
         cell.profileImage.image = [UIImage imageNamed:@"LoadMore"];
         cell.personTitle.text = @"";
         
@@ -479,7 +474,6 @@
     
     if (indexPath.row == self.limit + self.skip) {
         
-        NSLog(@"Selected Load More Cell");
         self.skip = self.skip + self.limit;
         [self findUsersOnParse:YES];
         

@@ -20,6 +20,9 @@
 @property (nonatomic, strong) EventObject *event;
 @property (nonatomic) BOOL isEditingEvent;
 
+//Amplitude
+@property (nonatomic, strong) NSString *typeOfPhotoUsed;
+
 @property (nonatomic, weak) id <EventCreationCompleted> delegate;
 
 @end

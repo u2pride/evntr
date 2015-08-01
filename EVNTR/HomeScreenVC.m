@@ -104,6 +104,10 @@
             [self.navigationItem setTitle:@"My Events"];
             self.navigationItem.rightBarButtonItems = nil;
             self.navigationItem.leftBarButtonItems = nil;
+            
+            UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(enterEditingMode)];
+            
+            self.navigationItem.rightBarButtonItem = editButton;
 
             break;
         }
@@ -127,6 +131,10 @@
     self.startStopwatchDate = [NSDate date];
     self.numEventsScrolled = @0;
     self.scrolledToBottom = NO;
+    
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    NSLog(@"Amplitude UserID: %@", [appDelegate.amplitudeInstance userId]);
     
     /*
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -265,7 +273,7 @@
                 [eventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:20.0f];
             }
             
-            NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:-86400];
+            NSDate *currentDateMinusOneDay = [NSDate dateWithTimeIntervalSinceNow:TWELVE_HOURS];
             [eventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay]; /* Grab Events in the Future and Ones Within 24 Hours in Past */
             [eventsQuery orderByAscending:@"dateOfEvent"];
             
@@ -295,6 +303,113 @@
     eventsQuery.limit = 50;
     
     return eventsQuery;
+}
+
+#pragma mark - Editing / Deleting Items
+
+- (void) enterEditingMode {
+    
+    if (self.tableView.isEditing) {
+        [self.tableView setEditing:NO animated:YES];
+    } else {
+        [self.tableView setEditing:YES animated:YES];
+    }
+
+    
+}
+
+- (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    EventObject *eventToDelete = (EventObject *) [self.objects objectAtIndex:indexPath.row];
+    
+    PFQuery *picturesQuery = [PFQuery queryWithClassName:@"Pictures"];
+    [picturesQuery whereKey:@"eventParent" equalTo:eventToDelete];
+    [picturesQuery findObjectsInBackgroundWithBlock:^(NSArray *pictures, NSError *error) {
+        
+        for (PFObject *pic in pictures) {
+            
+            [pic deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    NSLog(@"Deleted Pictures");
+                } else {
+                }
+                
+            }];
+            
+        }
+        
+        
+    }];
+    
+    PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
+    [commentsQuery whereKey:@"commentEvent" equalTo:eventToDelete];
+    [commentsQuery findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
+        
+        for (PFObject *comment in comments) {
+            
+            [comment deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    NSLog(@"Deleted Comments");
+                } else {
+                }
+                
+            }];
+        }
+        
+        
+    }];
+    
+    PFQuery *activitiesQuery = [PFQuery queryWithClassName:@"Activities"];
+    [activitiesQuery whereKey:@"activityContent" equalTo:eventToDelete];
+    [activitiesQuery findObjectsInBackgroundWithBlock:^(NSArray *activities, NSError *error) {
+        
+        for (PFObject *activity in activities) {
+            
+            [activity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                
+                if (succeeded) {
+                    NSLog(@"Deleted Activities");
+                } else {
+                }
+                
+            }];
+        }
+        
+        
+    }];
+    
+    //TODO - Remove Delay Perform After Other Deletes
+    //double delayInSeconds = 2.0;
+    //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        
+        [eventToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            if (succeeded) {
+                
+                //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                [self.tableView setEditing:NO animated:YES];
+
+                [self loadObjects];
+                
+            } else {
+                
+                UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Error Deleting" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                
+                [issue show];
+                
+            }
+            
+        }];
+        
+    //});
+
+    
+    
+    
+    
 }
 
 
