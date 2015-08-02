@@ -308,24 +308,8 @@
 - (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     EventObject *eventToDelete = (EventObject *) [self.objects objectAtIndex:indexPath.row];
- 
-    //NSLog(@"NEXT");
-
-    //[self startLoadingIndicator];
-    
-    //EXAMPLE CODE
-    /*
-    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        // Do something...
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-        });
-    });
-    */
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-
     
     NSLog(@"0");
 
@@ -362,185 +346,77 @@
         [pfobjects addObjectsFromArray:pictures];
         [pfobjects addObjectsFromArray:comments];
         
-        [PFObject deleteAll:pfobjects];
-        
-        NSLog(@"6");
+        //Should I Be Using Delete In Background - when I'm already in a background thread?
+        [PFObject deleteAllInBackground:pfobjects block:^(BOOL succeeded, NSError *error) {
+            
+            if (succeeded) {
+                
+                [eventToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    
+                    if (succeeded) {
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            NSLog(@"8");
+                            [MBProgressHUD hideHUDForView:self.view animated:YES];
+                            [self.tableView setEditing:NO animated:YES];
+                            [self loadObjects];
+                        });
+                        
+                    } else {
+                        
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            
+                            [MBProgressHUD hideHUDForView:self.view animated:YES];
+                            [self.tableView setEditing:NO animated:YES];
+                            
+                            UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                            
+                            [issue show];
+                            
+                            NSMutableDictionary *props = [NSMutableDictionary new];
+                            if (error) {
+                                [props setObject:error forKey:@"Error"];
+                            }
+                            [props setObject:eventToDelete forKey:@"Event"];
+                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                            [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
+                            
+                        });
+                    
+                    }
+                    
+                }];
+                
+            } else {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    [self.tableView setEditing:NO animated:YES];
+                    
+                    UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                    
+                    [issue show];
+                    
+                    NSMutableDictionary *props = [NSMutableDictionary new];
+                    if (error) {
+                        [props setObject:error forKey:@"Error"];
+                    }
+                    [props setObject:eventToDelete forKey:@"Event"];
+                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event Pointers" withEventProperties:props];
+                    
 
-        [eventToDelete delete];
-        
-        NSLog(@"7");
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"8");
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [self.tableView setEditing:NO animated:YES];
-            [self loadObjects];
-        });
+                });
+                
+            }
+            
+        }];
         
     
     });
     
-    
-    /*
-    
-    NSLog(@"NEXT");
-    
-    PFQuery *picturesQuery = [PFQuery queryWithClassName:@"Pictures"];
-    [picturesQuery whereKey:@"eventParent" equalTo:eventToDelete];
-    [picturesQuery findObjectsInBackgroundWithBlock:^(NSArray *pictures, NSError *error) {
-        
-        __block BOOL success = YES;
-        
-        for (PFObject *pic in pictures) {
-            
-            [pic deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                if (succeeded) {
-                    NSLog(@"Deleted Pictures");
-                    
-                } else {
-                    
-                    success = NO;
-                    
-                }
-                
-            }];
-            
-        }
-        
-        [self stopLoadingIndicator];
-        
-        //Error Message
-        UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-        
-        [issue show];
-        
-        NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
-        
-        
-    }];
-    
 
-    
-    PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
-    [commentsQuery whereKey:@"commentEvent" equalTo:eventToDelete];
-    [commentsQuery findObjectsInBackgroundWithBlock:^(NSArray *comments, NSError *error) {
-        
-        for (PFObject *comment in comments) {
-            
-            [comment deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                if (succeeded) {
-                    NSLog(@"Deleted Comments");
-                
-                    
-                } else {
-                    
-                    [self stopLoadingIndicator];
-                    
-                    //Error Message
-                    UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-                    
-                    [issue show];
-                    
-                    NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
-                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
-                    
-                }
-                
-            }];
-        }
-        
-        
-    }];
-    
-
-    PFQuery *activitiesQuery = [PFQuery queryWithClassName:@"Activities"];
-    [activitiesQuery whereKey:@"activityContent" equalTo:eventToDelete];
-    [activitiesQuery findObjectsInBackgroundWithBlock:^(NSArray *activities, NSError *error) {
-        
-        for (PFObject *activity in activities) {
-            
-            [activity deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                
-                if (succeeded) {
-                    NSLog(@"Deleted Activities");
-                    
-                    
-                    
-                } else {
-                    
-                    [self stopLoadingIndicator];
-                    
-                    //Error Message
-                    UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-                    
-                    [issue show];
-                    
-                    NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
-                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
-                    
-                }
-                
-            }];
-        }
-        
-        
-    }];
-    
-    
-    [eventToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        
-        if (succeeded) {
-            
-            [self stopLoadingIndicator];
-            
-            //Error Message
-            UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-            
-            [issue show];
-            
-            [self.tableView setEditing:NO animated:YES];
-            
-            [self loadObjects];
-            
-        } else {
-            
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            
-            //Error Message
-            UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-            
-            [issue show];
-            
-            NSDictionary *props = [NSDictionary dictionaryWithObject:error forKey:@"Error"];
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
-            
-        }
-        
-    }];
-
-    
-    
-    //TODO - Remove Delay Perform After Other Deletes
-    //double delayInSeconds = 2.0;
-    //dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    //dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-    
-
-    
-    //});
-
-     */
-    
-    
-    
-    
 }
 
 
