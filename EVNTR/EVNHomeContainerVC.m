@@ -32,7 +32,7 @@
     
     UIView *view = [[UIView alloc] init];
     view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    view.backgroundColor = [UIColor redColor];
+    view.backgroundColor = [UIColor whiteColor];
     
     self.contentView = view;
     

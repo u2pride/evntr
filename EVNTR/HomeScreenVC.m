@@ -311,37 +311,25 @@
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
-    NSLog(@"0");
-
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-        NSLog(@"1");
-
         __block NSMutableArray *pfobjects = [NSMutableArray new];
-        
-        NSLog(@"2");
         
         PFQuery *picturesQuery = [PFQuery queryWithClassName:@"Pictures"];
         [picturesQuery whereKey:@"eventParent" equalTo:eventToDelete];
         
         NSArray *pictures = [picturesQuery findObjects];
         
-        NSLog(@"3");
-
         PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
         [commentsQuery whereKey:@"commentEvent" equalTo:eventToDelete];
 
         NSArray *comments = [commentsQuery findObjects];
         
-        NSLog(@"4");
-
         PFQuery *activitiesQuery = [PFQuery queryWithClassName:@"Activities"];
         [activitiesQuery whereKey:@"activityContent" equalTo:eventToDelete];
         
         NSArray *activities = [activitiesQuery findObjects];
     
-        NSLog(@"5");
-
         [pfobjects addObjectsFromArray:activities];
         [pfobjects addObjectsFromArray:pictures];
         [pfobjects addObjectsFromArray:comments];
@@ -356,7 +344,6 @@
                     if (succeeded) {
                         
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            NSLog(@"8");
                             [MBProgressHUD hideHUDForView:self.view animated:YES];
                             [self.tableView setEditing:NO animated:YES];
                             [self loadObjects];
@@ -699,7 +686,7 @@
     
     self.eventForInvites = event;
     
-    double delayInSeconds = 1.5;
+    double delayInSeconds = 0.75;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
