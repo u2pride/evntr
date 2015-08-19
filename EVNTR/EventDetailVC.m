@@ -9,6 +9,7 @@
 
 #import "AddEventPrimaryVC.h"
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "CommentsTableSource.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
@@ -211,20 +212,19 @@
     [super viewWillDisappear:animated];
     
     //Amplitude Analytics
-    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:self.startStopwatchDate];    
-    int intTime = (int) round(time);
+    int intTime = 0;
+    NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:self.startStopwatchDate];
+    intTime = (int) round(time);
     
     NSMutableDictionary *eventProps = [NSMutableDictionary new];
-    [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
-    [eventProps setObject:self.event.objectId forKey:@"Event"];
-    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToDescription] forKey:@"Scrolled to Description"];
-    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToPictures] forKey:@"Scrolled to Pictures"];
-    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToComments] forKey:@"Scrolled to Comments"];
+    
+        [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
+        [eventProps setObject:self.event.objectId forKey:@"Event"];
+        [eventProps setObject:[NSNumber numberWithBool:self.scrolledToDescription] forKey:@"Scrolled to Description"];
+        [eventProps setObject:[NSNumber numberWithBool:self.scrolledToPictures] forKey:@"Scrolled to Pictures"];
+        [eventProps setObject:[NSNumber numberWithBool:self.scrolledToComments] forKey:@"Scrolled to Comments"];
 
-    
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Event" withEventProperties:eventProps];
-    
+    [[Amplitude instance] logEvent:@"Viewed Event" withEventProperties:eventProps];
     
     if (self.shouldRestoreNavBar) {
     
@@ -569,8 +569,7 @@
         
         currentLocation = [[CLLocation alloc] initWithLatitude:[latitude doubleValue] longitude:[longitude doubleValue]];
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Current Location Unknown"];
+        [[Amplitude instance] logEvent:@"Current Location Unknown"];
     }
 
     CLLocationDirection distance = [self.locationOfEvent distanceFromLocation:currentLocation];
@@ -832,8 +831,7 @@
 
 - (void) touchedMap {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Map"];
+    [[Amplitude instance] logEvent:@"Viewed Map"];
     
     FullMapVC *mapViewController = [[FullMapVC alloc] init];
     
@@ -850,8 +848,7 @@
     
     if (!self.isGuestUser) {
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed Event Creator"];
+        [[Amplitude instance] logEvent:@"Viewed Event Creator"];
         
         ProfileVC *viewUserProfileVC = (ProfileVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ProfileViewController"];
         viewUserProfileVC.userObjectID = self.event.parent.objectId;
@@ -865,8 +862,7 @@
 //TODO:  Must present this similarly to the way an add event modal is presented.
 - (void) editEvent {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Edited Event"];
+    [[Amplitude instance] logEvent:@"Edited Event"];
     
     AddEventPrimaryVC *editEventVC = (AddEventPrimaryVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"CreateEventFirstStep"];
     editEventVC.delegate = self;
@@ -883,8 +879,7 @@
         
         self.shouldRestoreNavBar = NO;
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Clicked Invite Users"];
+        [[Amplitude instance] logEvent:@"Clicked Invite Users"];
         
         PeopleVC *invitePeopleVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         invitePeopleVC.typeOfUsers = VIEW_FOLLOWING_TO_INVITE;
@@ -908,8 +903,7 @@
         
     } else {
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed Event Attenders"];
+        [[Amplitude instance] logEvent:@"Viewed Event Attenders"];
         
         PeopleVC *viewAttendees = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
         
@@ -924,8 +918,7 @@
 
 - (IBAction)viewEventPictures:(id)sender {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Event Photos"];
+    [[Amplitude instance] logEvent:@"Viewed Event Photos"];
     
     UICollectionViewFlowLayout* flowLayout = [[UICollectionViewFlowLayout alloc]init];
     [flowLayout setScrollDirection:UICollectionViewScrollDirectionVertical];
@@ -965,8 +958,7 @@
         
         self.shouldRestoreNavBar = NO;
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Added Comment"];
+        [[Amplitude instance] logEvent:@"Added Comment"];
         
         EVNAddCommentVC *newCommentVC = [[EVNAddCommentVC alloc] init];
         newCommentVC.delegate = self;

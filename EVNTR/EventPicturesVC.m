@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EventPicturesVC.h"
 #import "EVNConstants.h"
 #import "EVNUtility.h"
@@ -307,8 +308,7 @@ static NSString * const reuseIdentifier = @"pictureCell";
 
 - (void) addPhoto {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Added Photo"];
+    [[Amplitude instance] logEvent:@"Added Photo"];
     
     UIAlertController *pictureOptionsMenu = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
     

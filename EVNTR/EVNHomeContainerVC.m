@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNHomeContainerVC.h"
 #import "EVNUtility.h"
 #import "SearchVC.h"
@@ -140,8 +141,7 @@
 
 - (void) displaySearchController {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Searched"];
+    [[Amplitude instance] logEvent:@"Searched"];
     
     SearchVC *searchController = (SearchVC *) [self.storyboard instantiateViewControllerWithIdentifier:@"SearchViewController"];
     
@@ -168,8 +168,7 @@
     [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
     
     NSDictionary *props = @{@"Starting Radius": [NSNumber numberWithFloat:self.searchRadius], @"Chosen Radius": [NSNumber numberWithFloat:radius]};
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Filtered" withEventProperties:props];
+    [[Amplitude instance] logEvent:@"Filtered" withEventProperties:props];
     
     self.searchRadius = radius;
     
@@ -232,9 +231,6 @@
     [toVC didMoveToParentViewController:self];
     
 }
-
-
-
 
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNFullWebViewController.h"
 #import "EVNUser.h"
 #import "ProfileVC.h"
@@ -40,8 +41,7 @@
 
 - (IBAction)logOut:(id)sender {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Logged Out"];
+    [[Amplitude instance] logEvent:@"Logged Out"];
     
     [EVNUser logOut];
     
@@ -53,8 +53,7 @@
 
 - (IBAction)tweetEvntr:(id)sender {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Selected Tweet"];
+    [[Amplitude instance] logEvent:@"Selected Tweet"];
     
     if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
         
@@ -76,8 +75,7 @@
 
 - (IBAction)emailEvntr:(id)sender {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Selected Email"];
+    [[Amplitude instance] logEvent:@"Selected Email"];
     
     [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
     
@@ -98,8 +96,7 @@
 
 - (IBAction)viewTerms:(id)sender {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Selected Terms"];
+    [[Amplitude instance] logEvent:@"Selected Terms"];
     
     EVNFullWebViewController *termsWeb = [[EVNFullWebViewController alloc] init];
     

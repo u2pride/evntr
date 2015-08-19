@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EventObject.h"
 #import "EVNConstants.h"
 #import <Parse/PFObject+Subclass.h>
@@ -383,8 +384,7 @@
     [requestAccessActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (!succeeded) {
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"Request Access Error"];
+            [[Amplitude instance] logEvent:@"Request Access Error"];
         }
         
         completionBlock(succeeded);
@@ -404,12 +404,10 @@
     [newAttendingActivity saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         
         if (!succeeded) {
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"RSVP Error"];
+            [[Amplitude instance] logEvent:@"RSVP Error"];
         } else {
             NSDictionary *props = [NSDictionary dictionaryWithObject:self.objectId forKey:@"EventID"];
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"RSVP" withEventProperties:props];
+            [[Amplitude instance] logEvent:@"RSVP" withEventProperties:props];
         }
         
         completionBlock(succeeded);
@@ -465,8 +463,7 @@
             if (succeeded) {
                 savesCompleted++;
             } else {
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate.amplitudeInstance logEvent:@"Invite Users Error"];
+                [[Amplitude instance] logEvent:@"Invite Users Error"];
                 completionBlock(NO);
             }
             

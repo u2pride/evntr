@@ -1,6 +1,6 @@
 // ------- DEVELOPMENT ---------
 // Evntr App - Parse Cloud Code
-// Updated: July 16th, 2015
+// Updated: August 2nd, 2015
 // Developer:  Alex Ryan
 
 //Custom Cloud Functions 

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNLoginBaseVC.h"
 #import "EVNConstants.h"
 #import "FBShimmeringView.h"
@@ -92,17 +93,15 @@
                                   otherButtonTitles:nil] show];
             }
             
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"Facebook Sign Up Issue"];
+            [[Amplitude instance] logEvent:@"Facebook Sign Up Issue"];
             
         } else {
             
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance setUserId:user.objectId];
+            [[Amplitude instance] setUserId:user.objectId];
                         
             if (user.isNew) {
                 
-                [appDelegate.amplitudeInstance logEvent:@"Facebook Sign Up"];
+                [[Amplitude instance] logEvent:@"Facebook Sign Up"];
                 
                 double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -114,7 +113,7 @@
                 
             } else {
                 
-                [appDelegate.amplitudeInstance logEvent:@"Facebook Log In"];
+                [[Amplitude instance] logEvent:@"Facebook Log In"];
                 
                 NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                 [standardDefaults setBool:NO forKey:kIsGuest];

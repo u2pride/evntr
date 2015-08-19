@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNFacebookFriendCell.h"
 #import "EVNConnectFBFriendsVC.h"
 #import "EVNNoResultsView.h"
@@ -322,8 +323,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
 
 - (void) requestFriendPermission {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Connected FB Friends"];
+    [[Amplitude instance] logEvent:@"Connected FB Friends"];
     
     [self fadeInView:self.tableView];
         
@@ -337,7 +337,7 @@ static NSString *reuseIdentifier = @"CellIdentifier";
             
             [meRequestConnection addRequest:meRequest completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
                 
-                if (!error) {
+                if (!error && [result objectForKey:@"id"]) {
                     //Store the current user's Facebook ID on the user
                     [[EVNUser currentUser] setObject:[result objectForKey:@"id"] forKey:@"facebookID"];
                     [[EVNUser currentUser] saveInBackground];

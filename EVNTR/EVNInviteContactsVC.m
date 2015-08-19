@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNInviteContactsVC.h"
 #import <Parse/Parse.h>
 
@@ -60,8 +61,7 @@
 
 - (void) sendInviteMessage {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Clicked Send Invite Text"];
+    [[Amplitude instance] logEvent:@"Clicked Send Invite Text"];
     
     [self.messageFriendsView.actionButton startedTask];
     
@@ -92,8 +92,7 @@
         
         if (result == MessageComposeResultSent) {
             
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"Sent Invite Text"];
+            [[Amplitude instance] logEvent:@"Sent Invite Text"];
             
             UIAlertController *sentVerification = [UIAlertController alertControllerWithTitle:@"Message Sent" message:nil preferredStyle:UIAlertControllerStyleAlert];
             
@@ -111,8 +110,7 @@
             
         } else if (result == MessageComposeResultCancelled) {
             
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"Cancelled Invite Text"];
+            [[Amplitude instance] logEvent:@"Cancelled Invite Text"];
             
             UIAlertController *sentFailure = [UIAlertController alertControllerWithTitle:@"Message Cancelled" message:nil preferredStyle:UIAlertControllerStyleAlert];
             
@@ -130,8 +128,7 @@
             
         } else {
             
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"Failed Invite Text"];
+            [[Amplitude instance] logEvent:@"Failed Invite Text"];
             
             UIAlertController *sentFailure = [UIAlertController alertControllerWithTitle:@"Failed To Send Message" message:@"Try Again" preferredStyle:UIAlertControllerStyleAlert];
             

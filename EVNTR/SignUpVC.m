@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
@@ -165,9 +166,8 @@ typedef enum {
                     
                     if (succeeded) {
                         
-                        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                        [appDelegate.amplitudeInstance setUserId:newUser.objectId];
-                        [appDelegate.amplitudeInstance logEvent:@"Signed Up"];
+                        [[Amplitude instance] setUserId:newUser.objectId];
+                        [[Amplitude instance] logEvent:@"Signed Up"];
                         
                         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                         [standardDefaults setBool:NO forKey:kIsGuest];

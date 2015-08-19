@@ -8,6 +8,7 @@
 
 #import "ActivityVC.h"
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
 #import "EVNHomeContainerVC.h"
@@ -203,8 +204,7 @@
                                  @"Final Tab": toVCName,
                                  };
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Navigated Tabs" withEventProperties:dimensions];
+    [[Amplitude instance] logEvent:@"Navigated Tabs" withEventProperties:dimensions];
     
     if (toVCIndex == TAB_CREATE) {
         self.transitionController.isPresenting = YES;
@@ -227,12 +227,16 @@
     self.darkBlur = darkBlur;
     [self.darkBlur removeFromSuperview];
     
-    NSNumber *currentNumEvents = [EVNUser currentUser].numEvents;
+    NSNumber *currentNumEvents = @0;
+    
+    if ([[EVNUser currentUser] numEvents]) {
+        currentNumEvents = [EVNUser currentUser].numEvents;
+    }
+    
     NSNumber *updatedNumEvents = [NSNumber numberWithInt:[currentNumEvents intValue] + 1];
     
     NSDictionary *props = [NSDictionary dictionaryWithObject:updatedNumEvents forKey:@"Events Created"];
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance setUserProperties:props replace:YES];
+    [[Amplitude instance] setUserProperties:props replace:YES];
     
     //Scroll TableView to Top and Refresh Results to Show Most Recently Created Event
     UINavigationController *navController = (UINavigationController *) [self.viewControllers objectAtIndex:TAB_HOME];
@@ -244,7 +248,6 @@
     HomeScreenVC *allEventsVC = homeContainer.allEventsViewController;
     
     [navController popToRootViewControllerAnimated:YES];
-    
     
     allEventsVC.tableView.contentOffset = CGPointMake(0, 0 - allEventsVC.tableView.contentInset.top);
     

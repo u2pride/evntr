@@ -1,7 +1,8 @@
 // ------- PRODUCTION ---------
 // Evntr App - Parse Cloud Code
-// Updated: July 16th, 2015
+// Updated: August 2nd, 2015
 // Developer:  Alex Ryan
+// Release: v1.3
 
 //Custom Cloud Functions 
 
@@ -45,8 +46,6 @@ Parse.Cloud.define("checkVersion", function(request, response) {
 });
 
 
-
-
 //After Delete Hooks
 //Decrement Num Pictures on Event after Piture Delete
 Parse.Cloud.afterDelete("Pictures", function(request) {
@@ -64,6 +63,43 @@ Parse.Cloud.afterDelete("Pictures", function(request) {
   });
   
 });
+
+//Decrement Num Comments on Event after Comment Delete
+Parse.Cloud.afterDelete("Comments", function(request) {
+  Parse.Cloud.useMasterKey();
+  
+  var event = new Parse.Object("Events");
+  event.id = request.object.get("commentEvent").id;
+  event.increment("numComments", -1);
+  event.save(null, {
+    success: function(event) {
+    },
+    error: function(event, error) {
+      console.error("Error Decrementing Comments Count " + error.code + " : " + error.message);
+    }
+  });
+  
+});
+
+//Decrement Num Events on User after Event Delete
+Parse.Cloud.afterDelete("Events", function(request) {
+  Parse.Cloud.useMasterKey();
+  
+    console.log("loggggging " + request.object.get("parent"));
+    
+  var user = request.object.get("parent");
+  user.increment("numEvents", -1);
+  user.save(null, {
+    success: function(user) {
+    },
+    error: function(user, error) {
+      console.error("Error Decrementing Users Num Events Count " + error.code + " : " + error.message);
+    }
+  });
+  
+});
+
+
 
 //Decrement Num Followers and Following Counts on Unfollow Activity
 Parse.Cloud.afterDelete("Activities", function(request) {
@@ -85,7 +121,8 @@ Parse.Cloud.afterDelete("Activities", function(request) {
        });
        
        
-       var userFollowing = request.user;
+       var userFollowing = new Parse.User;
+       userFollowing.id = request.object.get("userFrom").id;
        userFollowing.increment("numFollowing", -1);
        userFollowing.save(null, {
          success: function(event) {
@@ -357,7 +394,7 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     Parse.Cloud.useMasterKey();
     
     var lowercaseUsernameSubmitted = request.object.get("username").toLowerCase();
-       
+    
     //If Username Field Has Been Updated
     if (request.object.dirty("username") && request.object.get("username").toLowerCase() != request.object.get("canonicalUsername")) {
         
@@ -385,4 +422,59 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
         response.success();
       }
   
+});
+
+
+Parse.Cloud.afterSave("Reports", function(request, response) {
+    Parse.Cloud.useMasterKey();
+    
+    var Mailgun = require('mailgun');
+    Mailgun.initialize('sandbox4c4a9ed8e70f4100b14c2a3b9141c2a8.mailgun.org', 'key-3467e49ce851dd08391802eaf5e0e156');
+    
+    request.object.get('flaggedEvent').fetch ({
+        success: function(eventFlagged) {
+            // The object was retrieved successfully.
+        
+            request.object.get('userFrom').fetch ({
+                success: function(userFrom) {
+
+                
+                    eventFlagged.get('parent').fetch ({
+                        success: function(eventHost) {
+                            
+                            var message = "Type of Flag: " + request.object.get('flagType') + "\nMessage From User: " + request.object.get('flagDescription') + "\nFlagged Event Name: " + eventFlagged.get('title') + "\nEvent ObjectID: " + eventFlagged.id + "\nFlagged By User: " + userFrom.get('username') + "\nEvent Host: " + eventHost.get('username');
+    
+                            Mailgun.sendEmail({
+                                to: "mfisher390@gmail.com",
+                                from: "Evntr Reporting <postmaster@sandbox4c4a9ed8e70f4100b14c2a3b9141c2a8.mailgun.org>",
+                                subject: "Evntr - New Report by User",
+                                text: message
+                            }, {
+                                success: function(httpResponse) {
+                                    console.log(httpResponse);
+                                    //response.success("Email sent!");
+                            },
+                                error: function(httpResponse) {
+                                console.error(httpResponse);
+                                //response.error("Uh oh, something went wrong");
+                                }
+                            });
+                        
+                        },
+                        error: function(object, error) {
+                        }
+                    });
+                
+                },
+                error: function(object, error) {
+                }
+            });
+        
+    },
+    error: function(object, error) {
+        // The object was not retrieved successfully.
+        // error is a Parse.Error with an error code and message.
+    }
+    });
+    
 });

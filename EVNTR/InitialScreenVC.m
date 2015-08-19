@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
@@ -131,8 +132,7 @@
         
         [self leavingTransitionAnimations];
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Skipped Login"];
+        [[Amplitude instance] logEvent:@"Skipped Login"];
         
         //Set isGuest Object
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
@@ -431,8 +431,7 @@
                         
                         if (!error){
                             
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate.amplitudeInstance setUserId:[EVNUser currentUser].objectId];
+                            [[Amplitude instance] setUserId:[EVNUser currentUser].objectId];
                             
                             NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
                             [standardDefaults setBool:NO forKey:kIsGuest];

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNInviteFBFriendsVC.h"
 #import "EVNNoResultsView.h"
 #import <Parse/Parse.h>
@@ -48,8 +49,7 @@
 
 - (void) openFacebookInvite {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Sent Facebook Invites"];
+    [[Amplitude instance] logEvent:@"Sent Facebook Invites"];
     
     FBSDKAppInviteContent *fbInviteContent = [[FBSDKAppInviteContent alloc] init];
     

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "PictureFullScreenVC.h"
 
 @interface PictureFullScreenVC ()
@@ -57,8 +58,7 @@
     [super viewWillAppear:animated];
     
     NSDictionary *props = [NSDictionary dictionaryWithObject:self.eventPictureObject.objectId forKey:@"Photo"];
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Full Photo" withEventProperties:props];
+    [[Amplitude instance] logEvent:@"Viewed Full Photo" withEventProperties:props];
 }
 
 

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "FullMapVC.h"
 #import <Parse/Parse.h>
 #import <MapKit/MapKit.h>
@@ -51,8 +52,7 @@
 
 - (void) getDirectionsToEvent {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Accessed Event Directions"];
+    [[Amplitude instance] logEvent:@"Accessed Event Directions"];
     
     CLLocation *fromLocation = self.locationOfEvent;
     

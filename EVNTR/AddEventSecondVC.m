@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "AddEventSecondVC.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNButton.h"
 #import "EVNLocationSearchVC.h"
 #import "EVNUser.h"
@@ -211,15 +212,21 @@
                             
                             if (succeeded) {
                                 
+                                int days = 0;
                                 NSTimeInterval daysOut = [self.event.dateOfEvent timeIntervalSinceDate:[NSDate date]];
-                                int days = round( daysOut/ 86400 );
+                                days = round( daysOut/ 86400 );
                                 
                                 NSMutableDictionary *eventprops = [NSMutableDictionary new];
-                                [eventprops setObject:self.typeOfPhotoUsed forKey:@"Picture Type"];
-                                [eventprops setObject:self.event.typeOfEvent forKey:@"Event Type"];
-                                [eventprops setObject:[NSNumber numberWithInt:days] forKey:@"Days Out"];
-                                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                                [appDelegate.amplitudeInstance logEvent:@"Event Created" withEventProperties:eventprops];
+                                
+                                if (self.typeOfPhotoUsed && self.event.typeOfEvent) {
+                                    
+                                    [eventprops setObject:self.typeOfPhotoUsed forKey:@"Picture Type"];
+                                    [eventprops setObject:self.event.typeOfEvent forKey:@"Event Type"];
+                                    [eventprops setObject:[NSNumber numberWithInt:days] forKey:@"Days Out"];
+                                    
+                                }
+                            
+                                [[Amplitude instance] logEvent:@"Event Created" withEventProperties:eventprops];
                                 
                                 [[NSNotificationCenter defaultCenter] postNotificationName:kUserCreatedNewEvent object:nil userInfo:nil];
                                 

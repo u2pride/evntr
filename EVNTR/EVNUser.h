@@ -30,7 +30,6 @@
 + (void) queryForUsersFollowing:(EVNUser *)user withLimit:(int)limit withSkip:(int)skip completion:(void (^)(NSArray *))completionBlock;
 + (void) queryForUsersFollowers:(EVNUser *)user withLimit:(int)limit withSkip:(int)skip completion:(void (^)(NSArray *))completionBlock;
 
-
 - (NSString *) hometownText;
 - (NSString *) nameText;
 - (NSString *) bioText;

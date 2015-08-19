@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNConstants.h"
 #import "EVNLocationSearchVC.h"
 #import "EVNMapAnnotation.h"
@@ -465,8 +466,7 @@ const int NUMBER_OF_PLACES_RESULTS = 10;
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Searched Event Location"];
+    [[Amplitude instance] logEvent:@"Searched Event Location"];
     
     [self.searchController.searchBar setShowsCancelButton:NO animated:YES];
     self.searchController.searchBar.text = @"";

@@ -9,8 +9,8 @@
 #import "EVNInviteContainerVC.h"
 #import "EVNHomeContainerVC.h"
 
-
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNConstants.h"
 #import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
@@ -142,31 +142,31 @@
     [super viewWillDisappear:animated];
     
     //Amplitude Analytics
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    int intTime = 0;
     NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:self.startStopwatchDate];
-    int intTime = (int) round(time);
+    intTime = (int) round(time);
 
     NSMutableDictionary *eventProps = [NSMutableDictionary new];
-    [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
-    [eventProps setObject:self.numEventsScrolled forKey:@"Events Scrolled"];
-    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToBottom] forKey:@"Scrolled to Bottom"];
-
+    
+        [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
+        [eventProps setObject:self.numEventsScrolled forKey:@"Events Scrolled"];
+        [eventProps setObject:[NSNumber numberWithBool:self.scrolledToBottom] forKey:@"Scrolled to Bottom"];
     
     switch (self.typeOfEventTableView) {
         case ALL_PUBLIC_EVENTS: {
-            [appDelegate.amplitudeInstance logEvent:@"Viewed Public Events" withEventProperties:eventProps];
+            [[Amplitude instance] logEvent:@"Viewed Public Events" withEventProperties:eventProps];
             
             break;
         }
         case CURRENT_USER_EVENTS: {
             self.navigationItem.rightBarButtonItems = nil;
 
-            [appDelegate.amplitudeInstance logEvent:@"Viewed My Events" withEventProperties:eventProps];
+            [[Amplitude instance] logEvent:@"Viewed My Events" withEventProperties:eventProps];
             
             break;
         }
         case OTHER_USER_EVENTS: {
-            [appDelegate.amplitudeInstance logEvent:@"Viewed Others Events" withEventProperties:eventProps];
+            [[Amplitude instance] logEvent:@"Viewed Others Events" withEventProperties:eventProps];
             
             break;
         }
@@ -305,49 +305,88 @@
     
 }
 
+//Delete Event
+
+/*
+ 
+ Thoughts:  delete triggered.  HUD appears and prevents other actions.  
+ if error with deleting related objects, then don't delete event and show message to user about not completely removing event.  Don't refresh table view.
+ if success and then issue with deleting event itself, show error message.  don't refresh table.  
+  
+ */
 - (void) tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     EventObject *eventToDelete = (EventObject *) [self.objects objectAtIndex:indexPath.row];
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
-        __block NSMutableArray *pfobjects = [NSMutableArray new];
+    //Delete the Event if Exists
+    if (eventToDelete) {
         
-        PFQuery *picturesQuery = [PFQuery queryWithClassName:@"Pictures"];
-        [picturesQuery whereKey:@"eventParent" equalTo:eventToDelete];
-        
-        NSArray *pictures = [picturesQuery findObjects];
-        
-        PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
-        [commentsQuery whereKey:@"commentEvent" equalTo:eventToDelete];
-
-        NSArray *comments = [commentsQuery findObjects];
-        
-        PFQuery *activitiesQuery = [PFQuery queryWithClassName:@"Activities"];
-        [activitiesQuery whereKey:@"activityContent" equalTo:eventToDelete];
-        
-        NSArray *activities = [activitiesQuery findObjects];
-    
-        [pfobjects addObjectsFromArray:activities];
-        [pfobjects addObjectsFromArray:pictures];
-        [pfobjects addObjectsFromArray:comments];
-        
-        //Should I Be Using Delete In Background - when I'm already in a background thread?
-        [PFObject deleteAllInBackground:pfobjects block:^(BOOL succeeded, NSError *error) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
-            if (succeeded) {
+            NSError *error = nil;
+            __block NSMutableArray *pfobjects = [NSMutableArray new];
+            
+            PFQuery *picturesQuery = [PFQuery queryWithClassName:@"Pictures"];
+            [picturesQuery whereKey:@"eventParent" equalTo:eventToDelete];
+            
+            NSArray *pictures = [picturesQuery findObjects:&error];
+            
+            PFQuery *commentsQuery = [PFQuery queryWithClassName:@"Comments"];
+            [commentsQuery whereKey:@"commentEvent" equalTo:eventToDelete];
+            
+            NSArray *comments = [commentsQuery findObjects:&error];
+            
+            PFQuery *activitiesQuery = [PFQuery queryWithClassName:@"Activities"];
+            [activitiesQuery whereKey:@"activityContent" equalTo:eventToDelete];
+            
+            NSArray *activities = [activitiesQuery findObjects:&error];
+            
+            [pfobjects addObjectsFromArray:activities];
+            [pfobjects addObjectsFromArray:pictures];
+            [pfobjects addObjectsFromArray:comments];
+            
+            if (!error) {
                 
-                [eventToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                //Should I Be Using Delete In Background - when I'm already in a background thread?
+                [PFObject deleteAllInBackground:pfobjects block:^(BOOL succeeded, NSError *error) {
                     
                     if (succeeded) {
                         
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [MBProgressHUD hideHUDForView:self.view animated:YES];
-                            [self.tableView setEditing:NO animated:YES];
-                            [self loadObjects];
-                        });
+                        [eventToDelete deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                            
+                            if (succeeded) {
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                                    [self.tableView setEditing:NO animated:YES];
+                                    [self loadObjects];
+                                });
+                                
+                            } else {
+                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    
+                                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                                    [self.tableView setEditing:NO animated:YES];
+                                    
+                                    UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!  Or just try one more time in case the internet connection caused the problem" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                                    
+                                    [issue show];
+                                    
+                                    NSMutableDictionary *props = [NSMutableDictionary new];
+                                    if (error) {
+                                        [props setObject:error forKey:@"Error"];
+                                    }
+                                    [props setObject:eventToDelete forKey:@"Event"];
+                                    [[Amplitude instance] logEvent:@"Error Deleting Event" withEventProperties:props];
+                                    
+                                });
+                                
+                            }
+                            
+                        }];
                         
                     } else {
                         
@@ -356,7 +395,7 @@
                             [MBProgressHUD hideHUDForView:self.view animated:YES];
                             [self.tableView setEditing:NO animated:YES];
                             
-                            UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                            UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!  Or you can always try one more time in case the internet connection caused the problem." delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
                             
                             [issue show];
                             
@@ -365,44 +404,42 @@
                                 [props setObject:error forKey:@"Error"];
                             }
                             [props setObject:eventToDelete forKey:@"Event"];
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event" withEventProperties:props];
+                            [[Amplitude instance] logEvent:@"Error Deleting Event Pointers" withEventProperties:props];
+                            
                             
                         });
-                    
+                        
                     }
                     
                 }];
                 
             } else {
                 
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    [self.tableView setEditing:NO animated:YES];
-                    
-                    UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
-                    
-                    [issue show];
-                    
-                    NSMutableDictionary *props = [NSMutableDictionary new];
-                    if (error) {
-                        [props setObject:error forKey:@"Error"];
-                    }
-                    [props setObject:eventToDelete forKey:@"Event"];
-                    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                    [appDelegate.amplitudeInstance logEvent:@"Error Deleting Event Pointers" withEventProperties:props];
-                    
-
-                });
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                [self.tableView setEditing:NO animated:YES];
+                
+                UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!  Or just try one more time in case the internet connection caused the problem" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+                
+                [issue show];
+                
+                [[Amplitude instance] logEvent:@"Error Retrieiving Event Pointers"];
                 
             }
             
-        }];
+        });
         
-    
-    });
-    
+    } else {
+        
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [self.tableView setEditing:NO animated:YES];
+        
+        UIAlertView *issue = [[UIAlertView alloc] initWithTitle:@"Delete Issue" message:@"Looks like we had trouble deleting your event.  Contact us on the settings page and we'll help!  Or just try one more time in case the internet connection caused the problem" delegate:nil cancelButtonTitle:@"Got It" otherButtonTitles:nil];
+        
+        [issue show];
+        
+        [[Amplitude instance] logEvent:@"Error Retrieiving Event to Delete"];
+        
+    }
 
 }
 

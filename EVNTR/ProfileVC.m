@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "ActivityVC.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
@@ -177,8 +178,7 @@
             
         } else {
             
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance logEvent:@"Profile Not Found"];
+            [[Amplitude instance] logEvent:@"Profile Not Found"];
 
             self.eventsHeaderButton.hidden = YES;
             self.followingHeaderButton.hidden = YES;
@@ -459,8 +459,7 @@
         
     } else {
         
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Expanded Profile Image"];
+        [[Amplitude instance] logEvent:@"Expanded Profile Image"];
         
         [self.view layoutIfNeeded];
         
@@ -489,14 +488,12 @@
     HomeScreenVC *eventVC = [self.storyboard instantiateViewControllerWithIdentifier:@"EventViewController"];
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed My Events"];
+        [[Amplitude instance] logEvent:@"Viewed My Events"];
         
         eventVC.typeOfEventTableView = CURRENT_USER_EVENTS;
         eventVC.userForEventsQuery = [EVNUser currentUser];
     } else {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed Others Events"];
+        [[Amplitude instance] logEvent:@"Viewed Others Events"];
         
         eventVC.typeOfEventTableView = OTHER_USER_EVENTS;
         eventVC.userForEventsQuery = self.profileUser;
@@ -509,11 +506,9 @@
 - (void) viewFollowers {
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed My Followers"];
+        [[Amplitude instance] logEvent:@"Viewed My Followers"];
     } else {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed Others Followers"];
+        [[Amplitude instance] logEvent:@"Viewed Others Followers"];
     }
     
     PeopleVC *viewFollowersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
@@ -528,11 +523,9 @@
 - (void) viewFollowing {
     
     if ([self.userObjectID isEqualToString:[EVNUser currentUser].objectId]) {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed My Following"];
+        [[Amplitude instance] logEvent:@"Viewed My Following"];
     } else {
-        AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate.amplitudeInstance logEvent:@"Viewed Others Following"];
+        [[Amplitude instance] logEvent:@"Viewed Others Following"];
     }
     
     PeopleVC *viewFollowingVC = [self.storyboard instantiateViewControllerWithIdentifier:@"viewUsersCollection"];
@@ -546,8 +539,7 @@
 
 - (void) viewSettings {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Settings"];
+    [[Amplitude instance] logEvent:@"Viewed Settings"];
     
     [self performSegueWithIdentifier:@"profileToSettings" sender:nil];
     
@@ -555,8 +547,7 @@
 
 - (void) showInviteScreen {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Invite Screen"];
+    [[Amplitude instance] logEvent:@"Viewed Invite Screen"];
     
     EVNInviteContainerVC *inviteVC = [[EVNInviteContainerVC alloc] init];
     
@@ -608,8 +599,7 @@
 
 - (void)canceledEditingProfile {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Cancel Editing Profile"];
+    [[Amplitude instance] logEvent:@"Cancel Editing Profile"];
     
     [self dismissViewControllerAnimated:YES completion:nil];
 
@@ -618,8 +608,7 @@
 
 -(void)saveProfileWithNewInformation:(NSDictionary *)stringDictionary withImageData:(NSData *)imageData {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Saved Edited Profile"];
+    [[Amplitude instance] logEvent:@"Saved Edited Profile"];
     
     NSString *username = [stringDictionary objectForKey:@"username"];
     
@@ -748,8 +737,7 @@
 
 - (void) editUserProfile {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Clicked Edit Profile"];
+    [[Amplitude instance] logEvent:@"Clicked Edit Profile"];
     
     [self performSegueWithIdentifier:@"profileToEditProfile" sender:nil];
     

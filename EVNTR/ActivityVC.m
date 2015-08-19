@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "ActivityTableCell.h"
 #import "ActivityVC.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNConstants.h"
 #import "EVNNoResultsView.h"
 #import "EVNNotifcationsTitleView.h"
@@ -807,12 +808,10 @@
 - (void) filterActivityTable {
     
     UIAlertController *filterOptions = [UIAlertController alertControllerWithTitle:@"Notification Types" message:@"Select the notifications you want to see" preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    
+        
     UIAlertAction *eventsAttendedAction = [UIAlertAction actionWithTitle:@"Events Attended" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSDictionary *props = [NSDictionary dictionaryWithObject:@"Attended" forKey:@"Filter"];
-        [appDelegate.amplitudeInstance logEvent:@"Filtered Notifications" withEventProperties:props];
+        [[Amplitude instance] logEvent:@"Filtered Notifications" withEventProperties:props];
         self.typeOfActivityView = ACTIVITIES_ATTENDED;
         self.activityTitleText.titleText = @"Attended";
         [self startLoadingIndicator];
@@ -821,7 +820,7 @@
     
     UIAlertAction *accessRequestsAction = [UIAlertAction actionWithTitle:@"Requests to Your Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSDictionary *props = [NSDictionary dictionaryWithObject:@"Requests" forKey:@"Filter"];
-        [appDelegate.amplitudeInstance logEvent:@"Filtered Notifications" withEventProperties:props];
+        [[Amplitude instance] logEvent:@"Filtered Notifications" withEventProperties:props];
         self.typeOfActivityView = ACTIVITIES_REQUESTS_TO_ME;
         self.activityTitleText.titleText = @"Requests";
         [self startLoadingIndicator];
@@ -830,7 +829,7 @@
     
     UIAlertAction *accessResponsesAction = [UIAlertAction actionWithTitle:@"Your Requests to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSDictionary *props = [NSDictionary dictionaryWithObject:@"Responses" forKey:@"Filter"];
-        [appDelegate.amplitudeInstance logEvent:@"Filtered Notifications" withEventProperties:props];
+        [[Amplitude instance] logEvent:@"Filtered Notifications" withEventProperties:props];
         self.typeOfActivityView = ACTIVITIES_MY_REQUESTS_STATUS;
         self.activityTitleText.titleText = @"Responses";
         [self startLoadingIndicator];
@@ -839,7 +838,7 @@
     
     UIAlertAction *invitationsAction = [UIAlertAction actionWithTitle:@"Invitations to Events" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         NSDictionary *props = [NSDictionary dictionaryWithObject:@"Invites" forKey:@"Filter"];
-        [appDelegate.amplitudeInstance logEvent:@"Filtered Notifications" withEventProperties:props];
+        [[Amplitude instance] logEvent:@"Filtered Notifications" withEventProperties:props];
         self.typeOfActivityView = ACTIVITIES_INVITES;
         self.activityTitleText.titleText = @"Invites";
         [self startLoadingIndicator];
@@ -848,7 +847,7 @@
     
     UIAlertAction *allAction = [UIAlertAction actionWithTitle:@"All Notifications" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         NSDictionary *props = [NSDictionary dictionaryWithObject:@"All" forKey:@"Filter"];
-        [appDelegate.amplitudeInstance logEvent:@"Filtered Notifications" withEventProperties:props];
+        [[Amplitude instance] logEvent:@"Filtered Notifications" withEventProperties:props];
         self.typeOfActivityView = ACTIVITIES_ALL;
         self.activityTitleText.titleText = @"Notifications";
         [self startLoadingIndicator];
@@ -966,8 +965,7 @@
                 
             } else {
                 
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate.amplitudeInstance logEvent:@"Grant Access Error"];
+                [[Amplitude instance] logEvent:@"Grant Access Error"];
                 
                 grantButton.alpha = 0.3;
                 [grantButton endedTaskWithButtonEnabled:NO];

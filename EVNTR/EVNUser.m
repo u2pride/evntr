@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNUser.h"
 #import "EVNConstants.h"
 #import <Parse/Parse.h>
@@ -172,12 +173,17 @@
     
     [followButton startedTask];
     
-    NSMutableDictionary *props = [NSMutableDictionary new];
-    [props setObject:self.numFollowers forKey:@"Total Followers"];
-    [props setObject:self.numFollowing forKey:@"Total Following"];
-
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance setUserProperties:props replace:YES];
+    NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
+    
+    if (self.numFollowers && self.numFollowing) {
+            
+        [props setObject:self.numFollowers forKey:@"Total Followers"];
+        [props setObject:self.numFollowing forKey:@"Total Following"];
+        
+        [[Amplitude instance] setUserProperties:props replace:YES];
+        
+        
+    }
     
     if ([followButton.titleText isEqualToString:kFollowString]) {
         
@@ -190,8 +196,7 @@
             
             if (succeeded) {
                 
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate.amplitudeInstance logEvent:@"Followed User"];
+                [[Amplitude instance] logEvent:@"Followed User"];
                 
                 followButton.titleText = kFollowingString;
                 
@@ -200,8 +205,7 @@
                 
             } else {
                 
-                AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                [appDelegate.amplitudeInstance logEvent:@"Follow User Error"];
+                [[Amplitude instance] logEvent:@"Follow User Error"];
                 
                 UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to Follow" message:@"If you continue to get this error, send us a tweet or email from Settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                 [errorAlert show];
@@ -233,8 +237,7 @@
                         
                         if (succeeded) {
                             
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate.amplitudeInstance logEvent:@"Unfollowed User"];
+                            [[Amplitude instance] logEvent:@"Unfollowed User"];
                             
                             followButton.titleText = kFollowString;
                             
@@ -243,8 +246,7 @@
                             
                         } else {
                             
-                            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-                            [appDelegate.amplitudeInstance logEvent:@"Unfollow User Error"];
+                            [[Amplitude instance] logEvent:@"Unfollow User Error"];
                             
                             UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Unable to UnFollow" message:@"If you continue to get this error, send us a tweet or email from settings and we'll help you figure it out." delegate:activeVC cancelButtonTitle:@"Got It" otherButtonTitles: nil];
                             [errorAlert show];

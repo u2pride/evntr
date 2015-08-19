@@ -11,6 +11,7 @@
 #import "EVNHomeContainerVC.h"
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNConstants.h"
 #import "EVNNoResultsView.h"
 #import "EventDetailVC.h"
@@ -120,16 +121,17 @@
 - (void) viewWillDisappear:(BOOL)animated {
     
     //Amplitude Analytics
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    int intTime = 0;
     NSTimeInterval time = [[NSDate date] timeIntervalSinceDate:self.startStopwatchDate];
-    int intTime = (int) round(time);
+    intTime = (int) round(time);
 
     NSMutableDictionary *eventProps = [NSMutableDictionary new];
-    [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
-    [eventProps setObject:self.numEventsScrolled forKey:@"Events Scrolled"];
-    [eventProps setObject:[NSNumber numberWithBool:self.scrolledToBottom] forKey:@"Scrolled to Bottom"];
+    
+        [eventProps setObject:[NSNumber numberWithInt:intTime] forKey:@"Total Time"];
+        [eventProps setObject:self.numEventsScrolled forKey:@"Events Scrolled"];
+        [eventProps setObject:[NSNumber numberWithBool:self.scrolledToBottom] forKey:@"Scrolled to Bottom"];
 
-    [appDelegate.amplitudeInstance logEvent:@"Viewed Following Events" withEventProperties:eventProps];
+    [[Amplitude instance] logEvent:@"Viewed Following Events" withEventProperties:eventProps];
     
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Amplitude/Amplitude.h"
 #import "EVNButton.h"
 #import "EVNConstants.h"
 #import "EVNUser.h"
@@ -96,14 +97,13 @@
 - (IBAction)login:(id)sender {
     
     [self blurViewDuringLoginWithMessage:@"Logging you in..."];
-    
+        
     [EVNUser logInWithUsernameInBackground:self.usernameField.text password:self.passwordField.text block:^(PFUser *user, NSError *error) {
         
         if (user) {
             
-            AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-            [appDelegate.amplitudeInstance setUserId:user.objectId];
-            [appDelegate.amplitudeInstance logEvent:@"Logged In"];
+            [[Amplitude instance] setUserId:user.objectId];
+            [[Amplitude instance] logEvent:@"Logged In"];
             
             NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
             [standardDefaults setBool:NO forKey:kIsGuest];
@@ -144,8 +144,7 @@
 
 - (IBAction)resetUserPassword:(id)sender {
     
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.amplitudeInstance logEvent:@"Reset Password"];
+    [[Amplitude instance] logEvent:@"Reset Password"];
     
     ResetPasswordModalVC *resetPasswordModal = (ResetPasswordModalVC *)[self.storyboard instantiateViewControllerWithIdentifier:@"ResetPasswordModalView"];
     resetPasswordModal.modalPresentationStyle = UIModalPresentationOverCurrentContext;
