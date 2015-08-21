@@ -393,6 +393,24 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     Parse.Cloud.useMasterKey();
     
     var lowercaseUsernameSubmitted = request.object.get("username").toLowerCase();
+
+    var currentUser = request.object;
+    
+    if (!currentUser.get("numFollowers")) {
+        console.log("aSet to Zero");
+        currentUser.set("numFollowers", 0);
+    }
+    
+    if (!currentUser.get("numFollowing")) {
+        console.log("aSet to Zero 2");
+        currentUser.set("numFollowing", 0);
+    }
+    
+    if (!currentUser.get("numEvents")) {
+        console.log("aSet to Zero 3");
+        currentUser.set("numEvents", 0);
+    }
+    
     
     //If Username Field Has Been Updated
     if (request.object.dirty("username") && request.object.get("username").toLowerCase() != request.object.get("canonicalUsername")) {
@@ -417,9 +435,9 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
           }  
       });
  
-      } else {
+    } else {
         response.success();
-      }
+    }
   
 });
 
@@ -469,7 +487,6 @@ Parse.Cloud.afterSave("Reports", function(request, response) {
                 }
             });
         
-        
     },
     error: function(object, error) {
         // The object was not retrieved successfully.
@@ -477,12 +494,4 @@ Parse.Cloud.afterSave("Reports", function(request, response) {
     }
     });
     
-
-    
-    
-
-    
-    
-
-
 });

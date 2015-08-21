@@ -43,12 +43,12 @@
     [ParseCrashReporting enable];
     
     //DEVELOPMENT SETUP
-    //[Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
-    //[[Amplitude instance] initializeApiKey:@"89f6dca54cfef2ceaf118d71a1275b23"];
+    [Parse setApplicationId:@"d8C8syeVtJ05eEm6cbYNduAxxpx0KOPhPhGyRSHv" clientKey:@"NP77GbK9h4Rk88FXGMmTEEjtXVADmMqMVeu3zXTE"];
+    [[Amplitude instance] initializeApiKey:@"89f6dca54cfef2ceaf118d71a1275b23"];
     
     //PRODUCTION SETUP
-    [Parse setApplicationId:@"pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs" clientKey:@"3s0PDgQzp01DLs588gDqPqaEVepbHaoYmfkcAlXJ"];
-    [[Amplitude instance] initializeApiKey:@"8e2b64fe1f3ba9be70e1e4cf39f28bd7"];
+    //[Parse setApplicationId:@"pmiyjr1AZuOHvRebg9cKm1NdBvX2ILefZvYIXIEs" clientKey:@"3s0PDgQzp01DLs588gDqPqaEVepbHaoYmfkcAlXJ"];
+    //[[Amplitude instance] initializeApiKey:@"8e2b64fe1f3ba9be70e1e4cf39f28bd7"];
     
     //Initializing the Parse FB Utility
     [PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];

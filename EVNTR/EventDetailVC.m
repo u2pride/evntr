@@ -526,7 +526,7 @@
     self.transparentTouchView.backgroundColor = [UIColor clearColor];
 
     //Picture Component
-    self.viewPicturesButton.titleText = @"View";
+    self.viewPicturesButton.titleText = @"View and Post";
     self.viewPicturesButton.isStateless = YES;
     self.viewPicturesButton.isSelected = NO;
     self.viewPicturesButton.buttonColorOpposing = [UIColor clearColor];

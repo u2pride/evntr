@@ -207,7 +207,6 @@
     [followingEventsQuery whereKey:@"locationOfEvent" nearGeoPoint:self.currentUserLocation withinMiles:[self.delegate currentRadiusFilter]];
     [followingEventsQuery whereKey:@"dateOfEvent" greaterThanOrEqualTo:currentDateMinusOneDay];
     [followingEventsQuery orderByAscending:@"dateOfEvent"];
-        
     
     return followingEventsQuery;
 }
