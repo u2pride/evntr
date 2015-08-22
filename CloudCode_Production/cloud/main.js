@@ -395,6 +395,20 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     
     var lowercaseUsernameSubmitted = request.object.get("username").toLowerCase();
     
+    var currentUser = request.object;
+    
+    if (!currentUser.get("numFollowers")) {
+        currentUser.set("numFollowers", 0);
+    }
+    
+    if (!currentUser.get("numFollowing")) {
+        currentUser.set("numFollowing", 0);
+    }
+    
+    if (!currentUser.get("numEvents")) {
+        currentUser.set("numEvents", 0);
+    }
+    
     //If Username Field Has Been Updated
     if (request.object.dirty("username") && request.object.get("username").toLowerCase() != request.object.get("canonicalUsername")) {
         

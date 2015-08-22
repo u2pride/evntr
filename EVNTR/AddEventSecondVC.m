@@ -35,6 +35,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.tableView.allowsSelection = NO;
+    
     UIBarButtonItem *backButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationItem setBackBarButtonItem:backButtonItem];
     
@@ -278,11 +280,25 @@
         
     } else  {
         
-        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Event Details Missing" message:@"Make sure to pick an event location and add a description to the event." delegate:self cancelButtonTitle:@"C'mon" otherButtonTitles: nil];
+        if (!self.event.descriptionOfEvent) {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Event Details Missing" message:@"Make sure to add a description to your event." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+            [self.createButton setIsSelected:NO];
+            
+        } else {
+            
+            UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Event Details Missing" message:@"Make sure to pick an event location." delegate:self cancelButtonTitle:@"Got It" otherButtonTitles: nil];
+            
+            [errorAlert show];
+            
+            [self.createButton setIsSelected:NO];
+            
+        }
         
-        [errorAlert show];
-        
-        [self.createButton setIsSelected:NO];
+
     }
     
     

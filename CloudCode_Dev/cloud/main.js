@@ -388,6 +388,26 @@ Parse.Cloud.job("canonicalPrep", function(request, status) {
 
 
 //Before Save Hooks
+Parse.Cloud.beforeSave("Events", function(request, response) {
+    Parse.Cloud.useMasterKey();
+    
+    var currentEvent = request.object;
+    
+    if (!currentEvent.get("numAttenders")) {
+        currentEvent.set("numAttenders", 0);
+    }
+    
+    if (!currentEvent.get("numComments")) {
+        currentEvent.set("numComments", 0);
+    }
+    
+    if (!currentEvent.get("numPictures")) {
+        currentEvent.set("numPictures", 0);
+    }
+    
+    response.success();
+    
+});
 
 Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     Parse.Cloud.useMasterKey();
@@ -397,20 +417,16 @@ Parse.Cloud.beforeSave(Parse.User, function(request, response) {
     var currentUser = request.object;
     
     if (!currentUser.get("numFollowers")) {
-        console.log("aSet to Zero");
         currentUser.set("numFollowers", 0);
     }
     
     if (!currentUser.get("numFollowing")) {
-        console.log("aSet to Zero 2");
         currentUser.set("numFollowing", 0);
     }
     
     if (!currentUser.get("numEvents")) {
-        console.log("aSet to Zero 3");
         currentUser.set("numEvents", 0);
     }
-    
     
     //If Username Field Has Been Updated
     if (request.object.dirty("username") && request.object.get("username").toLowerCase() != request.object.get("canonicalUsername")) {
